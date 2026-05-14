@@ -9,8 +9,8 @@
 
 | File | Description |
 |---|---|
-| `server/index.ts` | Express app bootstrap, middleware mount, route registration |
-| `server/db.ts` | SQLite connection singleton, schema init |
+| `server/index.ts` | Express bootstrap; graceful shutdown with 10s forced exit if `close` hangs |
+| `server/db.ts` | SQLite connection singleton; open failure logs and `process.exit(1)` |
 | `server/db.seed.ts` | Admin user seed / reset CLI |
 | `server/middleware/auth.ts` | JWT cookie verify → `req.admin` |
 | `server/middleware/rateLimit.ts` | Rate limiting for form routes |

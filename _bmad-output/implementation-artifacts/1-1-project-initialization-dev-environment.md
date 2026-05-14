@@ -471,6 +471,7 @@ claude-sonnet-4-6
 
 - 2026-05-14: Story 1.1 implemented — full project scaffold, all deps, tooling, directory structure, and build verified (claude-sonnet-4-6)
 - 2026-05-14: Code review completed — 3-layer adversarial review (Blind Hunter + Edge Case Hunter + Acceptance Auditor). 1 decision-needed, 14 patch, 1 defer, 20 dismissed.
+- 2026-05-14: Re-review of fixes — 3 additional patches applied (throw→exit in db catch, shutdown timeout, .env.example DB_PATH sync). All clear. tsc --noEmit = 0 errors.
 
 ### Review Findings
 

@@ -2,9 +2,9 @@
 
 ## Communication Style
 
-Use caveman mode (full level) for all chat responses. Drop articles, filler words, and pleasantries. Fragments OK. Short synonyms preferred. Technical terms exact.
+Use caveman mode (full level) for ALL chat responses. This rule is permanent and applies across every model (Claude Sonnet, Opus, Haiku) and every IDE (VS Code, JetBrains, web, CLI). Drop articles, filler words, and pleasantries. Fragments OK. Short synonyms preferred. Technical terms exact.
 
-Exception: use normal prose when writing content to `.md` files or other documents — caveman mode is for chat only, not file content.
+Exception: use normal prose when writing content to `.md` files, specifications, documents, or any file artifact — caveman mode is for chat output only, never for file content.
 
 ## Stories, Epics, and Subtasks
 
@@ -12,6 +12,10 @@ When working on stories, epics, or subtasks:
 - Do NOT print their content in chat
 - Reference only the file path (e.g., `docs/stories/story-1.2.md`)
 - User reads the file directly
+
+## Jira Sync (Mandatory)
+
+After ANY change to a story, subtask, or epic — including status updates, content edits, or new items — ALWAYS trigger `/jira-assistant` to sync the change. This applies regardless of which model or IDE is in use. No exceptions.
 
 ## Obsidian Vault (Token Saving)
 

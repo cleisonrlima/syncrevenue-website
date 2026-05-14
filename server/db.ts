@@ -17,7 +17,7 @@ try {
   }
 } catch (err) {
   console.error('Failed to open database:', err)
-  throw err
+  process.exit(1)
 }
 
 // Schema creation deferred to Story 2.1

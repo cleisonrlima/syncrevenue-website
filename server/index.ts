@@ -30,6 +30,11 @@ const gracefulShutdown = () => {
     console.log('Server closed')
     process.exit(0)
   })
+  // Force exit if connections hang
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout')
+    process.exit(1)
+  }, 10000)
 }
 
 process.on('SIGTERM', gracefulShutdown)

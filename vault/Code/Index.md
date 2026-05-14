@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Story 1.1 complete — scaffold in place, all placeholders created
+**Status:** Story 1.1 done — scaffold in place; server hardened (db failure `exit(1)`, shutdown timeout)
 
 ---
 

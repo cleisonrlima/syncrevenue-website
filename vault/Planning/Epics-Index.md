@@ -14,7 +14,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 | Story | Title | Status |
 |---|---|---|
-| 1.1 | Project Initialization & Dev Environment | `[r]` |
+| 1.1 | Project Initialization & Dev Environment | `[x]` |
 | 1.2 | Design System Foundation | `[ ]` |
 | 1.3 | i18n & Language Infrastructure | `[ ]` |
 | 1.4 | App Shell, Routing & Navigation | `[ ]` |
