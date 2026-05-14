@@ -12,11 +12,13 @@ Controls demo modal open/close state.
 { isOpen: boolean, open: () => void, close: () => void }
 ```
 
-### `useLocaleStore` — `src/stores/useLocaleStore.ts`
+### `useLocaleStore` — `src/store/useLocaleStore.ts` (Story 1.3 ✓)
 Active locale. Source of truth for components — never read locale directly from i18next.
 ```typescript
-{ locale: 'en' | 'pt-BR' | 'es', setLocale: (locale) => void }
+export type Locale = 'en' | 'pt-BR' | 'es'
+{ locale: Locale, changeLocale: (locale: Locale) => void }
 ```
+Synced from i18next-detected locale at startup in `main.tsx`. Direct `setState` also used by LanguageSwitcher.
 
 ### `useAdminStore` — `src/stores/useAdminStore.ts`
 Admin session state.

@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Story 1.2 in review — design system: brand tokens, GradientButton, SectionHeader, SectionSkeleton, Plus Jakarta Sans
+**Status:** Story 1.3 in review — i18n: Vitest infra, useLocaleStore, i18next init, EN/PT-BR/ES translations, LanguageSwitcher
 
 ---
 
@@ -54,19 +54,23 @@ syncrevenue-website/
 │   ├── routes/admin/team.ts        — placeholder (Story 4.4)
 │   └── lib/mailer.ts               — placeholder (Story 2.5)
 └── src/
-    ├── main.tsx                    — React 18 createRoot + BrowserRouter
+    ├── main.tsx                    — React 18 createRoot + BrowserRouter + i18n import + Zustand locale sync
     ├── App.tsx                     — minimal Routes with "/" placeholder
     ├── index.css                   — Tailwind directives + shadcn CSS vars (slate)
     ├── vite-env.d.ts               — Vite client type reference
     ├── lib/utils.ts                — cn() utility (clsx + tailwind-merge)
     ├── lib/api.ts                  — placeholder (Story 2.2)
-    ├── i18n/index.ts               — placeholder (Story 1.3)
-    ├── i18n/LanguageSwitcher.tsx   — placeholder (Story 1.3)
-    ├── i18n/locales/en/translation.json    — placeholder
-    ├── i18n/locales/pt-BR/translation.json — placeholder
-    ├── i18n/locales/es/translation.json    — placeholder
+    ├── i18n/index.ts               — i18next init (LanguageDetector, react-i18next, bundled resources) ✓
+    ├── i18n/index.test.ts          — supportedLngs, fallback, 11-key checks ✓
+    ├── i18n/LanguageSwitcher.tsx   — EN/PT-BR/ES button group, locale change flow ✓
+    ├── i18n/LanguageSwitcher.test.tsx — render, aria-current, click flow tests ✓
+    ├── i18n/locales/en/translation.json    — EN strings (11 namespaces) ✓
+    ├── i18n/locales/pt-BR/translation.json — PT-BR strings ✓
+    ├── i18n/locales/es/translation.json    — ES strings ✓
+    ├── test/setup.ts               — @testing-library/jest-dom import ✓
     ├── store/useModalStore.ts      — placeholder (Story 2.4)
-    ├── store/useLocaleStore.ts     — placeholder (Story 1.3)
+    ├── store/useLocaleStore.ts     — Locale type + Zustand store (locale, changeLocale) ✓
+    ├── store/useLocaleStore.test.ts — init, changeLocale, setState tests ✓
     ├── store/useAdminStore.ts      — placeholder (Story 4.1)
     ├── hooks/useDemo.ts            — placeholder (Story 2.2)
     ├── hooks/useContact.ts         — placeholder (Story 2.3)

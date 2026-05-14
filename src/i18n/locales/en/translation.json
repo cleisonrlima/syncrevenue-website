@@ -1,1 +1,200 @@
-{}
+{
+  "nav": {
+    "demo": "Request Demo",
+    "contact": "Contact",
+    "home": "Home",
+    "privacy": "Privacy Policy"
+  },
+  "hero": {
+    "badge": "Commission Recovery for Travel Agencies",
+    "headline": "Commission Management Built for Modern Travel Agencies",
+    "subheadline": "Recover 15–25% of commission revenue lost to GDS discrepancies, debit memo disputes, and manual BSP/ARC reconciliation failures.",
+    "cta": "Schedule a Demo",
+    "stats": {
+      "assertivity": "99.99%",
+      "assertivityLabel": "Commission Assertivity",
+      "leakage": "15–25%",
+      "leakageLabel": "Revenue Leakage Recovered",
+      "gds": "Multi-GDS",
+      "gdsLabel": "Amadeus · Sabre · Galileo · Worldspan"
+    },
+    "trust": {
+      "encryption": "Encrypted Transmission",
+      "certification": "Certification Roadmap",
+      "insurance": "Contract Insurance",
+      "references": "Referenced US Agencies"
+    }
+  },
+  "syncrevenue": {
+    "eyebrow": "Our Flagship Product",
+    "headline": "Automated Commission Reconciliation",
+    "subtext": "SyncRevenue connects to your GDS feeds and automatically identifies commission discrepancies, disputed debit memos, and BSP/ARC reconciliation failures — recovering revenue your team would otherwise miss.",
+    "gds": {
+      "title": "GDS Integrations",
+      "amadeus": "Amadeus",
+      "sabre": "Sabre",
+      "galileo": "Galileo",
+      "worldspan": "Worldspan"
+    },
+    "accuracy": "99.99% commission assertivity across all integrated GDS platforms."
+  },
+  "services": {
+    "eyebrow": "Our Services",
+    "headline": "Complete Revenue Intelligence Suite",
+    "subtext": "Whether you need automated reconciliation, data analytics, or custom development, we have the expertise to solve your specific challenge.",
+    "syncrevenue": {
+      "title": "SyncRevenue",
+      "description": "Automated GDS commission reconciliation and recovery for travel agencies."
+    },
+    "analytics": {
+      "title": "BI & Data Analytics",
+      "description": "Turn your booking and commission data into actionable intelligence."
+    },
+    "obts": {
+      "title": "Online Booking Tools",
+      "description": "Implementation, optimization, and support for OBT platforms."
+    },
+    "custom": {
+      "title": "Custom Development",
+      "description": "Bespoke solutions for complex airline distribution and revenue challenges."
+    },
+    "contact": "Not sure which service fits? Contact us."
+  },
+  "comparison": {
+    "eyebrow": "Why SyncRevenue",
+    "headline": "Stop Losing Revenue to Manual Processes",
+    "subtext": "See how automated commission management compares to the status quo.",
+    "featureHeader": "Feature",
+    "syncrevenueHeader": "SyncRevenue",
+    "legacyHeader": "Manual / Legacy Tools",
+    "features": {
+      "reconciliation": "BSP/ARC Reconciliation",
+      "debitMemo": "Debit Memo Dispute Management",
+      "gdsIntegration": "Multi-GDS Integration",
+      "reporting": "Real-Time Commission Reporting",
+      "audit": "Automated Audit Trail"
+    },
+    "yes": "✓",
+    "no": "✗",
+    "partial": "Partial"
+  },
+  "team": {
+    "eyebrow": "Our Team",
+    "headline": "Specialists in Airline Distribution",
+    "subtext": "Our team brings decades of GDS, BSP, and travel agency operations experience.",
+    "member1": {
+      "name": "Team Member Name",
+      "role": "Chief Executive Officer",
+      "bio": "Airline distribution specialist with expertise in GDS operations and commission management for travel agencies across the Americas."
+    },
+    "member2": {
+      "name": "Team Member Name",
+      "role": "Chief Technology Officer",
+      "bio": "Technology leader specializing in travel industry data integration, automation, and revenue optimization systems."
+    }
+  },
+  "security": {
+    "eyebrow": "Security & Trust",
+    "headline": "Your Data is Protected",
+    "subtext": "We take the security of your GDS credentials and booking data seriously.",
+    "encryption": {
+      "title": "Encrypted Transmission",
+      "description": "All data transmitted between your systems and SyncRevenue is encrypted in transit using industry-standard protocols."
+    },
+    "certification": {
+      "title": "Certification Roadmap",
+      "description": "We are actively pursuing SOC 2 Type II certification. Our security roadmap is transparent and available on request."
+    },
+    "insurance": {
+      "title": "Contract Insurance",
+      "description": "Our service agreements include explicit data protection commitments and liability coverage for commission recovery operations."
+    },
+    "separation": "GDS credentials never touch our website. All data access is scoped exclusively to commission reconciliation — no passenger data, no booking modifications."
+  },
+  "references": {
+    "eyebrow": "Client References",
+    "headline": "Trusted by US Travel Agencies",
+    "subtext": "References available from recognized US-based travel management companies.",
+    "cta": "Request References"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: May 2026",
+    "intro": "Sync Sirius, Inc. is committed to protecting your privacy. This policy describes how we collect, use, and protect information submitted through this website.",
+    "dataCollection": {
+      "title": "Information We Collect",
+      "body": "We collect contact information (name, email, company, phone) and usage information submitted through demo request and contact forms."
+    },
+    "dataUse": {
+      "title": "How We Use Your Information",
+      "body": "We use your information to respond to demo requests, answer inquiries, and improve our services. We do not sell your data to third parties."
+    },
+    "dataRetention": {
+      "title": "Data Retention",
+      "body": "Demo request and contact records are retained for 24 months from submission, then permanently deleted."
+    },
+    "gdsData": {
+      "title": "GDS Credentials & Booking Data",
+      "body": "This website does not collect GDS credentials or booking data. All GDS integration for SyncRevenue customers occurs through direct API agreements, not through this website."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "body": "For privacy inquiries, contact us at privacy@syncsirius.com."
+    }
+  },
+  "forms": {
+    "demo": {
+      "title": "Request a Demo",
+      "name": "Full Name",
+      "namePlaceholder": "Jane Smith",
+      "nameError": "Full name is required",
+      "email": "Work Email",
+      "emailPlaceholder": "jane@agency.com",
+      "emailError": "Enter a valid email address",
+      "company": "Company",
+      "companyPlaceholder": "Travel Agency Name",
+      "companyError": "Company name is required",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 305 555 0100",
+      "role": "Your Role",
+      "rolePlaceholder": "Select your role",
+      "roleError": "Please select your role",
+      "gds": "Primary GDS",
+      "gdsPlaceholder": "Select your GDS",
+      "gdsError": "Please select your primary GDS",
+      "message": "Message (optional)",
+      "messagePlaceholder": "Tell us about your commission reconciliation challenges",
+      "submit": "Request Demo",
+      "submitting": "Sending…",
+      "successTitle": "Request Received!",
+      "successBody": "Our team will reach out within 1 business day.",
+      "errorGeneric": "Something went wrong. Please try again."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "name": "Full Name",
+      "nameError": "Full name is required",
+      "email": "Email Address",
+      "emailError": "Enter a valid email address",
+      "subject": "Subject",
+      "subjectPlaceholder": "How can we help?",
+      "subjectError": "Subject is required",
+      "message": "Message",
+      "messagePlaceholder": "Your message…",
+      "messageError": "Message is required",
+      "submit": "Send Message",
+      "submitting": "Sending…",
+      "successTitle": "Message Sent!",
+      "successBody": "We'll get back to you as soon as possible.",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist.",
+    "serverError": "Something went wrong",
+    "serverErrorBody": "Please try again or contact us if the problem persists.",
+    "rateLimit": "Too many requests. Please wait a moment and try again.",
+    "networkError": "Connection error. Please check your connection and try again."
+  }
+}

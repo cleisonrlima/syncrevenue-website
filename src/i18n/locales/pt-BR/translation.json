@@ -1,1 +1,200 @@
-{}
+{
+  "nav": {
+    "demo": "Solicitar Demo",
+    "contact": "Contato",
+    "home": "Início",
+    "privacy": "Política de Privacidade"
+  },
+  "hero": {
+    "badge": "Recuperação de Comissões para Agências de Viagem",
+    "headline": "Gestão de Comissões para Agências de Viagem Modernas",
+    "subheadline": "Recupere 15–25% da receita de comissões perdida em discrepâncias de GDS, disputas de débitos e falhas de reconciliação BSP/ARC.",
+    "cta": "Agendar Demo",
+    "stats": {
+      "assertivity": "99,99%",
+      "assertivityLabel": "Assertividade de Comissões",
+      "leakage": "15–25%",
+      "leakageLabel": "Vazamento de Receita Recuperado",
+      "gds": "Multi-GDS",
+      "gdsLabel": "Amadeus · Sabre · Galileo · Worldspan"
+    },
+    "trust": {
+      "encryption": "Transmissão Criptografada",
+      "certification": "Roadmap de Certificação",
+      "insurance": "Seguro Contratual",
+      "references": "Agências dos EUA Referenciadas"
+    }
+  },
+  "syncrevenue": {
+    "eyebrow": "Nosso Produto Principal",
+    "headline": "Reconciliação Automatizada de Comissões",
+    "subtext": "O SyncRevenue conecta-se aos seus feeds de GDS e identifica automaticamente discrepâncias de comissões, débitos contestados e falhas de reconciliação BSP/ARC — recuperando receita que sua equipe perderia.",
+    "gds": {
+      "title": "Integrações GDS",
+      "amadeus": "Amadeus",
+      "sabre": "Sabre",
+      "galileo": "Galileo",
+      "worldspan": "Worldspan"
+    },
+    "accuracy": "99,99% de assertividade de comissões em todas as plataformas GDS integradas."
+  },
+  "services": {
+    "eyebrow": "Nossos Serviços",
+    "headline": "Suite Completa de Inteligência de Receita",
+    "subtext": "Seja reconciliação automatizada, analytics de dados ou desenvolvimento customizado, temos a expertise para resolver seu desafio específico.",
+    "syncrevenue": {
+      "title": "SyncRevenue",
+      "description": "Reconciliação e recuperação automatizada de comissões GDS para agências de viagem."
+    },
+    "analytics": {
+      "title": "BI & Analytics de Dados",
+      "description": "Transforme seus dados de reservas e comissões em inteligência acionável."
+    },
+    "obts": {
+      "title": "Ferramentas de Reserva Online",
+      "description": "Implementação, otimização e suporte para plataformas OBT."
+    },
+    "custom": {
+      "title": "Desenvolvimento Customizado",
+      "description": "Soluções sob medida para desafios complexos de distribuição aérea e receita."
+    },
+    "contact": "Não sabe qual serviço é ideal? Entre em contato."
+  },
+  "comparison": {
+    "eyebrow": "Por que SyncRevenue",
+    "headline": "Pare de Perder Receita com Processos Manuais",
+    "subtext": "Veja como a gestão automatizada de comissões se compara ao status quo.",
+    "featureHeader": "Funcionalidade",
+    "syncrevenueHeader": "SyncRevenue",
+    "legacyHeader": "Manual / Ferramentas Legadas",
+    "features": {
+      "reconciliation": "Reconciliação BSP/ARC",
+      "debitMemo": "Gestão de Disputas de Débitos",
+      "gdsIntegration": "Integração Multi-GDS",
+      "reporting": "Relatórios de Comissão em Tempo Real",
+      "audit": "Trilha de Auditoria Automatizada"
+    },
+    "yes": "✓",
+    "no": "✗",
+    "partial": "Parcial"
+  },
+  "team": {
+    "eyebrow": "Nossa Equipe",
+    "headline": "Especialistas em Distribuição Aérea",
+    "subtext": "Nossa equipe traz décadas de experiência em operações GDS, BSP e agências de viagem.",
+    "member1": {
+      "name": "Nome do Membro",
+      "role": "Diretor Executivo",
+      "bio": "Especialista em distribuição aérea com expertise em operações GDS e gestão de comissões para agências de viagem nas Américas."
+    },
+    "member2": {
+      "name": "Nome do Membro",
+      "role": "Diretor de Tecnologia",
+      "bio": "Líder de tecnologia especializado em integração de dados do setor de viagens, automação e sistemas de otimização de receita."
+    }
+  },
+  "security": {
+    "eyebrow": "Segurança & Confiança",
+    "headline": "Seus Dados Estão Protegidos",
+    "subtext": "Levamos a sério a segurança de suas credenciais GDS e dados de reservas.",
+    "encryption": {
+      "title": "Transmissão Criptografada",
+      "description": "Todos os dados transmitidos entre seus sistemas e o SyncRevenue são criptografados em trânsito usando protocolos padrão da indústria."
+    },
+    "certification": {
+      "title": "Roadmap de Certificação",
+      "description": "Estamos ativamente buscando a certificação SOC 2 Tipo II. Nosso roadmap de segurança é transparente e disponível mediante solicitação."
+    },
+    "insurance": {
+      "title": "Seguro Contratual",
+      "description": "Nossos contratos de serviço incluem compromissos explícitos de proteção de dados e cobertura de responsabilidade para operações de recuperação de comissões."
+    },
+    "separation": "Credenciais GDS nunca passam pelo nosso site. Todo acesso a dados é exclusivamente para reconciliação de comissões — sem dados de passageiros, sem modificações de reservas."
+  },
+  "references": {
+    "eyebrow": "Referências de Clientes",
+    "headline": "Confiado por Agências de Viagem nos EUA",
+    "subtext": "Referências disponíveis de empresas de gestão de viagens reconhecidas nos EUA.",
+    "cta": "Solicitar Referências"
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "lastUpdated": "Última atualização: Maio de 2026",
+    "intro": "A Sync Sirius, Inc. está comprometida em proteger sua privacidade. Esta política descreve como coletamos, usamos e protegemos as informações enviadas por este site.",
+    "dataCollection": {
+      "title": "Informações que Coletamos",
+      "body": "Coletamos informações de contato (nome, e-mail, empresa, telefone) e informações de uso enviadas através dos formulários de solicitação de demo e contato."
+    },
+    "dataUse": {
+      "title": "Como Usamos suas Informações",
+      "body": "Usamos suas informações para responder a solicitações de demo, responder a consultas e melhorar nossos serviços. Não vendemos seus dados a terceiros."
+    },
+    "dataRetention": {
+      "title": "Retenção de Dados",
+      "body": "Registros de solicitação de demo e contato são retidos por 24 meses a partir do envio e então permanentemente excluídos."
+    },
+    "gdsData": {
+      "title": "Credenciais GDS & Dados de Reservas",
+      "body": "Este site não coleta credenciais GDS ou dados de reservas. Toda integração GDS para clientes SyncRevenue ocorre por meio de acordos diretos de API, não por este site."
+    },
+    "contact": {
+      "title": "Fale Conosco",
+      "body": "Para dúvidas sobre privacidade, entre em contato pelo e-mail privacy@syncsirius.com."
+    }
+  },
+  "forms": {
+    "demo": {
+      "title": "Solicitar uma Demo",
+      "name": "Nome Completo",
+      "namePlaceholder": "Ana Silva",
+      "nameError": "Nome completo é obrigatório",
+      "email": "E-mail Corporativo",
+      "emailPlaceholder": "ana@agencia.com.br",
+      "emailError": "Insira um endereço de e-mail válido",
+      "company": "Empresa",
+      "companyPlaceholder": "Nome da Agência de Viagem",
+      "companyError": "Nome da empresa é obrigatório",
+      "phone": "Telefone (opcional)",
+      "phonePlaceholder": "+55 11 9 0000-0000",
+      "role": "Seu Cargo",
+      "rolePlaceholder": "Selecione seu cargo",
+      "roleError": "Por favor, selecione seu cargo",
+      "gds": "GDS Principal",
+      "gdsPlaceholder": "Selecione seu GDS",
+      "gdsError": "Por favor, selecione seu GDS principal",
+      "message": "Mensagem (opcional)",
+      "messagePlaceholder": "Conte-nos sobre seus desafios de reconciliação de comissões",
+      "submit": "Solicitar Demo",
+      "submitting": "Enviando…",
+      "successTitle": "Solicitação Recebida!",
+      "successBody": "Nossa equipe entrará em contato em até 1 dia útil.",
+      "errorGeneric": "Algo deu errado. Por favor, tente novamente."
+    },
+    "contact": {
+      "title": "Entre em Contato",
+      "name": "Nome Completo",
+      "nameError": "Nome completo é obrigatório",
+      "email": "Endereço de E-mail",
+      "emailError": "Insira um endereço de e-mail válido",
+      "subject": "Assunto",
+      "subjectPlaceholder": "Como podemos ajudar?",
+      "subjectError": "Assunto é obrigatório",
+      "message": "Mensagem",
+      "messagePlaceholder": "Sua mensagem…",
+      "messageError": "Mensagem é obrigatória",
+      "submit": "Enviar Mensagem",
+      "submitting": "Enviando…",
+      "successTitle": "Mensagem Enviada!",
+      "successBody": "Responderemos o mais breve possível.",
+      "errorGeneric": "Algo deu errado. Por favor, tente novamente."
+    }
+  },
+  "errors": {
+    "notFound": "Página não encontrada",
+    "notFoundBody": "A página que você está procurando não existe.",
+    "serverError": "Algo deu errado",
+    "serverErrorBody": "Por favor, tente novamente ou entre em contato se o problema persistir.",
+    "rateLimit": "Muitas solicitações. Por favor, aguarde um momento e tente novamente.",
+    "networkError": "Erro de conexão. Verifique sua conexão e tente novamente."
+  }
+}

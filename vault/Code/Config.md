@@ -6,7 +6,7 @@
 
 | File | Purpose |
 |---|---|
-| `vite.config.ts` | Vite + Express plugin (dev), path alias `@/` → `src/` |
+| `vite.config.ts` | Vite + Express plugin (dev), path alias `@/` → `src/`; Vitest config (globals, jsdom, setupFiles) — imports `defineConfig` from `vitest/config` |
 | `tailwind.config.ts` | Tailwind v3 config |
 | `tsconfig.json` | TypeScript strict mode |
 | `.env` | Secrets — never `VITE_` prefix for server secrets |
@@ -56,3 +56,4 @@
 | Story | Files Created |
 |---|---|
 | 1.1 | package.json, tsconfig.json, tsconfig.server.json, vite.config.ts, tailwind.config.ts, postcss.config.js, components.json, index.html, .gitignore, .env.example |
+| 1.3 ✓ | vite.config.ts updated (vitest/config import + test block); package.json updated (test + test:run scripts + devDeps); src/test/setup.ts created |
