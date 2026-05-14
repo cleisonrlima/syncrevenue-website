@@ -1,6 +1,6 @@
 # Story 1.1: Project Initialization & Dev Environment
 
-Status: in-progress
+Status: done
 baseline_commit: a83fb3124a41db1182ed10cfc93f911239333707
 
 ## Story
@@ -493,3 +493,62 @@ claude-sonnet-4-6
 - [x] [Review][Patch] Support nullable `document.getElementById` return in `src/vite-env.d.ts` or handle in `main.tsx` [src/main.tsx:8]
 
 - [x] [Review][Defer] Add `secure: false` to Vite proxy config for potential dev TLS — not needed until TLS enabled, revisit with Story 5.2 [vite.config.ts:14-16]
+
+## Suggested Review Order
+
+**Error Handling & Resilience**
+
+- Database initialization wrapped in try/catch with error logging on failure.
+  [`server/db.ts:11-19`](../../server/db.ts#L11)
+
+- Server port conflict detected; EADDRINUSE error listener exits gracefully with clear message.
+  [`server/index.ts:17-23`](../../server/index.ts#L17)
+
+- Graceful shutdown handlers (SIGTERM/SIGINT) close database before exit to prevent corruption.
+  [`server/index.ts:25-32`](../../server/index.ts#L25)
+
+**Path Resolution & Configuration**
+
+- Database path resolved relative to __dirname instead of CWD to avoid pwd-dependent bugs.
+  [`server/db.ts:6`](../../server/db.ts#L6)
+
+- Environment fallback updated: DB_PATH now resolves to ../data/ (sibling to server/) when env unset.
+  [`server/db.ts:6`](../../server/db.ts#L6)
+
+- Pragma mode check: warns if journal_mode not actually set to WAL (not just assumed).
+  [`server/db.ts:12-14`](../../server/db.ts#L12)
+
+**Build & Dependency Configuration**
+
+- Moved concurrently and tsx from dependencies to devDependencies (dev-only tooling).
+  [`package.json:9,46-47`](../../package.json#L9)
+
+- Added --kill-others-on-fail to prevent orphaned Vite process when tsx dev server crashes.
+  [`package.json:6`](../../package.json#L6)
+
+- Pinned @types/react and @types/react-dom to ^18.x to match React 18 runtime versions.
+  [`package.json:42-43`](../../package.json#L42)
+
+**Client-Side Initialization**
+
+- Root element null-check with descriptive error; prevents silent failures if index.html structure changes.
+  [`src/main.tsx:7-10`](../../src/main.tsx#L7)
+
+**Config Quality & Clarity**
+
+- Tailwind content paths pruned: removed dead ./pages/**, ./components/**, ./app/** (only ./src/** needed).
+  [`tailwind.config.ts:6-8`](../../tailwind.config.ts#L6)
+
+- tailwindcss-animate imported as ES module instead of require() for type safety and consistency.
+  [`tailwind.config.ts:2,75`](../../tailwind.config.ts#L2)
+
+- TypeScript ignoreDeprecations comment explains baseUrl deprecation silencing for future maintainers.
+  [`tsconfig.json:13`](../../tsconfig.json#L13)
+
+**.gitignore & Environment**
+
+- Extended .gitignore: added .env.* (for environment file variants), *.log, .DS_Store, Thumbs.db.
+  [``.gitignore:6-9`](`../../.gitignore#L6)
+
+- .env.example documented with comment block explaining non-secret defaults are for dev convenience.
+  [`.env.example:1-5`](../../.env.example#L1)
