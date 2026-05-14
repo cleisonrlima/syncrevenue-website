@@ -34,7 +34,8 @@
 - Story 1.1 **done** — scaffold verified; post-review fixes: DB open failure exits process, graceful shutdown 10s cap, `.env.example` `DB_PATH` aligned with server cwd
 - Story 1.2 **done** — design system foundation: brand tokens, GradientButton, SectionHeader, SectionSkeleton, Plus Jakarta Sans font; review patches applied: h1 base typography, motion-safe guards, ARIA loading state
 - Story 1.3 **done** — i18n infrastructure: Vitest setup, useLocaleStore, i18next init (EN/PT-BR/ES), LanguageSwitcher, main.tsx sync; 12 tests passing; review patch: localStorage.setItem guarded with try/catch for private browsing/quota errors
-- Active phase: **Epic 1 (Phase 1 MVP Part A)** — Story 1.4 next
+- Story 1.4 **done** — App shell, routing & navigation + all review patches: fixed `<a><button>` nesting, `/admin` index redirect, dynamic copyright year, body scroll lock, i18n defaultValues, ErrorBoundary for lazy sections, SSR guard, SVG titles, overlay nav link test; 16 tests pass, typecheck clean
+- Active phase: **Epic 1 (Phase 1 MVP Part A)** — Story 1.5 next
 - `tsc --noEmit` → 0 errors; `npm run build` → `dist/client/` + `dist/server/` clean
 - **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)
 

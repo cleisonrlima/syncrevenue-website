@@ -13,3 +13,14 @@
 - Google Fonts URL loads 6 weight-lines (400,500,600,700,800,400i) — 500 and 400i support unused weight-lines; subsetting would save bandwidth [src/index.css:1]
 - SectionSkeleton no visual loading indicator when `motion-safe:` suppresses animation — reduced-motion users see static gray rectangle [src/components/sections/SectionSkeleton.tsx:13]
 - GradientButton has no loading/busy state for async actions — no spinner, no disabled-while-loading logic [src/components/ui/GradientButton.tsx:19-36]
+
+## Deferred from: code review of 1-4-app-shell-routing-navigation (2026-05-14)
+
+- `<a href="/#hero">` anchor links from non-homepage trigger full page navigation — by-design per spec constraint requiring `<a href="/#section-id">`, defer SPA-aware section nav to future story [src/components/layout/Navbar.tsx, src/components/layout/Footer.tsx]
+
+## Deferred from: code review of 1-4-app-shell-routing-navigation (re-review 2026-05-14)
+
+- ErrorBoundary no recovery path (no retry button) — enhancement, outside current story scope [src/components/ErrorBoundary.tsx]
+- No scroll restoration on SPA route change — pre-existing, not introduced by this story
+- Navbar test imports `@/i18n` as side-effect — existing pattern used by all tests, not story-specific [src/components/layout/Navbar.test.tsx:6]
+- ErrorBoundary fallback "Failed to load section." hardcoded English — requires class→function refactor for `useTranslation`; error-only path, low exposure [src/components/ErrorBoundary.tsx:24]

@@ -5,6 +5,12 @@
 @tailwind utilities;
 
 @layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   :root {
     --color-electric-blue: #0075F0;
     --color-highlight: #00A0F0;

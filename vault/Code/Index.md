@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Story 1.3 in review — i18n: Vitest infra, useLocaleStore, i18next init, EN/PT-BR/ES translations, LanguageSwitcher
+**Status:** Story 1.4 done — App shell, routing & navigation + all review patches applied. Story 1.5 next.
 
 ---
 
@@ -55,8 +55,8 @@ syncrevenue-website/
 │   └── lib/mailer.ts               — placeholder (Story 2.5)
 └── src/
     ├── main.tsx                    — React 18 createRoot + BrowserRouter + i18n import + Zustand locale sync
-    ├── App.tsx                     — minimal Routes with "/" placeholder
-    ├── index.css                   — Tailwind directives + shadcn CSS vars (slate)
+    ├── App.tsx                     — full route tree: /, /privacy, /admin/*; skip link + <main id="main-content"> (Story 1.4 ✓)
+    ├── index.css                   — Tailwind directives + shadcn CSS vars (slate) + scroll-behavior: smooth (Story 1.4 ✓)
     ├── vite-env.d.ts               — Vite client type reference
     ├── lib/utils.ts                — cn() utility (clsx + tailwind-merge)
     ├── lib/api.ts                  — placeholder (Story 2.2)
@@ -78,9 +78,11 @@ syncrevenue-website/
     ├── components/ui/GradientButton.tsx    — brand CTA button (Story 1.2 ✓)
     ├── components/ui/SectionHeader.tsx     — eyebrow+heading+subtext (Story 1.2 ✓)
     ├── components/ui/              — shadcn components (populated per story)
-    ├── components/layout/Navbar.tsx    — placeholder (Story 1.4)
-    ├── components/layout/Footer.tsx    — placeholder (Story 1.4)
-    ├── components/layout/AdminLayout.tsx — placeholder (Story 4.6)
+    ├── components/ErrorBoundary.tsx        — class ErrorBoundary for lazy section crash isolation (Story 1.4 ✓)
+    ├── components/layout/Navbar.tsx    — sticky nav + mobile hamburger overlay + body scroll lock + a11y (Story 1.4 ✓)
+    ├── components/layout/Navbar.test.tsx — 4 tests: toggle, Escape close, aria-expanded, overlay link click (Story 1.4 ✓)
+    ├── components/layout/Footer.tsx    — footer: address, dynamic copyright, nav links, Privacy link, LanguageSwitcher (Story 1.4 ✓)
+    ├── components/layout/AdminLayout.tsx — shell with <Outlet />, no auth guard (Story 1.4 ✓)
     ├── components/sections/Hero.tsx    — placeholder (Story 1.5)
     ├── components/sections/SyncRevenue.tsx — placeholder (Story 1.6)
     ├── components/sections/Services.tsx   — placeholder (Story 1.6)
@@ -92,8 +94,8 @@ syncrevenue-website/
     ├── components/sections/ClientReferences.tsx — placeholder (Story 1.9)
     ├── components/sections/DemoForm.tsx   — placeholder (Story 2.2)
     ├── components/sections/SectionSkeleton.tsx — Suspense fallback (Story 1.2 ✓)
-    ├── pages/Home.tsx              — placeholder (Story 1.4)
-    ├── pages/Privacy.tsx           — placeholder (Story 1.10)
+    ├── pages/Home.tsx              — 7 lazy sections via React.lazy + Suspense + ErrorBoundary + SectionSkeleton (Story 1.4 ✓)
+    ├── pages/Privacy.tsx           — i18n-driven privacy page, all privacy.* keys (Story 1.4 ✓)
     ├── pages/admin/Login.tsx       — placeholder (Story 4.1)
     ├── pages/admin/Dashboard.tsx   — placeholder (Story 4.6)
     ├── pages/admin/Leads.tsx       — placeholder (Story 4.2)
