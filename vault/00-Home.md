@@ -32,7 +32,8 @@
 
 - Planning complete (PRD, Architecture, UX, Epics all green)
 - Story 1.1 **done** — scaffold verified; post-review fixes: DB open failure exits process, graceful shutdown 10s cap, `.env.example` `DB_PATH` aligned with server cwd
-- Active phase: **Epic 1 (Phase 1 MVP Part A)** — Story 1.2 next
+- Story 1.2 **done** — design system foundation: brand tokens, GradientButton, SectionHeader, SectionSkeleton, Plus Jakarta Sans font; review patches applied: h1 base typography, motion-safe guards, ARIA loading state
+- Active phase: **Epic 1 (Phase 1 MVP Part A)** — Story 1.3 next after 1.2 review
 - `tsc --noEmit` → 0 errors; `npm run build` → `dist/client/` + `dist/server/` clean
 - **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)
 

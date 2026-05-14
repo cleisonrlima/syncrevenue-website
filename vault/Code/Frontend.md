@@ -36,8 +36,10 @@
 |---|---|
 | `src/components/shared/Navbar.tsx` | Persistent nav, language switcher |
 | `src/components/shared/Footer.tsx` | Address, copyright, links |
-| `src/components/shared/SectionSkeleton.tsx` | Suspense fallback |
-| `src/components/ui/` | shadcn/ui primitives (generated) |
+| `src/components/sections/SectionSkeleton.tsx` | Suspense fallback — `motion-safe:animate-pulse bg-muted`, height via `className`; `role="status" aria-busy="true"` |
+| `src/components/ui/GradientButton.tsx` | Brand CTA button — gradient bg, 3 sizes (lg/md/sm), disabled clears gradient; `motion-safe:active:scale-[0.98]` |
+| `src/components/ui/SectionHeader.tsx` | Section header — eyebrow + h2 + optional subtext, light/dark variant |
+| `src/components/ui/` | shadcn/ui primitives (generated per story) |
 
 ---
 
@@ -77,4 +79,4 @@
 | Story | Files Created |
 |---|---|
 | 1.1 | src/main.tsx, src/App.tsx, src/index.css, src/vite-env.d.ts, src/lib/utils.ts, all placeholder components/pages |
-| 1.2 | — |
+| 1.2 | src/components/ui/GradientButton.tsx (new), src/components/ui/SectionHeader.tsx (new), src/components/sections/SectionSkeleton.tsx (updated), tailwind.config.ts (brand tokens), src/index.css (font + CSS vars) |

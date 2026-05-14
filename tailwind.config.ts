@@ -17,6 +17,15 @@ const config: Config = {
     },
     extend: {
       colors: {
+        brand: {
+          'electric-blue': 'var(--color-electric-blue)',
+          highlight: 'var(--color-highlight)',
+          deep: 'var(--color-deep)',
+          navy: 'var(--color-navy)',
+          slate: 'var(--color-slate)',
+          muted: 'var(--color-muted)',
+          offwhite: 'var(--color-offwhite)',
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -69,6 +78,16 @@ const config: Config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      backgroundImage: {
+        'gradient-brand': 'linear-gradient(135deg, #0055F0 0%, #0075F0 50%, #00A0F0 100%)',
+        'gradient-dark-section': 'linear-gradient(180deg, #0D0D3A 0%, #080820 100%)',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+      },
+      fontWeight: {
+        heavy: '800',
       },
     },
   },

@@ -1,0 +1,21 @@
+---
+description: Jira project binding for syncrevenue-website (Atlassian MCP / jira-assistant).
+alwaysApply: false
+---
+
+# Jira configuration
+
+Use these values for JQL, `cloudId`, and issue APIs in this workspace.
+
+| Field | Value |
+|-------|--------|
+| **Site** | https://xillinha.atlassian.net |
+| **cloudId** | `6f5be304-192c-4e50-90bc-3211593db433` |
+| **projectKey** | `SYN` |
+| **Board / project name** | syncsirius |
+
+**JQL prefix:** `project = SYN AND …`
+
+Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status.yaml`.
+
+**Status mapping (this board):** Jira `Done` → `done`; `In Progress` → `in-progress`; `To Do` → `not-started`; `REVIEW` → `review`.

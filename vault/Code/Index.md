@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Story 1.1 done — scaffold in place; server hardened (db failure `exit(1)`, shutdown timeout)
+**Status:** Story 1.2 in review — design system: brand tokens, GradientButton, SectionHeader, SectionSkeleton, Plus Jakarta Sans
 
 ---
 
@@ -71,6 +71,8 @@ syncrevenue-website/
     ├── hooks/useDemo.ts            — placeholder (Story 2.2)
     ├── hooks/useContact.ts         — placeholder (Story 2.3)
     ├── hooks/useAdmin.ts           — placeholder (Story 4.1)
+    ├── components/ui/GradientButton.tsx    — brand CTA button (Story 1.2 ✓)
+    ├── components/ui/SectionHeader.tsx     — eyebrow+heading+subtext (Story 1.2 ✓)
     ├── components/ui/              — shadcn components (populated per story)
     ├── components/layout/Navbar.tsx    — placeholder (Story 1.4)
     ├── components/layout/Footer.tsx    — placeholder (Story 1.4)
@@ -85,7 +87,7 @@ syncrevenue-website/
     ├── components/sections/Security.tsx   — placeholder (Story 1.9)
     ├── components/sections/ClientReferences.tsx — placeholder (Story 1.9)
     ├── components/sections/DemoForm.tsx   — placeholder (Story 2.2)
-    ├── components/sections/SectionSkeleton.tsx — placeholder (Story 1.2)
+    ├── components/sections/SectionSkeleton.tsx — Suspense fallback (Story 1.2 ✓)
     ├── pages/Home.tsx              — placeholder (Story 1.4)
     ├── pages/Privacy.tsx           — placeholder (Story 1.10)
     ├── pages/admin/Login.tsx       — placeholder (Story 4.1)
