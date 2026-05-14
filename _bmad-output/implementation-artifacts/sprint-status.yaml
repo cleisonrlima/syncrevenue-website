@@ -44,7 +44,7 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # Epic 1: Visitor Content Experience (Phase 1 MVP — Part A)
   epic-1: in-progress
-  1-1-project-initialization-dev-environment: review
+  1-1-project-initialization-dev-environment: in-progress
   1-2-design-system-foundation: backlog
   1-3-i18n-language-infrastructure: backlog
   1-4-app-shell-routing-navigation: backlog

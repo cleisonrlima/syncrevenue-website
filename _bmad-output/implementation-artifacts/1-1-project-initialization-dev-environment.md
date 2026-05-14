@@ -1,6 +1,7 @@
 # Story 1.1: Project Initialization & Dev Environment
 
-Status: review
+Status: in-progress
+baseline_commit: a83fb3124a41db1182ed10cfc93f911239333707
 
 ## Story
 
@@ -469,3 +470,26 @@ claude-sonnet-4-6
 ## Change Log
 
 - 2026-05-14: Story 1.1 implemented — full project scaffold, all deps, tooling, directory structure, and build verified (claude-sonnet-4-6)
+- 2026-05-14: Code review completed — 3-layer adversarial review (Blind Hunter + Edge Case Hunter + Acceptance Auditor). 1 decision-needed, 14 patch, 1 defer, 20 dismissed.
+
+### Review Findings
+
+- [x] [Review][Patch] Add comment block to `.env.example` documenting that non-secret defaults (PORT, DB_PATH, SMTP_PORT, ALLOWED_ORIGIN) are for dev convenience [.env.example:1-9]
+
+- [x] [Review][Patch] Move `concurrently` and `tsx` from `dependencies` to `devDependencies` [package.json:20,24]
+- [x] [Review][Patch] Pin `@types/react` and `@types/react-dom` to `^18.x` to match `react@^18.3.1` runtime [package.json:40-41]
+- [x] [Review][Patch] Wrap `new Database(dbPath)` in try/catch with error logging [server/db.ts:13]
+- [x] [Review][Patch] Remove `fs.existsSync` guard; `mkdirSync({ recursive: true })` already handles existing dirs and avoids TOCTOU race [server/db.ts:9-11]
+- [x] [Review][Patch] Add graceful shutdown handler (SIGTERM/SIGINT) that calls `db.close()` before exit [server/index.ts:13-14]
+- [x] [Review][Patch] Check `db.pragma('journal_mode = WAL')` return value; warn if journal_mode is not 'wal' [server/db.ts:14]
+- [x] [Review][Patch] Add `--kill-others-on-fail` to `concurrently` in dev script to prevent orphaned Vite when tsx crashes [package.json:9]
+- [x] [Review][Patch] Replace `document.getElementById('root')!` with null-check that throws descriptive error [src/main.tsx:8]
+- [x] [Review][Patch] Remove dead Tailwind content paths (`./pages/**`, `./components/**`, `./app/**`) — only `./src/**` needed [tailwind.config.ts:5-8]
+- [x] [Review][Patch] Add `*.log`, `.env.*`, `.DS_Store`, `Thumbs.db` to `.gitignore` [.gitignore:1-5]
+- [x] [Review][Patch] Replace `require('tailwindcss-animate')` with `import` in `tailwind.config.ts` [tailwind.config.ts:80]
+- [x] [Review][Patch] Resolve `DB_PATH` relative to `__dirname` instead of CWD [server/db.ts:5]
+- [x] [Review][Patch] Add `'error'` listener on `app.listen()` for `EADDRINUSE` [server/index.ts:13]
+- [x] [Review][Patch] Add comment above `ignoreDeprecations: "6.0"` noting it silences `baseUrl` deprecation only [tsconfig.json:15]
+- [x] [Review][Patch] Support nullable `document.getElementById` return in `src/vite-env.d.ts` or handle in `main.tsx` [src/main.tsx:8]
+
+- [x] [Review][Defer] Add `secure: false` to Vite proxy config for potential dev TLS — not needed until TLS enabled, revisit with Story 5.2 [vite.config.ts:14-16]
