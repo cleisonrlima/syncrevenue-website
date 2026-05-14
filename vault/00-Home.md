@@ -34,6 +34,7 @@
 - Story 1.1 **complete (review)** — project scaffold, all deps, full directory structure, build verified
 - Active phase: **Epic 1 (Phase 1 MVP Part A)** — Story 1.2 next
 - `tsc --noEmit` → 0 errors; `npm run build` → `dist/client/` + `dist/server/` clean
+- **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)
 
 ---
 
