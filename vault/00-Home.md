@@ -1,0 +1,61 @@
+# SyncRevenue Website — Project Home
+
+**Company:** Sync Sirius, Inc. — Miami, FL
+**Product:** SyncRevenue — commission management platform for travel agencies
+**Site goal:** Lead gen (demo requests) + brand positioning. NOT a product portal.
+**Primary CTA:** Demo request form. Secondary: contact form.
+
+---
+
+## Quick Navigation
+
+| Topic | Vault Note | Source Doc |
+|---|---|---|
+| Tech stack & folder structure | [[Planning/Stack]] | `_bmad-output/planning-artifacts/product-brief-syncrevenue-website-distillate.md` |
+| Architecture decisions | [[Planning/Architecture-Key]] | `_bmad-output/planning-artifacts/architecture.md` |
+| Epics & story status | [[Planning/Epics-Index]] | `_bmad-output/planning-artifacts/epics.md` |
+| Full PRD | — | `_bmad-output/planning-artifacts/prd.md` |
+| UX spec | — | `_bmad-output/planning-artifacts/ux-design-specification.md` |
+| Individual stories | `docs/stories/` | reference path only |
+| **Codebase map** | [[Code/Index]] | live file tree |
+| Frontend components | [[Code/Frontend]] | — |
+| Backend / API | [[Code/Backend]] | — |
+| Database schema + DAOs | [[Code/Database]] | — |
+| i18n / locales | [[Code/i18n]] | — |
+| Zustand stores | [[Code/Stores]] | — |
+| Admin panel (Phase 3) | [[Code/Admin]] | — |
+| Config / env / tooling | [[Code/Config]] | — |
+
+---
+
+## Project Status (2026-05-14)
+
+- Planning complete (PRD, Architecture, UX, Epics all green)
+- Story 1.1 **complete (review)** — project scaffold, all deps, full directory structure, build verified
+- Active phase: **Epic 1 (Phase 1 MVP Part A)** — Story 1.2 next
+- `tsc --noEmit` → 0 errors; `npm run build` → `dist/client/` + `dist/server/` clean
+
+---
+
+## Target Market
+
+- **Geography:** Americas — US (primary), Brazil, Latin America
+- **Segment:** Mid-market to enterprise travel agencies and TMCs
+- **Buyer:** Agency owner / CEO / CFO
+- **User:** Back-office manager / ticketing supervisor
+- **Languages:** EN (default), PT-BR, ES — all three active Phase 1
+
+---
+
+## Key Rules (read before any implementation)
+
+- Read [[Planning/Stack]] before any code work — canonical folder structure is defined there
+- Read [[Planning/Architecture-Key]] before any backend or auth work
+- Read [[Code/Index]] to orient in the codebase (once implementation starts)
+- Stories live in `docs/stories/` — reference path only, don't dump content in chat
+- Source of truth for FRs: `_bmad-output/planning-artifacts/epics.md`
+
+## Vault Update Protocol
+
+After every story step → update [[Planning/Epics-Index]] status + relevant [[Code/]] note.
+After every commit → update this file's Project Status + [[Code/Index]] file tree.

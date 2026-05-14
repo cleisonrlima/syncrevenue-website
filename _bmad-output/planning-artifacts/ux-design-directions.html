@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>syncrevenue-website — UX Design Directions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --blue: #0075F0;
+    --highlight: #00A0F0;
+    --deep: #0055F0;
+    --navy: #0D0D3A;
+    --navy-dark: #080820;
+    --slate: #404070;
+    --muted: #8080A0;
+    --white: #FFFFFF;
+    --offwhite: #F4F6FA;
+    --gradient: linear-gradient(135deg, #0055F0 0%, #0075F0 50%, #00A0F0 100%);
+    --dark-section: linear-gradient(180deg, #0D0D3A 0%, #080820 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #0a0a14;
+    color: #fff;
+  }
+
+  /* NAV */
+  .page-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(13,13,58,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(64,64,112,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .page-nav h1 { font-size: 14px; font-weight: 600; color: #fff; white-space: nowrap; }
+  .page-nav .dirs {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .page-nav a {
+    font-size: 12px; font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(64,64,112,0.5);
+    transition: all 0.2s;
+  }
+  .page-nav a:hover { color: #fff; border-color: var(--blue); background: rgba(0,117,240,0.15); }
+
+  /* DIRECTION WRAPPER */
+  .direction {
+    margin-top: 64px;
+    border-bottom: 2px solid rgba(64,64,112,0.3);
+  }
+  .direction-label {
+    background: var(--dark-section);
+    padding: 20px 40px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .direction-label span.num {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--gradient);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .direction-label .desc { color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+
+  /* ============================================================
+     DIRECTION 1: Dark-First Immersive
+  ============================================================ */
+  #dir1 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .d1-navbar {
+    background: var(--navy);
+    padding: 0 60px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(64,64,112,0.3);
+  }
+  .d1-logo { display: flex; align-items: center; gap: 10px; }
+  .d1-logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--gradient);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: #fff;
+  }
+  .d1-logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+  .d1-nav-links { display: flex; gap: 28px; align-items: center; }
+  .d1-nav-links a { font-size: 13px; color: rgba(255,255,255,0.65); text-decoration: none; font-weight: 500; }
+  .d1-nav-links a:hover { color: #fff; }
+  .d1-lang { font-size: 12px; color: var(--muted); background: rgba(64,64,112,0.3); border: 1px solid rgba(64,64,112,0.5); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  .d1-cta-nav { background: var(--gradient); color: #fff; font-size: 13px; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer; border: none; }
+
+  .d1-hero {
+    background: var(--dark-section);
+    min-height: 520px;
+    display: flex; align-items: center;
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .d1-hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,117,240,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .d1-hero-content { max-width: 640px; position: relative; z-index: 1; }
+  .d1-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,117,240,0.12);
+    border: 1px solid rgba(0,117,240,0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px; font-weight: 500; color: var(--highlight);
+    margin-bottom: 28px;
+  }
+  .d1-hero h1 {
+    font-size: 52px; font-weight: 800; line-height: 1.1;
+    color: #fff; margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .d1-hero h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .d1-hero p { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.6; margin-bottom: 36px; max-width: 520px; }
+  .d1-hero-btns { display: flex; gap: 12px; align-items: center; }
+  .d1-btn-primary { background: var(--gradient); color: #fff; font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer; }
+  .d1-btn-secondary { color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .d1-stat-row {
+    display: flex; gap: 40px; margin-top: 56px;
+    border-top: 1px solid rgba(64,64,112,0.3);
+    padding-top: 32px;
+  }
+  .d1-stat { }
+  .d1-stat .num { font-size: 28px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .d1-stat .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .d1-trust-bar {
+    background: rgba(64,64,112,0.15);
+    border-top: 1px solid rgba(64,64,112,0.25);
+    padding: 20px 60px;
+    display: flex; align-items: center; gap: 32px;
+  }
+  .d1-trust-bar .trust-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+  .d1-trust-item { font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 8px; }
+  .d1-trust-item::before { content: '✓'; color: var(--highlight); font-weight: 700; }
+
+  /* ============================================================
+     DIRECTION 2: Light-First Corporate Authority
+  ============================================================ */
+  #dir2 { font-family: 'DM Sans', sans-serif; background: var(--offwhite); }
+
+  .d2-navbar {
+    background: var(--white);
+    border-bottom: 1px solid rgba(64,64,112,0.15);
+    padding: 0 60px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .d2-logo { display: flex; align-items: center; gap: 10px; }
+  .d2-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; }
+  .d2-logo-text { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .d2-nav-links { display: flex; gap: 28px; align-items: center; }
+  .d2-nav-links a { font-size: 13px; color: var(--slate); text-decoration: none; font-weight: 500; }
+  .d2-lang { font-size: 12px; color: var(--slate); background: var(--offwhite); border: 1px solid rgba(64,64,112,0.2); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  .d2-cta-nav { background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer; border: none; }
+
+  .d2-hero {
+    background: var(--white);
+    padding: 80px 60px;
+    display: flex; align-items: center; gap: 60px;
+  }
+  .d2-hero-left { flex: 1; max-width: 580px; }
+  .d2-hero-right { flex: 0 0 360px; }
+  .d2-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,117,240,0.08);
+    border: 1px solid rgba(0,117,240,0.2);
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 12px; font-weight: 500; color: var(--blue);
+    margin-bottom: 28px;
+  }
+  .d2-hero h1 { font-size: 44px; font-weight: 700; line-height: 1.15; color: var(--navy); margin-bottom: 18px; letter-spacing: -0.5px; }
+  .d2-hero p { font-size: 17px; color: var(--slate); line-height: 1.65; margin-bottom: 32px; }
+  .d2-btns { display: flex; gap: 12px; }
+  .d2-btn-primary { background: var(--gradient); color: #fff; font-size: 14px; font-weight: 600; padding: 13px 26px; border-radius: 8px; border: none; cursor: pointer; }
+  .d2-btn-ghost { color: var(--navy); font-size: 14px; font-weight: 500; padding: 13px 20px; border-radius: 8px; border: 1px solid rgba(64,64,112,0.25); background: transparent; cursor: pointer; }
+  .d2-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(64,64,112,0.15); border: 1px solid rgba(64,64,112,0.15); border-radius: 12px; overflow: hidden; margin-top: 36px; }
+  .d2-stat-cell { background: var(--white); padding: 20px; }
+  .d2-stat-cell .num { font-size: 26px; font-weight: 800; color: var(--navy); }
+  .d2-stat-cell .num span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .d2-stat-cell .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .d2-card { background: var(--offwhite); border: 1px solid rgba(64,64,112,0.15); border-radius: 12px; padding: 28px; }
+  .d2-card-title { font-size: 13px; font-weight: 600; color: var(--slate); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .d2-form-field { margin-bottom: 12px; }
+  .d2-label { font-size: 12px; font-weight: 500; color: var(--slate); margin-bottom: 4px; }
+  .d2-input { width: 100%; border: 1px solid rgba(64,64,112,0.25); border-radius: 6px; padding: 9px 12px; font-size: 13px; color: var(--navy); background: var(--white); font-family: inherit; }
+  .d2-select { width: 100%; border: 1px solid rgba(64,64,112,0.25); border-radius: 6px; padding: 9px 12px; font-size: 13px; color: var(--slate); background: var(--white); font-family: inherit; }
+  .d2-submit { width: 100%; background: var(--gradient); color: #fff; font-size: 14px; font-weight: 600; padding: 11px; border-radius: 8px; border: none; cursor: pointer; margin-top: 4px; }
+
+  .d2-section-dark { background: var(--dark-section); padding: 60px; }
+  .d2-section-dark .section-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .d2-section-dark h2 { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 36px; }
+  .d2-trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .d2-trust-card { background: rgba(64,64,112,0.2); border: 1px solid rgba(64,64,112,0.3); border-radius: 10px; padding: 24px; }
+  .d2-trust-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(0,117,240,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 14px; }
+  .d2-trust-card h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .d2-trust-card p { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+  /* ============================================================
+     DIRECTION 3: Bold Gradient Immersive
+  ============================================================ */
+  #dir3 { font-family: 'Syne', sans-serif; }
+
+  .d3-navbar {
+    background: rgba(5,5,30,0.95);
+    padding: 0 60px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .d3-logo-text { font-size: 18px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .d3-nav-links { display: flex; gap: 28px; align-items: center; }
+  .d3-nav-links a { font-size: 13px; color: rgba(255,255,255,0.6); text-decoration: none; font-weight: 500; letter-spacing: 0.5px; }
+  .d3-lang { font-size: 11px; color: var(--muted); border: 1px solid rgba(64,64,112,0.4); border-radius: 4px; padding: 4px 10px; cursor: pointer; letter-spacing: 1px; }
+  .d3-cta-nav { background: transparent; color: #fff; font-size: 13px; font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 1px solid rgba(0,160,240,0.5); cursor: pointer; }
+
+  .d3-hero {
+    background: linear-gradient(135deg, #040420 0%, #0a0a35 40%, #050525 100%);
+    padding: 100px 60px 80px;
+    display: flex; align-items: center; gap: 80px;
+    position: relative; overflow: hidden;
+  }
+  .d3-glow-1 { position: absolute; top: -150px; left: 200px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,85,240,0.3) 0%, transparent 70%); pointer-events: none; }
+  .d3-glow-2 { position: absolute; bottom: -100px; right: 100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,160,240,0.2) 0%, transparent 70%); pointer-events: none; }
+  .d3-hero-left { flex: 1; position: relative; z-index: 1; }
+  .d3-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--highlight); margin-bottom: 24px; }
+  .d3-hero h1 { font-size: 58px; font-weight: 800; line-height: 1.05; color: #fff; margin-bottom: 24px; letter-spacing: -1.5px; }
+  .d3-hero h1 em { font-style: normal; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .d3-hero p { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.7; margin-bottom: 40px; max-width: 480px; font-family: 'DM Sans', sans-serif; font-weight: 400; }
+  .d3-btns { display: flex; gap: 16px; align-items: center; }
+  .d3-btn-primary { background: var(--gradient); color: #fff; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 8px; border: none; cursor: pointer; letter-spacing: 0.3px; }
+  .d3-btn-ghost { color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .d3-metrics { margin-top: 60px; display: flex; gap: 48px; }
+  .d3-metric .val { font-size: 36px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+  .d3-metric .lbl { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 6px; font-family: 'DM Sans', sans-serif; }
+  .d3-metric-sep { width: 1px; background: rgba(64,64,112,0.4); align-self: stretch; }
+  .d3-hero-right { flex: 0 0 320px; position: relative; z-index: 1; }
+  .d3-panel { background: rgba(13,13,58,0.8); border: 1px solid rgba(0,117,240,0.2); border-radius: 16px; padding: 28px; backdrop-filter: blur(12px); }
+  .d3-panel-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 20px; letter-spacing: 0.5px; }
+  .d3-panel-field { margin-bottom: 14px; }
+  .d3-panel-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; font-family: 'DM Sans', sans-serif; }
+  .d3-panel-input { width: 100%; background: rgba(64,64,112,0.2); border: 1px solid rgba(64,64,112,0.3); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: rgba(255,255,255,0.8); font-family: 'DM Sans', sans-serif; }
+  .d3-panel-btn { width: 100%; background: var(--gradient); color: #fff; font-size: 14px; font-weight: 700; padding: 12px; border-radius: 8px; border: none; cursor: pointer; margin-top: 8px; font-family: 'Syne', sans-serif; }
+
+  /* ============================================================
+     DIRECTION 4: Editorial Minimalist
+  ============================================================ */
+  #dir4 { font-family: 'Outfit', sans-serif; background: var(--white); }
+
+  .d4-navbar {
+    background: var(--white);
+    border-bottom: 2px solid var(--navy);
+    padding: 0 60px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .d4-logo-text { font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; }
+  .d4-logo-sub { font-size: 10px; font-weight: 400; color: var(--muted); margin-left: 6px; }
+  .d4-nav-links { display: flex; gap: 32px; align-items: center; }
+  .d4-nav-links a { font-size: 13px; color: var(--slate); text-decoration: none; font-weight: 400; }
+  .d4-lang { font-size: 11px; color: var(--slate); border-bottom: 1px solid var(--slate); padding-bottom: 2px; cursor: pointer; }
+  .d4-cta-nav { background: var(--navy); color: #fff; font-size: 13px; font-weight: 500; padding: 8px 20px; border-radius: 4px; cursor: pointer; border: none; }
+
+  .d4-hero { background: var(--offwhite); padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .d4-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; font-weight: 500; }
+  .d4-hero h1 { font-size: 48px; font-weight: 700; line-height: 1.1; color: var(--navy); margin-bottom: 20px; letter-spacing: -0.5px; }
+  .d4-hero p { font-size: 16px; color: var(--slate); line-height: 1.7; margin-bottom: 32px; }
+  .d4-btn-primary { display: inline-block; background: var(--navy); color: #fff; font-size: 14px; font-weight: 500; padding: 13px 28px; border-radius: 4px; border: none; cursor: pointer; }
+  .d4-hero-right { }
+  .d4-gds-list { margin-bottom: 24px; }
+  .d4-gds-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .d4-gds-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .d4-gds-tag { font-size: 12px; font-weight: 500; color: var(--slate); border: 1px solid rgba(64,64,112,0.3); border-radius: 4px; padding: 5px 12px; }
+  .d4-highlight-box { background: var(--navy); color: #fff; border-radius: 8px; padding: 28px; }
+  .d4-highlight-box .hl-num { font-size: 40px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+  .d4-highlight-box .hl-lbl { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+  .d4-sep { width: 100%; height: 1px; background: var(--navy); margin: 0; }
+  .d4-feature-row { background: var(--white); padding: 40px 60px; display: flex; gap: 40px; }
+  .d4-feature { flex: 1; border-left: 3px solid transparent; border-image: var(--gradient) 1; padding-left: 20px; }
+  .d4-feature h3 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .d4-feature p { font-size: 13px; color: var(--slate); line-height: 1.6; }
+
+  /* ============================================================
+     DIRECTION 5: Split-Screen SaaS
+  ============================================================ */
+  #dir5 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .d5-navbar {
+    background: var(--navy);
+    padding: 0 60px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .d5-logo { display: flex; align-items: center; gap: 8px; }
+  .d5-logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; }
+  .d5-logo-text { font-size: 14px; font-weight: 700; color: #fff; }
+  .d5-nav-links { display: flex; gap: 24px; align-items: center; }
+  .d5-nav-links a { font-size: 13px; color: rgba(255,255,255,0.6); text-decoration: none; }
+  .d5-lang-btn { font-size: 11px; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+  .d5-cta-nav { background: var(--gradient); color: #fff; font-size: 13px; font-weight: 600; padding: 7px 18px; border-radius: 6px; border: none; cursor: pointer; }
+
+  .d5-hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
+  .d5-hero-left { background: var(--dark-section); padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
+  .d5-hero-right { background: var(--offwhite); padding: 60px 50px; display: flex; align-items: center; justify-content: center; }
+  .d5-badge { display: inline-flex; gap: 6px; align-items: center; background: rgba(0,160,240,0.1); border: 1px solid rgba(0,160,240,0.2); border-radius: 20px; padding: 5px 14px; font-size: 11px; color: var(--highlight); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 24px; }
+  .d5-hero h1 { font-size: 42px; font-weight: 800; line-height: 1.1; color: #fff; margin-bottom: 16px; letter-spacing: -0.5px; }
+  .d5-hero h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .d5-hero p { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 32px; max-width: 440px; }
+  .d5-btns { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .d5-btn-primary { background: var(--gradient); color: #fff; font-size: 14px; font-weight: 600; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; }
+  .d5-btn-link { color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 500; cursor: pointer; }
+  .d5-trust-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+  .d5-chip { font-size: 11px; color: rgba(255,255,255,0.4); border: 1px solid rgba(64,64,112,0.4); border-radius: 20px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; }
+  .d5-chip::before { content: '✓'; color: var(--highlight); font-size: 10px; }
+  .d5-form-panel { background: var(--white); border-radius: 12px; padding: 32px; box-shadow: 0 4px 24px rgba(13,13,58,0.08); width: 100%; max-width: 360px; }
+  .d5-form-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .d5-form-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .d5-field { margin-bottom: 12px; }
+  .d5-field label { display: block; font-size: 11px; font-weight: 600; color: var(--slate); margin-bottom: 5px; }
+  .d5-field input, .d5-field select { width: 100%; border: 1px solid rgba(64,64,112,0.2); border-radius: 6px; padding: 9px 12px; font-size: 13px; color: var(--navy); font-family: inherit; background: var(--offwhite); }
+  .d5-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .d5-submit { width: 100%; background: var(--gradient); color: #fff; font-size: 14px; font-weight: 700; padding: 12px; border-radius: 8px; border: none; cursor: pointer; margin-top: 8px; }
+  .d5-privacy { font-size: 10px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+  /* ============================================================
+     DIRECTION 6: Dark Minimal / Linear-Inspired
+  ============================================================ */
+  #dir6 { font-family: 'DM Sans', sans-serif; }
+
+  .d6-navbar {
+    background: #0a0a20;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 60px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .d6-logo { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); letter-spacing: -0.2px; }
+  .d6-logo strong { font-weight: 700; }
+  .d6-nav-links { display: flex; gap: 24px; align-items: center; }
+  .d6-nav-links a { font-size: 13px; color: rgba(255,255,255,0.45); text-decoration: none; }
+  .d6-lang { font-size: 11px; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+  .d6-cta-nav { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.15); padding: 7px 16px; border-radius: 6px; cursor: pointer; background: transparent; }
+
+  .d6-hero { background: #07071a; padding: 100px 60px 80px; position: relative; overflow: hidden; }
+  .d6-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(64,64,112,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(64,64,112,0.08) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
+  .d6-hero-inner { max-width: 700px; position: relative; z-index: 1; }
+  .d6-tag { display: inline-flex; gap: 8px; align-items: center; font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 32px; }
+  .d6-tag::before { content: ''; width: 24px; height: 1px; background: rgba(0,117,240,0.6); }
+  .d6-hero h1 { font-size: 56px; font-weight: 400; line-height: 1.1; color: rgba(255,255,255,0.92); margin-bottom: 24px; letter-spacing: -2px; }
+  .d6-hero h1 strong { font-weight: 700; }
+  .d6-hero h1 .accent { color: var(--highlight); }
+  .d6-hero p { font-size: 17px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 40px; max-width: 520px; font-weight: 300; }
+  .d6-btns { display: flex; gap: 12px; align-items: center; }
+  .d6-btn-primary { background: rgba(0,117,240,0.9); color: #fff; font-size: 14px; font-weight: 500; padding: 12px 24px; border-radius: 6px; border: 1px solid rgba(0,117,240,0.5); cursor: pointer; }
+  .d6-btn-ghost { color: rgba(255,255,255,0.45); font-size: 14px; cursor: pointer; }
+  .d6-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.05); margin: 48px 0 0; }
+  .d6-data-row { display: flex; gap: 0; }
+  .d6-data-item { flex: 1; padding: 28px 0; border-right: 1px solid rgba(255,255,255,0.06); }
+  .d6-data-item:last-child { border-right: none; }
+  .d6-data-val { font-size: 32px; font-weight: 300; color: rgba(255,255,255,0.85); letter-spacing: -1px; margin-bottom: 6px; }
+  .d6-data-val strong { font-weight: 700; color: #fff; }
+  .d6-data-lbl { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .d6-section { background: #07071a; border-top: 1px solid rgba(255,255,255,0.05); padding: 60px; }
+  .d6-section-eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(0,160,240,0.7); margin-bottom: 16px; }
+  .d6-section h2 { font-size: 32px; font-weight: 300; color: rgba(255,255,255,0.85); letter-spacing: -1px; margin-bottom: 40px; }
+  .d6-section h2 strong { font-weight: 600; }
+  .d6-pain-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; }
+  .d6-pain-item { background: #0b0b22; padding: 24px; }
+  .d6-pain-icon { font-size: 20px; margin-bottom: 12px; }
+  .d6-pain-item h3 { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); margin-bottom: 8px; }
+  .d6-pain-item p { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.6; }
+
+  /* SUMMARY */
+  .summary { background: #050514; padding: 60px; border-top: 2px solid rgba(64,64,112,0.3); }
+  .summary h2 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .summary p { font-size: 14px; color: var(--muted); margin-bottom: 32px; font-family: 'DM Sans', sans-serif; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .summary-card { background: rgba(13,13,58,0.6); border: 1px solid rgba(64,64,112,0.3); border-radius: 10px; padding: 20px; font-family: 'DM Sans', sans-serif; }
+  .summary-card .dir-num { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--highlight); margin-bottom: 8px; }
+  .summary-card .dir-name { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .summary-card .dir-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .summary-card .dir-fit { margin-top: 12px; font-size: 11px; color: rgba(0,160,240,0.8); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<nav class="page-nav">
+  <h1>syncrevenue-website — UX Design Directions</h1>
+  <div class="dirs">
+    <a href="#dir1">① Dark Immersive</a>
+    <a href="#dir2">② Light Corporate</a>
+    <a href="#dir3">③ Bold Gradient</a>
+    <a href="#dir4">④ Editorial Minimal</a>
+    <a href="#dir5">⑤ Split-Screen SaaS</a>
+    <a href="#dir6">⑥ Dark Minimal</a>
+    <a href="#summary">↓ Compare</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     DIRECTION 1: Dark-First Immersive
+============================================================ -->
+<div class="direction" id="dir1">
+  <div class="direction-label">
+    <span class="num">1</span>
+    Dark-First Immersive
+    <span class="desc">Full brand palette · Strong gradient CTAs · Trust signals in hero · Dominant navy bg</span>
+  </div>
+
+  <div class="d1-navbar">
+    <div class="d1-logo">
+      <div class="d1-logo-mark">S</div>
+      <span class="d1-logo-text">Sync Sirius</span>
+    </div>
+    <div class="d1-nav-links">
+      <a href="#">SyncRevenue</a>
+      <a href="#">Services</a>
+      <a href="#">Team</a>
+      <a href="#">Contact</a>
+      <div class="d1-lang">EN ▾</div>
+    </div>
+    <button class="d1-cta-nav">Schedule a Demo</button>
+  </div>
+
+  <div class="d1-hero">
+    <div class="d1-hero-content">
+      <div class="d1-badge">🌎 Miami-based · Serving agencies across the Americas</div>
+      <h1>Commission Management<br>Built for <span>Modern Travel Agencies</span></h1>
+      <p>SyncRevenue integrates with every major GDS — giving your agency full visibility and control over commissions. Recover what your spreadsheets can't track.</p>
+      <div class="d1-hero-btns">
+        <button class="d1-btn-primary">Schedule a Demo</button>
+        <div class="d1-btn-secondary">Learn how it works →</div>
+      </div>
+      <div class="d1-stat-row">
+        <div class="d1-stat">
+          <div class="num">99.99%</div>
+          <div class="lbl">Commission assertivity</div>
+        </div>
+        <div class="d1-stat">
+          <div class="num">15–25%</div>
+          <div class="lbl">Avg. recoverable leakage</div>
+        </div>
+        <div class="d1-stat">
+          <div class="num">Multi-GDS</div>
+          <div class="lbl">Amadeus, Sabre, Galileo +</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d1-trust-bar">
+    <span class="trust-label">Why agencies trust us</span>
+    <span class="d1-trust-item">Encrypted data transmission</span>
+    <span class="d1-trust-item">Security certification roadmap</span>
+    <span class="d1-trust-item">Contract insurance commitment</span>
+    <span class="d1-trust-item">Referenced US agencies</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIRECTION 2: Light-First Corporate Authority
+============================================================ -->
+<div class="direction" id="dir2">
+  <div class="direction-label">
+    <span class="num">2</span>
+    Light-First Corporate Authority
+    <span class="desc">White/offwhite dominant · Demo form visible in hero · Dark trust section · DM Sans</span>
+  </div>
+
+  <div class="d2-navbar">
+    <div class="d2-logo">
+      <div class="d2-logo-mark">S</div>
+      <span class="d2-logo-text">Sync Sirius</span>
+    </div>
+    <div class="d2-nav-links">
+      <a href="#">SyncRevenue</a>
+      <a href="#">Services</a>
+      <a href="#">Security</a>
+      <a href="#">Team</a>
+      <div class="d2-lang">EN ▾</div>
+    </div>
+    <button class="d2-cta-nav">Schedule Demo</button>
+  </div>
+
+  <div class="d2-hero">
+    <div class="d2-hero-left">
+      <div class="d2-badge">📍 Miami, FL · Americas specialist</div>
+      <h1>Commission Management Built for Modern Travel Agencies</h1>
+      <p>SyncRevenue integrates with every major GDS — giving your agency full visibility over commissions. Stop losing $5K–$50K/month to reconciliation gaps.</p>
+      <div class="d2-btns">
+        <button class="d2-btn-primary">Schedule a Demo</button>
+        <button class="d2-btn-ghost">See how it works</button>
+      </div>
+      <div class="d2-stat-grid">
+        <div class="d2-stat-cell">
+          <div class="num"><span>99.99%</span></div>
+          <div class="lbl">Commission assertivity</div>
+        </div>
+        <div class="d2-stat-cell">
+          <div class="num"><span>15–25%</span></div>
+          <div class="lbl">Recoverable leakage</div>
+        </div>
+        <div class="d2-stat-cell">
+          <div class="num">3 GDS</div>
+          <div class="lbl">Amadeus · Sabre · Galileo</div>
+        </div>
+        <div class="d2-stat-cell">
+          <div class="num">EN/PT/ES</div>
+          <div class="lbl">Trilingual from day one</div>
+        </div>
+      </div>
+    </div>
+    <div class="d2-hero-right">
+      <div class="d2-card">
+        <div class="d2-card-title">Schedule a Demo</div>
+        <div class="d2-form-field">
+          <div class="d2-label">Full name</div>
+          <input class="d2-input" type="text" placeholder="Marcus Williams" />
+        </div>
+        <div class="d2-form-field">
+          <div class="d2-label">Work email</div>
+          <input class="d2-input" type="email" placeholder="marcus@travelagency.com" />
+        </div>
+        <div class="d2-form-field">
+          <div class="d2-label">GDS system</div>
+          <select class="d2-select">
+            <option>Amadeus</option>
+            <option>Sabre</option>
+            <option>Galileo / Worldspan</option>
+            <option>Other / None yet</option>
+          </select>
+        </div>
+        <div class="d2-form-field">
+          <div class="d2-label">Your role</div>
+          <input class="d2-input" type="text" placeholder="CFO / Owner / Back-office Manager" />
+        </div>
+        <button class="d2-submit">Request Demo →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="d2-section-dark">
+    <div class="section-label">Security & Trust</div>
+    <h2>Your GDS credentials never touch our website.</h2>
+    <div class="d2-trust-grid">
+      <div class="d2-trust-card">
+        <div class="d2-trust-icon">🔒</div>
+        <h3>Encrypted transmission</h3>
+        <p>All data in transit encrypted via HTTPS/TLS. No plain HTTP, ever.</p>
+      </div>
+      <div class="d2-trust-card">
+        <div class="d2-trust-icon">📋</div>
+        <h3>Certification roadmap</h3>
+        <p>Security certifications in progress. Roadmap available on request.</p>
+      </div>
+      <div class="d2-trust-card">
+        <div class="d2-trust-icon">🛡️</div>
+        <h3>Contract insurance</h3>
+        <p>Insurance commitment included in every client agreement. Not a promise — a contractual obligation.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIRECTION 3: Bold Gradient Immersive
+============================================================ -->
+<div class="direction" id="dir3">
+  <div class="direction-label">
+    <span class="num">3</span>
+    Bold Gradient Immersive
+    <span class="desc">High-energy · Strong glow effects · Form in panel · Syne display font · Most "startup-y"</span>
+  </div>
+
+  <div class="d3-navbar">
+    <span class="d3-logo-text">Sync Sirius</span>
+    <div class="d3-nav-links">
+      <a href="#">SyncRevenue</a>
+      <a href="#">Services</a>
+      <a href="#">Security</a>
+      <a href="#">Team</a>
+      <div class="d3-lang">EN</div>
+    </div>
+    <button class="d3-cta-nav">Schedule Demo</button>
+  </div>
+
+  <div class="d3-hero">
+    <div class="d3-glow-1"></div>
+    <div class="d3-glow-2"></div>
+    <div class="d3-hero-left">
+      <div class="d3-eyebrow">Americas · Multi-GDS · Trilingual</div>
+      <h1>Stop Losing Commissions<br>Your Agency<br><em>Doesn't Know</em> Are Missing</h1>
+      <p>SyncRevenue reconciles your BSP data, catches debit memo errors, and recovers 15–25% of commission revenue that disappears into GDS discrepancies every month.</p>
+      <div class="d3-btns">
+        <button class="d3-btn-primary">Schedule a Demo</button>
+        <span class="d3-btn-ghost">See how it works →</span>
+      </div>
+      <div class="d3-metrics">
+        <div class="d3-metric">
+          <div class="val">99.99%</div>
+          <div class="lbl">Commission assertivity</div>
+        </div>
+        <div class="d3-metric-sep"></div>
+        <div class="d3-metric">
+          <div class="val">15–25%</div>
+          <div class="lbl">Avg. recoverable leakage</div>
+        </div>
+        <div class="d3-metric-sep"></div>
+        <div class="d3-metric">
+          <div class="val">Multi-GDS</div>
+          <div class="lbl">No single-GDS lock-in</div>
+        </div>
+      </div>
+    </div>
+    <div class="d3-hero-right">
+      <div class="d3-panel">
+        <div class="d3-panel-title">Request a Demo</div>
+        <div class="d3-panel-field">
+          <div class="d3-panel-label">Full name</div>
+          <input class="d3-panel-input" type="text" placeholder="Marcus Williams" />
+        </div>
+        <div class="d3-panel-field">
+          <div class="d3-panel-label">Work email</div>
+          <input class="d3-panel-input" type="email" placeholder="marcus@agency.com" />
+        </div>
+        <div class="d3-panel-field">
+          <div class="d3-panel-label">GDS system</div>
+          <input class="d3-panel-input" type="text" placeholder="Amadeus / Sabre / Galileo" />
+        </div>
+        <button class="d3-panel-btn">Schedule Demo →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIRECTION 4: Editorial Minimalist
+============================================================ -->
+<div class="direction" id="dir4">
+  <div class="direction-label">
+    <span class="num">4</span>
+    Editorial Minimalist
+    <span class="desc">Heavy typography · Restrained color · Light bg · Structural borders · Most "newspaper" feel</span>
+  </div>
+
+  <div class="d4-navbar">
+    <div>
+      <span class="d4-logo-text">Sync Sirius</span>
+      <span class="d4-logo-sub">Miami, FL</span>
+    </div>
+    <div class="d4-nav-links">
+      <a href="#">SyncRevenue</a>
+      <a href="#">Services</a>
+      <a href="#">Security</a>
+      <a href="#">Team</a>
+      <span class="d4-lang">EN / PT / ES</span>
+    </div>
+    <button class="d4-cta-nav">Schedule a Demo</button>
+  </div>
+
+  <div class="d4-hero">
+    <div>
+      <div class="d4-eyebrow">B2B Travel Agency Software · Americas</div>
+      <h1>Commission Management Built for Modern Travel Agencies</h1>
+      <p>SyncRevenue gives your agency full visibility and control over commissions across every major GDS — ending the debit memo chaos and BSP reconciliation failures that cost you $5K–$50K/month.</p>
+      <button class="d4-btn-primary">Schedule a Demo →</button>
+    </div>
+    <div>
+      <div class="d4-gds-list">
+        <div class="d4-gds-label">GDS Integrations</div>
+        <div class="d4-gds-tags">
+          <span class="d4-gds-tag">Amadeus</span>
+          <span class="d4-gds-tag">Sabre</span>
+          <span class="d4-gds-tag">Galileo</span>
+          <span class="d4-gds-tag">Worldspan</span>
+        </div>
+      </div>
+      <div class="d4-highlight-box">
+        <div class="hl-num">99.99%</div>
+        <div class="hl-lbl">Commission assertivity — achieved through configurable airline contract engine, expert ops team, and AI validation layer.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d4-sep"></div>
+
+  <div class="d4-feature-row">
+    <div class="d4-feature">
+      <h3>Multi-GDS Reconciliation</h3>
+      <p>Single view across Amadeus, Sabre, Galileo, and Worldspan. No more toggling between portals.</p>
+    </div>
+    <div class="d4-feature">
+      <h3>Debit Memo Management</h3>
+      <p>500+ airline reason codes decoded. Dispute templates and audit trail built in.</p>
+    </div>
+    <div class="d4-feature">
+      <h3>BSP/ARC Automation</h3>
+      <p>Weekly reconciliation that used to take a day now runs automatically overnight.</p>
+    </div>
+    <div class="d4-feature">
+      <h3>Americas Specialist</h3>
+      <p>EN / PT-BR / ES. US, Brazil, and Latin America from day one. Not an afterthought.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIRECTION 5: Split-Screen SaaS
+============================================================ -->
+<div class="direction" id="dir5">
+  <div class="direction-label">
+    <span class="num">5</span>
+    Split-Screen SaaS
+    <span class="desc">Dark left / light right · Full demo form visible on load · Trust chips · Classic B2B SaaS pattern</span>
+  </div>
+
+  <div class="d5-navbar">
+    <div class="d5-logo">
+      <div class="d5-logo-mark">S</div>
+      <span class="d5-logo-text">Sync Sirius</span>
+    </div>
+    <div class="d5-nav-links">
+      <a href="#">SyncRevenue</a>
+      <a href="#">Services</a>
+      <a href="#">Security</a>
+      <a href="#">Team</a>
+      <span class="d5-lang-btn">EN ▾</span>
+    </div>
+    <button class="d5-cta-nav">Schedule Demo</button>
+  </div>
+
+  <div class="d5-hero">
+    <div class="d5-hero-left">
+      <div class="d5-badge">🌎 Miami-based · Americas specialist</div>
+      <h1>Commission Management Built for<br><span>Modern Travel Agencies</span></h1>
+      <p>SyncRevenue integrates with every major GDS — full visibility over commissions, debit memo disputes, and BSP reconciliation. Recover 15–25% of what you're currently losing.</p>
+      <div class="d5-btns">
+        <button class="d5-btn-primary">Schedule a Demo</button>
+        <span class="d5-btn-link">Learn how it works →</span>
+      </div>
+      <div class="d5-trust-chips">
+        <span class="d5-chip">Encrypted data transmission</span>
+        <span class="d5-chip">Amadeus · Sabre · Galileo</span>
+        <span class="d5-chip">EN / PT-BR / ES</span>
+        <span class="d5-chip">99.99% assertivity</span>
+      </div>
+    </div>
+    <div class="d5-hero-right">
+      <div class="d5-form-panel">
+        <div class="d5-form-title">Schedule a Demo</div>
+        <div class="d5-form-sub">Our team will reach out within 1 business day.</div>
+        <div class="d5-field-row">
+          <div class="d5-field">
+            <label>First name</label>
+            <input type="text" placeholder="Marcus" />
+          </div>
+          <div class="d5-field">
+            <label>Last name</label>
+            <input type="text" placeholder="Williams" />
+          </div>
+        </div>
+        <div class="d5-field">
+          <label>Work email</label>
+          <input type="email" placeholder="marcus@travelagency.com" />
+        </div>
+        <div class="d5-field">
+          <label>Company</label>
+          <input type="text" placeholder="Global Travel Partners" />
+        </div>
+        <div class="d5-field-row">
+          <div class="d5-field">
+            <label>Your role</label>
+            <input type="text" placeholder="CFO" />
+          </div>
+          <div class="d5-field">
+            <label>GDS system</label>
+            <select>
+              <option>Amadeus</option>
+              <option>Sabre</option>
+              <option>Galileo</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <button class="d5-submit">Request Demo</button>
+        <div class="d5-privacy">Your data is encrypted and never shared with third parties.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIRECTION 6: Dark Minimal / Linear-Inspired
+============================================================ -->
+<div class="direction" id="dir6">
+  <div class="direction-label">
+    <span class="num">6</span>
+    Dark Minimal / Linear-Inspired
+    <span class="desc">Ultra-restrained · Grid texture · Thin typography · Calm authority · Closest to Linear aesthetic</span>
+  </div>
+
+  <div class="d6-navbar">
+    <span class="d6-logo"><strong>Sync Sirius</strong></span>
+    <div class="d6-nav-links">
+      <a href="#">SyncRevenue</a>
+      <a href="#">Services</a>
+      <a href="#">Security</a>
+      <a href="#">Team</a>
+      <span class="d6-lang">EN ▾</span>
+    </div>
+    <button class="d6-cta-nav">Schedule Demo</button>
+  </div>
+
+  <div class="d6-hero">
+    <div class="d6-grid-bg"></div>
+    <div class="d6-hero-inner">
+      <div class="d6-tag">Americas-native commission management</div>
+      <h1><strong>Commission Management</strong><br>Built for <span class="accent">Modern</span><br>Travel Agencies</h1>
+      <p>SyncRevenue integrates with every major GDS — Amadeus, Sabre, Galileo, Worldspan — giving your agency full visibility over commissions, debit memos, and BSP reconciliation.</p>
+      <div class="d6-btns">
+        <button class="d6-btn-primary">Schedule a Demo</button>
+        <span class="d6-btn-ghost">Learn more →</span>
+      </div>
+      <div class="d6-divider"></div>
+      <div class="d6-data-row">
+        <div class="d6-data-item" style="padding-right:40px">
+          <div class="d6-data-val"><strong>99.99%</strong></div>
+          <div class="d6-data-lbl">Commission assertivity</div>
+        </div>
+        <div class="d6-data-item" style="padding-left:40px; padding-right:40px">
+          <div class="d6-data-val"><strong>15–25%</strong></div>
+          <div class="d6-data-lbl">Avg. recoverable leakage</div>
+        </div>
+        <div class="d6-data-item" style="padding-left:40px">
+          <div class="d6-data-val"><strong>Multi-GDS</strong></div>
+          <div class="d6-data-lbl">No single-system lock-in</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d6-section">
+    <div class="d6-section-eyebrow">The problem we solve</div>
+    <h2>Your back-office team spends <strong>hours every week</strong><br>on problems that should be automatic.</h2>
+    <div class="d6-pain-list">
+      <div class="d6-pain-item">
+        <div class="d6-pain-icon">📊</div>
+        <h3>Manual BSP reconciliation</h3>
+        <p>Hours every week matching GDS data to bank statements. One error and you've lost a commission permanently.</p>
+      </div>
+      <div class="d6-pain-item">
+        <div class="d6-pain-icon">📄</div>
+        <h3>Debit memo disputes</h3>
+        <p>500+ airline reason codes. No context. No templates. Your ticketing supervisor spends Monday mornings in the dark.</p>
+      </div>
+      <div class="d6-pain-item">
+        <div class="d6-pain-icon">❌</div>
+        <h3>Commission leakage</h3>
+        <p>15–25% of your commission revenue disappears into GDS discrepancies. Most agencies never know it's gone.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary" id="summary">
+  <h2>Design Direction Summary</h2>
+  <p>Review each direction above, then choose one — or name elements to combine.</p>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="dir-num">Direction 1</div>
+      <div class="dir-name">Dark-First Immersive</div>
+      <div class="dir-desc">Full navy background, gradient CTAs, trust bar in hero. Strongest visual brand presence.</div>
+      <div class="dir-fit">Best for: premium positioning, paid ad traffic that expects bold landing pages</div>
+    </div>
+    <div class="summary-card">
+      <div class="dir-num">Direction 2</div>
+      <div class="dir-name">Light Corporate Authority</div>
+      <div class="dir-desc">White-dominant with demo form visible in hero. Most "enterprise SaaS" of the set.</div>
+      <div class="dir-fit">Best for: corporate buyers who find dark sites visually aggressive</div>
+    </div>
+    <div class="summary-card">
+      <div class="dir-num">Direction 3</div>
+      <div class="dir-name">Bold Gradient Immersive</div>
+      <div class="dir-desc">Glow effects, high energy, pain-focused headline. Most visually dramatic.</div>
+      <div class="dir-fit">Caution: leans toward startup energy — review against premium positioning goal</div>
+    </div>
+    <div class="summary-card">
+      <div class="dir-num">Direction 4</div>
+      <div class="dir-name">Editorial Minimalist</div>
+      <div class="dir-desc">Heavy typography, structural borders, restrained color. Most newspaper-inspired.</div>
+      <div class="dir-fit">Best for: sophisticated buyers who value clarity over visual drama</div>
+    </div>
+    <div class="summary-card">
+      <div class="dir-num">Direction 5</div>
+      <div class="dir-name">Split-Screen SaaS</div>
+      <div class="dir-desc">Dark left / light right. Full demo form visible on load. Classic proven B2B pattern.</div>
+      <div class="dir-fit">Best for: high-intent paid ad traffic — removes scroll before demo CTA</div>
+    </div>
+    <div class="summary-card">
+      <div class="dir-num">Direction 6</div>
+      <div class="dir-name">Dark Minimal / Linear-Inspired</div>
+      <div class="dir-desc">Ultra-restrained, grid texture, thin weight + bold contrast. Calm authority.</div>
+      <div class="dir-fit">Best for: tech-forward buyers who associate restraint with quality</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

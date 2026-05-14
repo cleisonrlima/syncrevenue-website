@@ -1,0 +1,96 @@
+# generated: 2026-05-14
+# last_updated: 2026-05-14
+# project: syncrevenue-website
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-05-14
+last_updated: 2026-05-14
+project: syncrevenue-website
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Visitor Content Experience (Phase 1 MVP — Part A)
+  epic-1: in-progress
+  1-1-project-initialization-dev-environment: review
+  1-2-design-system-foundation: backlog
+  1-3-i18n-language-infrastructure: backlog
+  1-4-app-shell-routing-navigation: backlog
+  1-5-hero-section: backlog
+  1-6-syncrevenue-services-sections: backlog
+  1-7-comparison-section: backlog
+  1-8-team-section: backlog
+  1-9-security-client-references-sections: backlog
+  1-10-privacy-policy-page: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Lead Capture & Conversion (Phase 1 MVP — Part B)
+  epic-2: backlog
+  2-1-backend-infrastructure-database-daos-middleware: backlog
+  2-2-demo-request-form-full-stack: backlog
+  2-3-contact-form-full-stack: backlog
+  2-4-demoscheduler-section-multiple-cta-entry-points: backlog
+  2-5-smtp-notification-demo-contact: backlog
+  2-6-form-accessibility-locale-aware-validation: backlog
+  2-7-security-hardening-rate-limiting-headers-locale-allowlist: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Content Polish & SEO (Phase 2)
+  epic-3: backlog
+  3-1-real-team-photos-bio-content: backlog
+  3-2-animations-micro-interactions: backlog
+  3-3-seo-metadata-meta-tags-og-hreflang-sitemap: backlog
+  3-4-mobile-ux-polish-pass: backlog
+  3-5-commission-audit-lead-magnet: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Admin Operations (Phase 3)
+  epic-4: backlog
+  4-1-admin-authentication-login-session-management: backlog
+  4-2-leads-dashboard-view-filter: backlog
+  4-3-lead-status-management: backlog
+  4-4-team-member-management-create-edit: backlog
+  4-5-team-member-display-order-active-toggle: backlog
+  4-6-admin-dashboard-navigation-shell: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Production Deployment (Phase 4)
+  epic-5: backlog
+  5-1-production-build-pm2-process-management: backlog
+  5-2-domain-configuration-ssl-tls: backlog
+  5-3-environment-variable-hardening: backlog
+  5-4-sqlite-backup-automation: backlog
+  5-5-uptime-monitoring-health-check: backlog
+  epic-5-retrospective: optional
