@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "setup": "bash scripts/setup.sh",
     "dev": "concurrently --kill-others-on-fail \"vite\" \"tsx watch server/index.ts\"",
     "build": "tsc -p tsconfig.server.json && vite build",
     "typecheck": "tsc --noEmit",
