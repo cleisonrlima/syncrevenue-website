@@ -32,6 +32,11 @@ async function fillRequiredFields() {
   return user
 }
 
+function expectLabelAssociation(control: HTMLElement, labelPattern: RegExp) {
+  const label = control.ownerDocument.querySelector(`label[for="${control.id}"]`)
+  expect(label).toHaveTextContent(labelPattern)
+}
+
 beforeEach(async () => {
   postDemoMock.mockReset()
   postDemoMock.mockResolvedValue({ success: true, message: 'Demo request received' })
@@ -39,17 +44,35 @@ beforeEach(async () => {
 })
 
 describe('DemoForm', () => {
-  it('renders required and optional fields plus hidden locale', () => {
+  it('renders associated labels, aria-required fields, focus classes, and hidden locale', () => {
     const { container } = render(<DemoForm />)
 
-    expect(screen.getByLabelText(/Full Name/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Work Email/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Company/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Phone \(optional\)/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Your Role/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Primary GDS/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Message \(optional\)/i)).toBeInTheDocument()
+    const requiredControls = [
+      [screen.getByLabelText(/Full Name/i), /Full Name/i],
+      [screen.getByLabelText(/Work Email/i), /Work Email/i],
+      [screen.getByLabelText(/Company/i), /Company/i],
+      [screen.getByLabelText(/Your Role/i), /Your Role/i],
+      [screen.getByLabelText(/Primary GDS/i), /Primary GDS/i],
+    ] as const
+    const optionalControls = [
+      [screen.getByLabelText(/Phone \(optional\)/i), /Phone \(optional\)/i],
+      [screen.getByLabelText(/Message \(optional\)/i), /Message \(optional\)/i],
+    ] as const
+
+    for (const [control, label] of requiredControls) {
+      expectLabelAssociation(control, label)
+      expect(control).toHaveAttribute('aria-required', 'true')
+      expect(control).toHaveClass('focus-visible:ring-2')
+      expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
+    }
+    for (const [control, label] of optionalControls) {
+      expectLabelAssociation(control, label)
+      expect(control).not.toHaveAttribute('aria-required')
+      expect(control).toHaveClass('focus-visible:ring-2')
+      expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
+    }
     expect(screen.getAllByText('*').length).toBeGreaterThanOrEqual(5)
+    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveClass('focus-visible:ring-white')
 
     const locale = container.querySelector('input[type="hidden"][name="locale"]')
     expect(locale).toHaveValue('en')
@@ -65,8 +88,50 @@ describe('DemoForm', () => {
 
     const error = await screen.findByText('Full name is required')
     expect(error).toHaveClass('text-destructive')
+    expect(error).toHaveAttribute('id', 'demo-name-error')
     expect(name).toHaveAttribute('aria-describedby', error.id)
     expect(postDemoMock).not.toHaveBeenCalled()
+  })
+
+  it('revalidates visible field errors when the locale changes', async () => {
+    const user = userEvent.setup()
+    render(<DemoForm />)
+
+    const gds = screen.getByLabelText(/Primary GDS/i)
+    await user.click(gds)
+    await user.tab()
+
+    expect(await screen.findByText('Please select your primary GDS')).toBeInTheDocument()
+
+    await setLocale('es')
+
+    expect(await screen.findByText('Por favor seleccione su GDS principal')).toBeInTheDocument()
+    expect(gds).toHaveAttribute('aria-describedby', 'demo-gds-error')
+    expect(screen.queryByText('Please select your primary GDS')).not.toBeInTheDocument()
+  })
+
+  it('tabs through the demo form in visual order once submit is enabled', async () => {
+    render(<DemoForm />)
+    const user = await fillRequiredFields()
+
+    const name = screen.getByLabelText(/Full Name/i)
+    name.focus()
+    expect(name).toHaveFocus()
+
+    await user.tab()
+    expect(screen.getByLabelText(/Work Email/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/Company/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/Phone \(optional\)/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/Your Role/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/Primary GDS/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/Message \(optional\)/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveFocus()
   })
 
   it('keeps submit disabled while invalid', async () => {
@@ -109,6 +174,8 @@ describe('DemoForm', () => {
 
     const status = await screen.findByRole('status')
     expect(status).toHaveAttribute('aria-live', 'polite')
+    expect(status).toHaveAttribute('tabindex', '-1')
+    expect(status).toHaveFocus()
     expect(status).toHaveTextContent('Request received!')
     expect(status).toHaveTextContent('Our team will reach out within 1 business day.')
     expect(screen.queryByRole('form')).not.toBeInTheDocument()

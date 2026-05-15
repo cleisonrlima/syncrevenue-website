@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react'
+import type { TFunction } from 'i18next'
+import { z } from 'zod'
 import { ContactApiError, postContact, type ContactPayload } from '@/lib/api'
 
 export type ContactStatus = 'idle' | 'submitting' | 'success' | 'error'
@@ -12,6 +14,8 @@ export const CONTACT_SUBJECT_OPTIONS = [
   'Custom Development',
   'Other',
 ] as const
+const LOCALE_OPTIONS = ['en', 'pt-BR', 'es'] as const
+const identityT = ((key: string) => key) as TFunction
 
 type ContactError = {
   message: string
@@ -19,22 +23,20 @@ type ContactError = {
   field?: string
 }
 
-function hasRequiredText(value: string) {
-  return value.trim().length > 0
-}
-
-function isValidEmail(value: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+export function createContactSchema(t: TFunction) {
+  return z.object({
+    name: z.string().trim().min(1, t('forms.contact.nameError')),
+    email: z.string().trim().email(t('forms.contact.emailError')),
+    subject: z.enum(CONTACT_SUBJECT_OPTIONS, {
+      errorMap: () => ({ message: t('forms.contact.subjectError') }),
+    }),
+    message: z.string().trim().min(1, t('forms.contact.messageError')),
+    locale: z.enum(LOCALE_OPTIONS),
+  })
 }
 
 export function isContactFormValid(values: ContactFormValues): boolean {
-  return (
-    hasRequiredText(values.name) &&
-    isValidEmail(values.email) &&
-    CONTACT_SUBJECT_OPTIONS.includes(values.subject as (typeof CONTACT_SUBJECT_OPTIONS)[number]) &&
-    hasRequiredText(values.message) &&
-    ['en', 'pt-BR', 'es'].includes(values.locale)
-  )
+  return createContactSchema(identityT).safeParse(values).success
 }
 
 export function useContact() {

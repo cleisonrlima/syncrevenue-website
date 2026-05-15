@@ -31,6 +31,11 @@ async function fillRequiredFields() {
   return user
 }
 
+function expectLabelAssociation(control: HTMLElement, labelPattern: RegExp) {
+  const label = control.ownerDocument.querySelector(`label[for="${control.id}"]`)
+  expect(label).toHaveTextContent(labelPattern)
+}
+
 beforeEach(async () => {
   postContactMock.mockReset()
   postContactMock.mockResolvedValue({ success: true, message: 'Contact message received' })
@@ -38,16 +43,27 @@ beforeEach(async () => {
 })
 
 describe('Contact', () => {
-  it('renders SectionHeader, required fields, fixed subject options, and labels with asterisks', () => {
+  it('renders SectionHeader, associated required fields, focus classes, and fixed subject options', () => {
     render(<Contact />)
 
     expect(screen.getByRole('heading', { name: /Contact Sync Sirius/i })).toBeInTheDocument()
     expect(screen.getByText('General Inquiries')).toBeInTheDocument()
-    expect(screen.getByLabelText(/Full Name/i)).toBeRequired()
-    expect(screen.getByLabelText(/Email Address/i)).toBeRequired()
-    expect(screen.getByLabelText(/Subject \/ Service/i)).toBeRequired()
-    expect(screen.getByLabelText(/^Message/i)).toBeRequired()
+    const requiredControls = [
+      [screen.getByLabelText(/Full Name/i), /Full Name/i],
+      [screen.getByLabelText(/Email Address/i), /Email Address/i],
+      [screen.getByLabelText(/Subject \/ Service/i), /Subject \/ Service/i],
+      [screen.getByLabelText(/^Message/i), /^Message/i],
+    ] as const
+
+    for (const [control, label] of requiredControls) {
+      expectLabelAssociation(control, label)
+      expect(control).toBeRequired()
+      expect(control).toHaveAttribute('aria-required', 'true')
+      expect(control).toHaveClass('focus-visible:ring-2')
+      expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
+    }
     expect(screen.getAllByText('*')).toHaveLength(4)
+    expect(screen.getByRole('button', { name: /Send Message/i })).toHaveClass('focus-visible:ring-white')
 
     const subject = screen.getByLabelText(/Subject \/ Service/i)
     for (const option of ['SyncRevenue', 'BI/Data Analytics', 'OBTs', 'Custom Development', 'Other']) {
@@ -66,9 +82,45 @@ describe('Contact', () => {
 
     const error = await screen.findByText('Enter a valid email address')
     expect(error).toHaveClass('text-destructive')
+    expect(error).toHaveAttribute('id', 'contact-email-error')
     expect(email).toHaveAttribute('aria-describedby', error.id)
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     expect(postContactMock).not.toHaveBeenCalled()
+  })
+
+  it('revalidates visible field errors when the locale changes', async () => {
+    const user = userEvent.setup()
+    render(<Contact />)
+
+    const message = screen.getByLabelText(/^Message/i)
+    await user.click(message)
+    await user.tab()
+
+    expect(await screen.findByText('Message is required')).toBeInTheDocument()
+
+    await setLocale('pt-BR')
+
+    expect(await screen.findByText('Mensagem é obrigatória')).toBeInTheDocument()
+    expect(message).toHaveAttribute('aria-describedby', 'contact-message-error')
+    expect(screen.queryByText('Message is required')).not.toBeInTheDocument()
+  })
+
+  it('tabs through the contact form in visual order once submit is enabled', async () => {
+    render(<Contact />)
+    const user = await fillRequiredFields()
+
+    const name = screen.getByLabelText(/Full Name/i)
+    name.focus()
+    expect(name).toHaveFocus()
+
+    await user.tab()
+    expect(screen.getByLabelText(/Email Address/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/Subject \/ Service/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByLabelText(/^Message/i)).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: /Send Message/i })).toHaveFocus()
   })
 
   it('clears stale field errors while a corrected field changes', async () => {
@@ -129,6 +181,8 @@ describe('Contact', () => {
 
     const status = await screen.findByRole('status')
     expect(status).toHaveAttribute('aria-live', 'polite')
+    expect(status).toHaveAttribute('tabindex', '-1')
+    expect(status).toHaveFocus()
     expect(status).toHaveTextContent('Message sent!')
     expect(status).toHaveTextContent('We received your inquiry and will route it to the right team.')
     expect(screen.queryByRole('form')).not.toBeInTheDocument()

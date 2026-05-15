@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -9,7 +10,13 @@ import {
   type ReactNode,
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDemo, isDemoFormValid, GDS_OPTIONS, ROLE_OPTIONS, type DemoFormValues } from '@/hooks/useDemo'
+import {
+  useDemo,
+  createDemoSchema,
+  GDS_OPTIONS,
+  ROLE_OPTIONS,
+  type DemoFormValues,
+} from '@/hooks/useDemo'
 import { useLocaleStore } from '@/store/useLocaleStore'
 import GradientButton from '@/components/ui/GradientButton'
 import Toast from '@/components/ui/Toast'
@@ -17,6 +24,7 @@ import { cn } from '@/lib/utils'
 
 type FieldName = keyof Pick<DemoFormValues, 'name' | 'email' | 'company' | 'role' | 'gds'>
 type FieldErrors = Partial<Record<FieldName, string>>
+const FIELD_NAMES: FieldName[] = ['name', 'email', 'company', 'role', 'gds']
 
 const initialValues: DemoFormValues = {
   name: '',
@@ -49,6 +57,8 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [toast, setToast] = useState<string | null>(null)
   const nameInputRef = useRef<HTMLInputElement | null>(null)
+  const successRef = useRef<HTMLDivElement | null>(null)
+  const demoSchema = useMemo(() => createDemoSchema(t), [t])
 
   useImperativeHandle(
     ref,
@@ -65,49 +75,86 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
   }, [locale])
 
   useEffect(() => {
+    if (status === 'success') {
+      successRef.current?.focus()
+    }
+  }, [status])
+
+  useEffect(() => {
     if (status === 'error' && error?.status !== 429) {
       setToast(t('forms.demo.errorGeneric'))
     }
   }, [error, status, t])
 
-  const validationMessages = useMemo(
-    () => ({
-      name: t('forms.demo.nameError'),
-      email: t('forms.demo.emailError'),
-      company: t('forms.demo.companyError'),
-      role: t('forms.demo.roleError'),
-      gds: t('forms.demo.gdsError'),
-    }),
-    [t]
+  const validateAll = useCallback(
+    (nextValues: DemoFormValues): FieldErrors => {
+      const result = demoSchema.safeParse(nextValues)
+      if (result.success) {
+        return {}
+      }
+
+      return result.error.issues.reduce<FieldErrors>((nextErrors, issue) => {
+        const field = issue.path[0]
+        if (typeof field === 'string' && FIELD_NAMES.includes(field as FieldName)) {
+          nextErrors[field as FieldName] ??= issue.message
+        }
+        return nextErrors
+      }, {})
+    },
+    [demoSchema]
   )
 
+  useEffect(() => {
+    setErrors(current => {
+      const visibleFields = FIELD_NAMES.filter(field => current[field])
+      if (visibleFields.length === 0) {
+        return current
+      }
+
+      const nextErrors = validateAll(values)
+      return visibleFields.reduce<FieldErrors>((updatedErrors, field) => {
+        updatedErrors[field] = nextErrors[field]
+        return updatedErrors
+      }, {})
+    })
+  }, [validateAll, values])
+
   function validateField(name: FieldName, nextValues = values): string | undefined {
-    const value = nextValues[name].trim()
-    if (name === 'email') {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : validationMessages.email
-    }
-    return value ? undefined : validationMessages[name]
+    return validateAll(nextValues)[name]
   }
 
-  function validateAll(nextValues = values): FieldErrors {
-    return {
-      name: validateField('name', nextValues),
-      email: validateField('email', nextValues),
-      company: validateField('company', nextValues),
-      role: validateField('role', nextValues),
-      gds: validateField('gds', nextValues),
-    }
+  function hasErrors(nextErrors: FieldErrors) {
+    return FIELD_NAMES.some(field => Boolean(nextErrors[field]))
   }
 
   function handleBlur(field: FieldName) {
-    setErrors(current => ({
-      ...current,
-      [field]: validateField(field),
-    }))
+    setErrors(current => {
+      const nextError = validateField(field)
+      if (current[field] === nextError) {
+        return current
+      }
+      return {
+        ...current,
+        [field]: nextError,
+      }
+    })
   }
 
   function setField(name: keyof DemoFormValues, value: string) {
-    setValues(current => ({ ...current, [name]: value }))
+    setValues(current => {
+      const nextValues = { ...current, [name]: value }
+
+      if (FIELD_NAMES.includes(name as FieldName)) {
+        const fieldName = name as FieldName
+        setErrors(currentErrors =>
+          currentErrors[fieldName] === undefined
+            ? currentErrors
+            : { ...currentErrors, [fieldName]: validateField(fieldName, nextValues) }
+        )
+      }
+
+      return nextValues
+    })
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -116,7 +163,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
     const nextErrors = validateAll(nextValues)
     setErrors(nextErrors)
 
-    if (!isDemoFormValid(nextValues)) {
+    if (hasErrors(nextErrors)) {
       return
     }
 
@@ -124,14 +171,16 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
     await submitDemo(nextValues)
   }
 
-  const canSubmit = isDemoFormValid(values) && !isSubmitting
+  const canSubmit = demoSchema.safeParse(values).success && !isSubmitting
 
   if (status === 'success') {
     return (
       <div
         id="demo-form"
+        ref={successRef}
         role="status"
         aria-live="polite"
+        tabIndex={-1}
         className="rounded-lg border border-brand-electric-blue/20 bg-white p-8 text-center shadow-sm"
       >
         <h3 className="text-2xl font-bold text-brand-navy">{t('forms.demo.successTitle')}</h3>
@@ -164,6 +213,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               value={values.name}
               onChange={event => setField('name', event.target.value)}
               onBlur={() => handleBlur('name')}
+              aria-required="true"
               aria-invalid={errors.name ? 'true' : undefined}
               aria-describedby={errors.name ? 'demo-name-error' : undefined}
               className={textInputClasses(Boolean(errors.name))}
@@ -185,6 +235,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               value={values.email}
               onChange={event => setField('email', event.target.value)}
               onBlur={() => handleBlur('email')}
+              aria-required="true"
               aria-invalid={errors.email ? 'true' : undefined}
               aria-describedby={errors.email ? 'demo-email-error' : undefined}
               className={textInputClasses(Boolean(errors.email))}
@@ -205,6 +256,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               value={values.company}
               onChange={event => setField('company', event.target.value)}
               onBlur={() => handleBlur('company')}
+              aria-required="true"
               aria-invalid={errors.company ? 'true' : undefined}
               aria-describedby={errors.company ? 'demo-company-error' : undefined}
               className={textInputClasses(Boolean(errors.company))}
@@ -237,6 +289,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               value={values.role}
               onChange={event => setField('role', event.target.value)}
               onBlur={() => handleBlur('role')}
+              aria-required="true"
               aria-invalid={errors.role ? 'true' : undefined}
               aria-describedby={errors.role ? 'demo-role-error' : undefined}
               className={textInputClasses(Boolean(errors.role))}
@@ -257,6 +310,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               value={values.gds}
               onChange={event => setField('gds', event.target.value)}
               onBlur={() => handleBlur('gds')}
+              aria-required="true"
               aria-invalid={errors.gds ? 'true' : undefined}
               aria-describedby={errors.gds ? 'demo-gds-error' : undefined}
               className={textInputClasses(Boolean(errors.gds))}

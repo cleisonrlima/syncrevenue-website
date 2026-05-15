@@ -1,7 +1,15 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import i18next from 'i18next'
+import '@/i18n'
 import { ContactApiError, postContact } from '@/lib/api'
-import { CONTACT_SUBJECT_OPTIONS, isContactFormValid, useContact, type ContactFormValues } from './useContact'
+import {
+  CONTACT_SUBJECT_OPTIONS,
+  createContactSchema,
+  isContactFormValid,
+  useContact,
+  type ContactFormValues,
+} from './useContact'
 
 vi.mock('@/lib/api', async importOriginal => {
   const actual = await importOriginal<typeof import('@/lib/api')>()
@@ -23,6 +31,7 @@ const validValues: ContactFormValues = {
 
 beforeEach(() => {
   postContactMock.mockReset()
+  i18next.changeLanguage('en')
 })
 
 describe('useContact', () => {
@@ -36,10 +45,22 @@ describe('useContact', () => {
     ])
   })
 
+  it('exports a locale-aware Zod schema for contact validation messages', async () => {
+    expect(createContactSchema(i18next.t).safeParse({ ...validValues, email: 'bad' }).error?.issues[0]?.message).toBe(
+      'Enter a valid email address'
+    )
+
+    await i18next.changeLanguage('pt-BR')
+    expect(createContactSchema(i18next.t).safeParse({ ...validValues, message: '' }).error?.issues[0]?.message).toBe(
+      'Mensagem é obrigatória'
+    )
+  })
+
   it('validates required fields and subject allowlist', () => {
     expect(isContactFormValid(validValues)).toBe(true)
     expect(isContactFormValid({ ...validValues, subject: 'Partnerships' })).toBe(false)
     expect(isContactFormValid({ ...validValues, message: '' })).toBe(false)
+    expect(isContactFormValid({ ...validValues, locale: 'fr' as ContactFormValues['locale'] })).toBe(false)
   })
 
   it('submits a valid payload and transitions through submitting to success', async () => {

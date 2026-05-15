@@ -110,9 +110,64 @@ test.describe('@P1 Demo request form', () => {
     demoRequest.releaseResponse()
     const confirmation = page.getByRole('status')
     await expect(confirmation).toHaveAttribute('aria-live', 'polite')
+    await expect(confirmation).toHaveAttribute('tabindex', '-1')
+    await expect(confirmation).toBeFocused()
     await expect(confirmation).toContainText('Request received!')
     await expect(confirmation).toContainText('Our team will reach out within 1 business day.')
     await expect(page.getByRole('form', { name: /Request a Demo/i })).toHaveCount(0)
+  })
+
+  test('supports keyboard tab order, native GDS select operation, and confirmation focus', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'Keyboard sequence covered in desktop Chromium')
+
+    const demoRequest = captureDemoRequest(page)
+    await demoRequest.install()
+
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    const name = page.getByLabel(/Full Name/i)
+    const email = page.getByLabel(/Work Email/i)
+    const company = page.getByLabel(/Company/i)
+    const phone = page.getByLabel(/Phone \(optional\)/i)
+    const role = page.getByLabel(/Your Role/i)
+    const gds = page.getByLabel(/Primary GDS/i)
+    const message = page.getByLabel(/Message \(optional\)/i)
+    const submit = page.getByRole('button', { name: /Request Demo/i })
+
+    await name.fill('Jane Smith')
+    await email.fill('jane@example.com')
+    await company.fill('Example Travel')
+    await role.selectOption('Owner')
+    await gds.focus()
+    await page.keyboard.press('ArrowDown')
+    await page.keyboard.press('ArrowDown')
+    await expect(gds).toHaveValue('Sabre')
+
+    await name.focus()
+    await expect(name).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(email).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(company).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(phone).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(role).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(gds).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(message).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(submit).toBeFocused()
+
+    await page.keyboard.press('Enter')
+    demoRequest.releaseResponse()
+
+    const confirmation = page.getByRole('status')
+    await expect(confirmation).toHaveAttribute('aria-live', 'polite')
+    await expect(confirmation).toBeFocused()
   })
 
   test('shows a retryable destructive toast when the API returns a non-rate-limit error', async ({

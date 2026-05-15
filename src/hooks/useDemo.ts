@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react'
+import type { TFunction } from 'i18next'
+import { z } from 'zod'
 import { DemoApiError, postDemo, type DemoPayload } from '@/lib/api'
 
 export type DemoStatus = 'idle' | 'submitting' | 'success' | 'error'
@@ -7,6 +9,8 @@ export type DemoFormValues = DemoPayload
 
 export const GDS_OPTIONS = ['Amadeus', 'Sabre', 'Galileo', 'Worldspan', 'Other', 'None yet'] as const
 export const ROLE_OPTIONS = ['Owner', 'Executive', 'Operations', 'Finance', 'Technology', 'Other'] as const
+const LOCALE_OPTIONS = ['en', 'pt-BR', 'es'] as const
+const identityT = ((key: string) => key) as TFunction
 
 type DemoError = {
   message: string
@@ -14,23 +18,25 @@ type DemoError = {
   field?: string
 }
 
-function hasRequiredText(value: string) {
-  return value.trim().length > 0
-}
-
-function isValidEmail(value: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+export function createDemoSchema(t: TFunction) {
+  return z.object({
+    name: z.string().trim().min(1, t('forms.demo.nameError')),
+    email: z.string().trim().email(t('forms.demo.emailError')),
+    company: z.string().trim().min(1, t('forms.demo.companyError')),
+    phone: z.string(),
+    role: z.enum(ROLE_OPTIONS, {
+      errorMap: () => ({ message: t('forms.demo.roleError') }),
+    }),
+    gds: z.enum(GDS_OPTIONS, {
+      errorMap: () => ({ message: t('forms.demo.gdsError') }),
+    }),
+    message: z.string(),
+    locale: z.enum(LOCALE_OPTIONS),
+  })
 }
 
 export function isDemoFormValid(values: DemoFormValues): boolean {
-  return (
-    hasRequiredText(values.name) &&
-    isValidEmail(values.email) &&
-    hasRequiredText(values.company) &&
-    hasRequiredText(values.role) &&
-    GDS_OPTIONS.includes(values.gds as (typeof GDS_OPTIONS)[number]) &&
-    ['en', 'pt-BR', 'es'].includes(values.locale)
-  )
+  return createDemoSchema(identityT).safeParse(values).success
 }
 
 export function useDemo() {

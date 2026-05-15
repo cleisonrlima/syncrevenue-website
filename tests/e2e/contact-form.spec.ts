@@ -117,11 +117,52 @@ test.describe('@P1 Contact form', () => {
     contactRequest.releaseResponse()
     const confirmation = page.getByRole('status')
     await expect(confirmation).toHaveAttribute('aria-live', 'polite')
+    await expect(confirmation).toHaveAttribute('tabindex', '-1')
+    await expect(confirmation).toBeFocused()
     await expect(confirmation).toContainText('Message sent!')
     await expect(confirmation).toContainText(
       'We received your inquiry and will route it to the right team.'
     )
     await expect(page.getByRole('form', { name: /Contact Us/i })).toHaveCount(0)
+  })
+
+  test('supports keyboard tab order and confirmation focus', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'Keyboard sequence covered in desktop Chromium')
+
+    const contactRequest = captureContactRequest(page)
+    await contactRequest.install()
+
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    const contactForm = page.getByRole('form', { name: /Contact Us/i })
+    const name = contactForm.getByLabel(/Full Name/i)
+    const email = contactForm.getByLabel(/Email Address/i)
+    const subject = contactForm.getByLabel(/Subject \/ Service/i)
+    const message = contactForm.getByLabel(/^Message/i)
+    const submit = contactForm.getByRole('button', { name: /Send Message/i })
+
+    await name.fill('Jane Smith')
+    await email.fill('jane@example.com')
+    await subject.selectOption('BI/Data Analytics')
+    await message.fill('We need analytics support.')
+
+    await name.focus()
+    await expect(name).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(email).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(subject).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(message).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(submit).toBeFocused()
+
+    await page.keyboard.press('Enter')
+    contactRequest.releaseResponse()
+
+    const confirmation = page.getByRole('status')
+    await expect(confirmation).toHaveAttribute('aria-live', 'polite')
+    await expect(confirmation).toBeFocused()
   })
 
   test('shows HTTP 429 as an inline form error without a toast', async ({ page }) => {

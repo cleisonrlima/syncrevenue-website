@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   CONTACT_SUBJECT_OPTIONS,
-  isContactFormValid,
+  createContactSchema,
   useContact,
   type ContactFormValues,
 } from '@/hooks/useContact'
@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 
 type FieldName = keyof Pick<ContactFormValues, 'name' | 'email' | 'subject' | 'message'>
 type FieldErrors = Partial<Record<FieldName, string>>
+const FIELD_NAMES: FieldName[] = ['name', 'email', 'subject', 'message']
 
 const initialValues: ContactFormValues = {
   name: '',
@@ -30,69 +31,89 @@ function textInputClasses(hasError: boolean) {
   )
 }
 
-function isFieldName(name: keyof ContactFormValues): name is FieldName {
-  return name === 'name' || name === 'email' || name === 'subject' || name === 'message'
-}
-
 export default function Contact() {
   const { t } = useTranslation()
   const locale = useLocaleStore(state => state.locale)
   const { status, error, isSubmitting, submitContact } = useContact()
   const [values, setValues] = useState<ContactFormValues>({ ...initialValues, locale })
   const [errors, setErrors] = useState<FieldErrors>({})
+  const successRef = useRef<HTMLDivElement | null>(null)
+  const contactSchema = useMemo(() => createContactSchema(t), [t])
 
   useEffect(() => {
     setValues(current => ({ ...current, locale }))
   }, [locale])
 
-  const validationMessages = useMemo(
-    () => ({
-      name: t('forms.contact.nameError'),
-      email: t('forms.contact.emailError'),
-      subject: t('forms.contact.subjectError'),
-      message: t('forms.contact.messageError'),
-    }),
-    [t]
+  useEffect(() => {
+    if (status === 'success') {
+      successRef.current?.focus()
+    }
+  }, [status])
+
+  const validateAll = useCallback(
+    (nextValues: ContactFormValues): FieldErrors => {
+      const result = contactSchema.safeParse(nextValues)
+      if (result.success) {
+        return {}
+      }
+
+      return result.error.issues.reduce<FieldErrors>((nextErrors, issue) => {
+        const field = issue.path[0]
+        if (typeof field === 'string' && FIELD_NAMES.includes(field as FieldName)) {
+          nextErrors[field as FieldName] ??= issue.message
+        }
+        return nextErrors
+      }, {})
+    },
+    [contactSchema]
   )
 
+  useEffect(() => {
+    setErrors(current => {
+      const visibleFields = FIELD_NAMES.filter(field => current[field])
+      if (visibleFields.length === 0) {
+        return current
+      }
+
+      const nextErrors = validateAll(values)
+      return visibleFields.reduce<FieldErrors>((updatedErrors, field) => {
+        updatedErrors[field] = nextErrors[field]
+        return updatedErrors
+      }, {})
+    })
+  }, [validateAll, values])
+
   function validateField(name: FieldName, nextValues = values): string | undefined {
-    const value = nextValues[name].trim()
-    if (name === 'email') {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : validationMessages.email
-    }
-    if (name === 'subject') {
-      return CONTACT_SUBJECT_OPTIONS.includes(value as (typeof CONTACT_SUBJECT_OPTIONS)[number])
-        ? undefined
-        : validationMessages.subject
-    }
-    return value ? undefined : validationMessages[name]
+    return validateAll(nextValues)[name]
   }
 
-  function validateAll(nextValues = values): FieldErrors {
-    return {
-      name: validateField('name', nextValues),
-      email: validateField('email', nextValues),
-      subject: validateField('subject', nextValues),
-      message: validateField('message', nextValues),
-    }
+  function hasErrors(nextErrors: FieldErrors) {
+    return FIELD_NAMES.some(field => Boolean(nextErrors[field]))
   }
 
   function handleBlur(field: FieldName) {
-    setErrors(current => ({
-      ...current,
-      [field]: validateField(field),
-    }))
+    setErrors(current => {
+      const nextError = validateField(field)
+      if (current[field] === nextError) {
+        return current
+      }
+      return {
+        ...current,
+        [field]: nextError,
+      }
+    })
   }
 
   function setField(name: keyof ContactFormValues, value: string) {
     setValues(current => {
       const nextValues = { ...current, [name]: value }
 
-      if (isFieldName(name)) {
+      if (FIELD_NAMES.includes(name as FieldName)) {
+        const fieldName = name as FieldName
         setErrors(currentErrors =>
-          currentErrors[name] === undefined
+          currentErrors[fieldName] === undefined
             ? currentErrors
-            : { ...currentErrors, [name]: validateField(name, nextValues) }
+            : { ...currentErrors, [fieldName]: validateField(fieldName, nextValues) }
         )
       }
 
@@ -106,14 +127,14 @@ export default function Contact() {
     const nextErrors = validateAll(nextValues)
     setErrors(nextErrors)
 
-    if (!isContactFormValid(nextValues)) {
+    if (hasErrors(nextErrors)) {
       return
     }
 
     await submitContact(nextValues)
   }
 
-  const canSubmit = isContactFormValid(values) && !isSubmitting
+  const canSubmit = contactSchema.safeParse(values).success && !isSubmitting
   const formError =
     status === 'error'
       ? error?.status === 429
@@ -134,8 +155,10 @@ export default function Contact() {
 
         {status === 'success' ? (
           <div
+            ref={successRef}
             role="status"
             aria-live="polite"
+            tabIndex={-1}
             className="mx-auto max-w-2xl rounded-lg border border-brand-electric-blue/20 bg-white p-8 text-center shadow-sm"
           >
             <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.successTitle')}</h3>
@@ -158,6 +181,7 @@ export default function Contact() {
                   value={values.name}
                   onChange={event => setField('name', event.target.value)}
                   onBlur={() => handleBlur('name')}
+                  aria-required="true"
                   aria-invalid={errors.name ? 'true' : undefined}
                   aria-describedby={errors.name ? 'contact-name-error' : undefined}
                   className={textInputClasses(Boolean(errors.name))}
@@ -174,6 +198,7 @@ export default function Contact() {
                   value={values.email}
                   onChange={event => setField('email', event.target.value)}
                   onBlur={() => handleBlur('email')}
+                  aria-required="true"
                   aria-invalid={errors.email ? 'true' : undefined}
                   aria-describedby={errors.email ? 'contact-email-error' : undefined}
                   className={textInputClasses(Boolean(errors.email))}
@@ -189,6 +214,7 @@ export default function Contact() {
                   value={values.subject}
                   onChange={event => setField('subject', event.target.value)}
                   onBlur={() => handleBlur('subject')}
+                  aria-required="true"
                   aria-invalid={errors.subject ? 'true' : undefined}
                   aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
                   className={textInputClasses(Boolean(errors.subject))}
@@ -210,6 +236,7 @@ export default function Contact() {
                   value={values.message}
                   onChange={event => setField('message', event.target.value)}
                   onBlur={() => handleBlur('message')}
+                  aria-required="true"
                   aria-invalid={errors.message ? 'true' : undefined}
                   aria-describedby={errors.message ? 'contact-message-error' : undefined}
                   className={cn(textInputClasses(Boolean(errors.message)), 'min-h-36 resize-y')}

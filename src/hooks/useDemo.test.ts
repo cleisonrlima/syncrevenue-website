@@ -1,7 +1,9 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import i18next from 'i18next'
+import '@/i18n'
 import { DemoApiError, postDemo } from '@/lib/api'
-import { useDemo, type DemoFormValues } from './useDemo'
+import { createDemoSchema, isDemoFormValid, useDemo, type DemoFormValues } from './useDemo'
 
 vi.mock('@/lib/api', async importOriginal => {
   const actual = await importOriginal<typeof import('@/lib/api')>()
@@ -26,9 +28,28 @@ const validValues: DemoFormValues = {
 
 beforeEach(() => {
   postDemoMock.mockReset()
+  i18next.changeLanguage('en')
 })
 
 describe('useDemo', () => {
+  it('exports a locale-aware Zod schema for demo validation messages', async () => {
+    expect(createDemoSchema(i18next.t).safeParse({ ...validValues, name: '' }).error?.issues[0]?.message).toBe(
+      'Full name is required'
+    )
+
+    await i18next.changeLanguage('es')
+    expect(createDemoSchema(i18next.t).safeParse({ ...validValues, gds: '' }).error?.issues[0]?.message).toBe(
+      'Por favor seleccione su GDS principal'
+    )
+  })
+
+  it('validates required fields, option allowlists, and locale allowlist', () => {
+    expect(isDemoFormValid(validValues)).toBe(true)
+    expect(isDemoFormValid({ ...validValues, role: 'Sales' })).toBe(false)
+    expect(isDemoFormValid({ ...validValues, gds: 'Apollo' })).toBe(false)
+    expect(isDemoFormValid({ ...validValues, locale: 'fr' as DemoFormValues['locale'] })).toBe(false)
+  })
+
   it('submits a valid payload and transitions through submitting to success', async () => {
     let resolvePost: (value: { success: true; message: string }) => void = () => {}
     postDemoMock.mockReturnValue(
