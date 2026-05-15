@@ -1,6 +1,6 @@
 # Story 1.9: Security & Client References Sections
 
-Status: review
+Status: done
 
 ## Story
 
