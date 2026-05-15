@@ -2,7 +2,22 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Story 1.4 done — App shell, routing & navigation + all review patches applied. Story 1.5 next.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Next: Epic 2 — Story 2.1 (backend infrastructure: DB schema, DAOs, middleware).
+
+**New since Story 1.4:**
+- Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
+- Privacy page implemented: `pages/Privacy.tsx` + tests
+- 404 page: `pages/NotFound.tsx`
+- Test files added: `Hero.test.tsx`, `SyncRevenue.test.tsx`, `Services.test.tsx`, `Comparison.test.tsx`, `Team.test.tsx`, `Security.test.tsx`, `ClientReferences.test.tsx`, `Sections.i18n.test.tsx`, `Story16.responsive.test.tsx`, `Home.test.tsx`, `Home.story-1-6.e2e.test.tsx`, `Home.story-1-7.e2e.test.tsx`, `Home.story-1-8.e2e.test.tsx`, `Home.story-1-9.e2e.test.tsx`, `Privacy.test.tsx`, `Privacy.story-1-10.e2e.test.tsx`
+- Total: 20 test files, 87/87 tests pass
+
+**New since Epic 1 retrospective (Test Design Epic 1 gap closure, 2026-05-15):**
+- Test artifacts: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (full risk + coverage plan)
+- New unit tests: `src/i18n/index.test.ts` deep-key parity (+2), `src/lib/brand-tokens.contrast.test.ts` R-A2 lock (+6), `src/components/sections/ClientReferences.allowlist.test.tsx` R-B1 (+4). Total: 22 files, **99/99 pass**.
+- Playwright real-browser e2e scaffold under `tests/e2e/` (smoke, axe a11y, mobile overlay, locale switch, skip link). Run `npm run test:e2e:install` then `npm run test:e2e`.
+- Lighthouse CI configs: `lighthouserc.json` (desktop), `lighthouserc.mobile.json`. Run `npm run lhci` or `npm run lhci:mobile`.
+- GitHub Actions: `.github/workflows/quality.yml` — unit + Playwright + Lighthouse CI on PR/push to master.
+- Vault: `vault/Planning/client-references-allowlist.md` (R-B1 single source of truth).
 
 ---
 

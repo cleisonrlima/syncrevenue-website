@@ -36,6 +36,30 @@ function getTranslation(locale: string) {
     | undefined
 }
 
+type KeyShape = 'leaf' | 'array' | { [k: string]: KeyShape }
+
+function shapeOf(value: unknown): KeyShape {
+  if (Array.isArray(value)) {
+    return 'array'
+  }
+  if (value !== null && typeof value === 'object') {
+    const result: { [k: string]: KeyShape } = {}
+    for (const key of Object.keys(value as Record<string, unknown>).sort()) {
+      result[key] = shapeOf((value as Record<string, unknown>)[key])
+    }
+    return result
+  }
+  return 'leaf'
+}
+
+function expectDeepKeyParity(baseLocale: string, targetLocale: string) {
+  const base = i18next.getDataByLanguage(baseLocale)?.translation
+  const target = i18next.getDataByLanguage(targetLocale)?.translation
+  expect(base).toBeDefined()
+  expect(target).toBeDefined()
+  expect(shapeOf(target)).toEqual(shapeOf(base))
+}
+
 describe('i18n initialization', () => {
   it('has three supported locales', () => {
     const langs = i18next.options.supportedLngs as string[]
@@ -66,6 +90,14 @@ describe('i18n initialization', () => {
     const enKeys = Object.keys(i18next.getDataByLanguage('en')?.translation ?? {}).sort()
     const esKeys = Object.keys(i18next.getDataByLanguage('es')?.translation ?? {}).sort()
     expect(esKeys).toEqual(enKeys)
+  })
+
+  it('pt-BR translations have deep key parity with EN (R-I1)', () => {
+    expectDeepKeyParity('en', 'pt-BR')
+  })
+
+  it('es translations have deep key parity with EN (R-I1)', () => {
+    expectDeepKeyParity('en', 'es')
   })
 
   it('all locales expose team.members with required public fields', () => {

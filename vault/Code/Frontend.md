@@ -73,3 +73,46 @@
 | 1.1 | src/main.tsx, src/App.tsx, src/index.css, src/vite-env.d.ts, src/lib/utils.ts, all stub components/pages |
 | 1.2 | src/components/ui/GradientButton.tsx, src/components/ui/SectionHeader.tsx, src/components/sections/SectionSkeleton.tsx, tailwind.config.ts, src/index.css |
 | 1.4 | src/App.tsx (route tree + skip link + `/admin` index redirect), src/components/layout/Navbar.tsx + Navbar.test.tsx, src/components/layout/Footer.tsx (dynamic copyright), src/components/layout/AdminLayout.tsx, src/pages/Home.tsx (ErrorBoundary per section), src/pages/Privacy.tsx (i18n defaultValues), src/index.css (smooth scroll), src/components/ErrorBoundary.tsx (new) |
+
+---
+
+## Testing Infrastructure (added 2026-05-15 — Test Design Epic 1 gap closure)
+
+### Unit / jsdom (Vitest)
+
+- `npm run test:run` — 22 files, 99 tests
+- New since baseline:
+  - `src/i18n/index.test.ts` — extended with `expectDeepKeyParity()` helper (R-I1)
+  - `src/lib/brand-tokens.contrast.test.ts` — WCAG 2.1 AA contrast guard locking the R-A2 Electric Blue exception
+  - `src/components/sections/ClientReferences.allowlist.test.tsx` — parses `vault/Planning/client-references-allowlist.md` and asserts every rendered `agencyName` is approved; placeholders fail when `NODE_ENV === 'production'` (R-B1)
+- Vitest excludes `tests/e2e/**` (configured in `vite.config.ts`)
+
+### Real-browser e2e (Playwright)
+
+- Config: `playwright.config.ts` — projects: chromium, webkit, mobile-chrome, mobile-webkit
+- Specs under `tests/e2e/`:
+  - `smoke.spec.ts` — P0-1, `/` and `/privacy` mount, no console errors
+  - `a11y-axe.spec.ts` — P0-6 / P1-8 / P1-9, `@axe-core/playwright` WCAG 2.1 AA scan × 2 routes × 3 locales (color-contrast disabled to honor R-A2 exception)
+  - `mobile-overlay.spec.ts` — P0-5 / P1-4, hamburger open + Esc close + focus trap (Pixel 7 device)
+  - `locale-switch.spec.ts` — P1-1 / P1-2, locale switch happy path on `/` and `/privacy` without navigation; scroll preservation
+  - `skip-link.spec.ts` — P1-5, skip-to-main is first tab stop
+- Local bootstrap: `npm run test:e2e:install` once → `npm run test:e2e`
+- Auto-starts dev server via `webServer` config (or honors `PLAYWRIGHT_BASE_URL` for preview/prod URL)
+
+### Performance gates (Lighthouse CI)
+
+- `lighthouserc.json` — desktop preset, runs against `npx vite preview --port 4173`, asserts perf ≥ 90, a11y = 100, best-practices ≥ 95, LCP ≤ 2500ms, CLS < 0.1, TBT < 200ms
+- `lighthouserc.mobile.json` — mobile preset, same web-vitals budgets (covers NFR-P1, NFR-P2, NFR-P3)
+- `npm run lhci` / `npm run lhci:mobile`
+
+### CI
+
+- `.github/workflows/quality.yml` — three jobs on PR + push to master/main:
+  1. **unit** — `tsc --noEmit` + Vitest
+  2. **e2e** — Playwright (chromium + webkit) + axe (needs **unit**)
+  3. **lighthouse** — Lighthouse CI desktop + mobile (needs **unit**)
+- Playwright HTML report uploaded as artifact on failure
+
+### Risk traceability
+
+All new tests trace to risk IDs documented in `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (R-A2, R-A3, R-B1, R-I1, R-I2, R-O1, R-O2, R-O3, R-O4, R-P1, R-P2, R-T5).

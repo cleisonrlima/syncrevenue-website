@@ -8,3 +8,6 @@ data/
 .DS_Store
 Thumbs.db
 .claude/.story-automator-active
+playwright-report/
+test-results/
+.lighthouseci/

@@ -22,8 +22,13 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 1.6 | SyncRevenue & Services Sections | `[x]` |
 | 1.7 | Comparison Section | `[x]` |
 | 1.8 | Team Section | `[x]` |
-| 1.9 | Security & Client References Sections | `[ ]` |
-| 1.10 | Privacy Policy Page | `[ ]` |
+| 1.9 | Security & Client References Sections | `[x]` |
+| 1.10 | Privacy Policy Page | `[x]` |
+| 1.11 | Test Infrastructure Baseline (Epic 1 gap closure) | `[x]` |
+
+**Epic 1 Retrospective:** `[x]` done — see `_bmad-output/implementation-artifacts/epic-1-retro-2026-05-15.md`
+
+**Epic 1 Test Design:** `[x]` done — see `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan). Tier-1 mitigations landed 2026-05-15: deep-key parity test, brand-tokens contrast guard (R-A2), client-references allowlist + test (R-B1), Playwright scaffold (R-O2), axe scan spec (R-O3), Lighthouse CI configs (R-P1/P2/O4), GitHub Actions workflow.
 
 ## Epic 2 — Lead Capture & Conversion (Phase 1 MVP Part B)
 
