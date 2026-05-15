@@ -10,19 +10,28 @@
     "headline": "Gestión de Comisiones para Agencias de Viajes Modernas",
     "subheadline": "Recupere el 15–25% de los ingresos por comisiones perdidos en discrepancias de GDS, disputas de débitos y fallos de reconciliación BSP/ARC.",
     "cta": "Programar Demo",
+    "tertiaryLink": "Más información sobre recuperación de comisiones",
     "stats": {
-      "assertivity": "99,99%",
-      "assertivityLabel": "Asertividad de Comisiones",
-      "leakage": "15–25%",
-      "leakageLabel": "Fuga de Ingresos Recuperada",
-      "gds": "Multi-GDS",
-      "gdsLabel": "Amadeus · Sabre · Galileo · Worldspan"
+      "0": {
+        "label": "Asertividad de Comisiones",
+        "value": "99,99%"
+      },
+      "1": {
+        "label": "Fuga de Ingresos Recuperada",
+        "value": "15–25%"
+      },
+      "2": {
+        "label": "Amadeus · Sabre · Galileo · Worldspan",
+        "value": "Multi-GDS"
+      }
     },
-    "trust": {
-      "encryption": "Transmisión Cifrada",
-      "certification": "Hoja de Ruta de Certificación",
-      "insurance": "Seguro Contractual",
-      "references": "Agencias de EE.UU. Referenciadas"
+    "trustBar": {
+      "items": {
+        "0": "Transmisión Cifrada",
+        "1": "Hoja de Ruta de Certificación",
+        "2": "Seguro Contractual",
+        "3": "Agencias de EE.UU. Referenciadas"
+      }
     }
   },
   "syncrevenue": {

@@ -10,19 +10,28 @@
     "headline": "Commission Management Built for Modern Travel Agencies",
     "subheadline": "Recover 15–25% of commission revenue lost to GDS discrepancies, debit memo disputes, and manual BSP/ARC reconciliation failures.",
     "cta": "Schedule a Demo",
+    "tertiaryLink": "Learn about commission recovery",
     "stats": {
-      "assertivity": "99.99%",
-      "assertivityLabel": "Commission Assertivity",
-      "leakage": "15–25%",
-      "leakageLabel": "Revenue Leakage Recovered",
-      "gds": "Multi-GDS",
-      "gdsLabel": "Amadeus · Sabre · Galileo · Worldspan"
+      "0": {
+        "label": "Commission Assertivity",
+        "value": "99.99%"
+      },
+      "1": {
+        "label": "Revenue Leakage Recovered",
+        "value": "15–25%"
+      },
+      "2": {
+        "label": "Amadeus · Sabre · Galileo · Worldspan",
+        "value": "Multi-GDS"
+      }
     },
-    "trust": {
-      "encryption": "Encrypted Transmission",
-      "certification": "Certification Roadmap",
-      "insurance": "Contract Insurance",
-      "references": "Referenced US Agencies"
+    "trustBar": {
+      "items": {
+        "0": "Encrypted Transmission",
+        "1": "Certification Roadmap",
+        "2": "Contract Insurance",
+        "3": "Referenced US Agencies"
+      }
     }
   },
   "syncrevenue": {

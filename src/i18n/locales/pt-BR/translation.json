@@ -10,19 +10,28 @@
     "headline": "Gestão de Comissões para Agências de Viagem Modernas",
     "subheadline": "Recupere 15–25% da receita de comissões perdida em discrepâncias de GDS, disputas de débitos e falhas de reconciliação BSP/ARC.",
     "cta": "Agendar Demo",
+    "tertiaryLink": "Saiba mais sobre recuperação de comissões",
     "stats": {
-      "assertivity": "99,99%",
-      "assertivityLabel": "Assertividade de Comissões",
-      "leakage": "15–25%",
-      "leakageLabel": "Vazamento de Receita Recuperado",
-      "gds": "Multi-GDS",
-      "gdsLabel": "Amadeus · Sabre · Galileo · Worldspan"
+      "0": {
+        "label": "Assertividade de Comissões",
+        "value": "99,99%"
+      },
+      "1": {
+        "label": "Vazamento de Receita Recuperado",
+        "value": "15–25%"
+      },
+      "2": {
+        "label": "Amadeus · Sabre · Galileo · Worldspan",
+        "value": "Multi-GDS"
+      }
     },
-    "trust": {
-      "encryption": "Transmissão Criptografada",
-      "certification": "Roadmap de Certificação",
-      "insurance": "Seguro Contratual",
-      "references": "Agências dos EUA Referenciadas"
+    "trustBar": {
+      "items": {
+        "0": "Transmissão Criptografada",
+        "1": "Roadmap de Certificação",
+        "2": "Seguro Contratual",
+        "3": "Agências dos EUA Referenciadas"
+      }
     }
   },
   "syncrevenue": {
