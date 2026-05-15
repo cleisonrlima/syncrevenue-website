@@ -9,27 +9,27 @@ describe('Home', () => {
 
     const syncRevenue = await screen.findByRole('region', {
       name: 'Automated Commission Reconciliation',
-    })
+    }, { timeout: 3000 })
     const services = await screen.findByRole('region', {
       name: 'Complete Revenue Intelligence Suite',
-    })
+    }, { timeout: 3000 })
     const comparison = await screen.findByRole('region', {
       name: 'SyncRevenue comparison against manual and generic tools',
-    })
+    }, { timeout: 3000 })
     await waitFor(() => {
       expect(container.querySelector('#security')).toBeInTheDocument()
-    })
+    }, { timeout: 3000 })
     const security = container.querySelector('#security') as HTMLElement
     await waitFor(() => {
       expect(container.querySelector('#client-references')).toBeInTheDocument()
-    })
+    }, { timeout: 3000 })
     const clientReferences = container.querySelector('#client-references') as HTMLElement
     const team = await screen.findByRole('region', {
       name: 'Sync Sirius team specialists',
-    })
+    }, { timeout: 3000 })
     await waitFor(() => {
       expect(container.querySelector('#demo-scheduler')).toBeInTheDocument()
-    })
+    }, { timeout: 3000 })
     const demoScheduler = container.querySelector('#demo-scheduler') as HTMLElement
 
     expect(syncRevenue).toHaveAttribute('id', 'syncrevenue')

@@ -6,6 +6,7 @@ type SectionHeaderProps = {
   subtext?: string
   variant?: 'light' | 'dark'
   className?: string
+  headingId?: string
 }
 
 export default function SectionHeader({
@@ -14,6 +15,7 @@ export default function SectionHeader({
   subtext,
   variant = 'light',
   className,
+  headingId,
 }: SectionHeaderProps) {
   const isLight = variant === 'light'
 
@@ -28,6 +30,7 @@ export default function SectionHeader({
         {eyebrow}
       </p>
       <h2
+        id={headingId}
         className={cn(
           'text-3xl lg:text-4xl font-bold mb-4',
           isLight ? 'text-brand-navy' : 'text-white',

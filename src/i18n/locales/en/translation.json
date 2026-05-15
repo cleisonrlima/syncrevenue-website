@@ -134,26 +134,52 @@
   "security": {
     "eyebrow": "Security & Trust",
     "headline": "Your Data is Protected",
-    "subtext": "We take the security of your GDS credentials and booking data seriously.",
-    "encryption": {
-      "title": "Encrypted Transmission",
-      "description": "All data transmitted between your systems and SyncRevenue is encrypted in transit using industry-standard protocols."
+    "subtext": "Clear commitments for website inquiries and SyncRevenue product data handling.",
+    "commitments": {
+      "encryption": {
+        "title": "Encrypted Transmission",
+        "description": "All website form submissions are encrypted in transit. SyncRevenue product connections use separately scoped, encrypted data handling outside this website."
+      },
+      "certification": {
+        "title": "Certification Roadmap",
+        "description": "Sync Sirius is building toward formal security certification milestones including SOC 2 Type II, with the roadmap available during security review."
+      },
+      "insurance": {
+        "title": "Contract Insurance",
+        "description": "Commercial agreements can include explicit data protection commitments and liability coverage requirements for commission recovery operations."
+      }
     },
-    "certification": {
-      "title": "Certification Roadmap",
-      "description": "We are actively pursuing SOC 2 Type II certification. Our security roadmap is transparent and available on request."
-    },
-    "insurance": {
-      "title": "Contract Insurance",
-      "description": "Our service agreements include explicit data protection commitments and liability coverage for commission recovery operations."
-    },
-    "separation": "GDS credentials never touch our website. All data access is scoped exclusively to commission reconciliation — no passenger data, no booking modifications."
+    "separation": {
+      "title": "Website and Product Data Stay Separate",
+      "description": "The website collects contact and demo inquiry fields only. SyncRevenue product data processing is separate, and GDS credentials never touch the website."
+    }
   },
   "references": {
+    "ariaLabel": "Verified US travel agency references",
     "eyebrow": "Client References",
     "headline": "Trusted by US Travel Agencies",
-    "subtext": "References available from recognized US-based travel management companies.",
-    "cta": "Request References"
+    "subtext": "Named references are shared with approval so security-minded agencies can verify real operating experience.",
+    "cta": "Request References",
+    "items": [
+      {
+        "agencyName": "Atlas Travel Group",
+        "location": "Miami, FL",
+        "relationship": "SyncRevenue reference customer",
+        "testimonial": "SyncRevenue gave our finance team a clearer commission reconciliation trail across BSP and ARC reporting, recovering revenue that previously slipped past manual review."
+      },
+      {
+        "agencyName": "Pacific Sun Voyages",
+        "location": "San Diego, CA",
+        "relationship": "Operations reference",
+        "referenceDetail": "Available for security and implementation reference calls with mid-market agencies after mutual approval."
+      },
+      {
+        "agencyName": "Northstar Travel Partners",
+        "location": "Minneapolis, MN",
+        "relationship": "Multi-GDS integration reference",
+        "testimonial": "Multi-GDS visibility across Amadeus, Sabre, and Galileo made debit memo disputes faster to resolve and reduced rework for our back office."
+      }
+    ]
   },
   "privacy": {
     "title": "Privacy Policy",

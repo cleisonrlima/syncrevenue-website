@@ -13,8 +13,23 @@ type TeamTranslation = {
   }>
 }
 
+type SecurityTranslation = {
+  commitments: Record<string, { title: string; description: string }>
+  separation: { title: string; description: string }
+}
+
+type ReferenceTranslation = {
+  items?: unknown
+}
+
 function getTeamTranslation(locale: string) {
   return (i18next.getDataByLanguage(locale)?.translation as unknown as { team: TeamTranslation }).team
+}
+
+function getTranslation(locale: string) {
+  return i18next.getDataByLanguage(locale)?.translation as
+    | { security?: SecurityTranslation; references?: ReferenceTranslation }
+    | undefined
 }
 
 describe('i18n initialization', () => {
@@ -81,6 +96,41 @@ describe('i18n initialization', () => {
       expect(ptMembers[index].bio).not.toBe(member.bio)
       expect(esMembers[index].role).not.toBe(member.role)
       expect(esMembers[index].bio).not.toBe(member.bio)
+    })
+  })
+
+  it('all locales expose required security commitment keys', () => {
+    ;['en', 'pt-BR', 'es'].forEach(locale => {
+      const security = getTranslation(locale)?.security
+
+      expect(typeof security?.commitments.encryption.title).toBe('string')
+      expect(typeof security?.commitments.encryption.description).toBe('string')
+      expect(typeof security?.commitments.certification.title).toBe('string')
+      expect(typeof security?.commitments.certification.description).toBe('string')
+      expect(typeof security?.commitments.insurance.title).toBe('string')
+      expect(typeof security?.commitments.insurance.description).toBe('string')
+      expect(typeof security?.separation.title).toBe('string')
+      expect(typeof security?.separation.description).toBe('string')
+      expect(security?.separation.description).toMatch(/GDS/i)
+    })
+  })
+
+  it('validates reference item contract when approved production references are present', () => {
+    ;['en', 'pt-BR', 'es'].forEach(locale => {
+      const references = getTranslation(locale)?.references
+
+      if (references?.items === undefined) {
+        return
+      }
+
+      expect(Array.isArray(references.items)).toBe(true)
+      ;(references.items as Array<Record<string, unknown>>).forEach(item => {
+        expect(typeof item.agencyName).toBe('string')
+        expect(typeof item.location).toBe('string')
+        expect(typeof item.relationship).toBe('string')
+        expect(typeof item.testimonial === 'string' || typeof item.referenceDetail === 'string').toBe(true)
+        expect(item.agencyName).not.toMatch(/a leading TMC|recognized agency/i)
+      })
     })
   })
 })

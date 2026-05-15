@@ -134,26 +134,52 @@
   "security": {
     "eyebrow": "Segurança & Confiança",
     "headline": "Seus Dados Estão Protegidos",
-    "subtext": "Levamos a sério a segurança de suas credenciais GDS e dados de reservas.",
-    "encryption": {
-      "title": "Transmissão Criptografada",
-      "description": "Todos os dados transmitidos entre seus sistemas e o SyncRevenue são criptografados em trânsito usando protocolos padrão da indústria."
+    "subtext": "Compromissos claros para consultas feitas pelo site e para o tratamento de dados do produto SyncRevenue.",
+    "commitments": {
+      "encryption": {
+        "title": "Transmissão Criptografada",
+        "description": "Todos os envios de formulários do site são criptografados em trânsito. As conexões do produto SyncRevenue usam tratamento de dados criptografado e separado deste site."
+      },
+      "certification": {
+        "title": "Roadmap de Certificação",
+        "description": "A Sync Sirius está avançando rumo a marcos formais de certificação de segurança, incluindo SOC 2 Tipo II, com o roadmap disponível durante a avaliação de segurança."
+      },
+      "insurance": {
+        "title": "Seguro Contratual",
+        "description": "Contratos comerciais podem incluir compromissos explícitos de proteção de dados e requisitos de cobertura de responsabilidade para operações de recuperação de comissões."
+      }
     },
-    "certification": {
-      "title": "Roadmap de Certificação",
-      "description": "Estamos ativamente buscando a certificação SOC 2 Tipo II. Nosso roadmap de segurança é transparente e disponível mediante solicitação."
-    },
-    "insurance": {
-      "title": "Seguro Contratual",
-      "description": "Nossos contratos de serviço incluem compromissos explícitos de proteção de dados e cobertura de responsabilidade para operações de recuperação de comissões."
-    },
-    "separation": "Credenciais GDS nunca passam pelo nosso site. Todo acesso a dados é exclusivamente para reconciliação de comissões — sem dados de passageiros, sem modificações de reservas."
+    "separation": {
+      "title": "Dados do Site e do Produto Ficam Separados",
+      "description": "O site coleta apenas campos de contato e solicitação de demo. O processamento de dados do produto SyncRevenue é separado, e credenciais GDS nunca passam pelo site."
+    }
   },
   "references": {
+    "ariaLabel": "Referências verificadas de agências de viagem dos EUA",
     "eyebrow": "Referências de Clientes",
     "headline": "Confiado por Agências de Viagem nos EUA",
-    "subtext": "Referências disponíveis de empresas de gestão de viagens reconhecidas nos EUA.",
-    "cta": "Solicitar Referências"
+    "subtext": "Referências nomeadas são compartilhadas com aprovação para que agências focadas em segurança possam verificar experiência operacional real.",
+    "cta": "Solicitar Referências",
+    "items": [
+      {
+        "agencyName": "Atlas Travel Group",
+        "location": "Miami, FL",
+        "relationship": "Cliente de referência SyncRevenue",
+        "testimonial": "O SyncRevenue deu à nossa equipe financeira uma trilha de conciliação de comissões mais clara em relatórios BSP e ARC, recuperando receita que antes escapava da revisão manual."
+      },
+      {
+        "agencyName": "Pacific Sun Voyages",
+        "location": "San Diego, CA",
+        "relationship": "Referência operacional",
+        "referenceDetail": "Disponível para chamadas de referência de segurança e implementação com agências de médio porte após aprovação mútua."
+      },
+      {
+        "agencyName": "Northstar Travel Partners",
+        "location": "Minneapolis, MN",
+        "relationship": "Referência de integração multi-GDS",
+        "testimonial": "A visibilidade multi-GDS entre Amadeus, Sabre e Galileo tornou as disputas de debit memos mais rápidas de resolver e reduziu o retrabalho do nosso back office."
+      }
+    ]
   },
   "privacy": {
     "title": "Política de Privacidade",

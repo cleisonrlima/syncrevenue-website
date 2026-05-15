@@ -5,6 +5,8 @@ import SyncRevenue from './SyncRevenue'
 import Services from './Services'
 import Comparison from './Comparison'
 import Team from './Team'
+import Security from './Security'
+import ClientReferences from './ClientReferences'
 
 describe('Section i18n', () => {
   afterEach(async () => {
@@ -71,5 +73,35 @@ describe('Section i18n', () => {
     expect(screen.getByRole('heading', { name: 'Especialistas em Distribuição Aérea' })).toBeInTheDocument()
     expect(screen.getByText('Liderança em Distribuição Aérea e Estratégia de Comissões')).toBeInTheDocument()
     expect(screen.getByText(/operações GDS, reconciliação BSP\/ARC/)).toBeInTheDocument()
+  })
+
+  it('updates Security copy when locale changes', async () => {
+    const { rerender } = render(<Security />)
+
+    expect(screen.getByRole('heading', { name: 'Your Data is Protected' })).toBeInTheDocument()
+    expect(screen.getByText(/GDS credentials never touch the website/)).toBeInTheDocument()
+
+    await act(async () => {
+      await i18next.changeLanguage('es')
+    })
+    rerender(<Security />)
+
+    expect(screen.getByRole('heading', { name: 'Sus Datos Están Protegidos' })).toBeInTheDocument()
+    expect(screen.getByText(/Las credenciales GDS nunca tocan el sitio web/)).toBeInTheDocument()
+  })
+
+  it('updates ClientReferences copy when locale changes', async () => {
+    const { rerender } = render(<ClientReferences />)
+
+    expect(screen.getByRole('heading', { name: 'Trusted by US Travel Agencies' })).toBeInTheDocument()
+    expect(screen.getByText(/Named references are shared with approval/)).toBeInTheDocument()
+
+    await act(async () => {
+      await i18next.changeLanguage('pt-BR')
+    })
+    rerender(<ClientReferences />)
+
+    expect(screen.getByRole('heading', { name: 'Confiado por Agências de Viagem nos EUA' })).toBeInTheDocument()
+    expect(screen.getByText(/Referências nomeadas são compartilhadas com aprovação/)).toBeInTheDocument()
   })
 })

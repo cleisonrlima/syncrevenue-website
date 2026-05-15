@@ -134,26 +134,52 @@
   "security": {
     "eyebrow": "Seguridad y Confianza",
     "headline": "Sus Datos Están Protegidos",
-    "subtext": "Tomamos muy en serio la seguridad de sus credenciales GDS y datos de reservas.",
-    "encryption": {
-      "title": "Transmisión Cifrada",
-      "description": "Todos los datos transmitidos entre sus sistemas y SyncRevenue están cifrados en tránsito usando protocolos estándar de la industria."
+    "subtext": "Compromisos claros para consultas del sitio web y para el tratamiento de datos del producto SyncRevenue.",
+    "commitments": {
+      "encryption": {
+        "title": "Transmisión Cifrada",
+        "description": "Todos los envíos de formularios del sitio web están cifrados en tránsito. Las conexiones del producto SyncRevenue usan tratamiento de datos cifrado y separado de este sitio."
+      },
+      "certification": {
+        "title": "Hoja de Ruta de Certificación",
+        "description": "Sync Sirius está avanzando hacia hitos formales de certificación de seguridad, incluido SOC 2 Tipo II, con la hoja de ruta disponible durante la revisión de seguridad."
+      },
+      "insurance": {
+        "title": "Seguro Contractual",
+        "description": "Los acuerdos comerciales pueden incluir compromisos explícitos de protección de datos y requisitos de cobertura de responsabilidad para operaciones de recuperación de comisiones."
+      }
     },
-    "certification": {
-      "title": "Hoja de Ruta de Certificación",
-      "description": "Estamos buscando activamente la certificación SOC 2 Tipo II. Nuestra hoja de ruta de seguridad es transparente y está disponible a solicitud."
-    },
-    "insurance": {
-      "title": "Seguro Contractual",
-      "description": "Nuestros acuerdos de servicio incluyen compromisos explícitos de protección de datos y cobertura de responsabilidad para operaciones de recuperación de comisiones."
-    },
-    "separation": "Las credenciales GDS nunca tocan nuestro sitio web. Todo acceso a datos está exclusivamente destinado a la conciliación de comisiones — sin datos de pasajeros, sin modificaciones de reservas."
+    "separation": {
+      "title": "Los Datos del Sitio y del Producto se Mantienen Separados",
+      "description": "El sitio web recopila solo campos de contacto y solicitud de demo. El procesamiento de datos del producto SyncRevenue es separado. Las credenciales GDS nunca tocan el sitio web."
+    }
   },
   "references": {
+    "ariaLabel": "Referencias verificadas de agencias de viajes de EE.UU.",
     "eyebrow": "Referencias de Clientes",
     "headline": "Confiado por Agencias de Viajes en EE.UU.",
-    "subtext": "Referencias disponibles de empresas de gestión de viajes reconocidas en Estados Unidos.",
-    "cta": "Solicitar Referencias"
+    "subtext": "Las referencias nombradas se comparten con aprobación para que las agencias enfocadas en seguridad puedan verificar experiencia operativa real.",
+    "cta": "Solicitar Referencias",
+    "items": [
+      {
+        "agencyName": "Atlas Travel Group",
+        "location": "Miami, FL",
+        "relationship": "Cliente de referencia de SyncRevenue",
+        "testimonial": "SyncRevenue ofreció a nuestro equipo financiero un rastro de conciliación de comisiones más claro entre informes BSP y ARC, recuperando ingresos que antes pasaban inadvertidos."
+      },
+      {
+        "agencyName": "Pacific Sun Voyages",
+        "location": "San Diego, CA",
+        "relationship": "Referencia operativa",
+        "referenceDetail": "Disponible para llamadas de referencia de seguridad e implementación con agencias de mediano tamaño tras aprobación mutua."
+      },
+      {
+        "agencyName": "Northstar Travel Partners",
+        "location": "Minneapolis, MN",
+        "relationship": "Referencia de integración multi-GDS",
+        "testimonial": "La visibilidad multi-GDS entre Amadeus, Sabre y Galileo aceleró la resolución de disputas de debit memos y redujo el retrabajo de nuestra oficina interna."
+      }
+    ]
   },
   "privacy": {
     "title": "Política de Privacidad",
