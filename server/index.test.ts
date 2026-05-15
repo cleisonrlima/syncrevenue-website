@@ -7,6 +7,7 @@ import type { Express } from 'express'
 import jwt from 'jsonwebtoken'
 import { request } from './test-utils/request'
 import { AUTH_COOKIE_NAME } from './middleware/auth'
+import { FORM_RATE_LIMIT_MAX } from './middleware/rateLimit'
 
 const tempDbDir = fs.mkdtempSync(path.join(os.tmpdir(), 'syncrev-db-'))
 const tempDbPath = path.join(tempDbDir, 'test.db')
@@ -15,6 +16,20 @@ process.env.ALLOWED_ORIGIN = 'http://localhost:5173'
 process.env.JWT_SECRET = 'test-secret'
 
 let app: Express
+
+function expectSecurityHeaders(r: Awaited<ReturnType<typeof request>>) {
+  expect(r.headers['content-security-policy']).toBeTruthy()
+  expect(r.headers['x-content-type-options']).toBe('nosniff')
+  expect(r.headers['x-frame-options']).toBeTruthy()
+  expect(r.headers['referrer-policy']).toBeTruthy()
+  expect(r.headers['x-powered-by']).toBeUndefined()
+}
+
+function expectAllowedCorsOrigin(r: Awaited<ReturnType<typeof request>>) {
+  const acao = r.headers['access-control-allow-origin']
+  expect(acao).toBe('http://localhost:5173')
+  expect(acao).not.toBe('*')
+}
 
 beforeAll(async () => {
   const { createApp } = await import('./index')
@@ -38,9 +53,8 @@ describe('Express bootstrap', () => {
 
   it('applies Helmet default security headers', async () => {
     const r = await request(app, { path: '/api/health' })
-    expect(r.headers['x-content-type-options']).toBe('nosniff')
+    expectSecurityHeaders(r)
     expect(r.headers['x-dns-prefetch-control']).toBeTruthy()
-    expect(r.headers['x-powered-by']).toBeUndefined()
   })
 
   it('CORS Access-Control-Allow-Origin matches ALLOWED_ORIGIN, never wildcard', async () => {
@@ -48,9 +62,7 @@ describe('Express bootstrap', () => {
       path: '/api/health',
       headers: { Origin: 'http://localhost:5173' },
     })
-    const acao = r.headers['access-control-allow-origin']
-    expect(acao).toBe('http://localhost:5173')
-    expect(acao).not.toBe('*')
+    expectAllowedCorsOrigin(r)
   })
 
   it('CORS never returns wildcard, even for foreign origin', async () => {
@@ -67,10 +79,13 @@ describe('Express bootstrap', () => {
     const r = await request(app, {
       method: 'POST',
       path: '/api/demo',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', Origin: 'http://localhost:5173' },
       body: {},
+      remoteAddress: '127.0.4.1',
     })
     expect(r.status).toBe(400)
+    expectSecurityHeaders(r)
+    expectAllowedCorsOrigin(r)
     expect(r.json()).toEqual({
       success: false,
       message: 'Invalid demo request',
@@ -129,10 +144,33 @@ describe('Express bootstrap', () => {
   })
 
   it('returns JSON envelope for unknown API routes', async () => {
-    const r = await request(app, { path: '/api/missing' })
+    const r = await request(app, {
+      path: '/api/missing',
+      headers: { Origin: 'http://localhost:5173' },
+    })
     expect(r.status).toBe(404)
+    expectSecurityHeaders(r)
+    expectAllowedCorsOrigin(r)
     expect(r.headers['content-type']).toContain('application/json')
     expect(r.json()).toEqual({ success: false, message: 'Not found' })
+  })
+
+  it('keeps Helmet and restricted CORS headers on rate-limit 429 responses', async () => {
+    let r
+    for (let i = 0; i < FORM_RATE_LIMIT_MAX + 1; i += 1) {
+      r = await request(app, {
+        method: 'POST',
+        path: '/api/demo',
+        headers: { 'content-type': 'application/json', Origin: 'http://localhost:5173' },
+        body: {},
+        remoteAddress: '127.0.4.2',
+      })
+    }
+
+    expect(r?.status).toBe(429)
+    expectSecurityHeaders(r!)
+    expectAllowedCorsOrigin(r!)
+    expect(r?.json()).toEqual({ success: false, message: 'Too many requests' })
   })
 
   it('returns JSON envelope for malformed API JSON', async () => {

@@ -55,6 +55,21 @@ function latestDemoRequest(): { created_at: string } {
     .get() as { created_at: string }
 }
 
+function demoRows() {
+  return currentDb?.prepare('SELECT * FROM demo_requests ORDER BY id ASC').all() as Array<{
+    name: string
+    email: string
+    message: string | null
+  }>
+}
+
+function demoTableExists(): boolean {
+  const row = currentDb
+    ?.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'demo_requests'")
+    .get() as { name: string } | undefined
+  return row?.name === 'demo_requests'
+}
+
 beforeEach(async () => {
   await createIsolatedApp()
 })
@@ -157,6 +172,41 @@ describe('POST /api/demo', () => {
       field: 'locale',
     })
     expect(countDemoRequests().count).toBe(0)
+  })
+
+  it('stores SQL injection-shaped input literally without surfacing SQL errors', async () => {
+    const malicious = "Robert'); DROP TABLE demo_requests;--"
+    const response = await request(app, {
+      method: 'POST',
+      path: '/api/demo',
+      body: {
+        ...validPayload,
+        name: malicious,
+        email: 'robert.demo@example.com',
+        message: malicious,
+      },
+      remoteAddress: '127.0.2.50',
+    })
+
+    expect(response.status).toBe(201)
+    expect(response.body).not.toMatch(/SQLITE|syntax error|DROP TABLE/i)
+    expect(demoTableExists()).toBe(true)
+    expect(demoRows()).toMatchObject([
+      {
+        name: malicious,
+        email: 'robert.demo@example.com',
+        message: malicious,
+      },
+    ])
+
+    const followUp = await request(app, {
+      method: 'POST',
+      path: '/api/demo',
+      body: { ...validPayload, email: 'after-injection-demo@example.com' },
+      remoteAddress: '127.0.2.51',
+    })
+    expect(followUp.status).toBe(201)
+    expect(countDemoRequests().count).toBe(2)
   })
 
   it('does not let notification failure block the database success response', async () => {

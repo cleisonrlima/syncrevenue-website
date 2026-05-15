@@ -17,7 +17,10 @@ describe('formRateLimiter', () => {
     expect(r2.status).toBe(200)
     const r3 = await request(app, { method: 'POST', path: '/api/form' })
     expect(r3.status).toBe(429)
-    expect(r3.json()).toEqual({ success: false, message: expect.any(String) })
+    expect(r3.json()).toEqual({ success: false, message: 'Too many requests' })
+    expect(r3.headers.ratelimit).toBeTruthy()
+    expect(r3.headers['ratelimit-policy']).toBeTruthy()
+    expect(r3.headers['x-ratelimit-limit']).toBeUndefined()
   })
 
   it('default limiter exports correct constants', () => {

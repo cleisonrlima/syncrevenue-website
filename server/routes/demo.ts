@@ -1,12 +1,13 @@
 import { Router } from 'express'
-import { formRateLimiter } from '../middleware/rateLimit'
+import { createFormRateLimiter } from '../middleware/rateLimit'
 import { leadsDao } from '../dao/leads.dao'
 import { sendNotification } from '../lib/mailer'
 import { demoSchema } from '../schemas/demo.schema'
 
 const router = Router()
+const demoRateLimiter = createFormRateLimiter()
 
-router.post('/', formRateLimiter, (req, res) => {
+router.post('/', demoRateLimiter, (req, res) => {
   const result = demoSchema.safeParse(req.body)
 
   if (!result.success) {

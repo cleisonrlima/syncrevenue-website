@@ -1,12 +1,13 @@
 import { Router } from 'express'
-import { formRateLimiter } from '../middleware/rateLimit'
+import { createFormRateLimiter } from '../middleware/rateLimit'
 import { contactsDao } from '../dao/contacts.dao'
 import { sendNotification } from '../lib/mailer'
 import { contactSchema } from '../schemas/contact.schema'
 
 const router = Router()
+const contactRateLimiter = createFormRateLimiter()
 
-router.post('/', formRateLimiter, (req, res) => {
+router.post('/', contactRateLimiter, (req, res) => {
   const result = contactSchema.safeParse(req.body)
 
   if (!result.success) {

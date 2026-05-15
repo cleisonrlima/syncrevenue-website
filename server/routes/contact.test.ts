@@ -51,6 +51,13 @@ function contactRows() {
   }>
 }
 
+function contactTableExists(): boolean {
+  const row = currentDb
+    ?.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'contacts'")
+    .get() as { name: string } | undefined
+  return row?.name === 'contacts'
+}
+
 beforeEach(async () => {
   await createIsolatedApp()
 })
@@ -170,6 +177,39 @@ describe('POST /api/contact', () => {
       field: 'subject',
     })
     expect(contactRows()).toHaveLength(0)
+  })
+
+  it('stores SQL injection-shaped input literally without surfacing SQL errors', async () => {
+    const malicious = "Robert'); DROP TABLE contacts;--"
+    const response = await request(app, {
+      method: 'POST',
+      path: '/api/contact',
+      body: {
+        ...validPayload,
+        email: 'robert.contact@example.com',
+        message: malicious,
+      },
+      remoteAddress: '127.0.3.50',
+    })
+
+    expect(response.status).toBe(201)
+    expect(response.body).not.toMatch(/SQLITE|syntax error|DROP TABLE/i)
+    expect(contactTableExists()).toBe(true)
+    expect(contactRows()).toMatchObject([
+      {
+        email: 'robert.contact@example.com',
+        message: malicious,
+      },
+    ])
+
+    const followUp = await request(app, {
+      method: 'POST',
+      path: '/api/contact',
+      body: { ...validPayload, email: 'after-injection-contact@example.com' },
+      remoteAddress: '127.0.3.51',
+    })
+    expect(followUp.status).toBe(201)
+    expect(contactRows()).toHaveLength(2)
   })
 
   it('does not let notification failure block the database success response', async () => {

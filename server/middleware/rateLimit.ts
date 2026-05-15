@@ -13,11 +13,9 @@ export function createFormRateLimiter(overrides: Partial<Options> = {}) {
     handler: (_req: Request, res: Response) => {
       res.status(429).json({
         success: false,
-        message: 'Too many requests. Please try again later.',
+        message: 'Too many requests',
       })
     },
     ...overrides,
   })
 }
-
-export const formRateLimiter = createFormRateLimiter()

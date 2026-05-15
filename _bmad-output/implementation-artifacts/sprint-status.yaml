@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-15  # story 2-6 form accessibility locale-aware validation -> done
+# last_updated: 2026-05-15  # story 2-7 security hardening rate limiting headers locale allowlist -> done
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -71,7 +71,7 @@ development_status:
   2-4-demoscheduler-section-multiple-cta-entry-points: done
   2-5-smtp-notification-demo-contact: done
   2-6-form-accessibility-locale-aware-validation: done
-  2-7-security-hardening-rate-limiting-headers-locale-allowlist: backlog
+  2-7-security-hardening-rate-limiting-headers-locale-allowlist: done
   epic-2-retrospective: optional
 
   # Epic 3: Content Polish & SEO (Phase 2)
