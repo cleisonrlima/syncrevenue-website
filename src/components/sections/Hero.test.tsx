@@ -70,7 +70,7 @@ describe('Hero', () => {
     expect(stats.length).toBe(3)
 
     // TrustBar should render trust items (4 checkmarks across responsive layouts)
-    const allSvgs = container.querySelectorAll('svg[aria-hidden="true"]')
+    const allSvgs = container.querySelectorAll('svg[aria-label="verified"]')
     expect(allSvgs.length).toBeGreaterThanOrEqual(4)
 
     // Verify trust item text is present (use getAllByText since responsive layout duplicates)

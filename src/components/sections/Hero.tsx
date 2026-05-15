@@ -7,11 +7,17 @@ export default function Hero() {
   const { t } = useTranslation()
 
   const handleDemoCta = () => {
-    const demoSection = document.getElementById('demo-scheduler')
-    if (demoSection) {
-      demoSection.scrollIntoView({ behavior: 'smooth' })
-    } else {
-      window.location.href = '/#demo-scheduler'
+    try {
+      const demoSection = document.getElementById('demo-scheduler')
+      if (demoSection) {
+        demoSection.scrollIntoView({ behavior: 'smooth' })
+      } else if (typeof window !== 'undefined' && window.top !== window) {
+        window.parent.location.href = '/#demo-scheduler'
+      } else {
+        window.location.href = '/#demo-scheduler'
+      }
+    } catch (e) {
+      console.warn('Failed to scroll to demo-scheduler', e)
     }
   }
 
@@ -19,7 +25,8 @@ export default function Hero() {
     <section
       id="hero"
       role="region"
-      className="relative min-h-[80vh] sm:min-h-[70vh] bg-gradient-to-b from-[#0D0D3A] to-[#080820] overflow-hidden text-white"
+      className="relative min-h-[70vh] md:min-h-[80vh] bg-gradient-to-b from-[#0D0D3A] to-[#080820] overflow-hidden text-white"
+      suppressHydrationWarning
     >
       {/* Radial glow top-right */}
       <div

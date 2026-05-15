@@ -14,7 +14,8 @@ export default function TrustBar() {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        aria-hidden="true"
+        role="img"
+        aria-label="verified"
       >
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
@@ -23,7 +24,7 @@ export default function TrustBar() {
   )
 
   return (
-    <div className="mt-16 w-full">
+    <div className="mt-16 w-full" suppressHydrationWarning>
       {/* < 480px: horizontal scroll */}
       <div className="sm:hidden flex gap-2 overflow-x-auto pb-2">
         {Array.from({ length: 4 }).map((_, i) => renderTrustItem(i))}

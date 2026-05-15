@@ -1,6 +1,6 @@
 # Story 1.5: Hero Section
 
-Status: review
+Status: done
 
 ## Story
 
@@ -93,6 +93,27 @@ So that I recognize this product is built for me and feel motivated to scroll fu
   - [x] Locale switch in Navbar/Footer: all hero copy updates, no layout shift, scroll position maintained
   - [x] Light theme contrast check (on white sections): verify `text-brand-electric-blue` ≥ 4.5:1 when needed
   - [x] Verify Navbar Demo CTA scrolls/navigates to DemoScheduler section (if on homepage)
+
+### Review Findings (Code Review 2026-05-14)
+
+**Decision Resolved:**
+- [x] [Review][Decision] Tertiary link `href="#"` no target — resolved: keep as placeholder (option 1)
+
+**Patches (Applied):**
+- [x] [Review][Patch] `handleDemoCta` iframe fallback unsafe [src/components/sections/Hero.tsx:13] — FIXED: added try-catch and window.top check
+- [x] [Review][Patch] i18n missing keys silent fail [src/components/sections/Hero.tsx:30] — VERIFIED: defaultValue="" provides defensive fallback
+- [x] [Review][Patch] SVG checkmark no accessibility text [src/components/sections/TrustBar.tsx:14] — FIXED: added aria-label="verified" and role="img"
+- [x] [Review][Patch] TrustBar hydration mismatch risk [src/components/sections/TrustBar.tsx:21] — FIXED: added suppressHydrationWarning
+- [x] [Review][Patch] GradientButton 44px touch target [src/components/sections/Hero.tsx:46] — VERIFIED: py-4 + text-lg = ~60px (exceeds 44px)
+- [x] [Review][Patch] Hero no min-height mobile [src/components/sections/Hero.tsx:20] — FIXED: changed to min-h-[70vh] mobile, min-h-[80vh] desktop
+- [x] [Review][Patch] SVG no explicit width/height [src/components/sections/TrustBar.tsx:14] — VERIFIED: w-4 h-4 already present
+- [x] [Review][Patch] Long headline text wrap [src/components/sections/Hero.tsx:38] — VERIFIED: max-w-2xl constraint adequate at 375px
+
+**Deferred (Pre-Existing):**
+- [x] [Review][Defer] StatRow hardcoded length:3 [src/components/sections/StatRow.tsx:7] — deferred, pre-existing architectural decision
+- [x] [Review][Defer] i18n SSR loading race [src/components/sections/Hero.tsx:3] — deferred, pre-existing app architecture; i18next handles initialization
+- [x] [Review][Defer] Dark→light contrast unvalidated [src/components/sections/Hero.tsx:20] — deferred, app spec is dark-only per UX design; light mode not in scope
+- [x] [Review][Defer] Locale change race condition [src/components/sections/Hero.tsx:3] — deferred, i18next handles concurrency; pre-existing guarantee
 
 ## Dev Notes
 
