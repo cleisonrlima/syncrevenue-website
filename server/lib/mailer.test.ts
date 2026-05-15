@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect, beforeEach, vi } from 'vitest'
+import nodemailer from 'nodemailer'
 
 const sendMailMock = vi.fn()
 
@@ -12,6 +13,7 @@ vi.mock('nodemailer', () => ({
 describe('sendNotification', () => {
   beforeEach(async () => {
     vi.resetModules()
+    vi.mocked(nodemailer.createTransport).mockClear()
     sendMailMock.mockReset()
     process.env.SMTP_HOST = 'smtp.example.com'
     process.env.SMTP_PORT = '587'
@@ -27,6 +29,30 @@ describe('sendNotification', () => {
     await sendNotification('Subj', 'Body')
     expect(sendMailMock).toHaveBeenCalledWith(
       expect.objectContaining({ to: 'notify@example.com', subject: 'Subj', text: 'Body' })
+    )
+  })
+
+  it('creates the transporter from env-derived SMTP config', async () => {
+    const { sendNotification, resetTransporterForTesting } = await import('./mailer')
+    resetTransporterForTesting()
+    sendMailMock.mockResolvedValueOnce({ messageId: 'x' })
+
+    await sendNotification('Subj', 'Body')
+
+    expect(nodemailer.createTransport).toHaveBeenCalledWith({
+      host: 'smtp.example.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'user@example.com',
+        pass: 'secret',
+      },
+    })
+    expect(sendMailMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        from: 'user@example.com',
+        to: 'notify@example.com',
+      })
     )
   })
 

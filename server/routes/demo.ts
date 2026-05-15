@@ -30,10 +30,10 @@ router.post('/', formRateLimiter, (req, res) => {
     return
   }
 
-  leadsDao.insert(parsed)
+  const inserted = leadsDao.insert(parsed)
 
   void sendNotification(
-    'New demo request',
+    `New Demo Request — ${parsed.company}`,
     [
       `Name: ${parsed.name}`,
       `Email: ${parsed.email}`,
@@ -41,8 +41,9 @@ router.post('/', formRateLimiter, (req, res) => {
       `Phone: ${parsed.phone ?? ''}`,
       `Role: ${parsed.role}`,
       `GDS: ${parsed.gds}`,
-      `Locale: ${parsed.locale}`,
       `Message: ${parsed.message ?? ''}`,
+      `Locale: ${parsed.locale}`,
+      `Timestamp: ${inserted.created_at}`,
     ].join('\n')
   ).catch(error => {
     console.error('Demo notification failed:', error)

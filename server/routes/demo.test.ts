@@ -49,6 +49,12 @@ function countDemoRequests(): { count: number } {
     .get() as { count: number }
 }
 
+function latestDemoRequest(): { created_at: string } {
+  return currentDb
+    ?.prepare('SELECT created_at FROM demo_requests ORDER BY id DESC LIMIT 1')
+    .get() as { created_at: string }
+}
+
 beforeEach(async () => {
   await createIsolatedApp()
 })
@@ -63,7 +69,7 @@ afterEach(() => {
 })
 
 describe('POST /api/demo', () => {
-  it('inserts a valid demo request and returns a success envelope', async () => {
+  it('inserts a valid demo request and sends the exact notification contract', async () => {
     const response = await request(app, {
       method: 'POST',
       path: '/api/demo',
@@ -78,6 +84,20 @@ describe('POST /api/demo', () => {
     })
     expect(countDemoRequests().count).toBe(1)
     expect(sendNotificationMock).toHaveBeenCalledTimes(1)
+    expect(sendNotificationMock).toHaveBeenCalledWith(
+      'New Demo Request — Example Travel',
+      [
+        'Name: Jane Smith',
+        'Email: jane@example.com',
+        'Company: Example Travel',
+        'Phone: +1 305 555 0100',
+        'Role: Owner',
+        'GDS: Sabre',
+        'Message: We need help reconciling commissions.',
+        'Locale: en',
+        `Timestamp: ${latestDemoRequest().created_at}`,
+      ].join('\n')
+    )
   })
 
   it('returns a 200 success envelope for duplicate email retry without inserting again', async () => {
@@ -155,5 +175,20 @@ describe('POST /api/demo', () => {
       message: expect.any(String),
     })
     expect(countDemoRequests().count).toBe(1)
+  })
+
+  it('returns before notification delivery resolves', async () => {
+    sendNotificationMock.mockReturnValueOnce(new Promise(() => undefined))
+
+    const response = await request(app, {
+      method: 'POST',
+      path: '/api/demo',
+      body: validPayload,
+      remoteAddress: '127.0.2.7',
+    })
+
+    expect(response.status).toBe(201)
+    expect(countDemoRequests().count).toBe(1)
+    expect(sendNotificationMock).toHaveBeenCalledTimes(1)
   })
 })

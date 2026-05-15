@@ -30,16 +30,17 @@ router.post('/', formRateLimiter, (req, res) => {
     return
   }
 
-  contactsDao.insert(parsed)
+  const inserted = contactsDao.insert(parsed)
 
   void sendNotification(
-    `New Contact - ${parsed.subject}`,
+    `New Contact — ${parsed.subject}`,
     [
       `Name: ${parsed.name}`,
       `Email: ${parsed.email}`,
       `Subject: ${parsed.subject}`,
-      `Locale: ${parsed.locale}`,
       `Message: ${parsed.message}`,
+      `Locale: ${parsed.locale}`,
+      `Timestamp: ${inserted.created_at}`,
     ].join('\n')
   ).catch(error => {
     console.error('Contact notification failed:', error)

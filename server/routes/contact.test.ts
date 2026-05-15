@@ -47,6 +47,7 @@ function contactRows() {
     subject: string
     message: string
     locale: string
+    created_at: string
   }>
 }
 
@@ -64,7 +65,7 @@ afterEach(() => {
 })
 
 describe('POST /api/contact', () => {
-  it('inserts a valid contact request and returns a HTTP 201 success envelope', async () => {
+  it('inserts a valid contact request and sends the exact notification contract', async () => {
     const response = await request(app, {
       method: 'POST',
       path: '/api/contact',
@@ -87,6 +88,17 @@ describe('POST /api/contact', () => {
       },
     ])
     expect(sendNotificationMock).toHaveBeenCalledTimes(1)
+    expect(sendNotificationMock).toHaveBeenCalledWith(
+      'New Contact — BI/Data Analytics',
+      [
+        'Name: Jane Smith',
+        'Email: jane@example.com',
+        'Subject: BI/Data Analytics',
+        'Message: We need analytics help for agency revenue reporting.',
+        'Locale: pt-BR',
+        `Timestamp: ${contactRows()[0].created_at}`,
+      ].join('\n')
+    )
   })
 
   it('returns a 200 success envelope for duplicate email retry without insert or notification', async () => {
@@ -160,7 +172,7 @@ describe('POST /api/contact', () => {
     expect(contactRows()).toHaveLength(0)
   })
 
-  it('includes subject and routing details in a non-blocking notification', async () => {
+  it('does not let notification failure block the database success response', async () => {
     sendNotificationMock.mockRejectedValueOnce(new Error('SMTP unavailable'))
 
     const response = await request(app, {
@@ -172,11 +184,21 @@ describe('POST /api/contact', () => {
 
     expect(response.status).toBe(201)
     expect(contactRows()).toHaveLength(1)
-    expect(sendNotificationMock).toHaveBeenCalledWith(
-      'New Contact - BI/Data Analytics',
-      expect.stringContaining('Subject: BI/Data Analytics')
-    )
-    expect(sendNotificationMock.mock.calls[0]?.[1]).toContain('Locale: pt-BR')
-    expect(sendNotificationMock.mock.calls[0]?.[1]).toContain('Name: Jane Smith')
+    expect(sendNotificationMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns before notification delivery resolves', async () => {
+    sendNotificationMock.mockReturnValueOnce(new Promise(() => undefined))
+
+    const response = await request(app, {
+      method: 'POST',
+      path: '/api/contact',
+      body: validPayload,
+      remoteAddress: '127.0.3.8',
+    })
+
+    expect(response.status).toBe(201)
+    expect(contactRows()).toHaveLength(1)
+    expect(sendNotificationMock).toHaveBeenCalledTimes(1)
   })
 })

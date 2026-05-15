@@ -1,84 +1,63 @@
-# Test Automation Summary — Story 2.4 (DemoScheduler & Multiple CTA Entry Points)
+# Test Automation Summary — Story 2.5 (SMTP Notification - Demo & Contact)
 
 Generated: 2026-05-15
-Framework: Vitest 4.1.6 + @testing-library/react + jsdom
-Scope: presentation-layer story (no new API surface introduced — backend tests already covered by Story 2.1/2.2/2.3).
+Frameworks: Vitest 4.1.6, Playwright 1.60.0
+Scope: backend notification contract plus public demo/contact submission resilience.
 
-## Existing Coverage Audit
+## Generated Tests
 
-- `src/components/sections/DemoScheduler.test.tsx` — 8 cases: region/aria-label, dark-gradient bookend, `SectionHeader` copy from `sections.demoScheduler.*`, single `lg` CTA, embedded `DemoForm`, click → focus + scroll without hash change, overflow-hidden + `max-w-[960px]` container, pt-BR CTA label.
-- `src/pages/Home.story-2-4.e2e.test.tsx` — 2 cases: exactly one `DemoForm` on `Home` + `DemoScheduler` precedes `Contact`; in-section CTA click moves focus to the Full Name input.
-- `src/components/layout/Navbar.test.tsx` — 4 base cases (overlay open/close/escape, mobile link click).
-- `src/components/sections/Hero.test.tsx` — Hero CTA presence, size, i18n keys.
-- `src/pages/Home.story-1-9.e2e.test.tsx` — trust-section ordering ending in `#demo-scheduler` (covers AC4).
+### API Tests
 
-## Gaps Identified vs Story 2.4 Acceptance Criteria
+- [x] `server/routes/demo.test.ts` - Existing focused route coverage verifies exact demo notification subject/body/timestamp, duplicate retry behavior, validation errors, SMTP rejection resilience, and non-blocking notification delivery.
+- [x] `server/routes/contact.test.ts` - Existing focused route coverage verifies exact contact notification subject/body/timestamp, duplicate retry behavior, validation errors, SMTP rejection resilience, and non-blocking notification delivery.
+- [x] `server/lib/mailer.test.ts` - Existing mailer coverage verifies env-derived SMTP config, `NOTIFY_EMAIL` recipient behavior, and send failure catch/resolve behavior.
+- [x] `tests/e2e/story-2-5-smtp-notification.spec.ts` - Added Playwright API/E2E coverage that launches the backend with an isolated temp DB and unreachable SMTP, then verifies valid demo/contact submissions still return success and duplicate retries return 200 success envelopes.
 
-| AC  | Behavior                                                         | Pre-existing coverage                                                                | Gap |
-| --- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --- |
-| AC2 | Hero "Schedule a Demo" CTA routes to `#demo-scheduler`           | `Hero.test.tsx` asserts CTA presence only; no convergence test at the page level     | YES |
-| AC2 | Navbar desktop CTA routes to `#demo-scheduler`                   | No test; `Navbar.test.tsx` did not cover the demo CTA behavior                       | YES |
-| AC2 | Navbar mobile menu link is the `/#demo-scheduler` anchor         | No assertion existed                                                                 | YES |
-| AC7 | `es` locale renders translated CTA + aria-label                  | Only `pt-BR` locale asserted in `DemoScheduler.test.tsx`                             | YES |
+### E2E Tests
 
-All other AC items (1, 3, 4, 5, 6) were already covered by existing component + page-level tests.
+- [x] `tests/e2e/demo-request.spec.ts` - Existing browser workflow coverage verifies demo form validation, submission payload, success confirmation, retryable API errors, and locale payload.
+- [x] `tests/e2e/contact-form.spec.ts` - Existing browser workflow coverage verifies contact form validation, business-readable subject options, submission payload, rate-limit handling, success confirmation, and locale payload.
+- [x] `tests/e2e/story-2-5-smtp-notification.spec.ts` - Added endpoint-level E2E resilience coverage for Story 2.5 SMTP failure behavior.
 
-## Generated / Extended Tests (auto-applied)
+## Coverage
 
-### `src/components/sections/DemoScheduler.test.tsx`
-
-- Added `renders the CTA in es when the locale changes` — asserts CTA label `Agendar una Demo` and region aria-label `Agendar una demostración SyncRevenue` after `setLocale('es')`.
-
-### `src/pages/Home.story-2-4.e2e.test.tsx`
-
-- Replaced the simple `scrollIntoView = vi.fn()` stub with a target-recording polyfill (`scrollTargets: HTMLElement[]`) so the test can verify *which* element was scrolled to, not just that scrolling happened.
-- Added `Hero "Schedule a Demo" CTA scrolls the visitor to the DemoScheduler section` — locates the Hero CTA inside `#hero`, clicks it, asserts `scrollTargets` contains the `#demo-scheduler` element, asserts `window.location.hash` is unchanged (no hash navigation / no reload — AC2 + AC6 invariants).
-
-### `src/components/layout/Navbar.test.tsx`
-
-- Added `Story 2.4 — Demo CTA convergence on #demo-scheduler` describe block with:
-  - `desktop nav.demo CTA scrolls to the #demo-scheduler section` — stubs a `#demo-scheduler` section in `document.body`, clicks the desktop nav CTA (`Request Demo` in `en`), and asserts the stub was the scroll target and `window.location.hash` was not mutated.
-  - `mobile menu exposes the /#demo-scheduler anchor for the demo CTA` — opens the overlay and asserts the demo link has `href="/#demo-scheduler"` (the AC2 mobile contract).
+- Acceptance Criteria: 4/4 covered by automated tests.
+- API endpoints: 2/2 public lead-capture endpoints covered (`POST /api/demo`, `POST /api/contact`).
+- SMTP resilience cases: demo success, contact success, demo duplicate retry, contact duplicate retry, mocked SMTP rejection, unresolved notification promise, env-only mailer configuration.
+- UI workflows: demo and contact form happy paths plus key validation/error paths already covered by existing Playwright specs.
 
 ## Verification
 
-- `npm run typecheck` → clean.
-- `npm run test:run -- src/components/sections/DemoScheduler.test.tsx src/components/layout/Navbar.test.tsx src/pages/Home.story-2-4.e2e.test.tsx` → **18 / 18 passed**.
-- `npm run test:run` (full suite) → **217 / 217 passed**, 43 test files.
-
-## Coverage Summary
-
-- AC1, AC3, AC4, AC5, AC6 — covered by pre-existing tests.
-- AC2 (Hero CTA convergence) — now covered by `Home.story-2-4.e2e.test.tsx`.
-- AC2 (Navbar desktop CTA convergence) — now covered by `Navbar.test.tsx`.
-- AC2 (Navbar mobile anchor) — now covered by `Navbar.test.tsx`.
-- AC7 (`en` + `pt-BR`) — pre-existing; AC7 (`es`) — now covered by `DemoScheduler.test.tsx`.
-
-All seven acceptance criteria for Story 2.4 are now exercised by automated tests.
+- `npm run typecheck` -> passed.
+- `npm run test:run -- server/routes/demo.test.ts server/routes/contact.test.ts server/lib/mailer.test.ts` -> 3 files passed, 16 tests passed.
+- `npm run test:run` -> 43 files passed, 220 tests passed.
+- `PLAYWRIGHT_BASE_URL=http://127.0.0.1:1 npx playwright test tests/e2e/story-2-5-smtp-notification.spec.ts --project=chromium` -> blocked by this sandbox, because Node cannot bind a local test server (`listen EPERM 127.0.0.1:3100`). The generated Playwright spec is typechecked and should be run in CI or a local environment that permits localhost listeners.
 
 ## Files Touched
 
-- `src/components/sections/DemoScheduler.test.tsx` (modified — +1 case, es locale).
-- `src/pages/Home.story-2-4.e2e.test.tsx` (modified — +1 case, Hero CTA convergence; replaced scroll stub with target recorder).
-- `src/components/layout/Navbar.test.tsx` (modified — +2 cases, desktop CTA convergence + mobile anchor).
+- `tests/e2e/story-2-5-smtp-notification.spec.ts` (added)
+- `_bmad-output/implementation-artifacts/tests/test-summary.md` (updated)
+
+## Checklist Validation
+
+- [x] API tests generated / identified for applicable endpoints.
+- [x] E2E tests generated / identified for UI and public submission workflows.
+- [x] Tests use standard Vitest and Playwright APIs.
+- [x] Tests cover happy paths.
+- [x] Tests cover critical error cases: validation failures, duplicate retries, SMTP rejection/unavailability, and unresolved notification delivery.
+- [ ] All generated tests run successfully in this sandbox. Vitest passed; Playwright execution is blocked by localhost listener restrictions.
+- [x] Tests use proper semantic locators in browser specs and endpoint-level API assertions in the new resilience spec.
+- [x] Tests have clear descriptions.
+- [x] No hardcoded waits or sleeps; server readiness uses `expect.poll`.
+- [x] Tests are independent; the new Playwright spec uses a temp DB, unique emails, and isolated SMTP env.
+- [x] Test summary created.
+- [x] Tests saved to appropriate directories.
+- [x] Summary includes coverage metrics.
 
 ## Next Steps
 
-- Run the suite in CI on the next push (Vitest already wired in `npm run test:run`).
-- If Story 2.6 adds a focus-trap audit or ARIA-live re-validation for the demo flow, extend `DemoScheduler.test.tsx` rather than spinning up a new spec file.
+- Run the new Playwright spec in CI or a local shell with localhost binding enabled:
 
-## Checklist Validation (skill `bmad-qa-generate-e2e-tests`)
-
-- [x] API tests generated — N/A (presentation-only story; backend already covered).
-- [x] E2E tests generated for UI gaps.
-- [x] Tests use standard Vitest + Testing Library APIs.
-- [x] Tests cover happy path (CTA → scroll/focus convergence).
-- [x] Tests cover error-adjacent invariants (no hash navigation, exactly one `DemoForm` mounted).
-- [x] All generated tests run successfully.
-- [x] Tests use proper locators (`getByRole`, accessible names, `getByLabelText`).
-- [x] Tests have clear descriptions.
-- [x] No hardcoded waits or sleeps (only `waitFor` for lazy-loaded sections, which is required by the existing pattern).
-- [x] Tests are independent — each test sets up its own scroll spy and locale state; `afterEach` restores both.
-- [x] Test summary created at `_bmad-output/implementation-artifacts/tests/test-summary.md`.
-- [x] Tests saved alongside source (co-located convention).
-- [x] Summary includes coverage metrics per AC.
+```bash
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:1 npx playwright test tests/e2e/story-2-5-smtp-notification.spec.ts --project=chromium
+```
