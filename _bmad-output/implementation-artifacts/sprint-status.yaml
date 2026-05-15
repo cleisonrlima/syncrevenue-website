@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-15  # epic 2 retrospective -> done
+# last_updated: 2026-05-15  # SYN Sprint 3 active (336, Epic 3); epic-2 done
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -43,8 +43,9 @@ story_location: _bmad-output/implementation-artifacts
 
 # Jira sprint mirror (informational; file-system remains source of truth):
 #   SYN Sprint 1 (id 236) — 2026-05-14 → 2026-05-28 — Epic 1 (SYN-6..15, SYN-65) all Done
-#   SYN Sprint 2 (id 302) — 2026-05-15 → 2026-06-11 — Epic 2 (SYN-16..22) all To Do
-current_jira_sprint: SYN Sprint 2
+#   SYN Sprint 2 (id 302) — 2026-05-15 → 2026-06-11 — Epic 2 (SYN-16..22) all Done
+#   SYN Sprint 3 (id 336) — 2026-05-15 → 2026-05-16 — Epic 3 (SYN-23..27) active, all To Do
+current_jira_sprint: SYN Sprint 3
 
 development_status:
   # Epic 1: Visitor Content Experience (Phase 1 MVP — Part A)
@@ -64,7 +65,7 @@ development_status:
   epic-1-retrospective: done
 
   # Epic 2: Lead Capture & Conversion (Phase 1 MVP — Part B)
-  epic-2: in-progress
+  epic-2: done
   2-1-backend-infrastructure-database-daos-middleware: done
   2-2-demo-request-form-full-stack: done
   2-3-contact-form-full-stack: done
