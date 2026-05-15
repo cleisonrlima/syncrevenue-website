@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
@@ -37,5 +37,50 @@ describe('Navbar', () => {
     const overlayHomeLink = within(overlay).getByRole('link', { name: /home/i })
     await user.click(overlayHomeLink)
     expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  describe('Story 2.4 — Demo CTA convergence on #demo-scheduler', () => {
+    let scrollTargets: HTMLElement[]
+    let stubSection: HTMLElement
+
+    beforeEach(() => {
+      scrollTargets = []
+      Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+        configurable: true,
+        writable: true,
+        value: function (this: HTMLElement) {
+          scrollTargets.push(this)
+        },
+      })
+      stubSection = document.createElement('section')
+      stubSection.id = 'demo-scheduler'
+      document.body.appendChild(stubSection)
+    })
+
+    afterEach(() => {
+      stubSection.remove()
+      vi.restoreAllMocks()
+    })
+
+    it('desktop nav.demo CTA scrolls to the #demo-scheduler section', async () => {
+      const user = userEvent.setup()
+      renderNavbar()
+
+      const desktopCta = screen.getByRole('button', { name: /request demo/i })
+      const originalHash = window.location.hash
+      await user.click(desktopCta)
+
+      expect(scrollTargets).toContain(stubSection)
+      expect(window.location.hash).toBe(originalHash)
+    })
+
+    it('mobile menu exposes the /#demo-scheduler anchor for the demo CTA', async () => {
+      const user = userEvent.setup()
+      renderNavbar()
+      await user.click(screen.getByRole('button', { name: /open menu/i }))
+      const overlay = screen.getByRole('navigation', { name: /mobile navigation/i })
+      const demoLink = within(overlay).getByRole('link', { name: /request demo/i })
+      expect(demoLink).toHaveAttribute('href', '/#demo-scheduler')
+    })
   })
 })

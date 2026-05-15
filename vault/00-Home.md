@@ -45,9 +45,10 @@
   - 1.11 Test Infrastructure Baseline (Epic 1 gap closure — Playwright, Lighthouse CI, axe, R-A2/R-B1 locks)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-1-retro-2026-05-15.md`
 - Active phase: **Epic 2 (Phase 1 MVP Part B)** — backend infrastructure, forms, SMTP, security hardening
-- **Active Jira sprint:** SYN Sprint 2 (id 302), 2026-05-15 → 2026-06-11. Story 2.1 done; 2.2–2.7 still To Do.
+- **Active Jira sprint:** SYN Sprint 2 (id 302), 2026-05-15 → 2026-06-11. Stories 2.1–2.4 done; 2.5–2.7 still To Do.
 - Story 2.1 (Backend Infrastructure) → **done**: 4-table schema init, typed DAOs, full middleware stack (helmet/cors/POST-only rate-limit/JWT cookie auth), strict Zod schemas, fire-and-forget Nodemailer.
-- Quality: **162/162 tests pass** overall; server slice **63/63 tests pass** for Story 2.1; `tsc --noEmit` → 0 errors
+- Story 2.2 (Demo Form) → **done**. Story 2.3 (Contact Form) → **done**. Story 2.4 (DemoScheduler section & multi-CTA convergence) → **done**: dark-gradient bookend, in-section "Schedule a Demo" CTA, `DemoForm.focusFirstField()` imperative handle, single-form invariant on Home, i18n `sections.demoScheduler.*` for en/pt-BR/es. Senior review: 0 critical / 0 high / 0 medium / 4 low (non-blocking).
+- Quality: **217/217 tests pass** overall; `tsc --noEmit` → 0 errors
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
 - New tooling: Playwright + @axe-core/playwright + @lhci/cli installed. Scaffold under `tests/e2e/` + `lighthouserc*.json` + `.github/workflows/quality.yml`. Run `npm run test:e2e:install` once locally before `npm run test:e2e`.
 - Known carry-forward debt (must address):

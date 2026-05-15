@@ -228,6 +228,15 @@
       }
     }
   },
+  "sections": {
+    "demoScheduler": {
+      "eyebrow": "Cuando Esté Listo",
+      "heading": "Agende su Demostración SyncRevenue",
+      "subtext": "Vea la recuperación de comisiones multi-GDS aplicada al flujo de reconciliación de su agencia.",
+      "cta": "Agendar una Demo",
+      "ariaLabel": "Agendar una demostración SyncRevenue"
+    }
+  },
   "forms": {
     "demo": {
       "title": "Solicitar una Demo",

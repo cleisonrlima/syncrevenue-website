@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDemo, isDemoFormValid, GDS_OPTIONS, ROLE_OPTIONS, type DemoFormValues } from '@/hooks/useDemo'
 import { useLocaleStore } from '@/store/useLocaleStore'
@@ -28,13 +37,28 @@ function textInputClasses(hasError: boolean) {
   )
 }
 
-export default function DemoForm() {
+export type DemoFormHandle = {
+  focusFirstField: () => void
+}
+
+const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
   const { t } = useTranslation()
   const locale = useLocaleStore(state => state.locale)
   const { status, error, isSubmitting, submitDemo } = useDemo()
   const [values, setValues] = useState<DemoFormValues>({ ...initialValues, locale })
   const [errors, setErrors] = useState<FieldErrors>({})
   const [toast, setToast] = useState<string | null>(null)
+  const nameInputRef = useRef<HTMLInputElement | null>(null)
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focusFirstField: () => {
+        nameInputRef.current?.focus()
+      },
+    }),
+    []
+  )
 
   useEffect(() => {
     setValues(current => ({ ...current, locale }))
@@ -135,6 +159,7 @@ export default function DemoForm() {
           >
             <input
               id="demo-name"
+              ref={nameInputRef}
               name="name"
               value={values.name}
               onChange={event => setField('name', event.target.value)}
@@ -273,7 +298,9 @@ export default function DemoForm() {
       {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   )
-}
+})
+
+export default DemoForm
 
 function Field({
   id,

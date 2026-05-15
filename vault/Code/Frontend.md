@@ -31,7 +31,8 @@
 | `src/components/sections/Team.tsx` | FR5 | Team members |
 | `src/components/sections/Contact.tsx` | FR6 | Contact form section |
 | `src/components/sections/Security.tsx` | FR23–FR25 | Security statement + client refs |
-| `src/components/sections/DemoScheduler.tsx` | FR9, FR15 | Demo request form + CTA anchor |
+| `src/components/sections/DemoScheduler.tsx` | FR9, FR15 | Dark-gradient bookend section — SectionHeader (variant=dark) + in-section "Schedule a Demo" GradientButton (lg, min-h-44px) that calls `DemoForm.focusFirstField()` and smooth-scrolls the form container; embeds the single `DemoForm` instance (no modal). Hero/Navbar CTAs scroll to `#demo-scheduler`. Tests: `DemoScheduler.test.tsx`, `Home.story-2-4.e2e.test.tsx` |
+| `src/components/sections/DemoForm.tsx` | FR9 | `forwardRef<DemoFormHandle>` exposing `focusFirstField()` (focuses the Full Name input via internal `nameInputRef`); state machine, validation, and submit flow unchanged |
 
 ---
 

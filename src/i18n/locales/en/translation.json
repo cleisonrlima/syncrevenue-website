@@ -228,6 +228,15 @@
       }
     }
   },
+  "sections": {
+    "demoScheduler": {
+      "eyebrow": "Ready When You Are",
+      "heading": "Schedule Your SyncRevenue Demo",
+      "subtext": "See multi-GDS commission recovery applied to your agency's reconciliation workflow.",
+      "cta": "Schedule a Demo",
+      "ariaLabel": "Schedule a SyncRevenue demo"
+    }
+  },
   "forms": {
     "demo": {
       "title": "Request a Demo",
