@@ -245,14 +245,30 @@
       "role": "Seu Cargo",
       "rolePlaceholder": "Selecione seu cargo",
       "roleError": "Por favor, selecione seu cargo",
+      "roleOptions": {
+        "Owner": "Proprietário",
+        "Executive": "Executivo",
+        "Operations": "Operações",
+        "Finance": "Financeiro",
+        "Technology": "Tecnologia",
+        "Other": "Outro"
+      },
       "gds": "GDS Principal",
       "gdsPlaceholder": "Selecione seu GDS",
       "gdsError": "Por favor, selecione seu GDS principal",
+      "gdsOptions": {
+        "Amadeus": "Amadeus",
+        "Sabre": "Sabre",
+        "Galileo": "Galileo",
+        "Worldspan": "Worldspan",
+        "Other": "Outro",
+        "None yet": "Ainda nenhum"
+      },
       "message": "Mensagem (opcional)",
       "messagePlaceholder": "Conte-nos sobre seus desafios de reconciliação de comissões",
       "submit": "Solicitar Demo",
-      "submitting": "Enviando…",
-      "successTitle": "Solicitação Recebida!",
+      "submitting": "Enviando...",
+      "successTitle": "Solicitação recebida!",
       "successBody": "Nossa equipe entrará em contato em até 1 dia útil.",
       "errorGeneric": "Algo deu errado. Por favor, tente novamente."
     },

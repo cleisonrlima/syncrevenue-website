@@ -245,14 +245,30 @@
       "role": "Su Cargo",
       "rolePlaceholder": "Seleccione su cargo",
       "roleError": "Por favor seleccione su cargo",
+      "roleOptions": {
+        "Owner": "Propietario",
+        "Executive": "Ejecutivo",
+        "Operations": "Operaciones",
+        "Finance": "Finanzas",
+        "Technology": "Tecnología",
+        "Other": "Otro"
+      },
       "gds": "GDS Principal",
       "gdsPlaceholder": "Seleccione su GDS",
       "gdsError": "Por favor seleccione su GDS principal",
+      "gdsOptions": {
+        "Amadeus": "Amadeus",
+        "Sabre": "Sabre",
+        "Galileo": "Galileo",
+        "Worldspan": "Worldspan",
+        "Other": "Otro",
+        "None yet": "Aún ninguno"
+      },
       "message": "Mensaje (opcional)",
       "messagePlaceholder": "Cuéntenos sobre sus desafíos de conciliación de comisiones",
       "submit": "Solicitar Demo",
-      "submitting": "Enviando…",
-      "successTitle": "¡Solicitud Recibida!",
+      "submitting": "Enviando...",
+      "successTitle": "¡Solicitud recibida!",
       "successBody": "Nuestro equipo se pondrá en contacto en un plazo de 1 día hábil.",
       "errorGeneric": "Algo salió mal. Por favor, inténtelo de nuevo."
     },

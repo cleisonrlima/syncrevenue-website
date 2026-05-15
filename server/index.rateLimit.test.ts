@@ -80,7 +80,7 @@ describe('mounted form route rate limiting', () => {
       body: {},
       remoteAddress: '127.0.0.12',
     })
-    expect(postResponse.status).toBe(501)
+    expect(postResponse.status).toBe(400)
   })
 
   it('returns JSON 429 on /api/contact after the default 20 request limit', async () => {

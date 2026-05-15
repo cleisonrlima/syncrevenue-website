@@ -245,14 +245,30 @@
       "role": "Your Role",
       "rolePlaceholder": "Select your role",
       "roleError": "Please select your role",
+      "roleOptions": {
+        "Owner": "Owner",
+        "Executive": "Executive",
+        "Operations": "Operations",
+        "Finance": "Finance",
+        "Technology": "Technology",
+        "Other": "Other"
+      },
       "gds": "Primary GDS",
       "gdsPlaceholder": "Select your GDS",
       "gdsError": "Please select your primary GDS",
+      "gdsOptions": {
+        "Amadeus": "Amadeus",
+        "Sabre": "Sabre",
+        "Galileo": "Galileo",
+        "Worldspan": "Worldspan",
+        "Other": "Other",
+        "None yet": "None yet"
+      },
       "message": "Message (optional)",
       "messagePlaceholder": "Tell us about your commission reconciliation challenges",
       "submit": "Request Demo",
-      "submitting": "Sending…",
-      "successTitle": "Request Received!",
+      "submitting": "Sending...",
+      "successTitle": "Request received!",
       "successBody": "Our team will reach out within 1 business day.",
       "errorGeneric": "Something went wrong. Please try again."
     },

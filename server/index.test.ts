@@ -63,17 +63,19 @@ describe('Express bootstrap', () => {
     if (acao !== undefined) expect(acao).toBe('http://localhost:5173')
   })
 
-  it('mounts /api/demo (501 placeholder envelope)', async () => {
+  it('mounts /api/demo with validation envelope', async () => {
     const r = await request(app, {
       method: 'POST',
       path: '/api/demo',
       headers: { 'content-type': 'application/json' },
       body: {},
     })
-    expect(r.status).toBe(501)
-    const body = r.json<{ success: boolean; message: string }>()
-    expect(body.success).toBe(false)
-    expect(typeof body.message).toBe('string')
+    expect(r.status).toBe(400)
+    expect(r.json()).toEqual({
+      success: false,
+      message: 'Invalid demo request',
+      field: expect.any(String),
+    })
   })
 
   it('mounts /api/contact (501 placeholder envelope)', async () => {
