@@ -40,9 +40,11 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 2.2 | Demo Request Form — Full Stack | `[x]` |
 | 2.3 | Contact Form — Full Stack | `[x]` |
 | 2.4 | DemoScheduler Section & Multiple CTA Entry Points | `[x]` |
-| 2.5 | SMTP Notification — Demo & Contact | `[ ]` |
-| 2.6 | Form Accessibility & Locale-Aware Validation | `[ ]` |
-| 2.7 | Security Hardening — Rate Limiting, Headers & Locale Allowlist | `[ ]` |
+| 2.5 | SMTP Notification — Demo & Contact | `[x]` |
+| 2.6 | Form Accessibility & Locale-Aware Validation | `[x]` |
+| 2.7 | Security Hardening — Rate Limiting, Headers & Locale Allowlist | `[x]` |
+
+**Epic 2 Retrospective:** `[x]` done — see `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
 
 ## Epic 3 — Content Polish & SEO (Phase 2)
 

@@ -965,3 +965,107 @@ All architectural boundaries (API, admin, i18n, data access) are reflected in th
 7. Public sections + Home page (`src/components/sections/`, `src/pages/Home.tsx`)
 8. Form hooks + submission flow (`src/hooks/`)
 9. Admin module — Phase 3 (`src/pages/admin/`, `server/routes/admin/`)
+
+---
+
+## Appendix A: Epic 2 Implementation Variances
+
+These items diverge from the original architecture spec above. They reflect what actually shipped in Epic 2 (Stories 2.1–2.7) and have been verified against the codebase as of 2026-05-15. Treat the variances below as the authoritative current state.
+
+### A.1 UI Primitives — Custom + Native, Not shadcn/ui
+
+The original architecture spec (Tech Stack, Component Tree, UX-DR18) anticipated shadcn/ui primitives (`Button`, `Form`, `FormMessage`, `Toast`, `Skeleton`, `Select`, `Dialog`, etc.). The shipped repo uses:
+
+- Custom `GradientButton` (`src/components/ui/GradientButton.tsx`) with `loading` / `aria-busy` / `disabled-while-async` state (Story 2.2).
+- Custom `SectionHeader` (`src/components/ui/SectionHeader.tsx`) with variant pattern from Epic 1.
+- Custom `Toast` (`src/components/ui/Toast.tsx`) — introduced in Story 2.2 because shadcn was never installed.
+- Native `<select>` and `<input>` elements with custom Tailwind styling — Story 2.6 explicitly preserved native widgets for accessibility parity.
+
+`components.json` exists at the repo root as a leftover shadcn CLI config, but **no shadcn components were ever installed**: no `@radix-ui/*` dependencies, no `src/components/ui/` shadcn-generated folder, and no `<FormMessage>` component. Only `tailwindcss-animate` remains in `package.json` as a cosmetic carryover. `src/components/ui/` ships exactly three hand-written components — `GradientButton.tsx`, `SectionHeader.tsx`, `Toast.tsx`. Form validation errors render inline via `<p role="alert" aria-live="polite">` next to the field. API failures render via the custom `Toast`. Rate-limit 429 errors render inline (Contact) or via Toast (Demo) per UX-DR18.
+
+### A.2 Rate Limiter — Per-Route Factory, Not Shared Singleton
+
+`server/middleware/rateLimit.ts` exports `createFormRateLimiter(overrides?: Partial<Options>)`. **Each POST route instantiates its own limiter**:
+
+- `server/routes/demo.ts` — `const demoRateLimiter = createFormRateLimiter()`
+- `server/routes/contact.ts` — `const contactRateLimiter = createFormRateLimiter()`
+
+This was discovered in Story 2.7 review: a shared singleton violated AC2's independent-window requirement (one form's quota draining the other). The factory pattern restores per-form windows. The 429 response body is **exactly** `{ success: false, message: 'Too many requests' }` — tests assert the exact string.
+
+### A.3 Client / Server Zod Separation
+
+| Layer | Location | Pattern |
+|---|---|---|
+| Server | `server/schemas/demo.schema.ts`, `server/schemas/contact.schema.ts` | Strict Zod schemas, no i18n, exact payload validation before DAO calls. |
+| Client | `src/hooks/useDemo.ts` exports `createDemoSchema(t: TFunction)`; `src/hooks/useContact.ts` exports `createContactSchema(t: TFunction)` | Factory closes over the i18n `t` function so error messages re-render on locale switch. |
+
+**No cross-boundary imports.** A forensic source-walk test introduced in Story 2.1 enforces this. Client schemas do not import from `server/schemas/*`. The original architecture implied a single shared schema layer; the shipped reality is two independent layers with parallel field definitions.
+
+`contactSchema.subject` is a Zod **enum allowlist** (`CONTACT_SUBJECT_VALUES`: `SyncRevenue`, `BI/Data Analytics`, `OBTs`, `Custom Development`, `Other`), not a free string. Tightened in Story 2.3 review.
+
+### A.4 `createApp()` Factory + Test Harness
+
+`server/index.ts` exports `createApp(): Express`. Binding is gated by `require.main === module`. This enables:
+
+- **`server/test-utils/request.ts`** — invokes the Express app directly through `IncomingMessage`/`ServerResponse` without a port bind. No `supertest` dependency.
+- Ephemeral-port integration tests that never collide with the dev server.
+
+Every server test file starts with `// @vitest-environment node` because the default Vitest project environment is `jsdom`.
+
+### A.5 DAO Factory Pattern
+
+Each DAO module exports both a factory and a default singleton:
+
+```
+export function createLeadsDao(database: Database = defaultDb): LeadsDao { ... }
+export const leadsDao = createLeadsDao()
+```
+
+Applies to `leads.dao.ts`, `contacts.dao.ts`, `team.dao.ts`, `admin.dao.ts`. Tests inject an in-memory SQLite database; production uses the default singleton. The original architecture treated DAOs as plain singletons.
+
+### A.6 Multi-CTA Convergence via Imperative Handle
+
+`DemoForm.tsx` is wrapped in `forwardRef<DemoFormHandle>` and exposes `focusFirstField()` via `useImperativeHandle`. There is **exactly one** `DemoForm` instance on the Home page — enforced by `Home.story-2-4.e2e.test.tsx`. All CTAs (Hero, Navbar, DemoScheduler inline) scroll to and focus this single instance. `scrollIntoView` is polyfilled in jsdom tests via `Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', ...)`.
+
+### A.7 Fire-and-Forget SMTP
+
+HTTP route handlers do **not** await `sendNotification`:
+
+```
+void sendNotification(subject, body).catch(err => console.error(...))
+```
+
+The 200 response is returned immediately after the DAO insert. SMTP failure does not fail the user request. Tests assert this with `mockReturnValueOnce(new Promise(() => undefined))` — the response resolves while SMTP hangs. SMTP subjects use the em-dash `—`, not the ASCII hyphen.
+
+### A.8 API Envelope Strictness
+
+`src/lib/api.ts` is the only client fetch wrapper. It rejects 2xx responses whose JSON body lacks `success: true`. Two-XX status alone is not sufficient. Added in Story 2.2 review.
+
+### A.9 Duplicate-Submit Ref Guard
+
+Form hooks (`useDemo`, `useContact`) gate submission with a `useRef<boolean>` flag set synchronously before `await`, restored after settle. This prevents the race where double-clicks fire two requests before React commits `submitting` state.
+
+### A.10 Build-Output Secret Scan
+
+`scripts/check-client-bundle-secrets.mjs` runs post-build, walks `dist/client`, and asserts no seeded sentinel values (`JWT_SECRET=client-bundle-jwt-secret-sentinel`, etc.) appear in the bundle. Confirms `VITE_*` discipline at the build artifact level, not just at source.
+
+### A.11 Forensic Source-Walk Tests
+
+Story 2.1 introduced tests that walk:
+
+- `src/**/*` — assert no occurrences of secret-shaped strings (`JWT_SECRET`, `SMTP_PASS`, etc.) or any `process.env.X` outside the explicit `VITE_*` allowlist.
+- `server/routes/**/*` — assert no `db.prepare(` calls; route handlers must go through DAO.
+
+These run as part of the standard test suite and catch architectural drift mechanically.
+
+### A.12 Admin Auth — Still 501 Placeholders
+
+`POST /api/admin/auth/login`, `/logout`, and `/me` return 501 from Story 2.1. The middleware (`requireAdmin`) is wired but auth issuance is deferred to Epic 4 / Story 4.1. The 2.1 review caught and fixed the bug where `/me` was mounted on the public router without `requireAdmin`.
+
+### A.13 JSON 404 / 500 Fallthrough
+
+Unmatched `/api/*` requests return JSON `{ success: false, message: '...' }` — not the Express default HTML error page. Added in Story 2.1 review.
+
+### A.14 Items Not Yet Reconciled
+
+The original architecture document above still contains shadcn/ui references that should be read with §A.1 in mind. A full rewrite of those passages is deferred; this appendix is the authoritative override.

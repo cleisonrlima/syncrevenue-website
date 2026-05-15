@@ -1,6 +1,6 @@
 # Frontend Module
 
-**Stack:** Vite + React 18 + TypeScript (strict) + Tailwind CSS v3 + shadcn/ui
+**Stack:** Vite + React 18 + TypeScript (strict) + Tailwind CSS v3 (custom UI primitives — no shadcn/ui installed; `components.json` is a leftover CLI config only)
 **Entry:** `src/main.tsx` → `src/App.tsx`
 
 ---
@@ -51,7 +51,7 @@
 | `src/components/sections/SectionSkeleton.tsx` | Suspense fallback — `motion-safe:animate-pulse bg-muted`, height via `className`; `role="status" aria-busy="true"` |
 | `src/components/ui/GradientButton.tsx` | Brand CTA button — gradient bg, 3 sizes (lg/md/sm), disabled clears gradient; `motion-safe:active:scale-[0.98]` |
 | `src/components/ui/SectionHeader.tsx` | Section header — eyebrow + h2 + optional subtext, light/dark variant |
-| `src/components/ui/` | shadcn/ui primitives (generated per story) |
+| `src/components/ui/Toast.tsx` | Toast notifications (custom, Story 2.2) — replaces what shadcn would have generated; repo never ran `npx shadcn add` |
 
 ---
 
@@ -64,6 +64,12 @@
 - `<main id="main-content" className="pt-16">` — `pt-16` offsets 64px fixed Navbar
 - Locale sourced from `useLocaleStore` — never directly from i18next
 - Form state: `'idle' | 'submitting' | 'success' | 'error'` — see [[Architecture-Key]]
+- **API envelope strictness** — `src/lib/api.ts` rejects 2xx responses missing `success: true` (Story 2.2)
+- **Duplicate-submit ref guard** — `useDemo` / `useContact` use `useRef<boolean>` set synchronously before `await`, restored after settle (Stories 2.2, 2.3)
+- **Locale-aware Zod factories** — `createDemoSchema(t)` / `createContactSchema(t)` close over the i18n `t` function; consumers `useMemo` over `[t]` and revalidate touched fields on locale change (Story 2.6)
+- **`DemoFormHandle` imperative handle** — `forwardRef` + `useImperativeHandle` exposes `focusFirstField()`; exactly one `DemoForm` on Home enforced by `Home.story-2-4.e2e.test.tsx` (Story 2.4)
+- **No shadcn/ui** — custom `GradientButton`, `SectionHeader`, `Toast`; native `<select>` / `<input>` preserved for a11y
+- **Stale a11y state reset on value change** — corrected fields clear `aria-invalid` + `aria-describedby` immediately, not on next blur (Stories 2.3, 2.6)
 
 ---
 
@@ -74,6 +80,11 @@
 | 1.1 | src/main.tsx, src/App.tsx, src/index.css, src/vite-env.d.ts, src/lib/utils.ts, all stub components/pages |
 | 1.2 | src/components/ui/GradientButton.tsx, src/components/ui/SectionHeader.tsx, src/components/sections/SectionSkeleton.tsx, tailwind.config.ts, src/index.css |
 | 1.4 | src/App.tsx (route tree + skip link + `/admin` index redirect), src/components/layout/Navbar.tsx + Navbar.test.tsx, src/components/layout/Footer.tsx (dynamic copyright), src/components/layout/AdminLayout.tsx, src/pages/Home.tsx (ErrorBoundary per section), src/pages/Privacy.tsx (i18n defaultValues), src/index.css (smooth scroll), src/components/ErrorBoundary.tsx (new) |
+| 2.2 | src/lib/api.ts (envelope-strict fetch wrapper), src/hooks/useDemo.ts (state machine + ref-guard), src/components/sections/DemoForm.tsx, src/components/ui/Toast.tsx (new — repo never installed shadcn) |
+| 2.3 | src/hooks/useContact.ts, src/components/sections/Contact.tsx (native `required`, inline 429, revalidate on change) |
+| 2.4 | src/components/sections/DemoForm.tsx (`forwardRef` + `useImperativeHandle` exposing `DemoFormHandle.focusFirstField()`), src/components/sections/DemoScheduler.tsx (dark-gradient bookend, inline CTA, scrolls + focuses sole `DemoForm` instance) |
+| 2.6 | `createDemoSchema(t)` / `createContactSchema(t)` factories in `src/hooks/useDemo.ts` + `src/hooks/useContact.ts`; consumer components `useMemo` over `[t]`; touched-field revalidation on locale change |
+| 2.7 | Build-output secret scan via `scripts/check-client-bundle-secrets.mjs` (post-`npm run build`); no client code changes — secrets pipeline is build-time |
 
 ---
 

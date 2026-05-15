@@ -44,18 +44,27 @@
   - 1.10 Privacy Policy Page (`/privacy`, in-place locale switch, LGPD/CCPA, 24-month retention disclosure)
   - 1.11 Test Infrastructure Baseline (Epic 1 gap closure — Playwright, Lighthouse CI, axe, R-A2/R-B1 locks)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-1-retro-2026-05-15.md`
-- Active phase: **Epic 2 (Phase 1 MVP Part B)** — backend infrastructure, forms, SMTP, security hardening
-- **Active Jira sprint:** SYN Sprint 2 (id 302), 2026-05-15 → 2026-06-11. Stories 2.1–2.4 done; 2.5–2.7 still To Do.
-- Story 2.1 (Backend Infrastructure) → **done**: 4-table schema init, typed DAOs, full middleware stack (helmet/cors/POST-only rate-limit/JWT cookie auth), strict Zod schemas, fire-and-forget Nodemailer.
-- Story 2.2 (Demo Form) → **done**. Story 2.3 (Contact Form) → **done**. Story 2.4 (DemoScheduler section & multi-CTA convergence) → **done**: dark-gradient bookend, in-section "Schedule a Demo" CTA, `DemoForm.focusFirstField()` imperative handle, single-form invariant on Home, i18n `sections.demoScheduler.*` for en/pt-BR/es. Senior review: 0 critical / 0 high / 0 medium / 4 low (non-blocking).
-- Quality: **217/217 tests pass** overall; `tsc --noEmit` → 0 errors
+- **Epic 2 — DONE (7/7 stories) + retrospective complete** (Jira: SYN-2 ready to close; SYN Sprint 2 stories 16..22 all Done)
+  - 2.1 Backend Infrastructure (4-table schema, DAOs, middleware, mailer)
+  - 2.2 Demo Form full stack (api.ts envelope, useRef submit guard, custom Toast)
+  - 2.3 Contact Form full stack (subject enum tightening, native `required`)
+  - 2.4 DemoScheduler + multi-CTA convergence (`DemoFormHandle.focusFirstField()` imperative handle, single-form invariant)
+  - 2.5 SMTP Notification (fire-and-forget, em-dash subjects)
+  - 2.6 Form Accessibility & Locale-Aware Validation (`createDemoSchema(t)` / `createContactSchema(t)` factories)
+  - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
+- Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
+- Active phase: **Epic 3 (Phase 2)** — content polish, animations, SEO, lead magnet. Prep tasks B1–B3 from Epic 2 retro should be scheduled before Story 3.1.
+- Quality at Epic 2 close: **232 tests pass**; `tsc --noEmit` → 0; `npm run build` clean; bundle-secret scan clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
 - New tooling: Playwright + @axe-core/playwright + @lhci/cli installed. Scaffold under `tests/e2e/` + `lighthouserc*.json` + `.github/workflows/quality.yml`. Run `npm run test:e2e:install` once locally before `npm run test:e2e`.
 - Known carry-forward debt (must address):
-  - ClientReferences placeholder agency content — **now gated** by `vault/Planning/client-references-allowlist.md` + `ClientReferences.allowlist.test.tsx` (R-B1). Swap markers before production deploy.
-  - GradientButton lacks `loading`/`async-disabled` state — Story 2.2 will need it
-  - ~~DB tables not yet created (`server/db.ts` opens connection only) — Story 2.1 deliverable~~ ✓ landed in Story 2.1
-  - 24-month retention deletion automation undocumented — assign in Story 2.1 or 5.x
+  - ClientReferences placeholder agency content — gated by `vault/Planning/client-references-allowlist.md` + `ClientReferences.allowlist.test.tsx` (R-B1). Swap before prod deploy.
+  - ~~`GradientButton` lacks `loading`/`async-disabled`~~ ✓ landed in Story 2.2.
+  - ~~DB tables not yet created~~ ✓ landed in Story 2.1.
+  - Admin auth 501 placeholders (`/api/admin/auth/login`/`logout`/`me`) — Epic 4 / Story 4.1.
+  - Playwright sandbox workaround (`PLAYWRIGHT_BASE_URL=http://127.0.0.1:9`) needs central doc — Epic 2 retro B2.
+  - `ErrorBoundary` copy still English-only — Epic 2 retro B8 (Epic 1 A10 carry-forward).
+  - 24-month retention deletion automation — Epic 5 candidate.
   - WCAG R-A2 waiver: Electric Blue `#0075F0` is large-text only on light bg — locked in `src/lib/brand-tokens.contrast.test.ts` and `vault/Planning/Architecture-Key.md`
 - **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)
 

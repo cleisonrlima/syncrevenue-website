@@ -13,7 +13,10 @@
 | `server/db.ts` | SQLite connection singleton; open failure logs and `process.exit(1)` |
 | `server/db.seed.ts` | Admin user seed / reset CLI |
 | `server/middleware/auth.ts` | JWT cookie verify → `req.admin` |
-| `server/middleware/rateLimit.ts` | Rate limiting for form routes |
+| `server/middleware/rateLimit.ts` | Exports `createFormRateLimiter()` factory — invoked per POST route, never shared singleton |
+| `server/test-utils/request.ts` | Test harness: invokes Express via `IncomingMessage`/`ServerResponse`, no port bind, no `supertest` |
+| `server/lib/mailer.ts` | `sendNotification(subject, body)` — fire-and-forget via `void ...catch(console.error)` in routes |
+| `scripts/check-client-bundle-secrets.mjs` | Post-build scan of `dist/client` for seeded sentinel env vars |
 | `server/routes/demo.ts` | `POST /api/demo` — demo request |
 | `server/routes/contact.ts` | `POST /api/contact` — contact form |
 | `server/routes/admin/auth.ts` | `POST /api/admin/login`, `POST /api/admin/logout` |
@@ -65,4 +68,27 @@ helmet() → cors() → express.json() → rateLimit (form routes) → auth (adm
 |---|---|
 | 1.1 | server/index.ts (health check), server/db.ts (connection, WAL, no schema), all placeholder files |
 | 2.1 | server/index.ts (full middleware stack, createApp factory, route mounts, JSON API fallbacks, prod static), server/db.ts (initSchema for 4 tables), server/middleware/auth.ts (JWT cookie verify), server/middleware/rateLimit.ts (express-rate-limit form limiter 20/15m), server/schemas/{demo,contact}.schema.ts (Zod), server/lib/mailer.ts (Nodemailer sendNotification fire-and-forget), server/dao/{leads,contacts,team,admin}.dao.ts (typed factories), server/routes/{demo,contact,admin/*}.ts (Express Router stubs / typed list endpoints, POST-only form rate limiting, protected auth /me), co-located *.test.ts (63 server tests) |
-| 2.2 | — |
+| 2.2 | (frontend-only — see Code/Frontend.md) |
+| 2.3 | `server/routes/contact.ts` POST handler + per-route limiter; `server/schemas/contact.schema.ts` subject enum (`CONTACT_SUBJECT_VALUES`); contact route + schema tests |
+| 2.4 | (frontend-only — `DemoFormHandle` imperative handle, single-form invariant) |
+| 2.5 | `server/lib/mailer.ts` body formatting; both routes call `void sendNotification(...).catch(console.error)`; em-dash subjects |
+| 2.6 | (frontend-only — `createDemoSchema(t)` / `createContactSchema(t)` factories in `src/hooks/*`) |
+| 2.7 | `server/middleware/rateLimit.ts` refactored to `createFormRateLimiter()` factory; per-route instances in `demo.ts` / `contact.ts`; exact 429 body `{ success: false, message: 'Too many requests' }`; `scripts/check-client-bundle-secrets.mjs` post-build sentinel scan |
+
+---
+
+## Test Harness Notes
+
+- Every server test must start with `// @vitest-environment node` (default project env is `jsdom`).
+- Use `server/test-utils/request.ts` instead of `supertest` — invokes Express via `IncomingMessage`/`ServerResponse`, no port bind.
+- Forensic source-walk tests (Story 2.1) assert no `VITE_*` secret strings in `src/**` and no `db.prepare(` in `server/routes/**`.
+
+## Playwright Sandbox Workaround
+
+When local port binding is denied by the sandbox, run Playwright specs with:
+
+```
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:9 npx playwright test --project=chromium <spec>
+```
+
+The `127.0.0.1:9` base URL satisfies the launcher's URL validation without requiring a real listener — specs that target a mocked or already-running server still execute. Pattern discovered in Story 2.7.
