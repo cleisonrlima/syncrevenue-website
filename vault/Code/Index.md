@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Next: Epic 2 — Story 2.1 (backend infrastructure: DB schema, DAOs, middleware).
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 Story 2.1 done; next: Story 2.2 demo request form full stack.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`

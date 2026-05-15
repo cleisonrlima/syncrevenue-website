@@ -960,7 +960,6 @@ STATE_FILE={state_file}
 COMMAND_FILE={command_file}
 COMMAND_SHELL={resolved_command_shell}
 PYTHON_BIN={python_bin}
-PATH="$HOME/.local/bin:$PATH"
 
 write_state() {{
   STATE_LIFECYCLE="$1" \\
@@ -1040,10 +1039,6 @@ now_iso() {{
 runner_pid=$$
 write_state "launching" "" "" "" "$runner_pid" "" "" ""
 
-if [[ -f "$HOME/.bashrc" ]]; then
-  source "$HOME/.bashrc" 2>/dev/null || true
-fi
-
 if [[ ! -f "$COMMAND_FILE" ]]; then
   finished_at="$(now_iso)"
   write_state "finished" "spawn_error" "127" "command_file_missing" "$runner_pid" "" "" "$finished_at"
@@ -1051,8 +1046,7 @@ if [[ ! -f "$COMMAND_FILE" ]]; then
 fi
 
 run_payload() {{
-  # Provide input for interactive bypass permissions prompts
-  echo "2" | "$COMMAND_SHELL" "$COMMAND_FILE"
+  "$COMMAND_SHELL" "$COMMAND_FILE"
 }}
 
 set +e

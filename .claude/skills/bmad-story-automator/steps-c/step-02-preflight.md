@@ -154,16 +154,11 @@ Follow the verification gate from `{preflightRequirements}` before proceeding.
 ---
 
 ### 4. Custom Instructions
-
-**MANDATORY project rules (always prepended, cannot be skipped):**
-- Trigger `/jira-assistant` on every epic/story/subtask change (status, content, or new item)
-- Commit AND push after every story completion (via `commit-story --push`)
-- Run tests after code changes
-
 ```
-**Any ADDITIONAL custom instructions beyond the mandatory rules above?**
+**Any custom instructions?**
 
 Examples:
+- "Always run tests after changes"
 - "Prioritize stories 3 and 5"
 - "Be extra careful with database migrations"
 - "Use strict typing throughout"
@@ -174,12 +169,7 @@ If user is unsure, recommend `none` and continue.
 
 **Wait.**
 
-Compose final `custom_instructions`:
-```
-MANDATORY: Trigger /jira-assistant on every epic/story/subtask change. Commit AND push after every story completion. Run tests after changes.
-{user_addendum_or_empty}
-```
-Store as `custom_instructions`.
+Store response as `custom_instructions` (use "" for none).
 
 ### 5. Proceed to Configuration
 

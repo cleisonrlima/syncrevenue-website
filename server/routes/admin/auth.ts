@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { requireAdmin } from '../../middleware/auth'
 
 const router = Router()
 
@@ -10,12 +11,13 @@ router.post('/logout', (_req, res) => {
   res.status(501).json({ success: false, message: 'Admin logout not yet implemented' })
 })
 
-router.get('/me', (req, res) => {
-  if (!req.admin) {
+router.get('/me', requireAdmin, (req, res) => {
+  const admin = req.admin
+  if (!admin) {
     res.status(401).json({ success: false, message: 'Unauthorized' })
     return
   }
-  res.json({ success: true, data: { adminId: req.admin.adminId, email: req.admin.email } })
+  res.json({ success: true, data: { adminId: admin.adminId, email: admin.email } })
 })
 
 export default router

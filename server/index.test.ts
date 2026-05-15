@@ -1,10 +1,12 @@
 // @vitest-environment node
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
-import type { AddressInfo } from 'net'
-import type { Server } from 'http'
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
+import type { Express } from 'express'
+import jwt from 'jsonwebtoken'
+import { request } from './test-utils/request'
+import { AUTH_COOKIE_NAME } from './middleware/auth'
 
 const tempDbDir = fs.mkdtempSync(path.join(os.tmpdir(), 'syncrev-db-'))
 const tempDbPath = path.join(tempDbDir, 'test.db')
@@ -12,20 +14,14 @@ process.env.DB_PATH = tempDbPath
 process.env.ALLOWED_ORIGIN = 'http://localhost:5173'
 process.env.JWT_SECRET = 'test-secret'
 
-let server: Server
-let baseUrl: string
+let app: Express
 
 beforeAll(async () => {
   const { createApp } = await import('./index')
-  const app = createApp()
-  server = app.listen(0)
-  await new Promise<void>((resolve) => server.on('listening', () => resolve()))
-  const { port } = server.address() as AddressInfo
-  baseUrl = `http://127.0.0.1:${port}`
+  app = createApp()
 })
 
 afterAll(async () => {
-  await new Promise<void>((resolve) => server.close(() => resolve()))
   try {
     fs.rmSync(tempDbDir, { recursive: true, force: true })
   } catch {
@@ -35,71 +31,113 @@ afterAll(async () => {
 
 describe('Express bootstrap', () => {
   it('GET /api/health returns success envelope', async () => {
-    const r = await fetch(`${baseUrl}/api/health`)
+    const r = await request(app, { path: '/api/health' })
     expect(r.status).toBe(200)
-    expect(await r.json()).toEqual({ success: true, status: 'ok' })
+    expect(r.json()).toEqual({ success: true, status: 'ok' })
   })
 
   it('applies Helmet default security headers', async () => {
-    const r = await fetch(`${baseUrl}/api/health`)
-    expect(r.headers.get('x-content-type-options')).toBe('nosniff')
-    expect(r.headers.get('x-dns-prefetch-control')).toBeTruthy()
-    expect(r.headers.get('x-powered-by')).toBeNull()
+    const r = await request(app, { path: '/api/health' })
+    expect(r.headers['x-content-type-options']).toBe('nosniff')
+    expect(r.headers['x-dns-prefetch-control']).toBeTruthy()
+    expect(r.headers['x-powered-by']).toBeUndefined()
   })
 
   it('CORS Access-Control-Allow-Origin matches ALLOWED_ORIGIN, never wildcard', async () => {
-    const r = await fetch(`${baseUrl}/api/health`, {
+    const r = await request(app, {
+      path: '/api/health',
       headers: { Origin: 'http://localhost:5173' },
     })
-    const acao = r.headers.get('access-control-allow-origin')
+    const acao = r.headers['access-control-allow-origin']
     expect(acao).toBe('http://localhost:5173')
     expect(acao).not.toBe('*')
   })
 
   it('CORS never returns wildcard, even for foreign origin', async () => {
-    const r = await fetch(`${baseUrl}/api/health`, {
+    const r = await request(app, {
+      path: '/api/health',
       headers: { Origin: 'http://evil.example.com' },
     })
-    const acao = r.headers.get('access-control-allow-origin')
+    const acao = r.headers['access-control-allow-origin']
     expect(acao).not.toBe('*')
-    if (acao !== null) expect(acao).toBe('http://localhost:5173')
+    if (acao !== undefined) expect(acao).toBe('http://localhost:5173')
   })
 
   it('mounts /api/demo (501 placeholder envelope)', async () => {
-    const r = await fetch(`${baseUrl}/api/demo`, {
+    const r = await request(app, {
       method: 'POST',
+      path: '/api/demo',
       headers: { 'content-type': 'application/json' },
-      body: '{}',
+      body: {},
     })
     expect(r.status).toBe(501)
-    const body = await r.json()
+    const body = r.json<{ success: boolean; message: string }>()
     expect(body.success).toBe(false)
     expect(typeof body.message).toBe('string')
   })
 
   it('mounts /api/contact (501 placeholder envelope)', async () => {
-    const r = await fetch(`${baseUrl}/api/contact`, {
+    const r = await request(app, {
       method: 'POST',
+      path: '/api/contact',
       headers: { 'content-type': 'application/json' },
-      body: '{}',
+      body: {},
     })
     expect(r.status).toBe(501)
   })
 
   it('admin routes require auth (401 without cookie)', async () => {
-    const r = await fetch(`${baseUrl}/api/admin/leads`)
+    const r = await request(app, { path: '/api/admin/leads' })
     expect(r.status).toBe(401)
-    const body = await r.json()
+    const body = r.json()
     expect(body).toEqual({ success: false, message: 'Unauthorized' })
   })
 
   it('admin auth login mount returns 501 placeholder', async () => {
-    const r = await fetch(`${baseUrl}/api/admin/auth/login`, {
+    const r = await request(app, {
       method: 'POST',
+      path: '/api/admin/auth/login',
       headers: { 'content-type': 'application/json' },
-      body: '{}',
+      body: {},
     })
     expect(r.status).toBe(501)
+  })
+
+  it('admin auth /me requires and reads a valid admin cookie', async () => {
+    const missing = await request(app, { path: '/api/admin/auth/me' })
+    expect(missing.status).toBe(401)
+
+    const token = jwt.sign({ adminId: 7, email: 'admin@example.com' }, 'test-secret', {
+      expiresIn: '8h',
+    })
+    const ok = await request(app, {
+      path: '/api/admin/auth/me',
+      headers: { cookie: `${AUTH_COOKIE_NAME}=${token}` },
+    })
+    expect(ok.status).toBe(200)
+    expect(ok.json()).toEqual({
+      success: true,
+      data: { adminId: 7, email: 'admin@example.com' },
+    })
+  })
+
+  it('returns JSON envelope for unknown API routes', async () => {
+    const r = await request(app, { path: '/api/missing' })
+    expect(r.status).toBe(404)
+    expect(r.headers['content-type']).toContain('application/json')
+    expect(r.json()).toEqual({ success: false, message: 'Not found' })
+  })
+
+  it('returns JSON envelope for malformed API JSON', async () => {
+    const r = await request(app, {
+      method: 'POST',
+      path: '/api/demo',
+      headers: { 'content-type': 'application/json' },
+      body: '{',
+    })
+    expect(r.status).toBe(400)
+    expect(r.headers['content-type']).toContain('application/json')
+    expect(r.json()).toEqual({ success: false, message: 'Invalid JSON payload' })
   })
 })
 

@@ -184,8 +184,6 @@ def cmd_commit_story(args: list[str]) -> int:
     repo = ""
     story = ""
     title = ""
-    push = False
-    no_push = False
     for idx, arg in enumerate(args):
         if arg == "--repo" and idx + 1 < len(args):
             repo = args[idx + 1]
@@ -193,10 +191,6 @@ def cmd_commit_story(args: list[str]) -> int:
             story = args[idx + 1]
         elif arg == "--title" and idx + 1 < len(args):
             title = args[idx + 1]
-        elif arg == "--push":
-            push = True
-        elif arg == "--no-push":
-            no_push = True
     if not repo or not story or not title:
         write_json({"ok": False, "error": "missing_args"})
         return 1
@@ -220,19 +214,7 @@ def cmd_commit_story(args: list[str]) -> int:
         write_json({"ok": False, "error": "commit_failed"})
         return 1
     sha = run_cmd("git", "-C", repo, "rev-parse", "HEAD").output.strip()
-    result = {"ok": True, "commit": sha, "pushed": False}
-    if push and not no_push:
-        has_remote = run_cmd("git", "-C", repo, "remote").output.strip()
-        if has_remote:
-            push_result = run_cmd("git", "-C", repo, "push")
-            if push_result.exit_code != 0:
-                result["pushed"] = False
-                result["push_error"] = push_result.output.strip()[:500]
-            else:
-                result["pushed"] = True
-        else:
-            result["push_error"] = "no_remote_configured"
-    write_json(result)
+    write_json({"ok": True, "commit": sha})
     return 0
 
 

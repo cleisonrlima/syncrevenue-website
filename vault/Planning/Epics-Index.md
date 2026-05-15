@@ -36,7 +36,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 | Story | Title | Status |
 |---|---|---|
-| 2.1 | Backend Infrastructure — Database, DAOs & Middleware | `[r]` |
+| 2.1 | Backend Infrastructure — Database, DAOs & Middleware | `[x]` |
 | 2.2 | Demo Request Form — Full Stack | `[ ]` |
 | 2.3 | Contact Form — Full Stack | `[ ]` |
 | 2.4 | DemoScheduler Section & Multiple CTA Entry Points | `[ ]` |

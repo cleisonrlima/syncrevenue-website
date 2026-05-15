@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser'
 import path from 'path'
 import fs from 'fs'
 import db from './db'
-import { formRateLimiter } from './middleware/rateLimit'
 import { requireAdmin } from './middleware/auth'
 import demoRouter from './routes/demo'
 import contactRouter from './routes/contact'
@@ -36,13 +35,29 @@ export function createApp(): Express {
     res.json({ success: true, status: 'ok' })
   })
 
-  app.use('/api/demo', formRateLimiter, demoRouter)
-  app.use('/api/contact', formRateLimiter, contactRouter)
+  app.use('/api/demo', demoRouter)
+  app.use('/api/contact', contactRouter)
 
   app.use('/api/admin/auth', adminAuthRouter)
   app.use('/api/admin/leads', requireAdmin, adminLeadsRouter)
   app.use('/api/admin/contacts', requireAdmin, adminContactsRouter)
   app.use('/api/admin/team', requireAdmin, adminTeamRouter)
+
+  app.use('/api', (_req, res) => {
+    res.status(404).json({ success: false, message: 'Not found' })
+  })
+
+  app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (!req.path.startsWith('/api')) {
+      next(err)
+      return
+    }
+    const status = err instanceof SyntaxError ? 400 : 500
+    res.status(status).json({
+      success: false,
+      message: status === 400 ? 'Invalid JSON payload' : 'Internal server error',
+    })
+  })
 
   if (process.env.NODE_ENV === 'production') {
     const clientDir = path.resolve(__dirname, '../dist/client')

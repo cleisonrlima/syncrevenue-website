@@ -1,6 +1,6 @@
 # Story 2.1: Backend Infrastructure - Database, DAOs & Middleware
 
-Status: review
+Status: done
 
 ## Story
 
@@ -150,27 +150,44 @@ claude-opus-4-7[1m] (Caveman Mode)
 ### Debug Log References
 
 - `npm run typecheck` — clean (no errors).
-- `npx vitest run server/` — 57 server tests pass across 11 files.
-- `npm run test:run` — 156 total tests pass across 33 files (no regressions vs. Epic 1 baseline).
+- `npx vitest run server/` — 63 server tests pass across 12 files.
+- `npm run test:run` — 162 total tests pass across 34 files (no regressions vs. Epic 1 baseline).
 
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created.
 - Existing backend scaffold is present but mostly placeholder-only; implementation must update placeholders rather than create duplicate parallel files.
 - `server/db.ts` exports `initSchema(db?)` which is invoked at module load against the singleton and is also injectable for in-memory test databases. Schema creation is idempotent (`CREATE TABLE IF NOT EXISTS`) and matches architecture columns/CHECK/UNIQUE/defaults exactly.
-- `server/index.ts` now exports a `createApp()` factory so tests can boot the full middleware stack against ephemeral ports; the listener only starts when the file is run as the main module (`require.main === module`). Middleware order: `helmet → cors(ALLOWED_ORIGIN, credentials: true) → express.json → cookieParser → routes`. Form rate limiter applied only to `/api/demo` and `/api/contact`; `requireAdmin` applied only to `/api/admin/{leads,contacts,team}` (auth router itself is public so login/logout work).
+- `server/index.ts` now exports a `createApp()` factory so tests can boot the full middleware stack against ephemeral ports; the listener only starts when the file is run as the main module (`require.main === module`). Middleware order: `helmet → cors(ALLOWED_ORIGIN, credentials: true) → express.json → cookieParser → routes`. Form rate limiter is applied only to `POST /api/demo` and `POST /api/contact`; `requireAdmin` guards admin data routes and `/api/admin/auth/me` while login/logout remain public placeholders.
 - Routes are Express `Router()` modules; demo/contact and admin auth currently return `501` envelopes because full behavior belongs to Stories 2.2, 2.3, and the admin auth story. Admin list endpoints (leads/contacts/team) are functional and call DAOs directly — no `db.prepare` in any route file (enforced by a co-located test).
 - DAO files use a `create*Dao(database = defaultDb)` factory pattern so tests can inject in-memory SQLite without touching the real local `data/sync_sirius.db`. Default singletons are exported for production use.
 - Mailer uses lazy-cached Nodemailer transporter, exposes `resetTransporterForTesting()`, and `sendNotification()` always resolves — SMTP failures are logged and swallowed so the visitor-facing HTTP path never sees a 5xx caused by mail delivery.
 - Zod schemas enforce strict `z.enum(['en','pt-BR','es'])` locale and `gds` enums per AC5, lowercase emails, trim whitespace, and convert empty optional `phone`/`message` strings to `undefined`.
-- Co-located tests use `// @vitest-environment node` directive on every server test so they run in Node (project default Vitest env is `jsdom` for the React tests). Lightweight request harness uses `app.listen(0)` + native `fetch` instead of pulling in `supertest`.
+- Co-located tests use `// @vitest-environment node` directive on every server test so they run in Node (project default Vitest env is `jsdom` for the React tests). Lightweight request harness invokes the Express app directly through `IncomingMessage`/`ServerResponse` instead of pulling in `supertest`.
 - `server/index.test.ts` includes a forensic test that walks `src/**/*.{ts,tsx,js,jsx}` and asserts no `VITE_JWT_SECRET`/`VITE_SMTP*`/`VITE_DB_PATH`/`VITE_NOTIFY*` strings exist anywhere in client code (AC1), and a second test that walks `server/routes/**/*.ts` to assert no `db.prepare(` calls leak into route handlers (AC3).
 - No new env keys, no new dependencies, and no package version changes — uses only what was already installed.
+
+### Senior Developer Review (AI)
+
+Reviewer: Codex on 2026-05-15
+
+Outcome: Approved after automatic fixes. Story status set to `done`.
+
+Findings fixed:
+- HIGH — Form route limiter was mounted with `app.use('/api/demo', formRateLimiter, ...)` and `app.use('/api/contact', ...)`, so non-POST requests under those paths could consume the 20-request form quota. Moved the limiter into the POST handlers and added a regression test that GET requests do not consume POST quota.
+- HIGH — `/api/admin/auth/me` was mounted on the public auth router and relied on `req.admin` without running `requireAdmin`, so valid admin identity could never be returned by that endpoint. Added `requireAdmin` to `/me` and covered both missing-cookie and valid-cookie behavior.
+- MEDIUM — Unknown or malformed `/api/*` requests fell through to Express default HTML/error responses, contradicting the story task requiring API responses to use the JSON envelope and never return HTML. Added JSON 404 and API error handlers with regression coverage.
+- MEDIUM — The story File List omitted changed review/support files discovered in git: `server/index.rateLimit.test.ts` and `server/test-utils/request.ts`. File List updated.
+
+Validation notes:
+- Acceptance criteria 1-7 cross-checked against implementation and tests.
+- Project context file was not present; architecture, PRD, epics, package metadata, and official docs references were used instead.
+- External reference spot-check: express-rate-limit official usage documents endpoint-level limiter placement; Helmet official docs document default `helmet()` headers; Nodemailer official docs document promise-returning `sendMail`; better-sqlite3 official docs document `prepare()` and WAL usage.
 
 ### File List
 
 - server/db.ts (modified — added idempotent `initSchema`, invoked on module load, exported for tests)
-- server/index.ts (modified — `createApp()` factory, full middleware stack, route mounts, prod static, `require.main` guard for listener)
+- server/index.ts (modified — `createApp()` factory, full middleware stack, route mounts, JSON API fallbacks, prod static, `require.main` guard for listener)
 - server/dao/leads.dao.ts (modified — `createLeadsDao`/`leadsDao`, insert/findRecentByEmail/list/updateStatus/getById)
 - server/dao/contacts.dao.ts (modified — `createContactsDao`/`contactsDao`, insert/findRecentByEmail/list/markRead/getById)
 - server/dao/team.dao.ts (modified — `createTeamDao`/`teamDao`, list/getById/create/update/setActive with whitelisted patch keys)
@@ -180,9 +197,9 @@ claude-opus-4-7[1m] (Caveman Mode)
 - server/schemas/demo.schema.ts (modified — `demoSchema`, `LOCALES`, `GDS_VALUES`, strict enums + trim/lowercase email)
 - server/schemas/contact.schema.ts (modified — `contactSchema` reusing `LOCALES`)
 - server/lib/mailer.ts (modified — `getTransporter` lazy cache, `resetTransporterForTesting`, `sendNotification` swallows errors)
-- server/routes/demo.ts (modified — `Router`, `POST /` 501 placeholder envelope)
-- server/routes/contact.ts (modified — `Router`, `POST /` 501 placeholder envelope)
-- server/routes/admin/auth.ts (modified — `Router`, login/logout 501 placeholders, `GET /me` reads `req.admin` set by upstream `requireAdmin` once mounted in protected scope; currently mounted public for future login flow)
+- server/routes/demo.ts (modified — `Router`, rate-limited `POST /` 501 placeholder envelope)
+- server/routes/contact.ts (modified — `Router`, rate-limited `POST /` 501 placeholder envelope)
+- server/routes/admin/auth.ts (modified — `Router`, login/logout 501 placeholders, protected `GET /me`)
 - server/routes/admin/leads.ts (modified — `Router`, `GET /` lists via `leadsDao` with status/locale query filters)
 - server/routes/admin/contacts.ts (modified — `Router`, `GET /` lists via `contactsDao` with locale/read query filters)
 - server/routes/admin/team.ts (modified — `Router`, `GET /` lists via `teamDao`)
@@ -193,15 +210,22 @@ claude-opus-4-7[1m] (Caveman Mode)
 - server/dao/admin.dao.test.ts (new — 4 tests)
 - server/schemas/demo.schema.test.ts (new — 7 tests)
 - server/schemas/contact.schema.test.ts (new — 4 tests)
-- server/middleware/rateLimit.test.ts (new — 2 tests, JSON 429 shape verified via ephemeral-port harness)
+- server/middleware/rateLimit.test.ts (new — 2 tests, JSON 429 shape verified via request harness)
 - server/middleware/auth.test.ts (new — 5 tests covering 401 paths and valid token)
 - server/lib/mailer.test.ts (new — 3 tests, swallow-on-error verified via `vi.mock('nodemailer')`)
-- server/index.test.ts (new — 10 tests covering Helmet, CORS non-wildcard, route mounts, 401 on admin, plus forensic VITE_ and `db.prepare` guards)
+- server/index.test.ts (new — 13 tests covering Helmet, CORS non-wildcard, route mounts, auth `/me`, JSON API fallback/error envelopes, plus forensic VITE_ and `db.prepare` guards)
+- server/index.rateLimit.test.ts (new — 3 tests covering mounted form route rate limiting and POST-only quota behavior)
+- server/test-utils/request.ts (new — direct Express request harness for server tests)
 - vault/Code/Backend.md (modified — Story 2.1 status row filled with full file inventory)
 - vault/Code/Database.md (modified — Story 2.1 status row filled)
-- vault/Planning/Epics-Index.md (modified — Story 2.1 marked `[r]` In Review)
-- _bmad-output/implementation-artifacts/sprint-status.yaml (modified — `2-1-...` set to `review`, `last_updated` header updated)
+- vault/Code/Index.md (modified — status points to Story 2.2 after Story 2.1 completion)
+- vault/00-Home.md (modified — active sprint and quality status reflect Story 2.1 done)
+- vault/Planning/Epics-Index.md (modified — Story 2.1 marked `[x]` Done)
+- _bmad-output/implementation-artifacts/tests/test-summary.md (modified — server/full-suite counts and review regression coverage updated)
+- _bmad-output/implementation-artifacts/sprint-status.yaml (modified — `2-1-...` set to `done`, `last_updated` header updated)
 
 ### Change Log
 
-- 2026-05-15 — Story 2.1 backend infrastructure landed: 4-table schema initialization, typed DAOs, full Express middleware stack (helmet/cors/rate limit/JWT cookie auth), strict Zod schemas with locale enum, fire-and-forget Nodemailer notification utility, mounted public/admin route surfaces, 57 co-located server tests. No regressions: 156/156 total tests pass.
+- 2026-05-15 — Story 2.1 backend infrastructure landed: 4-table schema initialization, typed DAOs, full Express middleware stack (helmet/cors/rate limit/JWT cookie auth), strict Zod schemas with locale enum, fire-and-forget Nodemailer notification utility, mounted public/admin route surfaces, 57 co-located server tests. No regressions: 156/156 total tests passed before senior-review fixes.
+- 2026-05-15 — Full suite after senior review passes: 162/162 tests across 34 files.
+- 2026-05-15 — Senior review auto-fixes applied: POST-only form rate limiter placement, protected `/api/admin/auth/me`, JSON envelope handlers for unmatched/malformed API requests, added regression tests. `npm run typecheck` clean; `npx vitest run server/` passes 63/63 tests.
