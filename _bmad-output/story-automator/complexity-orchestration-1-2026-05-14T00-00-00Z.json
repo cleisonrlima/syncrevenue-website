@@ -1,0 +1,10 @@
+{
+  "stories": [
+    {"storyId":"1.5","title":"Hero Section","complexity":{"score":8,"level":"High"}},
+    {"storyId":"1.6","title":"SyncRevenue & Services Sections","complexity":{"score":6,"level":"Medium"}},
+    {"storyId":"1.7","title":"Comparison Section","complexity":{"score":4,"level":"Medium"}},
+    {"storyId":"1.8","title":"Team Section","complexity":{"score":4,"level":"Medium"}},
+    {"storyId":"1.9","title":"Security & Client References Sections","complexity":{"score":10,"level":"High"}},
+    {"storyId":"1.10","title":"Privacy Policy Page","complexity":{"score":4,"level":"Medium"}}
+  ]
+}

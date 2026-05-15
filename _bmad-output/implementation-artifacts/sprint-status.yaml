@@ -35,8 +35,8 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-14  # updated: 1-4 → review
-project: syncrevenue-website  # updated: 1-3 → in-progress (review findings pending)
+last_updated: 2026-05-15  # updated: 1-6 → done (manual browser QA deferred)
+project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
@@ -48,8 +48,8 @@ development_status:
   1-2-design-system-foundation: done
   1-3-i18n-language-infrastructure: done
   1-4-app-shell-routing-navigation: done
-  1-5-hero-section: backlog
-  1-6-syncrevenue-services-sections: backlog
+  1-5-hero-section: done
+  1-6-syncrevenue-services-sections: done
   1-7-comparison-section: backlog
   1-8-team-section: backlog
   1-9-security-client-references-sections: backlog

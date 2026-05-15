@@ -4,6 +4,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 
 const Hero = lazy(() => import('@/components/sections/Hero'))
 const SyncRevenue = lazy(() => import('@/components/sections/SyncRevenue'))
+const Services = lazy(() => import('@/components/sections/Services'))
 const Comparison = lazy(() => import('@/components/sections/Comparison'))
 const Security = lazy(() => import('@/components/sections/Security'))
 const ClientReferences = lazy(() => import('@/components/sections/ClientReferences'))
@@ -21,6 +22,11 @@ export default function Home() {
       <ErrorBoundary>
         <Suspense fallback={<SectionSkeleton className="min-h-[400px]" label="Loading syncrevenue" />}>
           <SyncRevenue />
+        </Suspense>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Suspense fallback={<SectionSkeleton className="min-h-[400px]" label="Loading services" />}>
+          <Services />
         </Suspense>
       </ErrorBoundary>
       <ErrorBoundary>

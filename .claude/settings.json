@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/xillinha/Projects/syncrevenue-website/.claude/skills/bmad-story-automator/scripts/story-automator stop-hook",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
