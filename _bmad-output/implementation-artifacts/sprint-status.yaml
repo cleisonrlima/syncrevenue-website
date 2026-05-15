@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-14
+# last_updated: 2026-05-15  # story 2-1 backend infrastructure -> review
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,15 +35,20 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-15  # updated: 1-11-test-infrastructure-baseline -> done
+last_updated: 2026-05-15
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
 
+# Jira sprint mirror (informational; file-system remains source of truth):
+#   SYN Sprint 1 (id 236) — 2026-05-14 → 2026-05-28 — Epic 1 (SYN-6..15, SYN-65) all Done
+#   SYN Sprint 2 (id 302) — 2026-05-15 → 2026-06-11 — Epic 2 (SYN-16..22) all To Do
+current_jira_sprint: SYN Sprint 2
+
 development_status:
   # Epic 1: Visitor Content Experience (Phase 1 MVP — Part A)
-  epic-1: in-progress
+  epic-1: done
   1-1-project-initialization-dev-environment: done
   1-2-design-system-foundation: done
   1-3-i18n-language-infrastructure: done
@@ -54,12 +59,13 @@ development_status:
   1-8-team-section: done
   1-9-security-client-references-sections: done
   1-10-privacy-policy-page: done
-  epic-1-retrospective: done
+  # 1-11 added post-epic as gap closure (test infrastructure baseline); not in epics.md
   1-11-test-infrastructure-baseline: done
+  epic-1-retrospective: done
 
   # Epic 2: Lead Capture & Conversion (Phase 1 MVP — Part B)
-  epic-2: backlog
-  2-1-backend-infrastructure-database-daos-middleware: backlog
+  epic-2: in-progress
+  2-1-backend-infrastructure-database-daos-middleware: review
   2-2-demo-request-form-full-stack: backlog
   2-3-contact-form-full-stack: backlog
   2-4-demoscheduler-section-multiple-cta-entry-points: backlog

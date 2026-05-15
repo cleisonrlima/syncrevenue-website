@@ -14,24 +14,26 @@
 | `name` | TEXT NOT NULL | |
 | `email` | TEXT NOT NULL | |
 | `company` | TEXT NOT NULL | |
+| `phone` | TEXT | optional |
 | `role` | TEXT NOT NULL | |
-| `gds` | TEXT NOT NULL | |
+| `gds` | TEXT NOT NULL | CHECK IN (`Amadeus`, `Sabre`, `Galileo`, `Worldspan`, `Other`, `None yet`) |
 | `message` | TEXT | optional |
-| `locale` | TEXT NOT NULL | `en` / `pt-BR` / `es` |
-| `status` | TEXT NOT NULL | `pending` / `contacted` / `qualified` |
-| `created_at` | TEXT | ISO-8601, `datetime('now')` default |
+| `locale` | TEXT NOT NULL | CHECK IN (`en`, `pt-BR`, `es`) |
+| `status` | TEXT NOT NULL | DEFAULT `pending`; CHECK IN (`pending`, `contacted`, `qualified`) |
+| `created_at` | TEXT NOT NULL | DEFAULT `datetime('now')` |
+| `updated_at` | TEXT NOT NULL | DEFAULT `datetime('now')` |
 
-### `contact_submissions`
+### `contacts`
 | Column | Type | Notes |
 |---|---|---|
 | `id` | INTEGER PK AUTOINCREMENT | |
 | `name` | TEXT NOT NULL | |
 | `email` | TEXT NOT NULL | |
-| `company` | TEXT | optional |
 | `subject` | TEXT NOT NULL | service dropdown value |
 | `message` | TEXT NOT NULL | |
-| `locale` | TEXT NOT NULL | |
-| `created_at` | TEXT | ISO-8601 |
+| `locale` | TEXT NOT NULL | CHECK IN (`en`, `pt-BR`, `es`) |
+| `read` | INTEGER NOT NULL | DEFAULT 0; CHECK IN (0, 1) |
+| `created_at` | TEXT NOT NULL | DEFAULT `datetime('now')` |
 
 ### `team_members`
 | Column | Type | Notes |
@@ -44,10 +46,10 @@
 | `bio_en` | TEXT NOT NULL | |
 | `bio_pt` | TEXT NOT NULL | |
 | `bio_es` | TEXT NOT NULL | |
-| `photo_url` | TEXT | |
-| `order_index` | INTEGER NOT NULL | display order |
-| `is_active` | INTEGER NOT NULL | 0/1 CHECK constraint |
-| `created_at` | TEXT | ISO-8601 |
+| `linkedin` | TEXT | optional |
+| `photo_url` | TEXT | optional |
+| `order_index` | INTEGER NOT NULL | DEFAULT 0; display order |
+| `active` | INTEGER NOT NULL | DEFAULT 1; CHECK IN (0, 1) |
 
 ### `admin_users`
 | Column | Type | Notes |
@@ -86,4 +88,4 @@
 
 | Story | Schema/DAO Created |
 |---|---|
-| 2.1 | — |
+| 2.1 | initSchema in server/db.ts creates all 4 tables (demo_requests, contacts, team_members, admin_users) with CHECK/UNIQUE/defaults; typed DAO factories created for leads, contacts, team, admin; co-located DAO/schema tests pass (37 DB/DAO/schema tests). |

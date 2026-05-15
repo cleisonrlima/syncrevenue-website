@@ -32,9 +32,11 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 ## Epic 2 — Lead Capture & Conversion (Phase 1 MVP Part B)
 
+**Jira:** SYN-2 epic; all 7 stories (SYN-16..22) in active sprint **SYN Sprint 2** (id 302, 2026-05-15 → 2026-06-11).
+
 | Story | Title | Status |
 |---|---|---|
-| 2.1 | Backend Infrastructure — Database, DAOs & Middleware | `[ ]` |
+| 2.1 | Backend Infrastructure — Database, DAOs & Middleware | `[r]` |
 | 2.2 | Demo Request Form — Full Stack | `[ ]` |
 | 2.3 | Contact Form — Full Stack | `[ ]` |
 | 2.4 | DemoScheduler Section & Multiple CTA Entry Points | `[ ]` |

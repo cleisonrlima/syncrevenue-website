@@ -64,5 +64,5 @@ helmet() → cors() → express.json() → rateLimit (form routes) → auth (adm
 | Story | Files Created |
 |---|---|
 | 1.1 | server/index.ts (health check), server/db.ts (connection, WAL, no schema), all placeholder files |
-| 2.1 | — |
+| 2.1 | server/index.ts (full middleware stack, createApp factory, route mounts, prod static), server/db.ts (initSchema for 4 tables), server/middleware/auth.ts (JWT cookie verify), server/middleware/rateLimit.ts (express-rate-limit form limiter 20/15m), server/schemas/{demo,contact}.schema.ts (Zod), server/lib/mailer.ts (Nodemailer sendNotification fire-and-forget), server/dao/{leads,contacts,team,admin}.dao.ts (typed factories), server/routes/{demo,contact,admin/*}.ts (Express Router stubs / typed list endpoints), co-located *.test.ts (57 server tests) |
 | 2.2 | — |
