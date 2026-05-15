@@ -1,11 +1,11 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { contactSchema } from './contact.schema'
+import { CONTACT_SUBJECT_VALUES, contactSchema } from './contact.schema'
 
 const valid = {
   name: 'Pri',
   email: 'pri@example.com',
-  subject: 'Hi',
+  subject: 'SyncRevenue',
   message: 'Hello',
   locale: 'pt-BR',
 }
@@ -23,6 +23,17 @@ describe('contactSchema', () => {
     for (const k of ['name', 'subject', 'message'] as const) {
       expect(contactSchema.safeParse({ ...valid, [k]: '' }).success).toBe(false)
     }
+  })
+
+  it('rejects subjects outside the contact routing allowlist', () => {
+    expect(CONTACT_SUBJECT_VALUES).toEqual([
+      'SyncRevenue',
+      'BI/Data Analytics',
+      'OBTs',
+      'Custom Development',
+      'Other',
+    ])
+    expect(contactSchema.safeParse({ ...valid, subject: 'Partnerships' }).success).toBe(false)
   })
 
   it('rejects invalid email', () => {

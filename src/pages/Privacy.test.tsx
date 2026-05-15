@@ -17,6 +17,10 @@ function renderAppAt(path: string) {
   )
 }
 
+function findHomeHeroHeading() {
+  return screen.findByRole('heading', { name: /Commission Management Built/i }, { timeout: 5000 })
+}
+
 describe('Privacy page', () => {
   beforeEach(async () => {
     localStorage.clear()
@@ -94,7 +98,7 @@ describe('Privacy page', () => {
     const user = userEvent.setup()
     renderAppAt('/')
 
-    expect(await screen.findByRole('heading', { name: /Commission Management Built/i })).toBeInTheDocument()
+    expect(await findHomeHeroHeading()).toBeInTheDocument()
     await user.click(screen.getByRole('link', { name: 'Privacy Policy' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Privacy Policy' })).toBeInTheDocument()
@@ -102,6 +106,6 @@ describe('Privacy page', () => {
 
     window.history.back()
     await waitFor(() => expect(window.location.pathname).toBe('/'))
-    expect(await screen.findByRole('heading', { name: /Commission Management Built/i })).toBeInTheDocument()
+    expect(await findHomeHeroHeading()).toBeInTheDocument()
   })
 })

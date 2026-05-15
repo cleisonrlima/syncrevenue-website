@@ -9,7 +9,20 @@ export type DemoPayload = {
   locale: 'en' | 'pt-BR' | 'es'
 }
 
+export type ContactPayload = {
+  name: string
+  email: string
+  subject: string
+  message: string
+  locale: 'en' | 'pt-BR' | 'es'
+}
+
 export type DemoSuccessResponse = {
+  success: true
+  message: string
+}
+
+export type ContactSuccessResponse = {
   success: true
   message: string
 }
@@ -27,6 +40,18 @@ export class DemoApiError extends Error {
   constructor(status: number, message: string, field?: string) {
     super(message)
     this.name = 'DemoApiError'
+    this.status = status
+    this.field = field
+  }
+}
+
+export class ContactApiError extends Error {
+  status: number
+  field?: string
+
+  constructor(status: number, message: string, field?: string) {
+    super(message)
+    this.name = 'ContactApiError'
     this.status = status
     this.field = field
   }
@@ -58,5 +83,34 @@ export async function postDemo(payload: DemoPayload): Promise<DemoSuccessRespons
   return {
     success: true,
     message: body.message || 'Demo request received',
+  }
+}
+
+export async function postContact(payload: ContactPayload): Promise<ContactSuccessResponse> {
+  let response: Response
+  try {
+    response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch {
+    throw new ContactApiError(0, 'Connection error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as Partial<ContactSuccessResponse> &
+    Partial<ApiErrorResponse>
+
+  if (!response.ok || body.success !== true) {
+    throw new ContactApiError(
+      response.status,
+      body.message || (response.status === 429 ? 'Too many requests' : 'Contact request failed'),
+      body.field
+    )
+  }
+
+  return {
+    success: true,
+    message: body.message || 'Contact message received',
   }
 }

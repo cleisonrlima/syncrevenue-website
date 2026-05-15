@@ -78,14 +78,19 @@ describe('Express bootstrap', () => {
     })
   })
 
-  it('mounts /api/contact (501 placeholder envelope)', async () => {
+  it('mounts /api/contact with validation envelope', async () => {
     const r = await request(app, {
       method: 'POST',
       path: '/api/contact',
       headers: { 'content-type': 'application/json' },
       body: {},
     })
-    expect(r.status).toBe(501)
+    expect(r.status).toBe(400)
+    expect(r.json()).toEqual({
+      success: false,
+      message: 'Invalid contact request',
+      field: expect.any(String),
+    })
   })
 
   it('admin routes require auth (401 without cookie)', async () => {

@@ -8,6 +8,8 @@ import '@/i18n'
 import i18next from '@/i18n'
 import { useLocaleStore } from '@/store/useLocaleStore'
 
+const lazySectionWait = { timeout: 5000 }
+
 describe('Story 1.9 trust sequence', () => {
   afterEach(async () => {
     cleanup()
@@ -20,21 +22,21 @@ describe('Story 1.9 trust sequence', () => {
 
     const comparison = await screen.findByRole('region', {
       name: 'SyncRevenue comparison against manual and generic tools',
-    })
+    }, lazySectionWait)
     const security = await screen.findByRole('region', {
       name: 'Your Data is Protected',
-    })
+    }, lazySectionWait)
     const clientReferences = await screen.findByRole('region', {
       name: 'Verified US travel agency references',
-    })
+    }, lazySectionWait)
     const team = await screen.findByRole('region', {
       name: 'Sync Sirius team specialists',
-    })
+    }, lazySectionWait)
     const demoScheduler = await waitFor(() => {
       const section = container.querySelector('#demo-scheduler')
       expect(section).toBeInTheDocument()
       return section as HTMLElement
-    })
+    }, lazySectionWait)
 
     expect(comparison.compareDocumentPosition(security)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(security.compareDocumentPosition(clientReferences)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
@@ -47,7 +49,7 @@ describe('Story 1.9 trust sequence', () => {
 
     const security = await screen.findByRole('region', {
       name: 'Your Data is Protected',
-    })
+    }, lazySectionWait)
 
     expect(within(security).getByRole('heading', { name: 'Encrypted Transmission' })).toBeInTheDocument()
     expect(within(security).getByText(/encrypted in transit/i)).toBeInTheDocument()
@@ -68,7 +70,7 @@ describe('Story 1.9 trust sequence', () => {
 
     const clientReferences = await screen.findByRole('region', {
       name: 'Verified US travel agency references',
-    })
+    }, lazySectionWait)
     const renderedCopy = clientReferences.textContent ?? ''
 
     expect(
@@ -88,12 +90,12 @@ describe('Story 1.9 trust sequence', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByRole('heading', { name: 'Your Data is Protected' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Your Data is Protected' }, lazySectionWait)).toBeInTheDocument()
 
     const languageSwitcher = screen.getAllByRole('group', { name: 'Select language' })[0]
     await user.click(within(languageSwitcher).getByRole('button', { name: 'ES' }))
 
-    expect(await screen.findByRole('heading', { name: 'Sus Datos Están Protegidos' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Sus Datos Están Protegidos' }, lazySectionWait)).toBeInTheDocument()
     expect(screen.getByText(/Las credenciales GDS nunca tocan el sitio web/)).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { name: 'Confiado por Agencias de Viajes en EE.UU.' }),
