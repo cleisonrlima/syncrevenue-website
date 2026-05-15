@@ -1,20 +1,85 @@
 import { useTranslation } from 'react-i18next'
 
+const policySections = [
+  'dataCollection',
+  'dataUse',
+  'storageAccess',
+  'dataRetention',
+  'cookies',
+  'gdsData',
+  'lgpdRights',
+  'ccpaRights',
+  'contact',
+] as const
+
+type PolicySectionKey = (typeof policySections)[number]
+
+type PolicySection = {
+  title?: unknown
+  body?: unknown
+  email?: unknown
+}
+
+function normalizeBody(body: unknown) {
+  if (Array.isArray(body)) {
+    return body.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+  }
+
+  return typeof body === 'string' && body.trim().length > 0 ? [body] : []
+}
+
 export default function Privacy() {
   const { t } = useTranslation()
+  const sections = t('privacy.sections', { returnObjects: true }) as Partial<Record<PolicySectionKey, PolicySection>>
+  const title = t('privacy.title')
 
   return (
-    <div className="bg-brand-navy text-white min-h-screen">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <h1 className="text-3xl font-bold mb-2">{t('privacy.title', { defaultValue: 'Privacy Policy' })}</h1>
-        <p className="text-brand-muted text-sm mb-8">{t('privacy.lastUpdated', { defaultValue: 'Last updated' })}</p>
-        <p className="mb-10 text-brand-offwhite">{t('privacy.intro', { defaultValue: 'This Privacy Policy explains how we collect, use, and protect your personal information.' })}</p>
-        {(['dataCollection', 'dataUse', 'dataRetention', 'gdsData', 'contact'] as const).map((section) => (
-          <div key={section} className="mb-8">
-            <h2 className="text-xl font-semibold mb-3">{t(`privacy.${section}.title`, { defaultValue: section.charAt(0).toUpperCase() + section.slice(1).replace(/([A-Z])/g, ' $1') })}</h2>
-            <p className="text-brand-offwhite leading-relaxed">{t(`privacy.${section}.body`, { defaultValue: 'Information not available in this language.' })}</p>
+    <div className="min-h-screen bg-brand-navy text-white">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <article aria-label={title} className="max-w-4xl">
+          <header className="mb-10">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-3">{title}</h1>
+            <p className="text-brand-muted text-sm mb-6">{t('privacy.lastUpdated')}</p>
+            <p className="text-brand-offwhite leading-relaxed text-base sm:text-lg">{t('privacy.intro')}</p>
+          </header>
+
+          <div className="space-y-8">
+            {policySections.map((sectionKey) => {
+              const section = sections[sectionKey]
+              const bodyItems = normalizeBody(section?.body)
+              const email = typeof section?.email === 'string' ? section.email : undefined
+
+              return (
+                <section key={sectionKey} aria-labelledby={`privacy-${sectionKey}`}>
+                  <h2 id={`privacy-${sectionKey}`} className="text-xl font-semibold mb-3">
+                    {typeof section?.title === 'string' ? section.title : t(`privacy.sections.${sectionKey}.title`)}
+                  </h2>
+                  {bodyItems.length > 1 ? (
+                    <ul className="list-disc pl-5 space-y-2 text-brand-offwhite leading-relaxed">
+                      {bodyItems.map((item, index) => (
+                        <li key={`${sectionKey}-body-${index}`}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    bodyItems.map((item, index) => (
+                      <p key={`${sectionKey}-body-${index}`} className="text-brand-offwhite leading-relaxed">
+                        {item}
+                      </p>
+                    ))
+                  )}
+                  {email && (
+                    <a
+                      href={`mailto:${email}`}
+                      className="mt-3 inline-block text-brand-electric-blue underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy"
+                    >
+                      {email}
+                    </a>
+                  )}
+                </section>
+              )
+            })}
           </div>
-        ))}
+        </article>
       </div>
     </div>
   )

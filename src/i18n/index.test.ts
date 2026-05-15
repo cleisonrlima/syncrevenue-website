@@ -22,13 +22,17 @@ type ReferenceTranslation = {
   items?: unknown
 }
 
+type PrivacyTranslation = {
+  sections: Record<string, { title: string; body: string | string[] }>
+}
+
 function getTeamTranslation(locale: string) {
   return (i18next.getDataByLanguage(locale)?.translation as unknown as { team: TeamTranslation }).team
 }
 
 function getTranslation(locale: string) {
   return i18next.getDataByLanguage(locale)?.translation as
-    | { security?: SecurityTranslation; references?: ReferenceTranslation }
+    | { security?: SecurityTranslation; references?: ReferenceTranslation; privacy?: PrivacyTranslation }
     | undefined
 }
 
@@ -131,6 +135,49 @@ describe('i18n initialization', () => {
         expect(typeof item.testimonial === 'string' || typeof item.referenceDetail === 'string').toBe(true)
         expect(item.agencyName).not.toMatch(/a leading TMC|recognized agency/i)
       })
+    })
+  })
+
+  it('all locales expose the same privacy policy section contract and critical commitments', () => {
+    const requiredSectionKeys = [
+      'dataCollection',
+      'dataUse',
+      'storageAccess',
+      'dataRetention',
+      'cookies',
+      'gdsData',
+      'lgpdRights',
+      'ccpaRights',
+      'contact',
+    ]
+
+    ;['en', 'pt-BR', 'es'].forEach(locale => {
+      const privacy = getTranslation(locale)?.privacy
+
+      expect(privacy).toBeDefined()
+      expect(Object.keys(privacy?.sections ?? {}).sort()).toEqual([...requiredSectionKeys].sort())
+
+      requiredSectionKeys.forEach(sectionKey => {
+        const section = privacy?.sections[sectionKey]
+        expect(typeof section?.title).toBe('string')
+        expect(section?.title).not.toBe('')
+        expect(typeof section?.body === 'string' || Array.isArray(section?.body)).toBe(true)
+
+        const bodyItems = Array.isArray(section?.body) ? section.body : [section?.body]
+        bodyItems.forEach(item => {
+          expect(typeof item).toBe('string')
+          expect(item).not.toBe('')
+        })
+      })
+
+      const policyCopy = JSON.stringify(privacy)
+      expect(policyCopy).toMatch(/privacy@syncsirius\.com/i)
+      expect(policyCopy).toMatch(/24\s+(months|meses)/i)
+      expect(policyCopy).toMatch(/SQLite/i)
+      expect(policyCopy).toMatch(/GDS/i)
+      expect(policyCopy).toMatch(/LGPD/i)
+      expect(policyCopy).toMatch(/CCPA/i)
+      expect(policyCopy).toMatch(/cookie/i)
     })
   })
 })

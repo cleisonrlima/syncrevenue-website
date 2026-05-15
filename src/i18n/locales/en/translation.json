@@ -184,26 +184,48 @@
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: May 2026",
-    "intro": "Sync Sirius, Inc. is committed to protecting your privacy. This policy describes how we collect, use, and protect information submitted through this website.",
-    "dataCollection": {
-      "title": "Information We Collect",
-      "body": "We collect contact information (name, email, company, phone) and usage information submitted through demo request and contact forms."
-    },
-    "dataUse": {
-      "title": "How We Use Your Information",
-      "body": "We use your information to respond to demo requests, answer inquiries, and improve our services. We do not sell your data to third parties."
-    },
-    "dataRetention": {
-      "title": "Data Retention",
-      "body": "Demo request and contact records are retained for 24 months from submission, then permanently deleted."
-    },
-    "gdsData": {
-      "title": "GDS Credentials & Booking Data",
-      "body": "This website does not collect GDS credentials or booking data. All GDS integration for SyncRevenue customers occurs through direct API agreements, not through this website."
-    },
-    "contact": {
-      "title": "Contact Us",
-      "body": "For privacy inquiries, contact us at privacy@syncsirius.com."
+    "intro": "This policy explains what personal information the Sync Sirius website collects from demo requests and contact submissions, how that information is used, and how visitors from Brazil and California can exercise privacy rights.",
+    "sections": {
+      "dataCollection": {
+        "title": "Information We Collect",
+        "body": [
+          "Website forms collect personal/contact and inquiry fields only: name, email, company, phone, role, GDS system, message, contact subject or service selection, and the active submission locale where applicable.",
+          "We do not collect payment information, GDS credentials, or booking records through this website."
+        ]
+      },
+      "dataUse": {
+        "title": "How We Use Your Information",
+        "body": "We use submitted information to respond to demo requests, answer contact inquiries, understand which Sync Sirius service you asked about, maintain a record of the conversation, and support follow-up in the language used for the submission."
+      },
+      "storageAccess": {
+        "title": "Storage and Access",
+        "body": "Lead data is stored in secured SQLite and is accessible only through authenticated, admin-only access for authorized Sync Sirius users."
+      },
+      "dataRetention": {
+        "title": "Retention and Deletion",
+        "body": "Demo request and contact lead data is retained for 24 months from the submission date, then deleted. You may request earlier removal using the privacy contact below."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "At MVP, this website uses no analytics or tracking cookies. Only functional cookies or local storage values needed for site operation, such as language preference, are in scope."
+      },
+      "gdsData": {
+        "title": "GDS Credentials and Product Data",
+        "body": "GDS credentials are never collected by this website. SyncRevenue product integrations are separate from website lead collection and are handled through separately scoped customer agreements and product data flows."
+      },
+      "lgpdRights": {
+        "title": "LGPD Rights for Brazil",
+        "body": "Brazilian visitors may request confirmation of processing, access to their information, correction, deletion or removal, portability or information about use where applicable, and details needed to exercise rights under LGPD."
+      },
+      "ccpaRights": {
+        "title": "CCPA Rights for California",
+        "body": "California residents may request to know what personal information was collected, access it, correct it, delete it, and receive information about how website lead data is used under CCPA."
+      },
+      "contact": {
+        "title": "Data Removal and Privacy Contact",
+        "body": "To ask a privacy question or request data removal, contact Sync Sirius at:",
+        "email": "privacy@syncsirius.com"
+      }
     }
   },
   "forms": {

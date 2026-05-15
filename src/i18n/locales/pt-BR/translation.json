@@ -184,26 +184,48 @@
   "privacy": {
     "title": "Política de Privacidade",
     "lastUpdated": "Última atualização: Maio de 2026",
-    "intro": "A Sync Sirius, Inc. está comprometida em proteger sua privacidade. Esta política descreve como coletamos, usamos e protegemos as informações enviadas por este site.",
-    "dataCollection": {
-      "title": "Informações que Coletamos",
-      "body": "Coletamos informações de contato (nome, e-mail, empresa, telefone) e informações de uso enviadas através dos formulários de solicitação de demo e contato."
-    },
-    "dataUse": {
-      "title": "Como Usamos suas Informações",
-      "body": "Usamos suas informações para responder a solicitações de demo, responder a consultas e melhorar nossos serviços. Não vendemos seus dados a terceiros."
-    },
-    "dataRetention": {
-      "title": "Retenção de Dados",
-      "body": "Registros de solicitação de demo e contato são retidos por 24 meses a partir do envio e então permanentemente excluídos."
-    },
-    "gdsData": {
-      "title": "Credenciais GDS & Dados de Reservas",
-      "body": "Este site não coleta credenciais GDS ou dados de reservas. Toda integração GDS para clientes SyncRevenue ocorre por meio de acordos diretos de API, não por este site."
-    },
-    "contact": {
-      "title": "Fale Conosco",
-      "body": "Para dúvidas sobre privacidade, entre em contato pelo e-mail privacy@syncsirius.com."
+    "intro": "Esta política explica quais informações pessoais o site da Sync Sirius coleta em solicitações de demo e mensagens de contato, como essas informações são usadas e como visitantes do Brasil e da Califórnia podem exercer direitos de privacidade.",
+    "sections": {
+      "dataCollection": {
+        "title": "Informações que Coletamos",
+        "body": [
+          "Os formulários do site coletam apenas dados pessoais/de contato e informações da solicitação: nome, e-mail, empresa, telefone, cargo, sistema GDS, mensagem, assunto do contato ou seleção de serviço, e o idioma ativo do envio quando aplicável.",
+          "Não coletamos informações de pagamento, credenciais GDS ou registros de reservas por este site."
+        ]
+      },
+      "dataUse": {
+        "title": "Como Usamos suas Informações",
+        "body": "Usamos as informações enviadas para responder a solicitações de demo, atender mensagens de contato, entender qual serviço da Sync Sirius foi solicitado, manter registro da conversa e apoiar o acompanhamento no idioma usado no envio."
+      },
+      "storageAccess": {
+        "title": "Armazenamento e Acesso",
+        "body": "Os dados de leads são armazenados em SQLite protegido e acessíveis apenas por acesso autenticado e restrito a administradores autorizados da Sync Sirius."
+      },
+      "dataRetention": {
+        "title": "Retenção e Exclusão",
+        "body": "Os dados de leads de solicitações de demo e mensagens de contato são mantidos por 24 meses a partir da data de envio e depois excluídos. Você pode solicitar remoção antecipada pelo contato de privacidade abaixo."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "body": "No MVP, este site não usa cookies de analytics ou rastreamento. Apenas cookies funcionais ou valores de armazenamento local necessários para a operação do site, como preferência de idioma, estão no escopo."
+      },
+      "gdsData": {
+        "title": "Credenciais GDS e Dados do Produto",
+        "body": "Credenciais GDS nunca são coletadas por este site. As integrações do produto SyncRevenue são separadas da coleta de leads do site e são tratadas por contratos de cliente e fluxos de dados do produto com escopo próprio."
+      },
+      "lgpdRights": {
+        "title": "Direitos LGPD para o Brasil",
+        "body": "Visitantes brasileiros podem solicitar confirmação de tratamento, acesso às suas informações, correção, exclusão ou remoção, portabilidade ou informações sobre o uso quando aplicável, e os detalhes necessários para exercer direitos pela LGPD."
+      },
+      "ccpaRights": {
+        "title": "Direitos CCPA para a Califórnia",
+        "body": "Residentes da Califórnia podem solicitar saber quais informações pessoais foram coletadas, acessá-las, corrigi-las, excluí-las e receber informações sobre como os dados de leads do site são usados conforme a CCPA."
+      },
+      "contact": {
+        "title": "Remoção de Dados e Contato de Privacidade",
+        "body": "Para enviar uma pergunta de privacidade ou solicitar remoção de dados, contate a Sync Sirius em:",
+        "email": "privacy@syncsirius.com"
+      }
     }
   },
   "forms": {
