@@ -19,6 +19,16 @@ After ANY change to a story, subtask, or epic — including status updates, cont
 
 This is enforced inside the Story Automator workflow as well: step `step-03b-execute-finish` includes a mandatory Jira sync stage (E2) that runs after every story commit. Do not skip it.
 
+## Story Subtasks (Mandatory)
+
+When creating ANY story (via `/bmad-create-story`, story automator `create-story`, or manual authoring) the agent MUST:
+
+1. **In the story file**: emit each acceptance-criterion-level task as a discrete unchecked subtask under a `## Tasks / Subtasks` section. One subtask per AC or per logical implementation unit — never collapse multiple ACs into one "implement all" task.
+2. **In Jira**: create matching child issues of type `Sub-task` under the parent story SYN-* issue. Use `/jira-assistant` or the `mcp__atlassian__createJiraIssue` MCP tool. Subtask summaries should mirror the story-file subtask titles 1:1.
+3. **Idempotency**: if subtasks already exist in either location, reconcile (add missing, do not duplicate). Do not skip Jira just because the file has them — both surfaces must stay aligned.
+
+This rule applies on **every** story-creation invocation — new chat session, resumed session, new epic, manual run, or orchestrator-spawned agent. No exceptions, no "the user can add them later," no "deferred to dev step." Subtasks land at create-time.
+
 ## Git Commit + Push After Every Story (Mandatory)
 
 After every story completes (Story Automator or manual workflow), commit AND push to the remote. The Story Automator `commit-story` helper supports `--push` and is invoked with that flag from `step-03b-execute-finish`. If push fails (no remote, network error), log the warning and continue — but do not silently skip the push step.
