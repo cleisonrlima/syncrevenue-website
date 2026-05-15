@@ -70,22 +70,46 @@
     "contact": "¿No está seguro de qué servicio necesita? Contáctenos."
   },
   "comparison": {
+    "ariaLabel": "Comparación de SyncRevenue con herramientas manuales y genéricas",
     "eyebrow": "Por qué SyncRevenue",
     "headline": "Deje de Perder Ingresos con Procesos Manuales",
     "subtext": "Vea cómo la gestión automatizada de comisiones se compara con el status quo.",
     "featureHeader": "Funcionalidad",
     "syncrevenueHeader": "SyncRevenue",
     "legacyHeader": "Manual / Herramientas Legadas",
+    "genericHeader": "Herramientas Genéricas",
     "features": {
-      "reconciliation": "Conciliación BSP/ARC",
-      "debitMemo": "Gestión de Disputas de Débitos",
-      "gdsIntegration": "Integración Multi-GDS",
-      "reporting": "Informes de Comisiones en Tiempo Real",
-      "audit": "Historial de Auditoría Automatizado"
-    },
-    "yes": "✓",
-    "no": "✗",
-    "partial": "Parcial"
+      "reconciliation": {
+        "label": "Conciliación BSP/ARC",
+        "syncrevenue": "Detecta automáticamente discrepancias de liquidación antes de que continúe la fuga de ingresos.",
+        "legacy": "La comparación en hojas de cálculo después del cierre deja problemas para la revisión mensual.",
+        "generic": "No modelan flujos de liquidación aérea sin una configuración pesada."
+      },
+      "debitMemo": {
+        "label": "Gestión de Disputas de Débitos",
+        "syncrevenue": "Conecta cada disputa con el contexto de comisión, historial de reserva y estado de recuperación.",
+        "legacy": "Los equipos registran manualmente códigos de motivo y notas de respaldo.",
+        "generic": "Requieren procesos de tareas personalizados para mantener disputas y comisiones conectadas."
+      },
+      "gdsIntegration": {
+        "label": "Integración Multi-GDS",
+        "syncrevenue": "Cubre flujos de comisión en Amadeus, Sabre, Galileo y Worldspan.",
+        "legacy": "Depende de exportaciones copiadas o vistas aisladas de un solo GDS.",
+        "generic": "Requieren importaciones CSV y mapeo manual antes de iniciar el análisis."
+      },
+      "reporting": {
+        "label": "Informes de Comisiones en Tiempo Real",
+        "syncrevenue": "Muestra el estado de recuperación y excepciones de comisión a medida que avanza el trabajo.",
+        "legacy": "Los informes mensuales retrasan la visibilidad sobre ingresos perdidos o disputados.",
+        "generic": "Los dashboards dependen de actualizaciones manuales y mantenimiento de hojas de cálculo."
+      },
+      "audit": {
+        "label": "Historial de Auditoría Automatizado",
+        "syncrevenue": "Crea registros del sistema para acciones de conciliación, disputas y resultados.",
+        "legacy": "La evidencia queda dispersa en correos, archivos y hojas de cálculo individuales.",
+        "generic": "Guardan adjuntos o notas sin trazabilidad específica del sector de viajes."
+      }
+    }
   },
   "team": {
     "eyebrow": "Nuestro Equipo",

@@ -19,8 +19,8 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 1.3 | i18n & Language Infrastructure | `[x]` |
 | 1.4 | App Shell, Routing & Navigation | `[x]` |
 | 1.5 | Hero Section | `[x]` |
-| 1.6 | SyncRevenue & Services Sections | `[~]` |
-| 1.7 | Comparison Section | `[ ]` |
+| 1.6 | SyncRevenue & Services Sections | `[x]` |
+| 1.7 | Comparison Section | `[~]` |
 | 1.8 | Team Section | `[ ]` |
 | 1.9 | Security & Client References Sections | `[ ]` |
 | 1.10 | Privacy Policy Page | `[ ]` |

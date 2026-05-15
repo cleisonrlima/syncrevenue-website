@@ -70,22 +70,46 @@
     "contact": "Not sure which service fits? Contact us."
   },
   "comparison": {
+    "ariaLabel": "SyncRevenue comparison against manual and generic tools",
     "eyebrow": "Why SyncRevenue",
     "headline": "Stop Losing Revenue to Manual Processes",
     "subtext": "See how automated commission management compares to the status quo.",
     "featureHeader": "Feature",
     "syncrevenueHeader": "SyncRevenue",
     "legacyHeader": "Manual / Legacy Tools",
+    "genericHeader": "Generic Tools",
     "features": {
-      "reconciliation": "BSP/ARC Reconciliation",
-      "debitMemo": "Debit Memo Dispute Management",
-      "gdsIntegration": "Multi-GDS Integration",
-      "reporting": "Real-Time Commission Reporting",
-      "audit": "Automated Audit Trail"
-    },
-    "yes": "✓",
-    "no": "✗",
-    "partial": "Partial"
+      "reconciliation": {
+        "label": "BSP/ARC Reconciliation",
+        "syncrevenue": "Automatically detects settlement discrepancies before revenue leaks continue.",
+        "legacy": "Spreadsheet matching after closing leaves issues for monthly cleanup.",
+        "generic": "Does not model airline settlement workflows without heavy configuration."
+      },
+      "debitMemo": {
+        "label": "Debit Memo Dispute Management",
+        "syncrevenue": "Links each dispute to commission context, booking history, and recovery status.",
+        "legacy": "Teams track reason codes and supporting notes manually.",
+        "generic": "Requires custom task processes to keep disputes and commissions connected."
+      },
+      "gdsIntegration": {
+        "label": "Multi-GDS Integration",
+        "syncrevenue": "Covers Amadeus, Sabre, Galileo, and Worldspan commission workflows.",
+        "legacy": "Depends on copied exports or isolated single-GDS views.",
+        "generic": "Requires CSV imports and manual mapping before analysis can start."
+      },
+      "reporting": {
+        "label": "Real-Time Commission Reporting",
+        "syncrevenue": "Shows recovery status and commission exceptions as work progresses.",
+        "legacy": "Monthly reporting delays visibility into missed or disputed revenue.",
+        "generic": "Dashboards depend on manual refreshes and spreadsheet upkeep."
+      },
+      "audit": {
+        "label": "Automated Audit Trail",
+        "syncrevenue": "Creates system records for reconciliation actions, disputes, and outcomes.",
+        "legacy": "Evidence is scattered across emails, files, and individual spreadsheets.",
+        "generic": "Stores attachments or notes without travel-specific traceability."
+      }
+    }
   },
   "team": {
     "eyebrow": "Our Team",

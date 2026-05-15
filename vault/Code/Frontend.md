@@ -22,9 +22,11 @@
 
 | Component | FR | Description |
 |---|---|---|
-| `src/components/sections/Hero.tsx` | FR1 | Value prop + primary CTA |
-| `src/components/sections/SyncRevenue.tsx` | FR2 | Product description |
-| `src/components/sections/Services.tsx` | FR3 | Full portfolio |
+| `src/components/sections/Hero.tsx` | FR1 | Value prop, dual CTAs, StatRow + TrustBar; motion-safe variants; `Hero.test.tsx` co-located |
+| `src/components/sections/StatRow.tsx` | FR1 | 4-stat row (commission accuracy, agencies, $ recovered, hours saved) — Hero child |
+| `src/components/sections/TrustBar.tsx` | FR1 | 5-logo trust strip — Hero child |
+| `src/components/sections/SyncRevenue.tsx` | FR2 | SectionHeader + GDS integration list (Amadeus/Sabre/Galileo/Worldspan) + 99.99% accuracy; light bg; `SyncRevenue.test.tsx` co-located |
+| `src/components/sections/Services.tsx` | FR3 | 4 service cards + contact hint; light bg; `Services.test.tsx` co-located |
 | `src/components/sections/Comparison.tsx` | FR4 | vs. alternatives |
 | `src/components/sections/Team.tsx` | FR5 | Team members |
 | `src/components/sections/Contact.tsx` | FR6 | Contact form section |
