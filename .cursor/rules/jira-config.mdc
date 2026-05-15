@@ -19,3 +19,18 @@ Use these values for JQL, `cloudId`, and issue APIs in this workspace.
 Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status.yaml`.
 
 **Status mapping (this board):** Jira `Done` → `done`; `In Progress` → `in-progress`; `To Do` → `not-started`; `REVIEW` → `review`.
+
+## Story-to-Issue mapping (Epic 1)
+
+| Story | Jira Key |
+|-------|----------|
+| 1.5 Hero section | SYN-6 |
+| 1.6 SyncRevenue + Services sections | SYN-7 |
+| 1.7 Comparison section | SYN-8 |
+| 1.8 Team section | SYN-9 |
+
+Update this table as new stories are mapped.
+
+## Sync rule
+
+Story Automator triggers `/jira-assistant` after every story completion and every epic/story/subtask change (see `CLAUDE.md` → Jira Sync Mandatory; enforced in `step-03b-execute-finish.md` §E2).

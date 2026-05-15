@@ -4,6 +4,7 @@ import i18next from '@/i18n'
 import SyncRevenue from './SyncRevenue'
 import Services from './Services'
 import Comparison from './Comparison'
+import Team from './Team'
 
 describe('Section i18n', () => {
   afterEach(async () => {
@@ -54,5 +55,21 @@ describe('Section i18n', () => {
     expect(screen.getByRole('rowheader', { name: 'Reconciliação BSP/ARC' })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Ferramentas Genéricas' })).toBeInTheDocument()
     expect(screen.getByText(/Não modelam fluxos de liquidação aérea/)).toBeInTheDocument()
+  })
+
+  it('updates Team member roles and bios when locale changes', async () => {
+    const { rerender } = render(<Team />)
+
+    expect(screen.getByRole('heading', { name: 'Specialists in Airline Distribution' })).toBeInTheDocument()
+    expect(screen.getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
+
+    await act(async () => {
+      await i18next.changeLanguage('pt-BR')
+    })
+    rerender(<Team />)
+
+    expect(screen.getByRole('heading', { name: 'Especialistas em Distribuição Aérea' })).toBeInTheDocument()
+    expect(screen.getByText('Liderança em Distribuição Aérea e Estratégia de Comissões')).toBeInTheDocument()
+    expect(screen.getByText(/operações GDS, reconciliação BSP\/ARC/)).toBeInTheDocument()
   })
 })

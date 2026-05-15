@@ -3,31 +3,31 @@
 ## Generated Tests
 
 ### API Tests
-- [x] Not applicable for story 1.7; no API endpoint or service behavior is introduced by the Comparison section.
+- [x] Not applicable for story 1.8; the Team section is translation-driven and introduces no API endpoint, service, DAO, or server behavior.
 
 ### E2E Tests
-- [x] `src/pages/Home.story-1-7.e2e.test.tsx` - Story-level visitor flow through the real app shell, Services-to-Comparison-to-Security ordering, required comparison rows/headers, generic alternatives only, and real LanguageSwitcher-driven locale updates.
-- [x] `src/components/sections/Comparison.test.tsx` - Component-level Comparison region, SectionHeader, semantic table, mobile horizontal scrolling, stable table width, i18n key usage, no competitor brand names, and readable light-section text classes.
-- [x] `src/components/sections/Sections.i18n.test.tsx` - Locale update coverage for Comparison content through i18next rerender behavior.
+- [x] `src/pages/Home.story-1-8.e2e.test.tsx` - Story-level visitor flow through the real app shell, Team placement after ClientReferences and before DemoScheduler, visible member names/roles/bios, placeholder photo rendering, and real LanguageSwitcher-driven PT-BR updates without navigation.
+- [x] `src/components/sections/Team.test.tsx` - Added defensive coverage for malformed `team.members` translation data so the section renders without member cards instead of crashing.
 
 ## Coverage
 - API endpoints: 0/0 applicable
-- UI story acceptance criteria: 4/4 covered by generated or existing tests
-- Comparison required rows: 5/5 covered
-- Comparison columns: 4/4 covered
-- Locales exercised by generated tests: 2/3 (`en`, `pt-BR`); existing section i18n coverage also exercises `es`
+- UI story acceptance criteria: 5/5 covered by generated or existing tests
+- Team member contract fields: 4/4 covered in locale contract tests (`name`, `role`, `bio`, `photo`)
+- Locale switching paths: component-level i18next rerender coverage plus app-level real `LanguageSwitcher` coverage
+- Locales exercised by story 1.8 tests: `en`, `pt-BR`; translation contract verifies `en`, `pt-BR`, and `es`
 
 ## Checklist Validation
 - [x] API tests skipped as not applicable
 - [x] E2E tests generated for UI behavior
 - [x] Tests use Vitest and Testing Library, matching the project framework
-- [x] Happy path covers visitor reading comparison headers, rows, and table content
-- [x] Critical locale-change path covered through the real LanguageSwitcher without page reload/navigation
-- [x] Tests use semantic roles and scoped queries
+- [x] Happy path covers visitor reading Team section and member details
+- [x] Critical error case covers malformed `team.members`
+- [x] Tests use semantic roles, accessible names, and scoped queries
 - [x] No hardcoded waits or sleeps
 - [x] Tests are independent
 - [x] Summary includes coverage metrics
 
-## Next Steps
-- [x] `npm run test:run` - 13 test files passed, 49 tests passed
+## Validation
 - [x] `npm run typecheck` - passed with zero TypeScript errors
+- [x] `npm run test:run -- src/components/sections/Team.test.tsx src/pages/Home.story-1-8.e2e.test.tsx` - 2 test files passed, 9 tests passed
+- [x] `npm run test:run` - 15 test files passed, 61 tests passed

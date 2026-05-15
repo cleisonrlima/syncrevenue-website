@@ -15,13 +15,15 @@ outputFile: '{output_folder}/story-automator/orchestration-{epic_id}-{timestamp}
 
 ## Story Loop (Continue from Step 3)
 
-### E. Git Commit
+### E. Git Commit + Push (MANDATORY)
 
-**Required:** Commit after every story (do not skip).
+**Required:** Commit AND push after every story (do not skip; project-wide rule).
 
 ```bash
-commit=$("{scriptsDir}" commit-story --repo "{project-root}" --story {story_id} --title "{title}")
+commit=$("{scriptsDir}" commit-story --repo "{project-root}" --story {story_id} --title "{title}" --push)
 ok=$(echo "$commit" | jq -r '.ok')
+pushed=$(echo "$commit" | jq -r '.pushed // false')
+push_error=$(echo "$commit" | jq -r '.push_error // empty')
 ```
 
 - If `ok == true`:
@@ -30,8 +32,24 @@ ok=$(echo "$commit" | jq -r '.ok')
   tmp_state=$(mktemp)
   sed "s/^| ${story_id} |.*$/| ${story_id} | done | done | done | done | done | in-progress |/" "{outputFile}" > "$tmp_state" && mv "$tmp_state" "{outputFile}"
   ```
-  → proceed to F
+  - If `pushed != true`: log warning `Push failed: ${push_error}` (non-blocking; remote may be offline or absent)
+  - Else: log `commit pushed to remote`
+  → proceed to E2 (Jira sync)
 - If `ok == false` → log warning and escalate
+
+### E2. Jira Sync (MANDATORY)
+
+**Required after every story completion** (project rule — see `CLAUDE.md` Jira Sync Mandatory).
+
+The orchestrator (LLM) MUST trigger `/jira-assistant` to sync the story's status change (e.g., move to Done) and any subtask state. This is a hard requirement on every story completion, every epic transition, and every subtask edit.
+
+Action: After commit+push succeeds, invoke `/jira-assistant` with payload describing the change (story_id, new status `done`, epic_id). Log result in action log. Do NOT skip even if no Jira issue is mapped — let the assistant decide.
+
+```bash
+echo "- **[$(date -u +%Y-%m-%dT%H:%M:%SZ)]** Triggering Jira sync for story ${story_id} (status=done)" >> "{outputFile}"
+```
+
+Continue regardless of Jira sync outcome (log warning if it fails; non-blocking).
 
 ### F. Verify Sprint Status
 

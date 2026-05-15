@@ -112,19 +112,24 @@
     }
   },
   "team": {
+    "ariaLabel": "Especialistas da equipe Sync Sirius",
     "eyebrow": "Nossa Equipe",
     "headline": "Especialistas em Distribuição Aérea",
     "subtext": "Nossa equipe traz décadas de experiência em operações GDS, BSP e agências de viagem.",
-    "member1": {
-      "name": "Nome do Membro",
-      "role": "Diretor Executivo",
-      "bio": "Especialista em distribuição aérea com expertise em operações GDS e gestão de comissões para agências de viagem nas Américas."
-    },
-    "member2": {
-      "name": "Nome do Membro",
-      "role": "Diretor de Tecnologia",
-      "bio": "Líder de tecnologia especializado em integração de dados do setor de viagens, automação e sistemas de otimização de receita."
-    }
+    "members": [
+      {
+        "name": "Membro da Equipe de Operações",
+        "role": "Liderança em Distribuição Aérea e Estratégia de Comissões",
+        "bio": "Orienta agências de viagem em operações GDS, reconciliação BSP/ARC, fluxos de débito e estratégia de recuperação de comissões nas Américas.",
+        "photo": ""
+      },
+      {
+        "name": "Membro da Equipe de Tecnologia",
+        "role": "Liderança em Integração de Dados de Viagem e Automação",
+        "bio": "Desenha a camada de automação do SyncRevenue, conectando dados de reservas, regras de comissão e sistemas de otimização de receita a rotinas operacionais confiáveis.",
+        "photo": ""
+      }
+    ]
   },
   "security": {
     "eyebrow": "Segurança & Confiança",

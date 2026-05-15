@@ -17,6 +17,12 @@ When working on stories, epics, or subtasks:
 
 After ANY change to a story, subtask, or epic — including status updates, content edits, or new items — ALWAYS trigger `/jira-assistant` to sync the change. This applies regardless of which model or IDE is in use. No exceptions.
 
+This is enforced inside the Story Automator workflow as well: step `step-03b-execute-finish` includes a mandatory Jira sync stage (E2) that runs after every story commit. Do not skip it.
+
+## Git Commit + Push After Every Story (Mandatory)
+
+After every story completes (Story Automator or manual workflow), commit AND push to the remote. The Story Automator `commit-story` helper supports `--push` and is invoked with that flag from `step-03b-execute-finish`. If push fails (no remote, network error), log the warning and continue — but do not silently skip the push step.
+
 ## Obsidian Vault (Token Saving)
 
 Vault location: `vault/` in project root.

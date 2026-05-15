@@ -4,6 +4,19 @@ import './index'
 
 const REQUIRED_KEYS = ['nav', 'hero', 'syncrevenue', 'services', 'comparison', 'team', 'security', 'references', 'privacy', 'forms', 'errors']
 
+type TeamTranslation = {
+  members: Array<{
+    name: string
+    role: string
+    bio: string
+    photo: string
+  }>
+}
+
+function getTeamTranslation(locale: string) {
+  return (i18next.getDataByLanguage(locale)?.translation as unknown as { team: TeamTranslation }).team
+}
+
 describe('i18n initialization', () => {
   it('has three supported locales', () => {
     const langs = i18next.options.supportedLngs as string[]
@@ -34,5 +47,40 @@ describe('i18n initialization', () => {
     const enKeys = Object.keys(i18next.getDataByLanguage('en')?.translation ?? {}).sort()
     const esKeys = Object.keys(i18next.getDataByLanguage('es')?.translation ?? {}).sort()
     expect(esKeys).toEqual(enKeys)
+  })
+
+  it('all locales expose team.members with required public fields', () => {
+    ;['en', 'pt-BR', 'es'].forEach(locale => {
+      const translation = i18next.getDataByLanguage(locale)?.translation as
+        | { team?: { members?: unknown } }
+        | undefined
+      const members = translation?.team?.members
+
+      expect(Array.isArray(members)).toBe(true)
+      expect(members).toHaveLength(2)
+
+      ;(members as Array<Record<string, unknown>>).forEach(member => {
+        expect(typeof member.name).toBe('string')
+        expect(typeof member.role).toBe('string')
+        expect(typeof member.bio).toBe('string')
+        expect(typeof member.photo).toBe('string')
+        expect(member.name).not.toBe('')
+        expect(member.role).not.toBe('')
+        expect(member.bio).not.toBe('')
+      })
+    })
+  })
+
+  it('team roles and bios are locale-specific across supported locales', () => {
+    const enMembers = getTeamTranslation('en').members
+    const ptMembers = getTeamTranslation('pt-BR').members
+    const esMembers = getTeamTranslation('es').members
+
+    enMembers.forEach((member: { role: string; bio: string }, index: number) => {
+      expect(ptMembers[index].role).not.toBe(member.role)
+      expect(ptMembers[index].bio).not.toBe(member.bio)
+      expect(esMembers[index].role).not.toBe(member.role)
+      expect(esMembers[index].bio).not.toBe(member.bio)
+    })
   })
 })

@@ -8,6 +8,7 @@ const Services = lazy(() => import('@/components/sections/Services'))
 const Comparison = lazy(() => import('@/components/sections/Comparison'))
 const Security = lazy(() => import('@/components/sections/Security'))
 const ClientReferences = lazy(() => import('@/components/sections/ClientReferences'))
+const Team = lazy(() => import('@/components/sections/Team'))
 const DemoScheduler = lazy(() => import('@/components/sections/DemoScheduler'))
 const Contact = lazy(() => import('@/components/sections/Contact'))
 
@@ -42,6 +43,11 @@ export default function Home() {
       <ErrorBoundary>
         <Suspense fallback={<SectionSkeleton className="min-h-[400px]" label="Loading references" />}>
           <ClientReferences />
+        </Suspense>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Suspense fallback={<SectionSkeleton className="min-h-[500px]" label="Loading team" />}>
+          <Team />
         </Suspense>
       </ErrorBoundary>
       <ErrorBoundary>
