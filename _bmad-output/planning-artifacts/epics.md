@@ -1294,6 +1294,74 @@ So that I can quickly orient myself and navigate between leads and team manageme
 **When** imports are reviewed
 **Then** admin pages import only from `src/pages/admin/`, `src/components/layout/AdminLayout.tsx`, and `src/components/ui/`; no imports from `src/components/sections/`
 
+### Story 4.7: Admin Login Throttling & Account Lockout (Story 4.1 Review Follow-up)
+
+<!-- Created from Story 4.1 cross-model review (Codex, 2026-05-16). Deferred finding #1 — needs full follow-up story. -->
+
+As a Sync Sirius operator,
+I want the admin login endpoint protected against brute-force attempts with both per-IP rate limiting and per-account lockout,
+So that credential stuffing and password-guessing attacks against the admin panel are infeasible in practice.
+
+**Acceptance Criteria:**
+
+**Given** more than 5 failed `POST /api/admin/auth/login` attempts arrive from the same IP within 15 minutes
+**When** the 6th attempt is submitted
+**Then** the server returns HTTP 429 `{ success: false, message: 'Too many requests' }`; no `admin_token` cookie is set; the limiter window is independent of the existing form rate limiter (demo/contact quotas are not affected)
+
+**Given** more than 5 failed login attempts target the same `email` value within 15 minutes (across any IP)
+**When** the 6th attempt for that email arrives
+**Then** the account is temporarily locked; the response stays HTTP 401 `{ success: false, message: 'Invalid credentials' }` — same envelope as a normal wrong-password (no information leak that the account is locked); the lock auto-clears after 15 minutes from the most recent failed attempt
+
+**Given** an admin enters the correct password during an active lockout window
+**When** the login request is processed
+**Then** the account remains locked and the response is HTTP 401 `'Invalid credentials'` until the lockout window elapses; once it elapses a correct password resets the failure counter and issues a normal JWT cookie
+
+**Given** an admin enters the correct password while the failure counter is below threshold
+**When** login succeeds
+**Then** the failure counter for that email resets to 0; subsequent failures start counting from 0 again
+
+**Given** the schema is inspected
+**When** the admin storage layout is read
+**Then** failure tracking is durable across server restarts (either a new `admin_login_attempts` table with `email`, `failed_count`, `last_failed_at` columns OR `admin_users.failed_count` + `admin_users.locked_until` columns); no in-memory-only counters
+
+**Given** tests run
+**When** `npm run test:run` executes
+**Then** new unit tests cover: 6th IP-bound attempt → 429; 6th email-bound attempt → still 401 (no leak); correct password during lockout → still 401; correct password after window → success + counter reset; failure counter persists across `createApp()` re-creates
+
+### Story 4.8: JWT Revocation via Token Versioning (Story 4.1 Review Follow-up)
+
+<!-- Created from Story 4.1 cross-model review (Codex, 2026-05-16). Deferred finding #2 — needs full follow-up story. -->
+
+As a Sync Sirius operator,
+I want existing admin JWTs to be invalidated immediately when an admin's password is reseeded or the account is removed,
+So that a leaked or compromised token cannot continue to access the admin panel after credential rotation.
+
+**Acceptance Criteria:**
+
+**Given** the `admin_users` table is migrated
+**When** the schema is inspected
+**Then** a new column `token_version INTEGER NOT NULL DEFAULT 0` exists on `admin_users`; existing rows backfill to `0`; the column is non-nullable
+
+**Given** `npm run db:seed` is run with the same email and a new password
+**When** the upsert fires
+**Then** `admin_users.token_version` increments by 1 for that row; the password hash is replaced as before; idempotency is preserved (same email, same password also bumps token_version to keep the contract simple — alternatively, only password-change bumps; pick one and document)
+
+**Given** a JWT is signed during admin login
+**When** the token payload is inspected
+**Then** it includes the current `token_version` field alongside `adminId` and `email`
+
+**Given** an admin presents a JWT to any `/api/admin/*` route protected by `requireAdmin`
+**When** the middleware verifies the cookie
+**Then** it loads `admin_users` by `adminId`, compares the stored `token_version` against the JWT payload's `tokenVersion`; on mismatch (or admin row missing) → HTTP 401 `{ success: false, message: 'Unauthorized' }`; cached middleware result must not be used across requests
+
+**Given** an admin row is deleted from `admin_users`
+**When** that admin's previously-issued JWT is presented
+**Then** `requireAdmin` returns HTTP 401 within the same request (no orphaned access)
+
+**Given** tests run
+**When** `npm run test:run` executes
+**Then** new unit tests cover: seed bumps token_version; JWT signed before reseed → 401 after reseed; JWT signed after reseed → 200; deleted admin → 401; existing happy-path stays 200; `GET /api/admin/auth/me` round-trip still works post-reseed when re-logged-in
+
 ## Epic 5: Production Deployment (Phase 4)
 
 The site is fully production-ready — deployed on a hosting platform with domain configuration, SSL/TLS, PM2 process management, automated SQLite backups, and uptime monitoring in place.

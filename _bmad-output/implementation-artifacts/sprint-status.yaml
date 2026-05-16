@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 4.1 -> done
+last_updated: 2026-05-16  # Story 4.7, 4.8 -> ready-for-dev (Story 4.1 deferred review findings)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -48,7 +48,8 @@ story_location: _bmad-output/implementation-artifacts
 #     Active stories (ordered):
 #       3.1 SYN-23 done, 3.2 SYN-24 done, 3.3 SYN-25 done, 3.4 SYN-26 done, 3.5 SYN-27 done,
 #       3.6 SYN-92, 3.7 SYN-93, 3.8 SYN-94, 3.9 SYN-95, 3.10 SYN-96, 3.11 SYN-97,   # ← 3.* moved from backlog (top of list)
-#       4.1 SYN-28, 4.2 SYN-29, 4.3 SYN-30, 4.4 SYN-31, 4.5 SYN-32, 4.6 SYN-33      # ← Epic 4 moved from backlog (assumed keys; verify on Jira sync)
+#       4.1 SYN-28 done, 4.2 SYN-29, 4.3 SYN-30, 4.4 SYN-31, 4.5 SYN-32, 4.6 SYN-33, # ← 4.1 done 2026-05-16
+#       4.7 SYN-165, 4.8 SYN-166                                                    # ← Story 4.1 review-deferred follow-ups (added 2026-05-16; subtasks SYN-167..173, SYN-174..181)
 current_jira_sprint: SYN Sprint 3
 
 development_status:
@@ -103,6 +104,9 @@ development_status:
   4-4-team-member-management-create-edit: backlog
   4-5-team-member-display-order-active-toggle: backlog
   4-6-admin-dashboard-navigation-shell: backlog
+  # 4.7 + 4.8 added 2026-05-16 from Story 4.1 cross-model review deferred findings
+  4-7-admin-login-throttling-lockout: ready-for-dev
+  4-8-jwt-revocation-after-password-reseed: ready-for-dev
   epic-4-retrospective: optional
 
   # Epic 5: Production Deployment (Phase 4)

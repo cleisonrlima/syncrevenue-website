@@ -74,6 +74,8 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 4.4 | Team Member Management — Create & Edit | `[ ]` |
 | 4.5 | Team Member Display Order & Active Toggle | `[ ]` |
 | 4.6 | Admin Dashboard & Navigation Shell | `[ ]` |
+| 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[ ]` |
+| 4.8 | JWT Revocation via Token Versioning (Story 4.1 review follow-up) | `[ ]` |
 
 ## Epic 5 — Production Deployment (Phase 4)
 
