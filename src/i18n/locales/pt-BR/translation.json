@@ -389,6 +389,50 @@
     "dashboard": {
       "title": "Painel Administrativo"
     },
-    "logout": "Sair"
+    "logout": "Sair",
+    "leads": {
+      "title": "Leads",
+      "filters": {
+        "locale": "Idioma",
+        "localeAll": "Todos os idiomas",
+        "status": "Status",
+        "statusAll": "Todos os status",
+        "clear": "Limpar filtros"
+      },
+      "columns": {
+        "name": "Nome",
+        "company": "Empresa",
+        "email": "E-mail",
+        "gds": "GDS",
+        "role": "Cargo",
+        "locale": "Idioma",
+        "status": "Status",
+        "created": "Criado em",
+        "message": "Mensagem"
+      },
+      "status": {
+        "pending": "Pendente",
+        "contacted": "Contatado",
+        "qualified": "Qualificado"
+      },
+      "locale": {
+        "en": "EN",
+        "pt-BR": "PT-BR",
+        "es": "ES"
+      },
+      "empty": {
+        "title": "Nenhum lead ainda. Solicitações de demo aparecerão aqui.",
+        "filtered": "Nenhum lead corresponde a este filtro."
+      },
+      "errors": {
+        "load": "Falha ao carregar leads.",
+        "retry": "Tentar novamente"
+      },
+      "messagePreview": {
+        "more": "Ver mais",
+        "less": "Ver menos",
+        "none": "—"
+      }
+    }
   }
 }

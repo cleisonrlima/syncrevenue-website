@@ -54,6 +54,7 @@
 | `src/components/ui/GradientButton.tsx` | Brand CTA button — gradient bg, 3 sizes (lg/md/sm), disabled clears gradient. Targeted hover transition `transition-[filter,background-position,box-shadow] duration-150 ease-out` (Story 3.2) — no layout-affecting properties; `motion-safe:active:scale-[0.98]` |
 | `src/components/ui/SectionHeader.tsx` | Section header — eyebrow + h2 + optional subtext, light/dark variant |
 | `src/components/ui/Toast.tsx` | Toast notifications (custom, Story 2.2) — replaces what shadcn would have generated; repo never ran `npx shadcn add` |
+| `src/components/ui/Skeleton.tsx` | (Story 4.2) Minimal shadcn-style skeleton primitive for admin loading states — `role="status"` + `aria-busy="true"` defaults, `motion-safe:animate-pulse` + `bg-brand-slate/60`, `cn(className)` merge. Admin-page-safe replacement for `SectionSkeleton` per admin import-boundary rule |
 
 ---
 

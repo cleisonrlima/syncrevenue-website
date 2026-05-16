@@ -266,6 +266,95 @@ export async function getAdminMe(): Promise<AdminSessionData | null> {
   return data
 }
 
+export type AdminLeadStatus = 'pending' | 'contacted' | 'qualified'
+export type AdminLeadLocale = 'en' | 'pt-BR' | 'es'
+export type AdminLeadGds = 'Amadeus' | 'Sabre' | 'Galileo' | 'Worldspan' | 'Other' | 'None yet'
+
+export interface AdminLeadRow {
+  id: number
+  name: string
+  email: string
+  company: string
+  phone: string | null
+  role: string
+  gds: AdminLeadGds
+  message: string | null
+  locale: AdminLeadLocale
+  status: AdminLeadStatus
+  created_at: string
+  updated_at: string
+}
+
+const ADMIN_LEAD_STATUSES: ReadonlyArray<AdminLeadStatus> = ['pending', 'contacted', 'qualified']
+const ADMIN_LEAD_LOCALES: ReadonlyArray<AdminLeadLocale> = ['en', 'pt-BR', 'es']
+
+export function parseAdminLeadRow(value: unknown): AdminLeadRow | null {
+  if (!value || typeof value !== 'object') return null
+  const candidate = value as Record<string, unknown>
+  if (typeof candidate.id !== 'number') return null
+  if (typeof candidate.email !== 'string') return null
+  if (typeof candidate.name !== 'string') return null
+  if (typeof candidate.company !== 'string') return null
+  if (typeof candidate.role !== 'string') return null
+  if (typeof candidate.created_at !== 'string') return null
+  if (typeof candidate.updated_at !== 'string') return null
+  if (
+    typeof candidate.status !== 'string' ||
+    !ADMIN_LEAD_STATUSES.includes(candidate.status as AdminLeadStatus)
+  ) {
+    return null
+  }
+  if (
+    typeof candidate.locale !== 'string' ||
+    !ADMIN_LEAD_LOCALES.includes(candidate.locale as AdminLeadLocale)
+  ) {
+    return null
+  }
+  return candidate as unknown as AdminLeadRow
+}
+
+export interface AdminLeadsFilter {
+  locale?: AdminLeadLocale
+  status?: AdminLeadStatus
+}
+
+export async function getAdminLeads(filter: AdminLeadsFilter = {}): Promise<AdminLeadRow[]> {
+  const params = new URLSearchParams()
+  if (filter.locale) params.set('locale', filter.locale)
+  if (filter.status) params.set('status', filter.status)
+  const qs = params.toString() ? `?${params.toString()}` : ''
+
+  let response: Response
+  try {
+    response = await fetch(`/api/admin/leads${qs}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+  }
+
+  if (!response.ok || body.success !== true || !Array.isArray(body.data)) {
+    throw new AdminApiError(response.status, body.message || 'Failed to load leads')
+  }
+
+  const rows: AdminLeadRow[] = []
+  for (const item of body.data) {
+    const parsed = parseAdminLeadRow(item)
+    if (!parsed) {
+      throw new AdminApiError(response.status, 'Invalid leads response')
+    }
+    rows.push(parsed)
+  }
+  return rows
+}
+
 export async function postAudit(payload: AuditPayload): Promise<AuditSuccessResponse> {
   let response: Response
   try {

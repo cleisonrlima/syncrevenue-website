@@ -389,6 +389,50 @@
     "dashboard": {
       "title": "Admin Dashboard"
     },
-    "logout": "Log out"
+    "logout": "Log out",
+    "leads": {
+      "title": "Leads",
+      "filters": {
+        "locale": "Locale",
+        "localeAll": "All locales",
+        "status": "Status",
+        "statusAll": "All statuses",
+        "clear": "Clear filters"
+      },
+      "columns": {
+        "name": "Name",
+        "company": "Company",
+        "email": "Email",
+        "gds": "GDS",
+        "role": "Role",
+        "locale": "Locale",
+        "status": "Status",
+        "created": "Created",
+        "message": "Message"
+      },
+      "status": {
+        "pending": "Pending",
+        "contacted": "Contacted",
+        "qualified": "Qualified"
+      },
+      "locale": {
+        "en": "EN",
+        "pt-BR": "PT-BR",
+        "es": "ES"
+      },
+      "empty": {
+        "title": "No leads yet. Demo requests will appear here.",
+        "filtered": "No leads match this filter."
+      },
+      "errors": {
+        "load": "Failed to load leads.",
+        "retry": "Retry"
+      },
+      "messagePreview": {
+        "more": "Show more",
+        "less": "Show less",
+        "none": "—"
+      }
+    }
   }
 }

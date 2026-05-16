@@ -12,11 +12,11 @@
 | `src/components/layout/AdminLayout.tsx` | `/admin` shell | Auth gate + `/me` bootstrap + locale-stripped meta head |
 | `src/pages/admin/Login.tsx` | `/admin/login` | i18n login form, accessible error via `role="alert"` |
 | `src/pages/admin/Dashboard.tsx` | `/admin/dashboard` | Minimal landing + logout button (4.6 moves to nav shell) |
-| `src/pages/admin/Leads.tsx` | `/admin/leads` | (Story 4.2) |
+| `src/pages/admin/Leads.tsx` | `/admin/leads` | Leads dashboard (Story 4.2) — locale + status filters, Skeleton loading, empty/filtered-empty/error states, AbortController per request, status badges (amber/blue/green), message preview + expand. Admin import boundary: no imports from `components/sections/*` |
 | `src/pages/admin/Team.tsx` | `/admin/team` | (Story 4.4) |
 | `src/hooks/useAdmin.ts` | — | `login`/`logout`/`bootstrap`, status-code→i18n-key error mapping |
 | `src/store/useAdminStore.ts` | — | Zustand render-cache: `isAuthenticated`, `adminId`, `email`, `bootstrapped` — NO persist |
-| `src/lib/api.ts` | — | `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `AdminApiError` |
+| `src/lib/api.ts` | — | `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `getAdminLeads`, `AdminApiError`, `parseAdminLeadRow`, types `AdminLeadRow`/`AdminLeadStatus`/`AdminLeadLocale` |
 
 ## Backend
 
@@ -28,6 +28,7 @@
 | `server/middleware/auth.ts` | `requireAdmin` JWT verify middleware; `AUTH_COOKIE_NAME = 'admin_token'` |
 | `server/dao/admin.dao.ts` | Admin user lookup (`findByEmail`, `findById`, `create`, `upsert`) |
 | `server/schemas/admin-auth.schema.ts` | Zod `loginSchema` |
+| `server/schemas/admin-leads-query.schema.ts` | Zod `adminLeadsQuerySchema` — `locale` ∈ {en,pt-BR,es}, `status` ∈ {pending,contacted,qualified}, both optional; unknown query keys ignored |
 | `server/db.seed.ts` | `npm run db:seed` — bcrypt-12-hashed admin upsert from `ADMIN_EMAIL`/`ADMIN_PASSWORD` |
 
 ---
@@ -68,7 +69,7 @@ Cookie + `/me` is source of truth. Zustand store is a render cache — no `persi
 | Story | Files Created |
 |---|---|
 | 4.1 | `server/schemas/admin-auth.schema.ts`, `server/db.seed.ts`, `server/routes/admin/auth.ts` (login/logout impl), `src/store/useAdminStore.ts`, `src/hooks/useAdmin.ts`, `src/lib/api.ts` (admin helpers), `src/components/layout/AdminLayout.tsx` (auth gate), `src/pages/admin/Login.tsx`, `src/pages/admin/Dashboard.tsx`, i18n `admin` namespace × 3 locales, `tests/e2e/admin-auth.spec.ts` |
-| 4.2 | — |
+| 4.2 | `server/schemas/admin-leads-query.schema.ts`, `server/routes/admin/leads.ts` (Zod-hardened query), `server/routes/admin/leads.test.ts`, `src/lib/api.ts` (`getAdminLeads`, `parseAdminLeadRow`, lead types), `src/components/ui/Skeleton.tsx` + `Skeleton.test.tsx`, `src/pages/admin/Leads.tsx` (full dashboard), `src/pages/admin/Leads.test.tsx`, i18n `admin.leads` namespace × 3 locales, `tests/e2e/admin-leads.spec.ts` |
 | 4.3 | — |
 | 4.4 | — |
 | 4.5 | — |
