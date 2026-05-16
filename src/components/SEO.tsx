@@ -69,9 +69,14 @@ function removeManagedTags() {
   document.head.querySelectorAll(`[${MANAGED_ATTR}="${MANAGED_VALUE}"]`).forEach(element => element.remove())
 }
 
-function activeCanonicalLocale(locale: Locale) {
-  return locale === 'en' ? undefined : locale
-}
+// Canonical / og:url convention (Story 3.11, approach A):
+//   Each runtime canonical and og:url self-references its locale variant via `?lng=<locale>`
+//   so it matches the corresponding `<link rel="alternate" hreflang="<locale>">` exactly,
+//   including EN (`?lng=en`). The sitemap `<loc>` stays as the no-lng URL and the `x-default`
+//   hreflang still points to the no-lng URL — so the sitemap doubles as the x-default signal
+//   and only the runtime <head> changes per locale.
+//   Static index.html head defaults are intentionally the no-lng English URL (x-default);
+//   hydration overwrites them with `?lng=en` for the EN variant.
 
 export function useDocumentMeta({
   titleKey,
@@ -89,9 +94,8 @@ export function useDocumentMeta({
     const description = t(descriptionKey)
     const ogTitle = t(ogTitleKey)
     const ogDescription = t(ogDescriptionKey)
-    const canonicalUrl = getCanonicalUrl(path, activeCanonicalLocale(locale))
+    const canonicalUrl = getCanonicalUrl(path, locale)
 
-    // Static index.html head defaults are intentionally English; hydration replaces them with localized route metadata.
     upsertTitle(title)
     upsertMeta('meta[name="description"]', { name: 'description', content: description })
     upsertMeta('meta[property="og:title"]', { property: 'og:title', content: ogTitle })

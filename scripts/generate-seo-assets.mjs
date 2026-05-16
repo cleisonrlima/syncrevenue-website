@@ -2,6 +2,16 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// Sitemap <loc> convention (Story 3.11, approach A):
+//   Each <url><loc> stays as the no-lng URL (e.g. https://syncsirius.com/) and doubles as the
+//   `x-default` signal. The per-locale variants are still exposed via the xhtml:link
+//   `<alternate hreflang="<locale>">` entries inside the same <url> block.
+//   The runtime <link rel="canonical"> emitted by src/components/SEO.tsx self-references the
+//   active locale (including ?lng=en for EN), matching its hreflang alternate exactly.
+//   Approach (B) — moving <loc> to ?lng=<locale> for every variant and dropping the no-lng
+//   x-default — was rejected to keep the sitemap matrix terse and avoid duplicate <loc> rows
+//   per route.
+
 export const DEFAULT_SITE_URL = 'https://syncsirius.com'
 export const SEO_LOCALES = ['en', 'pt-BR', 'es']
 export const ROUTES = ['/', '/privacy']

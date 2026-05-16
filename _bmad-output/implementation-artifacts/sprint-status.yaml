@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 3.10 -> done
+last_updated: 2026-05-16  # Story 3.11 -> review
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -92,7 +92,7 @@ development_status:
   3-8-errorboundary-i18n-recovery-ux: done
   3-9-architecture-token-hygiene-docs: done
   3-10-dx-discipline-defaultvalue-lint-sandbox-convention: done
-  3-11-seo-canonical-self-reference-alignment: backlog
+  3-11-seo-canonical-self-reference-alignment: review
   epic-3-retrospective: optional
 
   # Epic 4: Admin Operations (Phase 3) — pulled into current sprint on 2026-05-16; sprint membership in mirror block + orchestration storyRange

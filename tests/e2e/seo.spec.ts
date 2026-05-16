@@ -49,7 +49,11 @@ async function expectHomeSeo(page: import('@playwright/test').Page, locale: keyo
   )
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
     'content',
-    locale === 'en' ? 'https://syncsirius.com/' : `https://syncsirius.com/?lng=${locale}`
+    `https://syncsirius.com/?lng=${locale}`
+  )
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    `https://syncsirius.com/?lng=${locale}`
   )
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'website')
   await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', seo[locale].ogLocale)
@@ -119,6 +123,14 @@ test.describe('@P1 SEO metadata', () => {
     await expect(page).toHaveTitle(privacySeo.en.title)
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', privacySeo.en.description)
     await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0)
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://syncsirius.com/privacy?lng=en'
+    )
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+      'content',
+      'https://syncsirius.com/privacy?lng=en'
+    )
     await expect(page.locator('link[rel="alternate"][hreflang="pt-BR"]')).toHaveAttribute(
       'href',
       'https://syncsirius.com/privacy?lng=pt-BR'

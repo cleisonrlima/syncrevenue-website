@@ -87,10 +87,10 @@ describe('useDocumentMeta', () => {
       'Recover travel agency commission revenue lost to GDS discrepancies, debit memo disputes, and BSP/ARC reconciliation gaps.'
     )
     expect(metaByProperty('og:image')).toHaveAttribute('content', 'https://syncsirius.com/og-default.png')
-    expect(metaByProperty('og:url')).toHaveAttribute('content', 'https://syncsirius.com/')
+    expect(metaByProperty('og:url')).toHaveAttribute('content', 'https://syncsirius.com/?lng=en')
     expect(metaByProperty('og:type')).toHaveAttribute('content', 'website')
     expect(metaByProperty('og:locale')).toHaveAttribute('content', 'en_US')
-    expect(canonicalLink()).toHaveAttribute('href', 'https://syncsirius.com/')
+    expect(canonicalLink()).toHaveAttribute('href', 'https://syncsirius.com/?lng=en')
 
     const alternates = alternateLinks()
     expect(alternates.map(link => link.getAttribute('hreflang')).sort()).toEqual(['en', 'es', 'pt-BR', 'x-default'])

@@ -1,6 +1,6 @@
 # Story 3.11: SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up)
 
-Status: backlog
+Status: review
 
 <!-- Created from Story 3.3 cross-model review (MEDIUM finding, 2026-05-15). Author: review automation. -->
 
@@ -42,31 +42,31 @@ This is a stylistic/SEO-quality deviation, not a functional bug. Address before 
 
 ## Tasks / Subtasks
 
-- [ ] Subtask 1: Decide and document the `<loc>` convention (AC: 3)
-  - [ ] Pick approach (A) or (B) above. Default recommendation: (A) — keeps the sitemap `<loc>` clean and only changes runtime canonical/og:url so the per-locale self-reference is correct without touching the sitemap matrix.
-  - [ ] Record the decision and rationale in a 5-10 line comment block at the top of `scripts/generate-seo-assets.mjs`.
+- [x] Subtask 1: Decide and document the `<loc>` convention (AC: 3)
+  - [x] Pick approach (A) or (B) above. Default recommendation: (A) — keeps the sitemap `<loc>` clean and only changes runtime canonical/og:url so the per-locale self-reference is correct without touching the sitemap matrix.
+  - [x] Record the decision and rationale in a 5-10 line comment block at the top of `scripts/generate-seo-assets.mjs`.
 
-- [ ] Subtask 2: Align EN canonical/og:url with hreflang in the runtime SEO hook (AC: 1, 2)
-  - [ ] Remove or invert `activeCanonicalLocale` in `src/components/SEO.tsx` so EN no longer strips the `?lng=en` query when building `canonicalUrl` for `<link rel="canonical">` and `<meta property="og:url">`.
-  - [ ] Confirm the alternates loop (`SEO_LOCALES.map(...)`) and the `x-default` link remain unchanged.
+- [x] Subtask 2: Align EN canonical/og:url with hreflang in the runtime SEO hook (AC: 1, 2)
+  - [x] Remove or invert `activeCanonicalLocale` in `src/components/SEO.tsx` so EN no longer strips the `?lng=en` query when building `canonicalUrl` for `<link rel="canonical">` and `<meta property="og:url">`.
+  - [x] Confirm the alternates loop (`SEO_LOCALES.map(...)`) and the `x-default` link remain unchanged.
 
-- [ ] Subtask 3: If approach (B) is chosen, align sitemap `<loc>` (AC: 3)
-  - [ ] If approach (A), skip this subtask.
-  - [ ] If approach (B), update `renderSitemap` in `scripts/generate-seo-assets.mjs` so each `<loc>` becomes `canonicalUrl(route, 'en')` style for the default and remove the no-lng `x-default` ambiguity in the `<loc>`.
+- [x] Subtask 3: If approach (B) is chosen, align sitemap `<loc>` (AC: 3)
+  - [x] If approach (A), skip this subtask.
+  - [x] If approach (B), update `renderSitemap` in `scripts/generate-seo-assets.mjs` so each `<loc>` becomes `canonicalUrl(route, 'en')` style for the default and remove the no-lng `x-default` ambiguity in the `<loc>`.
 
-- [ ] Subtask 4: Update unit and e2e assertions (AC: 4)
-  - [ ] `src/components/SEO.test.tsx`: change EN `canonicalLink()` and `meta[property="og:url"]` expectations to `https://syncsirius.com/?lng=en`.
-  - [ ] `tests/e2e/seo.spec.ts`: update the `og:url` ternary in `expectHomeSeo` so EN expects `?lng=en`; add/update the privacy EN assertion to `https://syncsirius.com/privacy?lng=en`.
-  - [ ] `scripts/generate-seo-assets.test.mjs`: only touch if approach (B) is taken.
+- [x] Subtask 4: Update unit and e2e assertions (AC: 4)
+  - [x] `src/components/SEO.test.tsx`: change EN `canonicalLink()` and `meta[property="og:url"]` expectations to `https://syncsirius.com/?lng=en`.
+  - [x] `tests/e2e/seo.spec.ts`: update the `og:url` ternary in `expectHomeSeo` so EN expects `?lng=en`; add/update the privacy EN assertion to `https://syncsirius.com/privacy?lng=en`.
+  - [x] `scripts/generate-seo-assets.test.mjs`: only touch if approach (B) is taken.
 
-- [ ] Subtask 5: Static `index.html` defaults (AC: 1)
-  - [ ] Decide whether the pre-hydration `<link rel="canonical">` and `<meta property="og:url">` in `index.html` should also carry `?lng=en` to match runtime, or stay as the no-lng `x-default` and let hydration overwrite. Document the choice in the SEO hook comment block.
+- [x] Subtask 5: Static `index.html` defaults (AC: 1)
+  - [x] Decide whether the pre-hydration `<link rel="canonical">` and `<meta property="og:url">` in `index.html` should also carry `?lng=en` to match runtime, or stay as the no-lng `x-default` and let hydration overwrite. Document the choice in the SEO hook comment block.
 
-- [ ] Subtask 6: Verification (AC: 5)
-  - [ ] Run `npm run typecheck`.
-  - [ ] Run `npm run test:run`.
-  - [ ] Run `npm run build`; manually inspect `dist/client/sitemap.xml` and `dist/client/index.html` for the agreed values.
-  - [ ] Update `vault/Code/Frontend.md` (SEO module note) and `vault/Planning/Architecture-Key.md` if the canonical convention is recorded as a project rule.
+- [x] Subtask 6: Verification (AC: 5)
+  - [x] Run `npm run typecheck`.
+  - [x] Run `npm run test:run`.
+  - [x] Run `npm run build`; manually inspect `dist/client/sitemap.xml` and `dist/client/index.html` for the agreed values.
+  - [x] Update `vault/Code/Frontend.md` (SEO module note) and `vault/Planning/Architecture-Key.md` if the canonical convention is recorded as a project rule.
 
 ## Dev Notes
 
@@ -90,3 +90,22 @@ This is a stylistic/SEO-quality deviation, not a functional bug. Address before 
 - [Source: `tests/e2e/seo.spec.ts:50-53`] — current EN `og:url` assertion
 - [Source: `src/components/SEO.test.tsx:90-93`] — current EN canonical assertion
 - [Source: `scripts/generate-seo-assets.mjs`] — sitemap `<loc>` rendering
+
+## Dev Agent Record
+
+### Change Log
+
+- 2026-05-16 — Implementation (Claude Opus 4.7 1M):
+  - Removed `activeCanonicalLocale` helper in `src/components/SEO.tsx`; `useDocumentMeta` now calls `getCanonicalUrl(path, locale)` directly so EN renders `<link rel="canonical">` and `<meta property="og:url">` as `https://syncsirius.com/?lng=en` (matches `hreflang="en"` alternate). PT-BR and ES unchanged.
+  - Added approach-(A) decision comment block at the top of `scripts/generate-seo-assets.mjs` and to the SEO helper file. Sitemap `<loc>` stays no-lng (doubles as x-default); static `index.html` pre-hydration tags stay no-lng (acts as x-default before hydration).
+  - Updated `src/components/SEO.test.tsx` EN canonical / og:url expectations to `?lng=en`.
+  - Updated `tests/e2e/seo.spec.ts` `expectHomeSeo` so EN/PT-BR/ES og:url + canonical all expect `?lng=<locale>`; added EN canonical/og:url assertion to privacy page test.
+  - `scripts/generate-seo-assets.test.mjs` untouched (approach A chosen).
+  - Vault: added SEO canonical self-reference convention to `vault/Code/Frontend.md` (Key Patterns) and `vault/Planning/Architecture-Key.md` (Canonical Frontend Patterns section).
+  - Verification: `npm run typecheck` PASS, `npm run test:run` PASS (326/326), `npm run build` PASS; `dist/client/sitemap.xml` matches expected approach-A output (4 hreflang alternates per route, no-lng `<loc>`). e2e Playwright suite not run in this step.
+  - Status: review (awaiting cross-model code-review per CLAUDE.md).
+
+### Implementation Notes
+
+- Approach (A) selected as recommended in Subtask 1 default. Subtask 3 (sitemap `<loc>` changes) intentionally skipped.
+- Pre-hydration `index.html` left at no-lng URL per Subtask 5 — minimizes drift between built static head and SSR-less expected SEO, and keeps the static file usable as a true x-default snapshot for crawlers that read it before JS hydrates.

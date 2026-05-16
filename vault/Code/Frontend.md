@@ -73,6 +73,7 @@
 - **No shadcn/ui** — custom `GradientButton`, `SectionHeader`, `Toast`; native `<select>` / `<input>` preserved for a11y
 - **Motion isolation (Story 3.2)** — section animation is opt-in via `<MotionSection>` only; never import `motion`/`LazyMotion`/`useInView`/`useReducedMotion` from always-loaded files (`main.tsx`, `App.tsx`, `Home.tsx`, `Navbar.tsx`, `Footer.tsx`). `LazyMotion strict` + dynamic `motionFeatures.ts` keep Motion code in the async `motionFeatures-*.js` chunk. Entry animation is opacity + `y` transform only — no height/width/margin/padding/font-size animation. `useReducedMotion()` short-circuit is mandatory; Tailwind `motion-safe:` alone is not enough for JS-driven Motion
 - **Stale a11y state reset on value change** — corrected fields clear `aria-invalid` + `aria-describedby` immediately, not on next blur (Stories 2.3, 2.6)
+- **SEO canonical self-reference (Story 3.11, approach A)** — `useDocumentMeta` (`src/components/SEO.tsx`) builds `canonicalUrl = getCanonicalUrl(path, locale)` for every supported locale **including EN**, so `<link rel="canonical">` and `<meta property="og:url">` always match the corresponding `<link rel="alternate" hreflang="<locale>">` exactly (`?lng=en` / `?lng=pt-BR` / `?lng=es`). The sitemap `<loc>` in `scripts/generate-seo-assets.mjs` stays as the no-lng URL and doubles as the `x-default` signal — do NOT add `?lng=` to `<loc>`. Pre-hydration tags in `index.html` are intentionally the no-lng URL (acts as x-default); hydration overwrites them with the EN self-reference
 
 ---
 

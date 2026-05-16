@@ -194,3 +194,12 @@ Wrap all animated classes in `motion-safe:` Tailwind variant. Verified against `
 ### Locale flow (canonical order — already documented above)
 
 `i18next.changeLanguage(locale) → useLocaleStore.setState({ locale }) → localStorage.setItem('i18nextLng', locale)`. Wrap the `setItem` call in `try/catch` for private-browsing / quota errors (R-I2).
+
+### SEO canonical / hreflang self-reference (Story 3.11)
+
+Per Google's `Localized versions` guidance: every language variant's `<link rel="canonical">` and `<meta property="og:url">` must match its own `<link rel="alternate" hreflang="<locale>">` URL exactly — **including the default locale**.
+
+- Runtime `useDocumentMeta` (`src/components/SEO.tsx`) calls `getCanonicalUrl(path, locale)` for every locale, including `en` (yields `?lng=en`).
+- Sitemap `<loc>` (`scripts/generate-seo-assets.mjs`) stays as the no-lng URL — it doubles as the `x-default` signal. Do not duplicate `?lng=` into `<loc>`.
+- Static `index.html` keeps the no-lng URL in the pre-hydration `<link rel="canonical">` / `<meta property="og:url">` (acts as x-default before JS hydrates); hydration overwrites with `?lng=en`.
+- Approach (B) — moving sitemap `<loc>` to `?lng=<locale>` per variant — was rejected to keep the sitemap matrix terse.
