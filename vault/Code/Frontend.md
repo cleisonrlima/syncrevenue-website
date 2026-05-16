@@ -108,6 +108,7 @@
   - `mobile-overlay.spec.ts` — P0-5 / P1-4, hamburger open + Esc close + focus trap (Pixel 7 device)
   - `locale-switch.spec.ts` — P1-1 / P1-2, locale switch happy path on `/` and `/privacy` without navigation; scroll preservation
   - `skip-link.spec.ts` — P1-5, skip-to-main is first tab stop
+  - `team-section.spec.ts` — Story 3.1, 7 specs: Team region renders 2 cards, composed `"{name}, {role}"` alt, `width=320`/`height=320`/`loading=lazy`, no placeholder leak, no `linkedinUrl===""` anchor leak, mobile single-column grid, role text differs across en/pt-BR/es
 - Local bootstrap: `npm run test:e2e:install` once → `npm run test:e2e`
 - Auto-starts dev server via `webServer` config (or honors `PLAYWRIGHT_BASE_URL` for preview/prod URL)
 
