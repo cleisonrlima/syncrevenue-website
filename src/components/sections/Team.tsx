@@ -53,7 +53,7 @@ function isUsablePhoto(photo: string) {
 
 export default function Team() {
   const { t } = useTranslation()
-  const rawMembers = t('team.members', { returnObjects: true }) as unknown
+  const rawMembers = t('team.members', { returnObjects: true, defaultValue: [] }) as unknown
   const members = Array.isArray(rawMembers)
     ? rawMembers.map(normalizeTeamMember).filter((member): member is TeamMember => Boolean(member))
     : []

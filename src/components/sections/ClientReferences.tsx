@@ -45,7 +45,7 @@ function normalizeClientReference(value: unknown): ClientReference | null {
 
 export default function ClientReferences() {
   const { t } = useTranslation()
-  const rawReferences = t('references.items', { returnObjects: true }) as unknown
+  const rawReferences = t('references.items', { returnObjects: true, defaultValue: [] }) as unknown
   const references = Array.isArray(rawReferences)
     ? rawReferences
         .map(normalizeClientReference)

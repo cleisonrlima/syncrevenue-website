@@ -13,6 +13,7 @@
 |---|---|---|
 | Tech stack & folder structure | [[Planning/Stack]] | `_bmad-output/planning-artifacts/product-brief-syncrevenue-website-distillate.md` |
 | Architecture decisions | [[Planning/Architecture-Key]] | `_bmad-output/planning-artifacts/architecture.md` |
+| Sandbox conventions | [[Planning/Sandbox-Conventions]] | — |
 | Epics & story status | [[Planning/Epics-Index]] | `_bmad-output/planning-artifacts/epics.md` |
 | Full PRD | — | `_bmad-output/planning-artifacts/prd.md` |
 | UX spec | — | `_bmad-output/planning-artifacts/ux-design-specification.md` |

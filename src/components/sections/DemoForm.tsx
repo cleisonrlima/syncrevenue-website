@@ -82,7 +82,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
 
   useEffect(() => {
     if (status === 'error' && error?.status !== 429) {
-      setToast(t('forms.demo.errorGeneric'))
+      setToast(t('forms.demo.errorGeneric', { defaultValue: 'Something went wrong. Please try again.' }))
     }
   }, [error, status, t])
 
@@ -183,8 +183,8 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
         tabIndex={-1}
         className="rounded-lg border border-brand-electric-blue/20 bg-white p-8 text-center shadow-sm"
       >
-        <h3 className="text-2xl font-bold text-brand-navy">{t('forms.demo.successTitle')}</h3>
-        <p className="mt-3 text-base leading-7 text-brand-slate">{t('forms.demo.successBody')}</p>
+        <h3 className="text-2xl font-bold text-brand-navy">{t('forms.demo.successTitle', { defaultValue: 'Request received!' })}</h3>
+        <p className="mt-3 text-base leading-7 text-brand-slate">{t('forms.demo.successBody', { defaultValue: 'Our team will reach out within 1 business day.' })}</p>
       </div>
     )
   }
@@ -192,17 +192,17 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
   return (
     <div id="demo-form">
       <form
-        aria-label={t('forms.demo.title')}
+        aria-label={t('forms.demo.title', { defaultValue: 'Request a Demo' })}
         className="grid gap-5 rounded-lg border border-brand-slate/20 bg-white p-6 shadow-sm sm:p-8"
         onSubmit={handleSubmit}
         noValidate
       >
-        <h3 className="text-2xl font-bold text-brand-navy">{t('forms.demo.title')}</h3>
+        <h3 className="text-2xl font-bold text-brand-navy">{t('forms.demo.title', { defaultValue: 'Request a Demo' })}</h3>
 
         <div className="grid gap-5 md:grid-cols-2">
           <Field
             id="demo-name"
-            label={t('forms.demo.name')}
+            label={t('forms.demo.name', { defaultValue: 'Full Name' })}
             required
             error={errors.name}
           >
@@ -217,14 +217,14 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               aria-invalid={errors.name ? 'true' : undefined}
               aria-describedby={errors.name ? 'demo-name-error' : undefined}
               className={textInputClasses(Boolean(errors.name))}
-              placeholder={t('forms.demo.namePlaceholder')}
+              placeholder={t('forms.demo.namePlaceholder', { defaultValue: 'Jane Smith' })}
               autoComplete="name"
             />
           </Field>
 
           <Field
             id="demo-email"
-            label={t('forms.demo.email')}
+            label={t('forms.demo.email', { defaultValue: 'Work Email' })}
             required
             error={errors.email}
           >
@@ -239,14 +239,14 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               aria-invalid={errors.email ? 'true' : undefined}
               aria-describedby={errors.email ? 'demo-email-error' : undefined}
               className={textInputClasses(Boolean(errors.email))}
-              placeholder={t('forms.demo.emailPlaceholder')}
+              placeholder={t('forms.demo.emailPlaceholder', { defaultValue: 'jane@agency.com' })}
               autoComplete="email"
             />
           </Field>
 
           <Field
             id="demo-company"
-            label={t('forms.demo.company')}
+            label={t('forms.demo.company', { defaultValue: 'Company' })}
             required
             error={errors.company}
           >
@@ -260,26 +260,26 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               aria-invalid={errors.company ? 'true' : undefined}
               aria-describedby={errors.company ? 'demo-company-error' : undefined}
               className={textInputClasses(Boolean(errors.company))}
-              placeholder={t('forms.demo.companyPlaceholder')}
+              placeholder={t('forms.demo.companyPlaceholder', { defaultValue: 'Travel Agency Name' })}
               autoComplete="organization"
             />
           </Field>
 
-          <Field id="demo-phone" label={t('forms.demo.phone')}>
+          <Field id="demo-phone" label={t('forms.demo.phone', { defaultValue: 'Phone (optional)' })}>
             <input
               id="demo-phone"
               name="phone"
               value={values.phone}
               onChange={event => setField('phone', event.target.value)}
               className={textInputClasses(false)}
-              placeholder={t('forms.demo.phonePlaceholder')}
+              placeholder={t('forms.demo.phonePlaceholder', { defaultValue: '+1 305 555 0100' })}
               autoComplete="tel"
             />
           </Field>
 
           <Field
             id="demo-role"
-            label={t('forms.demo.role')}
+            label={t('forms.demo.role', { defaultValue: 'Your Role' })}
             required
             error={errors.role}
           >
@@ -294,7 +294,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               aria-describedby={errors.role ? 'demo-role-error' : undefined}
               className={textInputClasses(Boolean(errors.role))}
             >
-              <option value="">{t('forms.demo.rolePlaceholder')}</option>
+              <option value="">{t('forms.demo.rolePlaceholder', { defaultValue: 'Select your role' })}</option>
               {ROLE_OPTIONS.map(option => (
                 <option key={option} value={option}>
                   {t(`forms.demo.roleOptions.${option}`)}
@@ -303,7 +303,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
             </select>
           </Field>
 
-          <Field id="demo-gds" label={t('forms.demo.gds')} required error={errors.gds}>
+          <Field id="demo-gds" label={t('forms.demo.gds', { defaultValue: 'Primary GDS' })} required error={errors.gds}>
             <select
               id="demo-gds"
               name="gds"
@@ -315,7 +315,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               aria-describedby={errors.gds ? 'demo-gds-error' : undefined}
               className={textInputClasses(Boolean(errors.gds))}
             >
-              <option value="">{t('forms.demo.gdsPlaceholder')}</option>
+              <option value="">{t('forms.demo.gdsPlaceholder', { defaultValue: 'Select your GDS' })}</option>
               {GDS_OPTIONS.map(option => (
                 <option key={option} value={option}>
                   {t(`forms.demo.gdsOptions.${option}`)}
@@ -325,14 +325,14 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
           </Field>
         </div>
 
-        <Field id="demo-message" label={t('forms.demo.message')}>
+        <Field id="demo-message" label={t('forms.demo.message', { defaultValue: 'Message (optional)' })}>
           <textarea
             id="demo-message"
             name="message"
             value={values.message}
             onChange={event => setField('message', event.target.value)}
             className={cn(textInputClasses(false), 'min-h-32 resize-y')}
-            placeholder={t('forms.demo.messagePlaceholder')}
+            placeholder={t('forms.demo.messagePlaceholder', { defaultValue: 'Tell us about your commission reconciliation challenges' })}
           />
         </Field>
 
@@ -345,7 +345,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
               className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white align-[-2px]"
             />
           )}
-          {isSubmitting ? t('forms.demo.submitting') : t('forms.demo.submit')}
+          {isSubmitting ? t('forms.demo.submitting', { defaultValue: 'Sending...' }) : t('forms.demo.submit', { defaultValue: 'Request Demo' })}
         </GradientButton>
       </form>
 

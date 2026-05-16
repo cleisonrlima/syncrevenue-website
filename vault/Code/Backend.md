@@ -85,10 +85,12 @@ helmet() → cors() → express.json() → rateLimit (form routes) → auth (adm
 
 ## Playwright Sandbox Workaround
 
+> Full reference: [[Planning/Sandbox-Conventions]] (codified in Story 3.10).
+
 When local port binding is denied by the sandbox, run Playwright specs with:
 
 ```
-PLAYWRIGHT_BASE_URL=http://127.0.0.1:9 npx playwright test --project=chromium <spec>
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:9 npm run test:e2e -- --project=chromium <spec>
 ```
 
-The `127.0.0.1:9` base URL satisfies the launcher's URL validation without requiring a real listener — specs that target a mocked or already-running server still execute. Pattern discovered in Story 2.7.
+The `127.0.0.1:9` base URL satisfies the launcher's URL validation without requiring a real listener; `playwright.config.ts:28` also skips the auto `webServer` block when the env var is set. Pattern discovered in Story 2.7; see [[Planning/Sandbox-Conventions]] for caveats (the recipe only unblocks the runner — real-server specs must still opt in via `test.skip(!process.env.PLAYWRIGHT_BASE_URL, ...)`).

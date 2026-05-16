@@ -20,19 +20,19 @@ export default function DemoScheduler() {
     <MotionSection
       id="demo-scheduler"
       role="region"
-      aria-label={t('sections.demoScheduler.ariaLabel')}
+      aria-label={t('sections.demoScheduler.ariaLabel', { defaultValue: 'Schedule a SyncRevenue demo' })}
       className="bg-gradient-to-b from-[#0D0D3A] to-[#080820] text-white overflow-hidden"
     >
       <div className="mx-auto max-w-[960px] px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <SectionHeader
           variant="dark"
-          eyebrow={t('sections.demoScheduler.eyebrow')}
-          heading={t('sections.demoScheduler.heading')}
-          subtext={t('sections.demoScheduler.subtext')}
+          eyebrow={t('sections.demoScheduler.eyebrow', { defaultValue: 'Ready When You Are' })}
+          heading={t('sections.demoScheduler.heading', { defaultValue: 'Schedule Your SyncRevenue Demo' })}
+          subtext={t('sections.demoScheduler.subtext', { defaultValue: "See multi-GDS commission recovery applied to your agency's reconciliation workflow." })}
         />
         <div className="mt-8 flex justify-center">
           <GradientButton size="lg" onClick={handleFocusForm} className="min-h-[44px]">
-            {t('sections.demoScheduler.cta')}
+            {t('sections.demoScheduler.cta', { defaultValue: 'Schedule a Demo' })}
           </GradientButton>
         </div>
         <div ref={formContainerRef} className="mt-12">

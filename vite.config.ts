@@ -24,6 +24,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     passWithNoTests: true,
+    include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts', 'eslint-rules/**/*.test.mjs'],
     exclude: ['node_modules', 'dist', 'tests/e2e/**', 'playwright-report', 'test-results'],
   },
 })

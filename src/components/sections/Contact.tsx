@@ -139,17 +139,17 @@ export default function Contact() {
   const formError =
     status === 'error'
       ? error?.status === 429
-        ? t('forms.contact.errorRateLimit')
-        : t('forms.contact.errorGeneric')
+        ? t('forms.contact.errorRateLimit', { defaultValue: 'Too many contact requests. Please wait a minute and try again.' })
+        : t('forms.contact.errorGeneric', { defaultValue: 'Something went wrong. Please try again.' })
       : null
 
   return (
     <MotionSection id="contact" aria-labelledby="contact-heading" className="bg-brand-mist py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          eyebrow={t('forms.contact.eyebrow')}
-          heading={t('forms.contact.heading')}
-          subtext={t('forms.contact.subtext')}
+          eyebrow={t('forms.contact.eyebrow', { defaultValue: 'General Inquiries' })}
+          heading={t('forms.contact.heading', { defaultValue: 'Contact Sync Sirius' })}
+          subtext={t('forms.contact.subtext', { defaultValue: 'Send your question to the right Sync Sirius service team.' })}
           headingId="contact-heading"
           className="mb-10"
         />
@@ -162,20 +162,20 @@ export default function Contact() {
             tabIndex={-1}
             className="mx-auto max-w-2xl rounded-lg border border-brand-electric-blue/20 bg-white p-8 text-center shadow-sm"
           >
-            <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.successTitle')}</h3>
-            <p className="mt-3 text-base leading-7 text-brand-slate">{t('forms.contact.successBody')}</p>
+            <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.successTitle', { defaultValue: 'Message sent!' })}</h3>
+            <p className="mt-3 text-base leading-7 text-brand-slate">{t('forms.contact.successBody', { defaultValue: 'We received your inquiry and will route it to the right team.' })}</p>
           </div>
         ) : (
           <div className="mx-auto max-w-2xl">
             <form
-              aria-label={t('forms.contact.title')}
+              aria-label={t('forms.contact.title', { defaultValue: 'Contact Us' })}
               className="grid gap-5 rounded-lg border border-brand-slate/20 bg-white p-6 shadow-sm sm:p-8"
               onSubmit={handleSubmit}
               noValidate
             >
-              <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.title')}</h3>
+              <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.title', { defaultValue: 'Contact Us' })}</h3>
 
-              <Field id="contact-name" label={t('forms.contact.name')} required error={errors.name}>
+              <Field id="contact-name" label={t('forms.contact.name', { defaultValue: 'Full Name' })} required error={errors.name}>
                 <input
                   id="contact-name"
                   name="name"
@@ -191,7 +191,7 @@ export default function Contact() {
                 />
               </Field>
 
-              <Field id="contact-email" label={t('forms.contact.email')} required error={errors.email}>
+              <Field id="contact-email" label={t('forms.contact.email', { defaultValue: 'Email Address' })} required error={errors.email}>
                 <input
                   id="contact-email"
                   name="email"
@@ -208,7 +208,7 @@ export default function Contact() {
                 />
               </Field>
 
-              <Field id="contact-subject" label={t('forms.contact.subject')} required error={errors.subject}>
+              <Field id="contact-subject" label={t('forms.contact.subject', { defaultValue: 'Subject / Service' })} required error={errors.subject}>
                 <select
                   id="contact-subject"
                   name="subject"
@@ -221,7 +221,7 @@ export default function Contact() {
                   className={textInputClasses(Boolean(errors.subject))}
                   required
                 >
-                  <option value="">{t('forms.contact.subjectPlaceholder')}</option>
+                  <option value="">{t('forms.contact.subjectPlaceholder', { defaultValue: 'Select a service area' })}</option>
                   {CONTACT_SUBJECT_OPTIONS.map(option => (
                     <option key={option} value={option}>
                       {t(`forms.contact.subjectOptions.${option}`)}
@@ -230,7 +230,7 @@ export default function Contact() {
                 </select>
               </Field>
 
-              <Field id="contact-message" label={t('forms.contact.message')} required error={errors.message}>
+              <Field id="contact-message" label={t('forms.contact.message', { defaultValue: 'Message' })} required error={errors.message}>
                 <textarea
                   id="contact-message"
                   name="message"
@@ -241,7 +241,7 @@ export default function Contact() {
                   aria-invalid={errors.message ? 'true' : undefined}
                   aria-describedby={errors.message ? 'contact-message-error' : undefined}
                   className={cn(textInputClasses(Boolean(errors.message)), 'min-h-36 resize-y')}
-                  placeholder={t('forms.contact.messagePlaceholder')}
+                  placeholder={t('forms.contact.messagePlaceholder', { defaultValue: 'Tell us what you need help with' })}
                   required
                 />
               </Field>
@@ -255,7 +255,7 @@ export default function Contact() {
                     className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white align-[-2px]"
                   />
                 )}
-                {isSubmitting ? t('forms.contact.submitting') : t('forms.contact.submit')}
+                {isSubmitting ? t('forms.contact.submitting', { defaultValue: 'Sending...' }) : t('forms.contact.submit', { defaultValue: 'Send Message' })}
               </GradientButton>
             </form>
 

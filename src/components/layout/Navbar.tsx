@@ -83,13 +83,13 @@ export default function Navbar() {
         <a href="/" className="text-white font-bold text-lg">Sync Sirius</a>
 
         <div className="hidden lg:flex items-center gap-8">
-          <a href="/#hero" className="text-brand-muted hover:text-white transition-colors text-sm">{t('nav.home')}</a>
-          <a href="/#contact" className="text-brand-muted hover:text-white transition-colors text-sm">{t('nav.contact')}</a>
+          <a href="/#hero" className="text-brand-muted hover:text-white transition-colors text-sm">{t('nav.home', { defaultValue: 'Home' })}</a>
+          <a href="/#contact" className="text-brand-muted hover:text-white transition-colors text-sm">{t('nav.contact', { defaultValue: 'Contact' })}</a>
         </div>
 
         <div className="hidden lg:flex items-center gap-4">
           <LanguageSwitcher />
-          <GradientButton size="sm" onClick={handleDemoCta}>{t('nav.demo')}</GradientButton>
+          <GradientButton size="sm" onClick={handleDemoCta}>{t('nav.demo', { defaultValue: 'Request Demo' })}</GradientButton>
         </div>
 
         <button
@@ -130,9 +130,9 @@ export default function Navbar() {
             aria-label="Mobile navigation"
             data-testid="mobile-overlay-content"
           >
-            <a ref={firstLinkRef} href="/#hero" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.home')}</a>
-            <a href="/#contact" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.contact')}</a>
-            <a href="/#demo-scheduler" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.demo')}</a>
+            <a ref={firstLinkRef} href="/#hero" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.home', { defaultValue: 'Home' })}</a>
+            <a href="/#contact" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.contact', { defaultValue: 'Contact' })}</a>
+            <a href="/#demo-scheduler" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.demo', { defaultValue: 'Request Demo' })}</a>
             <div className="mt-4"><LanguageSwitcher /></div>
           </nav>
         </div>

@@ -20,15 +20,15 @@ type DemoError = {
 
 export function createDemoSchema(t: TFunction) {
   return z.object({
-    name: z.string().trim().min(1, t('forms.demo.nameError')),
-    email: z.string().trim().email(t('forms.demo.emailError')),
-    company: z.string().trim().min(1, t('forms.demo.companyError')),
+    name: z.string().trim().min(1, t('forms.demo.nameError', { defaultValue: 'Full name is required' })),
+    email: z.string().trim().email(t('forms.demo.emailError', { defaultValue: 'Enter a valid email address' })),
+    company: z.string().trim().min(1, t('forms.demo.companyError', { defaultValue: 'Company name is required' })),
     phone: z.string(),
     role: z.enum(ROLE_OPTIONS, {
-      errorMap: () => ({ message: t('forms.demo.roleError') }),
+      errorMap: () => ({ message: t('forms.demo.roleError', { defaultValue: 'Please select your role' }) }),
     }),
     gds: z.enum(GDS_OPTIONS, {
-      errorMap: () => ({ message: t('forms.demo.gdsError') }),
+      errorMap: () => ({ message: t('forms.demo.gdsError', { defaultValue: 'Please select your primary GDS' }) }),
     }),
     message: z.string(),
     locale: z.enum(LOCALE_OPTIONS),

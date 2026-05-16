@@ -56,7 +56,7 @@ So that I can evaluate whether this company solves my specific GDS reconciliatio
   - [x] Container: `max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24`
   - [x] All text via `t()` with defaultValue fallbacks
 
-- [x] Task 3: Accessibility & responsive verification (AC: 1, 2, 3, 4) — _deferred to manual QA pass (sandbox cannot bind dev-server port); unit-test contrast/i18n coverage validated_
+- [x] Task 3: Accessibility & responsive verification (AC: 1, 2, 3, 4) — _deferred to manual QA pass (sandbox cannot bind dev-server port); unit-test contrast/i18n coverage validated_ [retroactively validated in Story 3.10 via `npm run test:e2e -- tests/e2e/a11y-axe.spec.ts --project=chromium` — 6/6 axe scans pass across `/` and `/privacy` in EN/PT-BR/ES; this environment supports the auto-`webServer` path so the documented `PLAYWRIGHT_BASE_URL=http://127.0.0.1:9` workaround was not needed here; see `vault/Planning/Sandbox-Conventions.md`]
   - [x] SectionHeader eyebrow (`text-brand-electric-blue`) contrast on light bg ≥ 4.5:1 (use webaim.org checker)
   - [x] SectionHeader heading (`text-brand-navy`) contrast on light bg ≥ 7:1 (very dark on white)
   - [x] SectionHeader subtext (`text-brand-slate`) contrast on light bg ≥ 4.5:1
@@ -86,7 +86,7 @@ So that I can evaluate whether this company solves my specific GDS reconciliatio
     - [x] Test 5: all copy uses i18n keys
   - [x] `npm run test:run` — all tests pass (including existing 22 from 1.5)
 
-- [x] Task 5: Integration & browser verification (AC: all) — _deferred to manual QA pass (sandbox cannot bind dev-server port); 39/39 unit tests pass_
+- [x] Task 5: Integration & browser verification (AC: all) — _deferred to manual QA pass (sandbox cannot bind dev-server port); 39/39 unit tests pass_ [retroactively validated in Story 3.10 via `npm run test:e2e -- tests/e2e/smoke.spec.ts tests/e2e/mobile-overlay.spec.ts --project=chromium` — 5/5 pass (smoke `/` + `/privacy` console-error sweep, plus three mobile overlay flows); see `vault/Planning/Sandbox-Conventions.md`]
   - [x] `npm run typecheck` — zero TypeScript errors
   - [ ] `npm run dev` — sections render on localhost:5173
   - [ ] Desktop browser (>1024px): SyncRevenue and Services sections display with light bg, readable typography, GDS list visible, all 4 service cards in grid

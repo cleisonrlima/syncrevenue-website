@@ -39,8 +39,8 @@ export default function Privacy() {
   })
 
   const { t } = useTranslation()
-  const sections = t('privacy.sections', { returnObjects: true }) as Partial<Record<PolicySectionKey, PolicySection>>
-  const title = t('privacy.title')
+  const sections = t('privacy.sections', { returnObjects: true, defaultValue: {} }) as Partial<Record<PolicySectionKey, PolicySection>>
+  const title = t('privacy.title', { defaultValue: 'Privacy Policy' })
 
   return (
     <div className="min-h-screen bg-brand-navy text-white">
@@ -48,8 +48,8 @@ export default function Privacy() {
         <article aria-label={title} className="max-w-4xl">
           <header className="mb-10">
             <h1 className="text-3xl sm:text-4xl font-bold mb-3">{title}</h1>
-            <p className="text-brand-muted text-sm mb-6">{t('privacy.lastUpdated')}</p>
-            <p className="text-brand-offwhite leading-relaxed text-base sm:text-lg">{t('privacy.intro')}</p>
+            <p className="text-brand-muted text-sm mb-6">{t('privacy.lastUpdated', { defaultValue: 'Last updated: May 2026' })}</p>
+            <p className="text-brand-offwhite leading-relaxed text-base sm:text-lg">{t('privacy.intro', { defaultValue: 'This policy explains what personal information the Sync Sirius website collects from demo requests and contact submissions, how that information is used, and how visitors from Brazil and California can exercise privacy rights.' })}</p>
           </header>
 
           <div className="space-y-8">
