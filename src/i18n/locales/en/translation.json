@@ -370,6 +370,8 @@
     "serverError": "Something went wrong",
     "serverErrorBody": "Please try again or contact us if the problem persists.",
     "rateLimit": "Too many requests. Please wait a moment and try again.",
-    "networkError": "Connection error. Please check your connection and try again."
+    "networkError": "Connection error. Please check your connection and try again.",
+    "sectionLoad": "Failed to load section.",
+    "retry": "Retry"
   }
 }

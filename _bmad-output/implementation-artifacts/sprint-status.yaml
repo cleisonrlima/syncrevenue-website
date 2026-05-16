@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 3.7 -> done (codex review patches applied)
+last_updated: 2026-05-16  # Story 3.8 -> review (dev complete 2026-05-16; claude dev → codex review per cross-model rule)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -89,7 +89,7 @@ development_status:
   # 3.6-3.11 pulled into current sprint on 2026-05-16 — sprint membership tracked in mirror block above + orchestration storyRange
   3-6-story-3-1-review-followups-real-team-content-visual-qa: done  # accepted fake-data full stub 2026-05-16 per user override; manual swap to stakeholder content pending
   3-7-epic-1-review-polish-font-loading-ui-primitives: done
-  3-8-errorboundary-i18n-recovery-ux: backlog
+  3-8-errorboundary-i18n-recovery-ux: review
   3-9-architecture-token-hygiene-docs: backlog
   3-10-dx-discipline-defaultvalue-lint-sandbox-convention: backlog
   3-11-seo-canonical-self-reference-alignment: backlog

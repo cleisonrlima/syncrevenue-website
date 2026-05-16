@@ -20,10 +20,10 @@
 
 ## Deferred from: code review of 1-4-app-shell-routing-navigation (re-review 2026-05-14)
 
-- ErrorBoundary no recovery path (no retry button) — enhancement, outside current story scope [src/components/ErrorBoundary.tsx]
-- No scroll restoration on SPA route change — pre-existing, not introduced by this story
+- [x] ErrorBoundary no recovery path (no retry button) — added Retry button via inner `FallbackUI` function component; click resets `hasError` and re-mounts children. Closed by Story 3.8. [src/components/ErrorBoundary.tsx]
+- [x] No scroll restoration on SPA route change — added `src/components/ScrollRestoration.tsx` (useLocation + useEffect on pathname; preserves in-page anchor for `/#hash`; skips initial mount). Mounted in `App.tsx`. Closed by Story 3.8. [src/components/ScrollRestoration.tsx, src/App.tsx]
 - Navbar test imports `@/i18n` as side-effect — existing pattern used by all tests, not story-specific [src/components/layout/Navbar.test.tsx:6]
-- ErrorBoundary fallback "Failed to load section." hardcoded English — requires class→function refactor for `useTranslation`; error-only path, low exposure [src/components/ErrorBoundary.tsx:24]
+- [x] ErrorBoundary fallback "Failed to load section." hardcoded English — refactored: inner `FallbackUI` function component consumes `useTranslation()`; new keys `errors.sectionLoad` + `errors.retry` added to EN/PT-BR/ES. Closed by Story 3.8. [src/components/ErrorBoundary.tsx, src/i18n/locales/*/translation.json]
 
 ## Deferred from: code review of 3-4-mobile-ux-polish-pass (2026-05-15)
 

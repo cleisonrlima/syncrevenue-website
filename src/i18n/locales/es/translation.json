@@ -370,6 +370,8 @@
     "serverError": "Algo salió mal",
     "serverErrorBody": "Por favor, inténtelo de nuevo o contáctenos si el problema persiste.",
     "rateLimit": "Demasiadas solicitudes. Por favor, espere un momento e inténtelo de nuevo.",
-    "networkError": "Error de conexión. Verifique su conexión e inténtelo de nuevo."
+    "networkError": "Error de conexión. Verifique su conexión e inténtelo de nuevo.",
+    "sectionLoad": "Error al cargar la sección.",
+    "retry": "Reintentar"
   }
 }
