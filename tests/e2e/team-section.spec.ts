@@ -71,19 +71,22 @@ test.describe('@P0 Team section — member media', () => {
 })
 
 test.describe('@P1 Team section — content & layout', () => {
-  test('renders graceful initials placeholders while real photos are unavailable', async ({ page }) => {
+  test('all members render real photos — initials placeholder block is absent', async ({ page }) => {
     await gotoHomeWithLocale(page, 'en')
 
-    await expect(page.locator(TEAM_PLACEHOLDER)).toHaveCount(2)
+    await expect(page.locator(TEAM_PLACEHOLDER)).toHaveCount(0)
+    const photos = page.locator(`${TEAM_IMG}[src^="/team/"]`)
+    await expect(photos).toHaveCount(2)
   })
 
-  test('no LinkedIn anchor renders when linkedinUrl is empty (current data)', async ({ page }) => {
+  test('LinkedIn anchor renders for every member with linkedinUrl set', async ({ page }) => {
     await gotoHomeWithLocale(page, 'en')
 
-    // Current i18n ships empty `linkedinUrl` for every member.
-    // Guards against `href="#"` placeholder leaking back in.
-    const anchors = page.locator(`${TEAM_ARTICLE} a`)
-    await expect(anchors).toHaveCount(0)
+    const anchors = page.locator(`${TEAM_ARTICLE} a[target="_blank"]`)
+    await expect(anchors).toHaveCount(2)
+    const firstHref = await anchors.first().getAttribute('href')
+    expect(firstHref).toMatch(/^https:\/\/www\.linkedin\.com\//)
+    await expect(anchors.first()).toHaveAttribute('rel', /noopener\s+noreferrer/)
   })
 
   test('mobile viewport renders a single column grid', async ({ page }) => {

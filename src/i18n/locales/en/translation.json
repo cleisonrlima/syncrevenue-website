@@ -122,15 +122,15 @@
         "name": "Maria Silva",
         "role": "Airline Distribution & Commission Strategy Lead",
         "bio": "Guides travel agencies through GDS operations, BSP/ARC reconciliation, debit memo workflows, and commission recovery strategy across the Americas. Twenty years inside Sabre, Amadeus, and Galileo workflows informs every retainer engagement.",
-        "photo": "",
-        "linkedinUrl": ""
+        "photo": "/team/maria-silva.webp",
+        "linkedinUrl": "https://www.linkedin.com/in/maria-silva-syncsirius/"
       },
       {
         "name": "Lucas Oliveira",
         "role": "Travel Data Integration & Automation Lead",
         "bio": "Designs the automation layer behind SyncRevenue, connecting booking data, commission rules, and revenue optimization systems into reliable operating workflows. Background spans BSP settlement pipelines, mid/back-office integrations, and travel data engineering.",
-        "photo": "",
-        "linkedinUrl": ""
+        "photo": "/team/lucas-oliveira.webp",
+        "linkedinUrl": "https://www.linkedin.com/in/lucas-oliveira-syncsirius/"
       }
     ]
   },

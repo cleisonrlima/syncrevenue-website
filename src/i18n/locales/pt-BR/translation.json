@@ -122,15 +122,15 @@
         "name": "Maria Silva",
         "role": "Liderança em Distribuição Aérea e Estratégia de Comissões",
         "bio": "Orienta agências de viagem em operações GDS, reconciliação BSP/ARC, fluxos de memorandos de débito e estratégia de recuperação de comissões em toda a América. Vinte anos atuando nos fluxos Sabre, Amadeus e Galileo embasam cada engajamento por retainer.",
-        "photo": "",
-        "linkedinUrl": ""
+        "photo": "/team/maria-silva.webp",
+        "linkedinUrl": "https://www.linkedin.com/in/maria-silva-syncsirius/"
       },
       {
         "name": "Lucas Oliveira",
         "role": "Liderança em Integração de Dados de Viagem e Automação",
         "bio": "Projeta a camada de automação por trás do SyncRevenue, conectando dados de reservas, regras de comissão e sistemas de otimização de receita em rotinas operacionais confiáveis. A bagagem cobre pipelines de liquidação BSP, integrações de mid/back-office e engenharia de dados de viagem.",
-        "photo": "",
-        "linkedinUrl": ""
+        "photo": "/team/lucas-oliveira.webp",
+        "linkedinUrl": "https://www.linkedin.com/in/lucas-oliveira-syncsirius/"
       }
     ]
   },

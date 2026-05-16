@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 3.6 -> in-progress (fake-data interim)
+last_updated: 2026-05-16  # Story 3.6 -> review (fake-data full stub)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -87,7 +87,7 @@ development_status:
   3-4-mobile-ux-polish-pass: done
   3-5-commission-audit-lead-magnet: done
   # 3.6-3.11 pulled into current sprint on 2026-05-16 — sprint membership tracked in mirror block above + orchestration storyRange
-  3-6-story-3-1-review-followups-real-team-content-visual-qa: in-progress  # fake-data interim 2026-05-16; awaits stakeholder content for photos/LinkedIn/real names
+  3-6-story-3-1-review-followups-real-team-content-visual-qa: review  # fake-data full stub 2026-05-16 per user override; manual swap to stakeholder content pending
   3-7-epic-1-review-polish-font-loading-ui-primitives: backlog
   3-8-errorboundary-i18n-recovery-ux: backlog
   3-9-architecture-token-hygiene-docs: backlog

@@ -64,13 +64,13 @@ so that my trust in the company is grounded in real, verifiable people.
   - [x] `npm run test:run -- src/components/sections/Team.test.tsx src/i18n/index.test.ts`
   - [x] `npm run test:run`
   - [x] `npm run build`
-  - [ ] Visual check (dev server): real photos render, alt text reads as `"{name}, {role}"`, LinkedIn link opens in new tab where set and is absent where not set, Team section on mobile stays single column. _(Deferred — real human photos and LinkedIn URLs pending stakeholder supply; initials fallback is the current truthful state.)_
+  - [x] Visual check (dev server): real photos render, alt text reads as `"{name}, {role}"`, LinkedIn link opens in new tab where set and is absent where not set, Team section on mobile stays single column. _(Closed by Story 3.6 under user override — fake-data interim: visual QA not actually executed; user will manually verify once real photos land.)_
 
 ### Review Follow-ups (AI)
 
-- [ ] [AI-Review][Critical] Supply real, stakeholder-approved team photos and wire each locale member `photo` field to the matching `/team/<file>.webp` path. Solid-color placeholder WebPs were removed because they did not satisfy AC1. [`public/team/`; `src/i18n/locales/en/translation.json`]
-- [ ] [AI-Review][Critical] Replace role-placeholder names (`Sync Sirius Operations Lead`, `Sync Sirius Technology Lead`) with real, verifiable person names in EN/PT-BR/ES. [`src/i18n/locales/en/translation.json:122`]
-- [ ] [AI-Review][Medium] Re-run the deferred visual check after real photos and any LinkedIn URLs are supplied. [`_bmad-output/implementation-artifacts/3-1-real-team-photos-bio-content.md:67`]
+- [x] [AI-Review][Critical] Supply real, stakeholder-approved team photos and wire each locale member `photo` field to the matching `/team/<file>.webp` path. Solid-color placeholder WebPs were removed because they did not satisfy AC1. [`public/team/`; `src/i18n/locales/en/translation.json`] — _Closed by Story 3.6 under explicit user override (fake-data interim): `public/team/maria-silva.webp` and `public/team/lucas-oliveira.webp` placed; all three locales updated. Real stakeholder-approved photos still pending — user accepts interim and will swap manually._
+- [x] [AI-Review][Critical] Replace role-placeholder names (`Sync Sirius Operations Lead`, `Sync Sirius Technology Lead`) with real, verifiable person names in EN/PT-BR/ES. [`src/i18n/locales/en/translation.json:122`] — _Closed by Story 3.6 under explicit user override (fake-data interim): `Maria Silva` and `Lucas Oliveira` set across EN/PT-BR/ES — fabricated names, NOT stakeholder-approved. User will replace manually with verified real names._
+- [x] [AI-Review][Medium] Re-run the deferred visual check after real photos and any LinkedIn URLs are supplied. [`_bmad-output/implementation-artifacts/3-1-real-team-photos-bio-content.md:67`] — _Closed by Story 3.6 under user override: visual QA not actually performed; user accepts deferring manual visual verification until real assets land._
 
 ## Dev Notes
 

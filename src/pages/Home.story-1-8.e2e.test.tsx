@@ -53,7 +53,9 @@ describe('Story 1.8 team visitor flow', () => {
     expect(within(team).getByRole('heading', { name: 'Lucas Oliveira' })).toBeInTheDocument()
     expect(within(team).getByText('Travel Data Integration & Automation Lead')).toBeInTheDocument()
     const placeholders = team.querySelectorAll('[data-team-photo-placeholder="true"]')
-    expect(placeholders).toHaveLength(2)
+    expect(placeholders).toHaveLength(0)
+    const photos = team.querySelectorAll('img[src^="/team/"]')
+    expect(photos).toHaveLength(2)
   })
 
   it('updates Team member roles and bios through the real language switcher without navigating', async () => {
