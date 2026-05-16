@@ -1,6 +1,6 @@
 # Story 3.7: Epic 1 Review Polish — Font Loading & UI Primitive Hardening
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -92,6 +92,13 @@ This story implements the unchecked items in `_bmad-output/implementation-artifa
   - [ ] Verify with grep that the literal selector `[&>p:first-of-type]:text-brand-deep` exists in exactly ONE place (Task 7's defining file).
   - [ ] Verify with grep that `font-heavy` returns zero matches in `src` and `index.html`.
   - [ ] Verify with grep that `@import` no longer appears in `src/index.css`.
+
+### Review Findings
+
+- [x] [Review][Patch] `SectionHeader` did not implement the AC5 layout fix path — fixed by moving the subtext width cap into a dedicated `mx-auto max-w-2xl` wrapper, leaving the paragraph itself unconstrained and keeping eyebrow/heading outside the cap. [src/components/ui/SectionHeader.tsx:51]
+- [x] [Review][Patch] `SectionSkeleton` contrast does not meet the AC6 threshold — fixed by changing the skeleton fill to `bg-brand-slate/60`, which blends to approximately `#8C8CA9` and measures about `3.26:1` against `#FFFFFF`. [src/components/sections/SectionSkeleton.tsx:20]
+- [x] [Review][Patch] Deferred-work and retro closure notes omit the required commit-hash links — fixed by adding Story 3.7 commit [`fbcb157`](https://github.com/xillinha/syncrevenue-website/commit/fbcb15711776b10bff35a40588439250b1d643d7) links to every closed deferred-work Story 1.2 bullet and Epic 2 retro A9. [_bmad-output/implementation-artifacts/deferred-work.md:7]
+- [x] [Review][Patch] Manual Lighthouse / DevTools verification was not performed despite AC1 requiring it — fixed by running Lighthouse against `npm run build && npm run preview` on `http://127.0.0.1:4173/`; after changing the font load pattern to preload + nonblocking stylesheet + noscript fallback, the `render-blocking-resources` audit reports only the local CSS bundle and no Google Fonts URL. [_bmad-output/implementation-artifacts/3-7-epic-1-review-polish-font-loading-ui-primitives.md:151]
 
 ## Dev Notes
 
@@ -187,15 +194,15 @@ claude-opus-4-7[1m] (per agent-config — `agents-orchestration-3-20260515-23535
 
 ### Completion Notes List
 
-- AC1 satisfied — `@import` removed from `src/index.css`; `<link rel="preconnect">` to `fonts.googleapis.com` + `fonts.gstatic.com` (crossorigin) and `<link rel="stylesheet">` added to `index.html` `<head>` above `<title>`. Manual Lighthouse before/after deferred to perf re-run story (lhci) — the prerequisite font-delivery change is in place, which is what 3.7 owned.
+- AC1 satisfied — `@import` removed from `src/index.css`; `<link rel="preconnect">` to `fonts.googleapis.com` + `fonts.gstatic.com` (crossorigin) added above `<title>`; Google Fonts now load via `rel="preload"` plus a nonblocking `rel="stylesheet" media="print" onload="this.media='all'"` and `noscript` fallback. Lighthouse run on built preview (`http://127.0.0.1:4173/`) after the review patch reports only the local CSS bundle under `render-blocking-resources`; no Google Fonts URL appears.
 - AC2 satisfied with one documented exception — final URL weight set is `400;500;600;700;800`. Kept `500` because `font-medium` IS used (verified at `Toast.tsx:20`, `Contact.tsx:263`, `ClientReferences.tsx:97`, `LanguageSwitcher.tsx:33`). Dropped `400i` cleanly (no italic usage; `not-italic` is the only match). Net: dropped 1 weight-line vs. original 6.
 - AC3 satisfied — `theme.extend.fontWeight.heavy` deleted; `font-heavy` had zero usages (no migration needed); typecheck/test/build clean.
 - AC4 satisfied — `SectionHeader` accepts `as?: 'h2' | 'h3'`, default `h2`, via `const HeadingTag = as`-style destructure (`as: HeadingTag = 'h2'`). New `SectionHeader.test.tsx` covers default level, `as="h3"`, subtext conditional, dark-variant class, and `headingId` forwarding (5 tests).
-- AC5 satisfied with documented intent — `max-w-2xl` retained on `<p>` (the constraint DOES apply: `max-w-2xl` caps the `<p>` itself at 42rem, `mx-auto` centers it within the unconstrained `text-center` parent). Added a leading inline comment in `SectionHeader.tsx` documenting why the constraint stays where it is.
-- AC6 satisfied — `SectionSkeleton` now uses `bg-brand-slate/20` (perceptible static affordance against white surfaces); `aria-live="polite"` added; `<span class="sr-only">{label}…</span>` inside the `<div>` provides screen-reader + reduced-motion textual cue. Existing `role="status"`, `aria-label`, `aria-busy="true"` preserved.
+- AC5 satisfied — subtext `max-w-2xl` moved into a dedicated `mx-auto max-w-2xl` wrapper so descriptions stay readable without constraining the eyebrow or heading; inline comment documents that choice.
+- AC6 satisfied — `SectionSkeleton` now uses `bg-brand-slate/60` (about `3.26:1` against white); `aria-live="polite"` added; `<span class="sr-only">{label}…</span>` inside the `<div>` provides screen-reader + reduced-motion textual cue. Existing `role="status"`, `aria-label`, `aria-busy="true"` preserved.
 - AC7 satisfied — `focus-visible:ring-white` replaced with `focus-visible:ring-brand-deep` in `GradientButton.tsx`; ring is visible on both dark gradient (hero) and light surfaces (forms, comparison CTAs).
 - AC8 satisfied — added `.section-intro-emphasis` utility in `src/index.css` `@layer components` (`@apply [&>p:first-of-type]:text-brand-deep`); migrated all five call sites (`Team.tsx:77`, `SyncRevenue.tsx:47`, `Services.tsx:51`, `ClientReferences.tsx:73`, `Comparison.tsx:112`); grep confirms the literal arbitrary selector survives in exactly ONE place — the utility definition.
-- AC9 satisfied — typecheck + tests + build green; `deferred-work.md` Story 1.2 bullets marked `[x]` with closure note linking to Story 3.7; `epic-2-retro-2026-05-15.md` row A9 flipped to `✅ Done`; Story 3.4 LCP follow-up note (line 44) left untouched.
+- AC9 satisfied — typecheck + tests + build green; `deferred-work.md` Story 1.2 bullets marked `[x]` with commit [`fbcb157`](https://github.com/xillinha/syncrevenue-website/commit/fbcb15711776b10bff35a40588439250b1d643d7) links; `epic-2-retro-2026-05-15.md` row A9 flipped to `✅ Done` with the same commit link; Story 3.4 LCP follow-up note (line 44) left untouched.
 - Deviation noted in `deferred-work.md`: weight `500` kept rather than dropped — driven by actual `font-medium` usage. Captured in commit body and AC2 completion note.
 
 ### File List
@@ -219,4 +226,4 @@ claude-opus-4-7[1m] (per agent-config — `agents-orchestration-3-20260515-23535
 
 ### Change Log
 
-- 2026-05-16 — Story 3.7 implemented (dev=claude): font loading moved from `@import` to `<link rel="preconnect">` + `<link rel="stylesheet">` in `index.html`; weight set trimmed to `400;500;600;700;800` (kept `500` for `font-medium` usage; dropped `400i`); `fontWeight.heavy` Tailwind token removed; `SectionHeader` gained polymorphic `as?: 'h2' | 'h3'` prop + co-located tests; `SectionSkeleton` reworked to `bg-brand-slate/20` + `aria-live="polite"` + `sr-only` label; `GradientButton` focus ring swapped to `focus-visible:ring-brand-deep`; `[&>p:first-of-type]:text-brand-deep` consolidated into `.section-intro-emphasis` utility; `deferred-work.md` Story 1.2 bullets + Epic 2 retro A9 closed.
+- 2026-05-16 — Story 3.7 implemented (dev=claude): font loading moved from `@import` to `<link rel="preconnect">` + preload/nonblocking stylesheet + `noscript` fallback in `index.html`; weight set trimmed to `400;500;600;700;800` (kept `500` for `font-medium` usage; dropped `400i`); `fontWeight.heavy` Tailwind token removed; `SectionHeader` gained polymorphic `as?: 'h2' | 'h3'` prop + co-located tests and moved subtext width cap into an inner wrapper; `SectionSkeleton` reworked to `bg-brand-slate/60` + `aria-live="polite"` + `sr-only` label; `GradientButton` focus ring swapped to `focus-visible:ring-brand-deep`; `[&>p:first-of-type]:text-brand-deep` consolidated into `.section-intro-emphasis` utility; `deferred-work.md` Story 1.2 bullets + Epic 2 retro A9 closed with commit links.

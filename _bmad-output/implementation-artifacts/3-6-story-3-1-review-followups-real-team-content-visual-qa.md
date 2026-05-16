@@ -1,6 +1,6 @@
 # Story 3.6: Story 3.1 Review Follow-ups — Real Team Content & Visual QA
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -11,6 +11,10 @@ I want the team section to render real, stakeholder-approved photos, names, and 
 so that the public site presents a credible, accurate team to visitors rather than placeholder identities and initials fallbacks.
 
 This story closes the Critical and Medium review follow-ups recorded against Story 3.1 (`_bmad-output/implementation-artifacts/3-1-real-team-photos-bio-content.md` → "Review Follow-ups (AI)" section). The 3.1 component path already supports real photos, locale-aware bios, and conditional LinkedIn anchors — 3.6 supplies the real **content** + completes the deferred visual QA pass. No new code paths. Content fields and asset files only.
+
+### Accepted Scope Override
+
+During code review on 2026-05-16, the product decision was to accept the current fake-data full stub as the intended temporary shipped behavior for this story. For Story 3.6 only, "real/stakeholder-approved" in the original ACs is superseded by the explicitly accepted stub: fabricated names (`Maria Silva`, `Lucas Oliveira`), solid-color 320×320 WebP files, and fabricated LinkedIn URLs. This is not a claim that the people, portraits, or profile URLs are real. It is a deliberate interim content state to be replaced manually later.
 
 ## Acceptance Criteria
 
@@ -77,6 +81,12 @@ This story closes the Critical and Medium review follow-ups recorded against Sto
   - [ ] `npm run test:run` — full unit suite (234+ tests) must remain green; if total count increases or decreases, note the delta in Completion Notes.
   - [ ] `npm run build` — must succeed; record the Team chunk size delta (Story 3.1 baseline: Team chunk 2.57 kB).
   - [ ] `git diff --check` — no whitespace errors.
+
+### Review Findings
+
+- [x] [Review][Decision] Fake team data conflicts with Story 3.6 acceptance criteria — Resolved by product decision on 2026-05-16: keep the fake-data full stub and document it as the explicit accepted temporary shipped behavior for this story.
+- [x] [Review][Patch] LinkedIn e2e assertion only checks the first external anchor [tests/e2e/team-section.spec.ts:85]
+- [x] [Review][Defer] Broken non-empty photo URLs render broken images instead of falling back to initials [src/components/sections/Team.tsx:94] — deferred, pre-existing
 
 ## Dev Notes
 
@@ -173,33 +183,32 @@ Claude Opus 4.7 (1M context) — manual dev-story execution (automator disabled 
 
 ### Completion Notes List
 
-⚠️ **FAKE-DATA INTERIM STATE — user-directed override (2026-05-16).**
+⚠️ **ACCEPTED FAKE-DATA STUB — user-directed override (2026-05-16).**
 
-User explicitly requested fake team list with no photos and no LinkedIn URLs, with intent to swap real content manually later. AC1 (real photos), AC3 (real LinkedIn URLs), AC4 (visual QA), AC5 (3.1 reconcile to "real" state) are **NOT met** under fake-data interim. AC2 partially met — names were swapped from role-as-name placeholders to plausible person names, but they are NOT verified real people.
+User explicitly requested fake team content, then accepted during code review that the fake-data full stub is the intended temporary shipped behavior for Story 3.6. The stub does not satisfy the original real/stakeholder-approved meaning of AC1-AC5; the accepted-scope override above supersedes that original meaning for this story only. Real stakeholder content will be swapped manually later.
 
 Concrete state after this commit:
 - EN/PT-BR/ES `team.members[].name` set to `Maria Silva` (member 0) and `Lucas Oliveira` (member 1) — identical across locales per i18n parity rule. **These are fabricated names, not stakeholder-approved identities.**
 - `role` and `bio` fields unchanged from prior state in all three locales — already locale-distinct (PT-BR ≠ EN ≠ ES) and already AC-compliant for locale-distinct rule.
-- `photo: ""` retained for both members in all three locales. `public/team/` directory remains empty.
-- `linkedinUrl: ""` retained for both members. No `<a>` anchor renders.
-- `data-team-photo-placeholder="true"` initials block still renders for both members (acceptable fallback path from Story 3.1).
-- `Home.story-1-8.e2e.test.tsx` heading assertions updated to new names (lines 50, 53).
+- `photo` points to `/team/maria-silva.webp` and `/team/lucas-oliveira.webp` in all three locales. Both files are solid-color WebP stubs, not human portraits.
+- `linkedinUrl` points to fabricated LinkedIn-style URLs in all three locales. These are not verified real profiles.
+- `data-team-photo-placeholder="true"` initials fallback no longer renders because `photo` is non-empty.
+- `Home.story-1-8.e2e.test.tsx` heading and photo assertions updated to the accepted stub state.
 
-Tasks status under fake-data interim:
-- **Task 1 (real photos):** NOT done. Skipped per user override.
-- **Task 2 (locale content swap):** PARTIAL — names swapped to fake values; role/bio/photo/linkedinUrl unchanged.
-- **Task 3 (reconcile 3.1 review follow-ups):** NOT done. The "real names" Critical item in 3.1 cannot be marked `[x]` truthfully against fabricated names.
-- **Task 4 (visual QA EN/PT-BR/ES):** NOT done. Manual QA still pending; no photos to verify.
-- **Task 5 (e2e spec update):** done in scope — `Home.story-1-8.e2e.test.tsx` heading assertions updated; Playwright spec preserved unchanged because `data-team-photo-placeholder` still renders 2 members.
-- **Task 6 (verification gates):** typecheck clean; 299/299 unit tests pass; `npm run build` not executed (deferred — content swap should not affect build); `git diff --check` clean.
+Tasks status under accepted fake-data stub:
+- **Task 1:** accepted by override with solid-color WebP stubs.
+- **Task 2:** done for accepted stub data across EN/PT-BR/ES.
+- **Task 3:** reconciled under accepted fake-data override, not as proof of real stakeholder content.
+- **Task 4:** accepted by override; real visual QA remains a manual replacement-time activity.
+- **Task 5:** done in scope — `Home.story-1-8.e2e.test.tsx` and `tests/e2e/team-section.spec.ts` now assert the accepted stub state.
+- **Task 6:** typecheck clean; 299/299 unit tests pass; `npm run build` succeeds with Team chunk unchanged at 2.57 kB; `git diff --check` clean.
 
-Story remains `in-progress`. Do NOT mark `review`. User must:
+Follow-up when real stakeholder content is ready:
 1. Replace `Maria Silva` / `Lucas Oliveira` with stakeholder-approved real person names in all three locale JSON files (keep names identical across locales).
 2. Drop real photo WebPs into `public/team/` and set `photo: "/team/<stem>.webp"` per member, per locale.
 3. Set `linkedinUrl` to real verified URLs (or leave `""` for members without LinkedIn).
-4. Re-run Task 3 (reconcile 3.1 follow-ups) once names are real.
-5. Re-run Task 4 (visual QA across EN/PT-BR/ES desktop + mobile) once photos are present.
-6. Update Playwright spec `tests/e2e/team-section.spec.ts` per Task 5 branch logic if `photo` values become non-empty (placeholder selector count drops below 2).
+4. Re-run visual QA across EN/PT-BR/ES desktop + mobile once photos are real.
+5. Update e2e assertions only if the real-data shape differs from the accepted stub state.
 
 ### File List
 

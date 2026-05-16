@@ -58,7 +58,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 3.4 | Mobile UX Polish Pass | SYN-26 | `[x]` done |
 | 3.5 | Commission Audit Lead Magnet | SYN-27 | `[x]` done |
 | 3.6 | Story 3.1 Review Follow-ups — Real Team Content & Visual QA | SYN-92 | `[x]` done |
-| 3.7 | Epic 1 Review Polish — Font Loading & UI Primitive Hardening | SYN-93 | `[~]` review |
+| 3.7 | Epic 1 Review Polish — Font Loading & UI Primitive Hardening | SYN-93 | `[x]` done |
 | 3.8 | ErrorBoundary i18n & Recovery UX | _(pending Jira)_ | `[ ]` |
 | 3.9 | Architecture & Token Hygiene Docs — Patterns Gallery + WCAG Contrast Manifest | _(pending Jira)_ | `[ ]` |
 | 3.10 | DX Discipline — `defaultValue` Lint Rule & Sandbox Port-Binding Convention | _(pending Jira)_ | `[ ]` |

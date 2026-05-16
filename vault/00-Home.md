@@ -28,7 +28,7 @@
 
 ---
 
-## Project Status (2026-05-15)
+## Project Status (2026-05-16)
 
 - Planning complete (PRD, Architecture, UX, Epics all green)
 - **Epic 1 — DONE (11/11 stories) + retrospective complete** (Jira: SYN-1 closed; all stories Done in SYN Sprint 1)
@@ -53,8 +53,8 @@
   - 2.6 Form Accessibility & Locale-Aware Validation (`createDemoSchema(t)` / `createContactSchema(t)` factories)
   - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
-- Active phase: **Epic 3 (Phase 2)** — content polish, animations, SEO, lead magnet. Prep tasks B1–B3 from Epic 2 retro should be scheduled before Story 3.1.
-- Story 3.1 (Real Team Photos & Bio Content) — implementation complete, **status: review** (SYN-23). Composed alt `"{name}, {role}"`, optional `linkedinUrl` (i18n parity across EN/PT-BR/ES), interim brand-blue 320×320 webp placeholders at `public/team/` pending real stakeholder photos.
+- Active phase: **Epic 3 (Phase 2)** — stories 3.1-3.6 done; 3.7+ remain in Sprint 3 backlog.
+- Story 3.6 (Story 3.1 Review Follow-ups) — done under accepted fake-data full-stub override. EN/PT-BR/ES team JSON now uses fabricated temporary names, solid-color WebP stubs, and fabricated LinkedIn-style URLs pending manual stakeholder-content swap.
 - Quality at Story 3.1 close: **234 tests pass**; `tsc --noEmit` → 0; `npm run build` clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
 - New tooling: Playwright + @axe-core/playwright + @lhci/cli installed. Scaffold under `tests/e2e/` + `lighthouserc*.json` + `.github/workflows/quality.yml`. Run `npm run test:e2e:install` once locally before `npm run test:e2e`.

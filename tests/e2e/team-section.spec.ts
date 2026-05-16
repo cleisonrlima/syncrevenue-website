@@ -84,9 +84,13 @@ test.describe('@P1 Team section — content & layout', () => {
 
     const anchors = page.locator(`${TEAM_ARTICLE} a[target="_blank"]`)
     await expect(anchors).toHaveCount(2)
-    const firstHref = await anchors.first().getAttribute('href')
-    expect(firstHref).toMatch(/^https:\/\/www\.linkedin\.com\//)
-    await expect(anchors.first()).toHaveAttribute('rel', /noopener\s+noreferrer/)
+
+    for (let i = 0; i < 2; i++) {
+      const anchor = anchors.nth(i)
+      const href = await anchor.getAttribute('href')
+      expect(href, `LinkedIn href ${i}`).toMatch(/^https:\/\/www\.linkedin\.com\//)
+      await expect(anchor).toHaveAttribute('rel', /noopener\s+noreferrer/)
+    }
   })
 
   test('mobile viewport renders a single column grid', async ({ page }) => {
