@@ -27,7 +27,9 @@ test.describe('@story-3.2 animations', () => {
     await context.close()
   })
 
-  test('primary CTA hover keeps bounding box stable within 1px', async ({ page }) => {
+  test('primary CTA hover keeps bounding box stable within 1px', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.startsWith('mobile-'), 'Hover behavior is desktop-only.')
+
     await page.goto('/', { waitUntil: 'networkidle' })
 
     const demoSection = page.locator('#demo-scheduler')

@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-15  # Story 3.1 created → ready-for-dev; epic-3 → in-progress
+# last_updated: 2026-05-16  # Story 3.2 -> done
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-15  # Story 3.2 -> review
+last_updated: 2026-05-16  # Story 3.2 -> done
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -78,7 +78,7 @@ development_status:
   # Epic 3: Content Polish & SEO (Phase 2)
   epic-3: in-progress
   3-1-real-team-photos-bio-content: done
-  3-2-animations-micro-interactions: review
+  3-2-animations-micro-interactions: done
   3-3-seo-metadata-meta-tags-og-hreflang-sitemap: backlog
   3-4-mobile-ux-polish-pass: backlog
   3-5-commission-audit-lead-magnet: backlog

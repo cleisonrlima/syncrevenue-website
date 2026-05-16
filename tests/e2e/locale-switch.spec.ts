@@ -5,12 +5,21 @@ import { test, expect } from '@playwright/test'
  * Test Design Epic 1 → R-I1, R-T6.
  */
 
+async function getLanguageSwitcher(page: import('@playwright/test').Page, isMobile: boolean) {
+  if (isMobile) {
+    await page.getByRole('button', { name: /open menu/i }).click()
+  }
+
+  const switcher = page.getByRole('group', { name: /select language/i })
+  await expect(switcher).toBeVisible()
+  return switcher
+}
+
 test.describe('@P1 Locale switch', () => {
-  test('switching locale on / updates section copy without navigation', async ({ page }) => {
+  test('switching locale on / updates section copy without navigation', async ({ page, isMobile }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const switcher = page.getByRole('group', { name: /select language/i })
-    await expect(switcher).toBeVisible()
+    const switcher = await getLanguageSwitcher(page, isMobile)
 
     await switcher.getByRole('button', { name: /pt-br/i }).click()
     await expect(switcher.getByRole('button', { name: /pt-br/i })).toHaveAttribute('aria-current', 'true')
@@ -21,7 +30,7 @@ test.describe('@P1 Locale switch', () => {
     expect(new URL(page.url()).pathname).toBe('/')
   })
 
-  test('switching locale on / preserves scroll position to below-the-fold section', async ({ page }) => {
+  test('switching locale on / preserves scroll position to below-the-fold section', async ({ page, isMobile }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
 
     const team = page.locator('#team')
@@ -30,7 +39,7 @@ test.describe('@P1 Locale switch', () => {
     const initialScroll = await page.evaluate(() => window.scrollY)
     expect(initialScroll).toBeGreaterThan(200)
 
-    const switcher = page.getByRole('group', { name: /select language/i })
+    const switcher = await getLanguageSwitcher(page, isMobile)
     await switcher.getByRole('button', { name: /pt-br/i }).click()
     await expect(switcher.getByRole('button', { name: /pt-br/i })).toHaveAttribute('aria-current', 'true')
 
@@ -39,14 +48,15 @@ test.describe('@P1 Locale switch', () => {
     expect(Math.abs(newScroll - initialScroll)).toBeLessThan(50)
   })
 
-  test('switching locale on /privacy keeps pathname and scroll position', async ({ page }) => {
+  test('switching locale on /privacy keeps pathname and scroll position', async ({ page, isMobile }) => {
     await page.goto('/privacy', { waitUntil: 'networkidle' })
 
     await page.evaluate(() => window.scrollTo(0, 400))
     const initialScroll = await page.evaluate(() => window.scrollY)
     expect(initialScroll).toBeGreaterThan(200)
 
-    await page.getByRole('button', { name: /pt-br/i }).first().click()
+    const switcher = await getLanguageSwitcher(page, isMobile)
+    await switcher.getByRole('button', { name: /pt-br/i }).click()
 
     expect(new URL(page.url()).pathname).toBe('/privacy')
     const newScroll = await page.evaluate(() => window.scrollY)

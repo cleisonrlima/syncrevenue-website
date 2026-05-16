@@ -1,6 +1,6 @@
 # Story 3.2: Animations & Micro-Interactions
 
-Status: review
+Status: done
 
 <!-- Note: Validation completed during create-story. Story is ready for dev-story. -->
 
@@ -158,6 +158,11 @@ Codex (GPT-5) [initial code], Claude Opus 4.7 [resumed and completed]
 - 2026-05-15: First `npm run test:run` failed for all section tests that touch `motion/react-m` because the global `src/test/setup.ts` mock returned a bare `Proxy` and Vitest could not resolve `m.section` for namespace imports (`No "section" export is defined on the "motion/react-m" mock`). Fixed by replacing the proxy with an explicit named-exports object covering the HTML tags used by section wrappers. Re-run: 45 files, 241 tests, all passing.
 - 2026-05-15: `npm run build` succeeded. Inspection of `dist/client/assets/index-*.js` showed zero hits for `LazyMotion`, `useReducedMotion`, `domAnimation`, or `motion/react`. The only `react-m` substring match was the inlined React string `react-mount-point-unstable`, not Motion code. Motion runtime is isolated to the async `motionFeatures-*.js` chunk (37.59 kB / 14.11 kB gzipped). All eight section chunks (`SyncRevenue`, `Services`, `Comparison`, `Security`, `ClientReferences`, `Team`, `DemoScheduler`, `Contact`) still build as separate async chunks.
 - 2026-05-15: `npm run lhci` not executed in this environment — sandbox lacks Chromium headless permissions plus the preview server cannot bind reliably; running it would re-trigger the listen/permissions failure documented for Story 3.1. Build artifact inspection and the unit/integration suite cover AC5 in lieu of a Lighthouse run.
+- 2026-05-16: Senior review loaded story, sprint status, planning architecture/PRD/UX references, implementation files, tests, git history, and MCP resources. MCP resource discovery returned no configured resources, so review used repository docs and source files.
+- 2026-05-16: Senior review found and auto-fixed three test/review issues: mobile locale-switch Playwright coverage could not reach the hidden mobile switcher, desktop hover behavior was registered against mobile touch projects, and the MotionSection remount unit test did not prove instance stability.
+- 2026-05-16: Senior review verification: `npm run typecheck` passed; `npm run test:run -- src/components/sections/MotionSection.test.tsx src/components/ui/GradientButton.test.tsx` passed (2 files, 8 tests); full `npm run test:run` passed (45 files, 242 tests); `npm run build` passed; bundle inspection found 0 hits for `LazyMotion`, `useReducedMotion`, `domAnimation`, `motion/react`, or `framer-motion` in `dist/client/assets/index-*.js`.
+- 2026-05-16: `npm run test:e2e -- tests/e2e/animations.spec.ts tests/e2e/locale-switch.spec.ts` remained blocked before execution because config webServer could not start. Direct `npm run dev` failed with `Error: listen EPERM: operation not permitted /tmp/tsx-1001/31.pipe`.
+- 2026-05-16: `npm run lhci` and `npm run lhci:mobile` remained blocked by environment healthcheck: `Chrome installation not found`.
 
 ### Completion Notes List
 
@@ -191,11 +196,57 @@ Codex (GPT-5) [initial code], Claude Opus 4.7 [resumed and completed]
 - `src/components/ui/GradientButton.tsx` (targeted hover transition)
 - `src/components/ui/GradientButton.test.tsx` (new — transition/size/layout guard tests)
 - `src/test/setup.ts` (mock `motion/react` + `motion/react-m` for jsdom; explicit named tag exports)
-- `tests/e2e/locale-switch.spec.ts` (added `/` scroll-preservation spec)
-- `tests/e2e/animations.spec.ts` (new — reduced-motion + hover layout stability specs)
+- `tests/e2e/locale-switch.spec.ts` (added `/` scroll-preservation spec; review fix opens the mobile menu before locale switching on mobile projects)
+- `tests/e2e/animations.spec.ts` (new — reduced-motion + hover layout stability specs; review fix skips hover-only assertion on mobile touch projects)
+- `_bmad-output/implementation-artifacts/tests/test-summary.md` (Story 3.2 test automation summary)
 - `_bmad-output/implementation-artifacts/3-2-animations-micro-interactions.md` (status, dev agent record, file list, change log)
-- `_bmad-output/implementation-artifacts/sprint-status.yaml` (status `in-progress` -> `review`)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (status `review` -> `done`)
+
+### Senior Developer Review (AI)
+
+Reviewer: Codex (GPT-5) on 2026-05-16
+
+Outcome: Approved after auto-fixes. No critical issues remain.
+
+Findings fixed:
+
+- HIGH: `tests/e2e/locale-switch.spec.ts` used the desktop-visible language switcher directly, but mobile projects hide it behind the hamburger overlay. This made AC4/AC6 browser coverage fail on mobile even though the product UI has a valid mobile path. Fixed by opening the mobile menu before selecting locale when `isMobile` is true.
+- MEDIUM: `tests/e2e/animations.spec.ts` registered the hover bounding-box assertion for mobile touch projects. Hover is a desktop pointer interaction in this UI, so the test could produce false failures outside the sandbox. Fixed by skipping only the hover-specific assertion on `mobile-*` projects while keeping reduced-motion coverage on all projects.
+- MEDIUM: `src/components/sections/MotionSection.test.tsx` claimed child remount protection but only asserted an additional render. Fixed by tracking a stable `useRef` instance id across the out-of-view to in-view rerender.
+- LOW: The story File List did not include the Story 3.2 test automation summary artifact and did not describe review-time e2e stability fixes. Updated File List and review notes.
+
+Acceptance criteria review:
+
+- AC1: Implemented. `MotionSection.tsx` uses `useInView(ref, { once: true, amount: 0.2 })`, opacity/y animation, `duration: 0.4`, and `ease: 'easeOut'`.
+- AC2: Implemented. `useReducedMotion()` returns a plain semantic `<section>` with children immediately visible; `GradientButton` keeps active scale under `motion-safe:`.
+- AC3: Implemented. `GradientButton.tsx` uses targeted `transition-[filter,background-position,box-shadow] duration-150 ease-out` and keeps hover paint-only.
+- AC4: Implemented. `LanguageSwitcher.tsx` preserves the no-navigation locale flow, and the Playwright spec now covers desktop plus mobile access paths for scroll preservation.
+- AC5: Implemented to the extent this environment can verify. Build passes, section chunks remain async, `motionFeatures-*.js` is separate, and main `index-*.js` has zero Motion runtime identifier hits. LHCI is blocked by missing Chrome in this environment.
+- AC6: Implemented. Unit and browser specs cover reduced motion, one-shot section entry options, hover layout stability, and locale scroll preservation.
+
+Validation checklist:
+
+- [x] Story file loaded from `_bmad-output/implementation-artifacts/3-2-animations-micro-interactions.md`
+- [x] Story Status verified as reviewable (`review`)
+- [x] Epic and Story IDs resolved (3.2)
+- [x] Story Context located or warning recorded (story file used; no separate story context found)
+- [x] Epic Tech Spec located or warning recorded (`_bmad-output/planning-artifacts/epics.md`)
+- [x] Architecture/standards docs loaded (`architecture.md`, `prd.md`, `ux-design-specification.md`, `vault/Planning/Architecture-Key.md`, `vault/Code/Frontend.md`)
+- [x] Tech stack detected and documented (React 18, Vite 5, TypeScript, Tailwind, Motion 12, Vitest, Playwright, LHCI)
+- [x] MCP doc search performed; no MCP resources configured
+- [x] Acceptance Criteria cross-checked against implementation
+- [x] File List reviewed and updated
+- [x] Tests identified and mapped to ACs; gaps fixed where actionable
+- [x] Code quality review performed on changed files
+- [x] Security review performed on changed files and dependencies
+- [x] Outcome decided: Approve after fixes
+- [x] Review notes appended under "Senior Developer Review (AI)"
+- [x] Change Log updated with review entry
+- [x] Status updated to done
+- [x] Sprint status synced
+- [x] Story saved successfully
 
 ### Change Log
 
 - 2026-05-15: Implemented section-entry animation (Motion `react-m` + `LazyMotion`), reduced-motion compliance, CTA hover refinement, locale-switch scroll-preservation coverage, and bundle isolation of Motion to async chunks. Status: in-progress -> review.
+- 2026-05-16: Senior review auto-fixed Playwright responsive coverage and MotionSection test assertion quality; verified typecheck, unit suite, production build, and bundle isolation. Status: review -> done.

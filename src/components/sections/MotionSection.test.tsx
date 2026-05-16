@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { render, screen, cleanup } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import MotionSection from './MotionSection'
@@ -82,7 +83,13 @@ describe('MotionSection', () => {
   })
 
   it('does not remount children between out-of-view and in-view states', () => {
-    const Child = vi.fn(() => <p>child</p>)
+    const seenInstanceIds: number[] = []
+    let nextInstanceId = 0
+    const Child = vi.fn(() => {
+      const instanceId = useRef(++nextInstanceId)
+      seenInstanceIds.push(instanceId.current)
+      return <p>child</p>
+    })
     inViewRef.current = false
 
     const { rerender } = render(
@@ -100,6 +107,7 @@ describe('MotionSection', () => {
     )
 
     expect(Child.mock.calls.length).toBeGreaterThan(renderCount)
+    expect(new Set(seenInstanceIds)).toEqual(new Set([1]))
     expect(screen.getByText('child')).toBeInTheDocument()
   })
 })
