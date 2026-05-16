@@ -7,6 +7,7 @@ import {
   type ContactFormValues,
 } from '@/hooks/useContact'
 import { useLocaleStore } from '@/store/useLocaleStore'
+import MotionSection from './MotionSection'
 import GradientButton from '@/components/ui/GradientButton'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { cn } from '@/lib/utils'
@@ -143,7 +144,7 @@ export default function Contact() {
       : null
 
   return (
-    <section id="contact" aria-labelledby="contact-heading" className="bg-brand-mist py-20">
+    <MotionSection id="contact" aria-labelledby="contact-heading" className="bg-brand-mist py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow={t('forms.contact.eyebrow')}
@@ -266,7 +267,7 @@ export default function Contact() {
           </div>
         )}
       </div>
-    </section>
+    </MotionSection>
   )
 }
 

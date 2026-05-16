@@ -21,6 +21,24 @@ test.describe('@P1 Locale switch', () => {
     expect(new URL(page.url()).pathname).toBe('/')
   })
 
+  test('switching locale on / preserves scroll position to below-the-fold section', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    const team = page.locator('#team')
+    await team.scrollIntoViewIfNeeded()
+    await page.waitForTimeout(150)
+    const initialScroll = await page.evaluate(() => window.scrollY)
+    expect(initialScroll).toBeGreaterThan(200)
+
+    const switcher = page.getByRole('group', { name: /select language/i })
+    await switcher.getByRole('button', { name: /pt-br/i }).click()
+    await expect(switcher.getByRole('button', { name: /pt-br/i })).toHaveAttribute('aria-current', 'true')
+
+    expect(new URL(page.url()).pathname).toBe('/')
+    const newScroll = await page.evaluate(() => window.scrollY)
+    expect(Math.abs(newScroll - initialScroll)).toBeLessThan(50)
+  })
+
   test('switching locale on /privacy keeps pathname and scroll position', async ({ page }) => {
     await page.goto('/privacy', { waitUntil: 'networkidle' })
 

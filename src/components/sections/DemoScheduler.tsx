@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import DemoForm, { type DemoFormHandle } from './DemoForm'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 import GradientButton from '@/components/ui/GradientButton'
 
@@ -16,7 +17,7 @@ export default function DemoScheduler() {
   }
 
   return (
-    <section
+    <MotionSection
       id="demo-scheduler"
       role="region"
       aria-label={t('sections.demoScheduler.ariaLabel')}
@@ -38,6 +39,6 @@ export default function DemoScheduler() {
           <DemoForm ref={demoFormRef} />
         </div>
       </div>
-    </section>
+    </MotionSection>
   )
 }

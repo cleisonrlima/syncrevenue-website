@@ -49,7 +49,9 @@
 | File | Description |
 |---|---|
 | `src/components/sections/SectionSkeleton.tsx` | Suspense fallback — `motion-safe:animate-pulse bg-muted`, height via `className`; `role="status" aria-busy="true"` |
-| `src/components/ui/GradientButton.tsx` | Brand CTA button — gradient bg, 3 sizes (lg/md/sm), disabled clears gradient; `motion-safe:active:scale-[0.98]` |
+| `src/components/sections/MotionSection.tsx` | Animated `<section>` wrapper for below-the-fold lazy sections (Story 3.2). `LazyMotion strict` + dynamic `motionFeatures.ts` (`domAnimation`) keeps Motion runtime out of the main bundle. `useInView(ref, { once: true, amount: 0.2 })` triggers one-shot opacity/y entry; `useReducedMotion()` short-circuits to plain `<section>`. Pass-through: `id`, `role`, `aria-label`, `aria-labelledby`, `className`. Co-located `MotionSection.test.tsx` |
+| `src/components/sections/motionFeatures.ts` | Tiny module re-exporting `domAnimation` so `LazyMotion features={() => import('./motionFeatures')...}` isolates Motion runtime into an async shared chunk |
+| `src/components/ui/GradientButton.tsx` | Brand CTA button — gradient bg, 3 sizes (lg/md/sm), disabled clears gradient. Targeted hover transition `transition-[filter,background-position,box-shadow] duration-150 ease-out` (Story 3.2) — no layout-affecting properties; `motion-safe:active:scale-[0.98]` |
 | `src/components/ui/SectionHeader.tsx` | Section header — eyebrow + h2 + optional subtext, light/dark variant |
 | `src/components/ui/Toast.tsx` | Toast notifications (custom, Story 2.2) — replaces what shadcn would have generated; repo never ran `npx shadcn add` |
 
@@ -69,6 +71,7 @@
 - **Locale-aware Zod factories** — `createDemoSchema(t)` / `createContactSchema(t)` close over the i18n `t` function; consumers `useMemo` over `[t]` and revalidate touched fields on locale change (Story 2.6)
 - **`DemoFormHandle` imperative handle** — `forwardRef` + `useImperativeHandle` exposes `focusFirstField()`; exactly one `DemoForm` on Home enforced by `Home.story-2-4.e2e.test.tsx` (Story 2.4)
 - **No shadcn/ui** — custom `GradientButton`, `SectionHeader`, `Toast`; native `<select>` / `<input>` preserved for a11y
+- **Motion isolation (Story 3.2)** — section animation is opt-in via `<MotionSection>` only; never import `motion`/`LazyMotion`/`useInView`/`useReducedMotion` from always-loaded files (`main.tsx`, `App.tsx`, `Home.tsx`, `Navbar.tsx`, `Footer.tsx`). `LazyMotion strict` + dynamic `motionFeatures.ts` keep Motion code in the async `motionFeatures-*.js` chunk. Entry animation is opacity + `y` transform only — no height/width/margin/padding/font-size animation. `useReducedMotion()` short-circuit is mandatory; Tailwind `motion-safe:` alone is not enough for JS-driven Motion
 - **Stale a11y state reset on value change** — corrected fields clear `aria-invalid` + `aria-describedby` immediately, not on next blur (Stories 2.3, 2.6)
 
 ---

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 
 const serviceCards = [
@@ -28,7 +29,7 @@ export default function Services() {
   const { t } = useTranslation()
 
   return (
-    <section
+    <MotionSection
       id="services"
       role="region"
       aria-label={t('services.headline', {
@@ -72,6 +73,6 @@ export default function Services() {
           {t('services.contact', { defaultValue: 'Not sure which service fits? Contact us.' })}
         </p>
       </div>
-    </section>
+    </MotionSection>
   )
 }

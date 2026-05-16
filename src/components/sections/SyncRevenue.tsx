@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 
 const gdsIntegrations = [
@@ -24,7 +25,7 @@ export default function SyncRevenue() {
   const { t } = useTranslation()
 
   return (
-    <section
+    <MotionSection
       id="syncrevenue"
       role="region"
       aria-label={t('syncrevenue.headline', {
@@ -73,6 +74,6 @@ export default function SyncRevenue() {
           </p>
         </div>
       </div>
-    </section>
+    </MotionSection>
   )
 }

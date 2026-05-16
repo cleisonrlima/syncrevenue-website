@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 
 const featureRows = [
@@ -97,7 +98,7 @@ export default function Comparison() {
   })
 
   return (
-    <section id="comparison" role="region" aria-label={ariaLabel} className="bg-white">
+    <MotionSection id="comparison" role="region" aria-label={ariaLabel} className="bg-white">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <SectionHeader
           variant="light"
@@ -113,6 +114,6 @@ export default function Comparison() {
 
         <ComparisonTable ariaLabel={ariaLabel} />
       </div>
-    </section>
+    </MotionSection>
   )
 }

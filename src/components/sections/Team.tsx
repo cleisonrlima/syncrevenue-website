@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 
 type TeamMember = {
@@ -58,7 +59,7 @@ export default function Team() {
     : []
 
   return (
-    <section
+    <MotionSection
       id="team"
       role="region"
       aria-label={t('team.ariaLabel', { defaultValue: 'Sync Sirius team specialists' })}
@@ -136,6 +137,6 @@ export default function Team() {
           </div>
         )}
       </div>
-    </section>
+    </MotionSection>
   )
 }

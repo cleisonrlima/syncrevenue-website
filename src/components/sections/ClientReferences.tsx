@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 
 type ClientReference = {
@@ -52,7 +53,7 @@ export default function ClientReferences() {
     : []
 
   return (
-    <section
+    <MotionSection
       id="client-references"
       role="region"
       aria-label={t('references.ariaLabel', {
@@ -103,6 +104,6 @@ export default function ClientReferences() {
           </div>
         )}
       </div>
-    </section>
+    </MotionSection>
   )
 }

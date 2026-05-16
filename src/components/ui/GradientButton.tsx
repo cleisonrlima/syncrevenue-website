@@ -21,7 +21,8 @@ export default function GradientButton({
       type="button"
       {...props}
       className={cn(
-        'bg-gradient-brand text-white font-semibold rounded-lg transition-all',
+        'bg-gradient-brand text-white font-semibold rounded-lg',
+        'transition-[filter,background-position,box-shadow] duration-150 ease-out',
         'hover:brightness-110',
         'motion-safe:active:scale-[0.98]',
         'disabled:bg-none disabled:bg-brand-slate disabled:opacity-50 disabled:cursor-not-allowed',

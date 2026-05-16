@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
 
 const commitmentKeys = ['encryption', 'certification', 'insurance'] as const
@@ -25,7 +26,7 @@ export default function Security() {
   const { t } = useTranslation()
 
   return (
-    <section
+    <MotionSection
       id="security"
       role="region"
       aria-labelledby="security-heading"
@@ -77,6 +78,6 @@ export default function Security() {
           </p>
         </article>
       </div>
-    </section>
+    </MotionSection>
   )
 }
