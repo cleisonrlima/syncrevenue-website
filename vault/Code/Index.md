@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 in-progress: Stories 3.1–3.8 done; Story 3.9 (patterns gallery + WCAG contrast manifest) shipped — see [[Patterns-Gallery]] and `src/lib/brand-tokens.contrast.manifest.ts`.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 in-progress: Stories 3.1–3.8 done; Story 3.9 (patterns gallery + WCAG contrast manifest) shipped — see [[Code/Patterns-Gallery]] and `src/lib/brand-tokens.contrast.manifest.ts`.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
@@ -32,7 +32,7 @@
 | Admin | [[Admin]] | Admin panel — auth, leads dashboard, team management |
 | Stores | [[Stores]] | Zustand stores (modal, locale, admin) |
 | Config | [[Config]] | vite.config, tailwind, tsconfig, env |
-| Patterns | [[Patterns-Gallery]] | Canonical patterns catalog + anti-patterns counter-examples |
+| Patterns | [[Code/Patterns-Gallery]] | Canonical patterns catalog + anti-patterns counter-examples |
 
 ---
 

@@ -126,7 +126,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
 t('errors.sectionLoad', { defaultValue: 'Failed to load section.' })
 ```
 
-**File:** Every `src/**/*.{ts,tsx}` consumer of `useTranslation`. Tracked as Story 3.10 ESLint enforcement.
+**File:** `src/components/ErrorBoundary.tsx` lines 13 – 27 (representative callsites); tracked as Story 3.10 ESLint enforcement for all `src/**/*.{ts,tsx}` consumers.
 
 **Rejected:**
 - Bare `t('errors.sectionLoad')` — i18next returns the key string on miss, silently rendering `errors.sectionLoad` in the UI.
@@ -161,7 +161,7 @@ server/dao/leads.dao.ts
 server/dao/leads.dao.test.ts
 ```
 
-**File:** Convention enforced project-wide; see any module under `src/components/` or `server/`.
+**File:** `src/components/sections/Hero.tsx` and `src/components/sections/Hero.test.tsx` lines 1 – 8 (representative co-located pair); same pattern in `server/dao/leads.dao.ts` and `server/dao/leads.dao.test.ts`.
 
 **Rejected:**
 - `__tests__/` directories — lose proximity, orphan tests survive renames, harder to spot missing coverage at a glance.
@@ -179,7 +179,7 @@ server/dao/leads.dao.test.ts
 }
 ```
 
-**File:** `src/i18n/locales/en/translation.json`, `pt-BR/`, `es/` — 11 top-level namespaces (`nav`, `hero`, `syncrevenue`, `services`, `comparison`, `team`, `security`, `references`, `privacy`, `forms`, `errors`).
+**File:** `src/i18n/locales/en/translation.json` lines 2 – 113 (representative namespaces); mirrored in `src/i18n/locales/pt-BR/translation.json` and `src/i18n/locales/es/translation.json`.
 
 **Rejected:**
 - Flat keys (`nav_demo_label`) — defeats namespacing, no structural enforcement.

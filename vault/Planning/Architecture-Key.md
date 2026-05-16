@@ -136,20 +136,20 @@ server/dao/leads.dao.test.ts
 
 ### R-A2 family extension — `highlight #00A0F0` and `electric-blue` on dark surfaces
 
-- **Same family as R-A2.** `#00A0F0` measures 2.66:1 on offwhite and 2.20:1 on white — even lighter than electric-blue. Reserve for the gradient stops and decorative accents that use it today (`tailwind.config.ts` `gradient-brand`). Body text never resolves to `text-brand-highlight`.
+- **Same family as R-A2.** `#00A0F0` measures 2.66:1 on offwhite and 2.88:1 on white — even lighter than electric-blue. Reserve for the gradient stops and decorative accents that use it today (`tailwind.config.ts` `gradient-brand`). Body text never resolves to `text-brand-highlight`.
 - **`electric-blue` on `navy`** measures 4.23:1 — fails AA Normal, passes AA Large. Same reservation: gradient stops, hairlines, decorative accents on dark surfaces only.
 - **Enforcement:** `src/lib/brand-tokens.contrast.manifest.ts` carries the R-A2 waiver for these pairs; the manifest test fails if a new pair drifts in without a waiver.
 
 ### R-M1 — `muted #8080A0` is helper-text only
 
-- **Measured contrast:** 3.55:1 on white, 3.40:1 on offwhite — passes AA Large (≥ 3:1), fails AA Normal (≥ 4.5:1).
+- **Measured contrast:** 3.81:1 on white, 3.52:1 on offwhite — passes AA Large (≥ 3:1), fails AA Normal (≥ 4.5:1).
 - **Decision:** `text-brand-muted` is reserved for de-emphasized helper text, meta labels, and form hints. Normal-weight body text uses `text-brand-slate` or `text-brand-navy`.
 - **Enforcement:** manifest waiver `R-M1` on `muted → white` and `muted → offwhite`.
 
 ### R-NT1 — structural non-text pairs
 
 - Token combinations that are not used for text in production: `offwhite ↔ white` (surface-on-surface), `deep → navy` and `slate → navy` (light-surface accent tokens never applied on dark surfaces).
-- These appear in the manifest because the exhaustive token cross-product produces them; they carry `R-NT1` waivers so the test enforcement remains strict for genuine body-text pairs without false positives here.
+- These appear in the manifest because the text-surface audit includes every brand foreground on `white`, `offwhite`, and `navy`; they carry `R-NT1` waivers so the test enforcement remains strict for genuine body-text pairs without false positives here.
 
 ---
 

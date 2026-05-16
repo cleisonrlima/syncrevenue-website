@@ -22,6 +22,18 @@ const BRAND_TOKENS = {
   white: '#FFFFFF',
 } as const
 
+const MANIFEST_FOREGROUNDS = [
+  'electric-blue',
+  'highlight',
+  'deep',
+  'navy',
+  'slate',
+  'muted',
+  'offwhite',
+  'white',
+] as const
+const MANIFEST_SURFACES = ['white', 'offwhite', 'navy'] as const
+
 function hexToRgb(hex: string): [number, number, number] {
   const clean = hex.replace('#', '')
   return [
@@ -87,6 +99,17 @@ describe('Brand token contrast (WCAG 2.1 AA)', () => {
 })
 
 describe('Brand contrast manifest', () => {
+  it('covers every foreground token on production text-bearing surfaces exactly once', () => {
+    const expectedPairs = MANIFEST_FOREGROUNDS.flatMap(fg =>
+      MANIFEST_SURFACES.filter(bg => bg !== fg).map(bg => `${fg}|${bg}`),
+    ).sort()
+    const actualPairs = BRAND_CONTRAST_MANIFEST.map(e => `${e.fg}|${e.bg}`).sort()
+
+    expect(actualPairs).toHaveLength(expectedPairs.length)
+    expect(new Set(actualPairs).size).toBe(actualPairs.length)
+    expect(actualPairs).toEqual(expectedPairs)
+  })
+
   it('every entry without a waiver passes WCAG AA normal text', () => {
     const unwaivedFailures = BRAND_CONTRAST_MANIFEST.filter(
       e => !e.aaNormal && e.waiver === null,
