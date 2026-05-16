@@ -60,7 +60,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 3.6 | Story 3.1 Review Follow-ups — Real Team Content & Visual QA | SYN-92 | `[x]` done |
 | 3.7 | Epic 1 Review Polish — Font Loading & UI Primitive Hardening | SYN-93 | `[x]` done |
 | 3.8 | ErrorBoundary i18n & Recovery UX | SYN-94 | `[x]` done |
-| 3.9 | Architecture & Token Hygiene Docs — Patterns Gallery + WCAG Contrast Manifest | _(pending Jira)_ | `[ ]` |
+| 3.9 | Architecture & Token Hygiene Docs — Patterns Gallery + WCAG Contrast Manifest | SYN-95 | `[~]` review |
 | 3.10 | DX Discipline — `defaultValue` Lint Rule & Sandbox Port-Binding Convention | _(pending Jira)_ | `[ ]` |
 | 3.11 | SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up) | SYN-85 | `[ ]` |
 

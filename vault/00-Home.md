@@ -18,6 +18,7 @@
 | UX spec | — | `_bmad-output/planning-artifacts/ux-design-specification.md` |
 | Individual stories | `docs/stories/` | reference path only |
 | **Codebase map** | [[Code/Index]] | live file tree |
+| Canonical patterns gallery | [[Code/Patterns-Gallery]] | — |
 | Frontend components | [[Code/Frontend]] | — |
 | Backend / API | [[Code/Backend]] | — |
 | Database schema + DAOs | [[Code/Database]] | — |

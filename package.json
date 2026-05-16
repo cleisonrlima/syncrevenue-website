@@ -11,6 +11,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "check:client-bundle-secrets": "node scripts/check-client-bundle-secrets.mjs",
+    "check:contrast": "node scripts/check-brand-contrast.mjs",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:install": "playwright install chromium webkit",

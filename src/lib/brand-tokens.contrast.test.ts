@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { BRAND_CONTRAST_MANIFEST } from './brand-tokens.contrast.manifest'
 
 /**
  * R-A2 contrast guard (Test Design Epic 1).
@@ -82,5 +83,31 @@ describe('Brand token contrast (WCAG 2.1 AA)', () => {
   it('electric-blue passes AA large-text on white (≥ 3:1)', () => {
     const ratio = contrastRatio(BRAND_TOKENS.electricBlue, BRAND_TOKENS.white)
     expect(ratio).toBeGreaterThanOrEqual(3.0)
+  })
+})
+
+describe('Brand contrast manifest', () => {
+  it('every entry without a waiver passes WCAG AA normal text', () => {
+    const unwaivedFailures = BRAND_CONTRAST_MANIFEST.filter(
+      e => !e.aaNormal && e.waiver === null,
+    )
+    expect(unwaivedFailures).toEqual([])
+  })
+
+  it('electric-blue on white carries the R-A2 waiver', () => {
+    const entry = BRAND_CONTRAST_MANIFEST.find(
+      e => e.fg === 'electric-blue' && e.bg === 'white',
+    )
+    expect(entry).toBeDefined()
+    expect(entry!.aaNormal).toBe(false)
+    expect(entry!.aaLarge).toBe(true)
+    expect(entry!.waiver?.id).toBe('R-A2')
+  })
+
+  it('every entry ratio matches the math within 0.05 tolerance', () => {
+    for (const e of BRAND_CONTRAST_MANIFEST) {
+      const recomputed = contrastRatio(e.fgHex, e.bgHex)
+      expect(Math.abs(recomputed - e.ratio)).toBeLessThan(0.05)
+    }
   })
 })
