@@ -23,9 +23,13 @@ test.describe('@P1 Locale switch', () => {
 
     await switcher.getByRole('button', { name: /pt-br/i }).click()
     await expect(switcher.getByRole('button', { name: /pt-br/i })).toHaveAttribute('aria-current', 'true')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'pt-BR')
+    await expect(page).toHaveTitle('Recuperação de Comissões | SyncRevenue')
 
     await switcher.getByRole('button', { name: /^es$/i }).click()
     await expect(switcher.getByRole('button', { name: /^es$/i })).toHaveAttribute('aria-current', 'true')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+    await expect(page).toHaveTitle('Recuperación de Comisiones | SyncRevenue')
 
     expect(new URL(page.url()).pathname).toBe('/')
   })

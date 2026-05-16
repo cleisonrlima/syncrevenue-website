@@ -314,6 +314,20 @@
       "errorGeneric": "Something went wrong. Please try again."
     }
   },
+  "seo": {
+    "home": {
+      "title": "SyncRevenue Commission Recovery | Sync Sirius",
+      "description": "Recover travel agency commission revenue lost to GDS discrepancies, debit memo disputes, and BSP/ARC reconciliation gaps.",
+      "ogTitle": "SyncRevenue Commission Recovery | Sync Sirius",
+      "ogDescription": "Recover travel agency commission revenue lost to GDS discrepancies, debit memo disputes, and BSP/ARC reconciliation gaps."
+    },
+    "privacy": {
+      "title": "Privacy Policy | Sync Sirius",
+      "description": "Read how Sync Sirius handles website inquiries, lead data, retention, and privacy rights for Brazil and California visitors.",
+      "ogTitle": "Privacy Policy | Sync Sirius",
+      "ogDescription": "Read how Sync Sirius handles website inquiries, lead data, retention, and privacy rights for Brazil and California visitors."
+    }
+  },
   "errors": {
     "notFound": "Page not found",
     "notFoundBody": "The page you're looking for doesn't exist.",

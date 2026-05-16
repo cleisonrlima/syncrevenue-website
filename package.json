@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "dev": "concurrently --kill-others-on-fail \"vite\" \"tsx watch server/index.ts\"",
-    "build": "tsc -p tsconfig.server.json && vite build",
+    "build": "tsc -p tsconfig.server.json && vite build && node scripts/generate-seo-assets.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "test": "vitest",

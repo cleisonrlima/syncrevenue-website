@@ -314,6 +314,20 @@
       "errorGeneric": "Algo salió mal. Por favor, inténtelo de nuevo."
     }
   },
+  "seo": {
+    "home": {
+      "title": "Recuperación de Comisiones | SyncRevenue",
+      "description": "Recupere comisiones perdidas por discrepancias GDS, débitos y fallos de conciliación BSP/ARC.",
+      "ogTitle": "Recuperación de Comisiones | SyncRevenue",
+      "ogDescription": "Recupere comisiones perdidas por discrepancias GDS, débitos y fallos de conciliación BSP/ARC."
+    },
+    "privacy": {
+      "title": "Política de Privacidad | Sync Sirius",
+      "description": "Vea cómo Sync Sirius trata contactos del sitio, datos de leads, retención y derechos de privacidad.",
+      "ogTitle": "Política de Privacidad | Sync Sirius",
+      "ogDescription": "Vea cómo Sync Sirius trata contactos del sitio, datos de leads, retención y derechos de privacidad."
+    }
+  },
   "errors": {
     "notFound": "Página no encontrada",
     "notFoundBody": "La página que busca no existe.",

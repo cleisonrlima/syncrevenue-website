@@ -12,6 +12,12 @@ if ((['en', 'pt-BR', 'es'] as string[]).includes(detectedLang)) {
   useLocaleStore.setState({ locale: detectedLang as Locale })
 }
 
+const initialDocumentLanguage = i18next.resolvedLanguage ?? 'en'
+document.documentElement.lang = initialDocumentLanguage
+i18next.on('languageChanged', (lng) => {
+  document.documentElement.lang = lng
+})
+
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Root element (#root) not found in DOM')
 

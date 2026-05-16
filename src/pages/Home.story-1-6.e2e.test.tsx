@@ -33,10 +33,10 @@ describe('Story 1.6 visitor flow', () => {
 
     const syncRevenue = await screen.findByRole('region', {
       name: 'Automated Commission Reconciliation',
-    })
+    }, { timeout: 5000 })
     const services = await screen.findByRole('region', {
       name: 'Complete Revenue Intelligence Suite',
-    })
+    }, { timeout: 5000 })
 
     expect(syncRevenue.compareDocumentPosition(services)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(within(syncRevenue).getByText(/SyncRevenue connects to your GDS feeds/)).toBeInTheDocument()

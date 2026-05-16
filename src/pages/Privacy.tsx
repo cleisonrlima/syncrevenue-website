@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useDocumentMeta } from '@/components/SEO'
 
 const policySections = [
   'dataCollection',
@@ -29,6 +30,14 @@ function normalizeBody(body: unknown) {
 }
 
 export default function Privacy() {
+  useDocumentMeta({
+    titleKey: 'seo.privacy.title',
+    descriptionKey: 'seo.privacy.description',
+    ogTitleKey: 'seo.privacy.ogTitle',
+    ogDescriptionKey: 'seo.privacy.ogDescription',
+    path: '/privacy',
+  })
+
   const { t } = useTranslation()
   const sections = t('privacy.sections', { returnObjects: true }) as Partial<Record<PolicySectionKey, PolicySection>>
   const title = t('privacy.title')

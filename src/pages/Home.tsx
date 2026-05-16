@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import SectionSkeleton from '@/components/sections/SectionSkeleton'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { useDocumentMeta } from '@/components/SEO'
 
 const Hero = lazy(() => import('@/components/sections/Hero'))
 const SyncRevenue = lazy(() => import('@/components/sections/SyncRevenue'))
@@ -13,6 +14,14 @@ const DemoScheduler = lazy(() => import('@/components/sections/DemoScheduler'))
 const Contact = lazy(() => import('@/components/sections/Contact'))
 
 export default function Home() {
+  useDocumentMeta({
+    titleKey: 'seo.home.title',
+    descriptionKey: 'seo.home.description',
+    ogTitleKey: 'seo.home.ogTitle',
+    ogDescriptionKey: 'seo.home.ogDescription',
+    path: '/',
+  })
+
   return (
     <>
       <ErrorBoundary>

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import i18next from 'i18next'
 import './index'
 
-const REQUIRED_KEYS = ['nav', 'hero', 'syncrevenue', 'services', 'comparison', 'team', 'security', 'references', 'privacy', 'forms', 'errors']
+const REQUIRED_KEYS = ['nav', 'hero', 'syncrevenue', 'services', 'comparison', 'team', 'security', 'references', 'privacy', 'forms', 'seo', 'errors']
 
 type TeamTranslation = {
   members: Array<{

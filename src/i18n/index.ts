@@ -17,8 +17,9 @@ i18next
     fallbackLng: 'en',
     supportedLngs: ['en', 'pt-BR', 'es'],
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['querystring', 'localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupQuerystring: 'lng',
       lookupLocalStorage: 'i18nextLng',
     },
     interpolation: { escapeValue: false },
