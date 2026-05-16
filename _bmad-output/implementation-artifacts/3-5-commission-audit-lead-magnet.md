@@ -1,6 +1,6 @@
 # Story 3.5: Commission Audit Lead Magnet
 
-Status: review
+Status: done
 
 <!-- Note: Validation completed during create-story. Story is ready for dev-story. -->
 

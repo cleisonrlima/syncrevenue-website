@@ -73,24 +73,28 @@ The previous "review register only" / "review verify cycle" rules are revoked.
 
 After every story completes (Story Automator or manual workflow), commit AND push to the remote. The Story Automator `commit-story` helper supports `--push` and is invoked with that flag from `step-03b-execute-finish`. If push fails (no remote, network error), log the warning and continue — but do not silently skip the push step.
 
-## Post-Story Test Architect Pass (Mandatory)
+## Post-Sprint Test Architect Pass (Mandatory)
 
-After every story finishes — meaning code review approved, story status set to `done`, commit pushed to remote, AND Jira fully synced (parent story + subtasks) — the orchestrator MUST run `bmad-tea` (Test Architect) against the just-completed story. This rule applies to every story, every epic, every model (Claude / Codex / future agents), and every IDE (VS Code, JetBrains, web, CLI). No exceptions.
+After every sprint concludes — meaning ALL stories in the active sprint have reached `done` in sprint-status.yaml and Jira, every commit pushed to remote, AND Jira fully synced (parent stories + subtasks) — the orchestrator MUST run `bmad-tea` (Test Architect) against the completed sprint as a whole. This rule applies to every sprint, every model (Claude / Codex / future agents), and every IDE (VS Code, JetBrains, web, CLI). No exceptions.
+
+TEA is NOT run after each individual story. Per-story TEA passes are explicitly revoked — run TEA once per sprint, covering all stories in the sprint together.
 
 Flow:
 
-1. Story reaches `done` in sprint-status.yaml and Jira.
-2. Run `bmad-tea` (or invoke `/bmad-tea` via the Test Architect skill) with the story file as input.
-3. Capture every recommendation TEA emits: missing test coverage, NFR risks, accessibility gaps, security follow-ups, traceability holes, etc.
-4. For each actionable recommendation (or thematic cluster of recommendations), create a NEW story in the CURRENT sprint following the Review Findings → New Story protocol:
-   - Append to `_bmad-output/planning-artifacts/epics.md` under the active epic
+1. All stories in the active sprint reach `done` in sprint-status.yaml and Jira.
+2. Run `bmad-tea` (or invoke `/bmad-tea` via the Test Architect skill) with the full list of story files in the sprint as input. Provide TEA with the sprint identifier and the ordered story file list so it can reason about cross-story coverage gaps, not just per-story gaps.
+3. Capture every recommendation TEA emits: missing test coverage, NFR risks, accessibility gaps, security follow-ups, traceability holes, cross-story regression risks, etc.
+4. For each actionable recommendation (or thematic cluster of recommendations), create a NEW story in the NEXT sprint following the Review Findings → New Story protocol:
+   - Append to `_bmad-output/planning-artifacts/epics.md` under the relevant epic
    - Create the story file with AC + 1:1 subtasks via `/bmad-create-story`
    - Create the parent Jira issue + child Sub-tasks via `/jira-assistant`
-   - Update `sprint-status.yaml` to include the new story
-   - Extend `storyRange` in the active orchestration state document so the loop picks it up
-5. If TEA returns no actionable findings, log "TEA: no findings" in the orchestration action log and continue.
+   - Update `sprint-status.yaml` to include the new story under the next sprint
+   - Extend `storyRange` in the next orchestration state document so the next loop picks it up
+5. If TEA returns no actionable findings, log "TEA: no findings" in the orchestration action log and continue to the Post-Epic Retrospective check.
 
 Trivial follow-ups (a single missing assertion, a doc nit) MAY be applied inline as a tiny patch with no new story — same threshold as the reviewer auto-patch rule. Anything beyond a one-touch fix gets its own story.
+
+Ordering relative to Post-Epic Retrospective: when the sprint conclusion ALSO concludes an epic (last sprint of the epic), run the Post-Sprint TEA pass FIRST, then run `bmad-retrospective` so the retro can reference TEA findings.
 
 ## Post-Epic Retrospective (Mandatory)
 
@@ -98,7 +102,7 @@ After the last story in an epic reaches `done` (all stories in that epic show `d
 
 Flow:
 
-1. Last story of the epic finishes (dev → review → done → commit pushed → Jira synced → TEA pass complete).
+1. Last story of the epic finishes (dev → review → done → commit pushed → Jira synced). If this also concludes the active sprint, the Post-Sprint TEA pass runs FIRST (see rule above), then the retro.
 2. Run `/bmad-retrospective` (or invoke `bmad-retrospective` skill) with the epic identifier.
 3. Persist the retro artifact under `_bmad-output/implementation-artifacts/epic-N-retro-YYYY-MM-DD.md` (existing convention — see epic-1-retro-2026-05-15.md, epic-2-retro-2026-05-15.md).
 4. Update `sprint-status.yaml`: set `epic-N-retrospective: done`.

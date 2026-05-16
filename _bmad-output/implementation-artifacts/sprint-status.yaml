@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 3.5 -> review
+last_updated: 2026-05-16  # Story 3.5 -> done
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -46,7 +46,7 @@ story_location: _bmad-output/implementation-artifacts
 #   SYN Sprint 2 (id 302) — 2026-05-15 → 2026-06-11 — Epic 2 (SYN-16..22) all Done
 #   SYN Sprint 3 (id 336) — 2026-05-15 → 2026-05-16 — current sprint (expanded 2026-05-16)
 #     Active stories (ordered):
-#       3.1 SYN-23 done, 3.2 SYN-24 done, 3.3 SYN-25 done, 3.4 SYN-26 done, 3.5 SYN-27 review,
+#       3.1 SYN-23 done, 3.2 SYN-24 done, 3.3 SYN-25 done, 3.4 SYN-26 done, 3.5 SYN-27 done,
 #       3.6 SYN-92, 3.7 SYN-93, 3.8 SYN-94, 3.9 SYN-95, 3.10 SYN-96, 3.11 SYN-97,   # ← 3.* moved from backlog (top of list)
 #       4.1 SYN-28, 4.2 SYN-29, 4.3 SYN-30, 4.4 SYN-31, 4.5 SYN-32, 4.6 SYN-33      # ← Epic 4 moved from backlog (assumed keys; verify on Jira sync)
 current_jira_sprint: SYN Sprint 3
@@ -85,7 +85,7 @@ development_status:
   3-2-animations-micro-interactions: done
   3-3-seo-metadata-meta-tags-og-hreflang-sitemap: done
   3-4-mobile-ux-polish-pass: done
-  3-5-commission-audit-lead-magnet: review
+  3-5-commission-audit-lead-magnet: done
   # 3.6-3.11 pulled into current sprint on 2026-05-16 — sprint membership tracked in mirror block above + orchestration storyRange
   3-6-story-3-1-review-followups-real-team-content-visual-qa: backlog
   3-7-epic-1-review-polish-font-loading-ui-primitives: backlog
