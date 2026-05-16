@@ -1072,7 +1072,27 @@ This story implements Epic 2 retro rows A4 (`defaultValue` discipline as PR/lint
 **When** committed
 **Then** Epic 2 retro rows A4 and A6 are marked `✅ Done` with link to the lint rule + new convention doc
 
-## Epic 4: Admin Operations (Phase 3)
+### Story 3.11: SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up)
+
+As the SyncRevenue SEO owner,
+I want each locale's `<link rel="canonical">` and `<meta property="og:url">` to match the corresponding `<link rel="alternate" hreflang="<locale>">` URL (including the `?lng=en` for English),
+So that search engines see a consistent self-referencing canonical for every language variant and don't dedupe or down-rank the English homepage.
+
+This story implements the deferred MEDIUM finding from the Story 3.3 cross-model review: today the EN homepage emits `canonical = https://syncsirius.com/` and `og:url = https://syncsirius.com/` while the `hreflang="en"` alternate is `https://syncsirius.com/?lng=en`. Google's hreflang guidance recommends each variant's canonical match its own hreflang alternate; the current mismatch is a deviation, not a bug, but should be aligned before Story 5.x production launch.
+
+**Acceptance Criteria:**
+
+1. **Given** the homepage `/` renders in EN, **when** the document `<head>` is inspected, **then** `<link rel="canonical">` and `<meta property="og:url">` both resolve to `https://syncsirius.com/?lng=en` (matching the `hreflang="en"` alternate exactly); PT-BR and ES behavior remains `?lng=<locale>` (unchanged).
+
+2. **Given** the Privacy page `/privacy` renders in EN, **when** the document `<head>` is inspected, **then** `<link rel="canonical">` and `<meta property="og:url">` both resolve to `https://syncsirius.com/privacy?lng=en`.
+
+3. **Given** the build output exists, **when** `GET /sitemap.xml` is fetched, **then** each `<url>` entry's `<loc>` reflects the chosen canonical convention (either keep `<loc>` as the no-`lng` URL and align only runtime canonical, OR move both to `?lng=en` consistently); the chosen approach is documented inline in `scripts/generate-seo-assets.mjs` so future readers see the rationale.
+
+4. **Given** automated tests run, **when** unit and browser tests cover SEO behavior, **then** the EN canonical/og:url assertions in `src/components/SEO.test.tsx` and `tests/e2e/seo.spec.ts` are updated to expect the new self-referencing values; `scripts/generate-seo-assets.test.mjs` is updated if the sitemap `<loc>` convention changes; suite stays green.
+
+5. **Given** the change ships, **when** `npm run typecheck && npm run test:run && npm run build` are executed, **then** all three pass; `dist/client/sitemap.xml` and `dist/client/robots.txt` continue to generate; `og:locale` mapping (`en_US`, `pt_BR`, `es_ES`) and hreflang alternates remain untouched.
+
+
 
 Sync Sirius ops team can manage the full demo pipeline through a secure, JWT-authenticated admin dashboard — view leads by locale/status, triage, update statuses, and manage team content in all three locales.
 

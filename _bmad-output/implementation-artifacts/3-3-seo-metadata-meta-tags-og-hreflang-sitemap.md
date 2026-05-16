@@ -1,6 +1,6 @@
 # Story 3.3: SEO Metadata — Meta Tags, OG, hreflang & Sitemap
 
-Status: review
+Status: done
 
 <!-- Note: Validation completed during create-story. Story is ready for dev-story. -->
 
@@ -238,6 +238,7 @@ GPT-5 Codex
 - `src/pages/Home.story-1-6.e2e.test.tsx`
 - `src/pages/Home.tsx`
 - `src/pages/Privacy.tsx`
+- `scripts/generate-seo-assets.test.mjs`
 - `tests/e2e/locale-switch.spec.ts`
 - `tests/e2e/seo-assets.spec.ts`
 - `tests/e2e/seo.spec.ts`
@@ -245,3 +246,4 @@ GPT-5 Codex
 ### Change Log
 
 - 2026-05-16: Implemented Story 3.3 SEO metadata, hreflang, canonical URL, sitemap, robots, OG image placeholder, locale detection, and test coverage; documented sandbox blocker for browser/Lighthouse server-bound checks.
+- 2026-05-15 (review): Cross-model review (Claude reviewer). Findings: HIGH — `tests/e2e/seo-assets.spec.ts` was skipped by default (gated on `PLAYWRIGHT_BASE_URL`), leaving AC8(d) sitemap/robots structural assertions out of `npm run test:run`. Auto-patched: refactored `scripts/generate-seo-assets.mjs` to export `renderSitemap`, `renderRobots`, `canonicalUrl`, `resolveSiteUrl`, and `writeSeoAssets` (CLI entry preserved via `import.meta.url === process.argv[1]` guard); added `scripts/generate-seo-assets.test.mjs` covering sitemap schema, two-URL structure, full hreflang matrix (8 `<xhtml:link>` total), `lastmod` ISO format, absence of `/admin`, robots directives, and `VITE_SITE_URL` override paths. Suite now: 48 files, 257 tests passing. MEDIUM (deferred to Story 3.11) — EN canonical/og:url omits `?lng=en` while the `hreflang="en"` alternate emits it; deviates from self-referencing canonical convention. LOW — `useDocumentMeta` deps include the stable i18next instance reference; benign.

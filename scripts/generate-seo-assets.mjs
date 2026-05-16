@@ -2,16 +2,15 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const DEFAULT_SITE_URL = 'https://syncsirius.com'
-const locales = ['en', 'pt-BR', 'es']
-const routes = ['/', '/privacy']
+export const DEFAULT_SITE_URL = 'https://syncsirius.com'
+export const SEO_LOCALES = ['en', 'pt-BR', 'es']
+export const ROUTES = ['/', '/privacy']
 
-const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const clientDistDir = path.join(rootDir, 'dist', 'client')
-const siteUrl = (process.env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, '')
-const lastmod = new Date().toISOString().slice(0, 10)
+export function resolveSiteUrl(env = process.env) {
+  return (env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, '')
+}
 
-function canonicalUrl(route, locale) {
+export function canonicalUrl(route, locale, siteUrl = resolveSiteUrl()) {
   const url = new URL(route, `${siteUrl}/`)
   if (locale) {
     url.searchParams.set('lng', locale)
@@ -19,7 +18,7 @@ function canonicalUrl(route, locale) {
   return url.toString()
 }
 
-function xmlEscape(value) {
+export function xmlEscape(value) {
   return value
     .replaceAll('&', '&amp;')
     .replaceAll('"', '&quot;')
@@ -28,19 +27,19 @@ function xmlEscape(value) {
     .replaceAll('>', '&gt;')
 }
 
-function renderSitemap() {
-  const urls = routes
+export function renderSitemap({ siteUrl = resolveSiteUrl(), lastmod = new Date().toISOString().slice(0, 10) } = {}) {
+  const urls = ROUTES
     .map(route => {
       const alternates = [
-        ...locales.map(
+        ...SEO_LOCALES.map(
           locale =>
-            `    <xhtml:link rel="alternate" hreflang="${locale}" href="${xmlEscape(canonicalUrl(route, locale))}" />`
+            `    <xhtml:link rel="alternate" hreflang="${locale}" href="${xmlEscape(canonicalUrl(route, locale, siteUrl))}" />`
         ),
-        `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(canonicalUrl(route))}" />`,
+        `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(canonicalUrl(route, undefined, siteUrl))}" />`,
       ].join('\n')
 
       return `  <url>
-    <loc>${xmlEscape(canonicalUrl(route))}</loc>
+    <loc>${xmlEscape(canonicalUrl(route, undefined, siteUrl))}</loc>
     <lastmod>${lastmod}</lastmod>
 ${alternates}
   </url>`
@@ -54,7 +53,7 @@ ${urls}
 `
 }
 
-function renderRobots() {
+export function renderRobots({ siteUrl = resolveSiteUrl() } = {}) {
   return `User-agent: *
 Allow: /
 Disallow: /admin
@@ -63,6 +62,19 @@ Sitemap: ${siteUrl}/sitemap.xml
 `
 }
 
-await mkdir(clientDistDir, { recursive: true })
-await writeFile(path.join(clientDistDir, 'sitemap.xml'), renderSitemap(), 'utf8')
-await writeFile(path.join(clientDistDir, 'robots.txt'), renderRobots(), 'utf8')
+export async function writeSeoAssets({
+  outDir,
+  siteUrl = resolveSiteUrl(),
+  lastmod = new Date().toISOString().slice(0, 10),
+} = {}) {
+  const resolvedOutDir =
+    outDir ?? path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), 'dist', 'client')
+  await mkdir(resolvedOutDir, { recursive: true })
+  await writeFile(path.join(resolvedOutDir, 'sitemap.xml'), renderSitemap({ siteUrl, lastmod }), 'utf8')
+  await writeFile(path.join(resolvedOutDir, 'robots.txt'), renderRobots({ siteUrl }), 'utf8')
+}
+
+const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
+if (invokedDirectly) {
+  await writeSeoAssets()
+}
