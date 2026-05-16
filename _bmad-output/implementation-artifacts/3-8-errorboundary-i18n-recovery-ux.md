@@ -1,6 +1,6 @@
 # Story 3.8: ErrorBoundary i18n & Recovery UX
 
-Status: review
+Status: done
 
 ## Story
 
@@ -73,6 +73,11 @@ This story implements the unchecked items in `_bmad-output/implementation-artifa
   - [ ] Run `npm run build` — must produce `dist/` cleanly (no new warnings beyond existing baseline).
   - [ ] Run `npm run test:e2e` if sandbox allows; otherwise document deferral per the `PLAYWRIGHT_BASE_URL` workaround established by Story 2.7.
   - [ ] Grep verify: `grep -rn "Failed to load section" src` returns ONLY the `defaultValue` in `ErrorBoundary.tsx` and the locale JSON entries (no other hardcoded copies).
+
+### Review Findings
+
+- [x] [Review][Patch] `grep -rn "Failed to load section" src` still finds extra hardcoded copies in `src/components/ErrorBoundary.test.tsx`; AC7 requires only the `ErrorBoundary.tsx` defaultValue and locale JSON entries to match. [src/components/ErrorBoundary.test.tsx:44] — fixed by deriving EN expectations from `i18n.t('errors.sectionLoad')`.
+- [x] [Review][Patch] Closure notes do not link the Story 3.8 commit hash; AC6 requires the three deferred-work closures and Epic 2 retro A10 closure to link to the Story 3.8 commit hash. [_bmad-output/implementation-artifacts/deferred-work.md:23] — fixed with `fa4fbaf` commit links.
 
 ## Dev Notes
 
@@ -196,4 +201,3 @@ claude-opus-4-7[1m] (per agent-config — `agents-orchestration-3-20260515-23535
 ### Change Log
 
 - 2026-05-16 — Story 3.8 implemented (dev=claude): ErrorBoundary refactored to render localized fallback (EN/PT-BR/ES) via inner `FallbackUI` function component; class shape preserved; new `reset()` method + Retry button re-mount children; new `ScrollRestoration` component restores scroll-to-top on SPA route change (skips initial mount, preserves in-page anchor); new keys `errors.sectionLoad` + `errors.retry` added to all three locale JSONs; `deferred-work.md` 1-4 re-review items closed; Epic 2 retro A10 → ✅ Done.
-

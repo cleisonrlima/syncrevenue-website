@@ -12,6 +12,8 @@ function Boom({ shouldThrow }: { shouldThrow: boolean }) {
   return <div data-testid="recovered">recovered</div>
 }
 
+const sectionLoadMessage = () => i18n.t('errors.sectionLoad')
+
 describe('ErrorBoundary', () => {
   // React logs caught errors to console.error; suppress in this test file only.
   const originalError = console.error
@@ -41,7 +43,7 @@ describe('ErrorBoundary', () => {
         <Boom shouldThrow />
       </ErrorBoundary>,
     )
-    expect(screen.getByText('Failed to load section.')).toBeInTheDocument()
+    expect(screen.getByText(sectionLoadMessage())).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
   })
 
@@ -84,13 +86,13 @@ describe('ErrorBoundary', () => {
 
     render(<Harness />)
 
-    expect(screen.getByText('Failed to load section.')).toBeInTheDocument()
+    expect(screen.getByText(sectionLoadMessage())).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'flip' }))
     await user.click(screen.getByRole('button', { name: 'Retry' }))
 
     expect(screen.getByTestId('recovered')).toBeInTheDocument()
-    expect(screen.queryByText('Failed to load section.')).not.toBeInTheDocument()
+    expect(screen.queryByText(sectionLoadMessage())).not.toBeInTheDocument()
   })
 
   it('renders caller-supplied fallback when provided', () => {
@@ -100,6 +102,6 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>,
     )
     expect(screen.getByTestId('custom')).toBeInTheDocument()
-    expect(screen.queryByText('Failed to load section.')).not.toBeInTheDocument()
+    expect(screen.queryByText(sectionLoadMessage())).not.toBeInTheDocument()
   })
 })
