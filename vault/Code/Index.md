@@ -102,7 +102,7 @@ syncrevenue-website/
     ├── components/sections/SyncRevenue.tsx — placeholder (Story 1.6)
     ├── components/sections/Services.tsx   — placeholder (Story 1.6)
     ├── components/sections/Comparison.tsx — placeholder (Story 1.7)
-    ├── components/sections/Team.tsx       — placeholder (Story 1.8)
+    ├── components/sections/Team.tsx       — real photos + composed alt + optional LinkedIn (Story 1.8 → 3.1 ✓)
     ├── components/sections/DemoScheduler.tsx — placeholder (Story 2.4)
     ├── components/sections/Contact.tsx    — placeholder (Story 2.3)
     ├── components/sections/Security.tsx   — placeholder (Story 1.9)

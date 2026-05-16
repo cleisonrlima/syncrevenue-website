@@ -47,13 +47,18 @@ describe('Story 1.8 team visitor flow', () => {
     expect(clientReferences.compareDocumentPosition(team)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(team.compareDocumentPosition(demoScheduler)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(within(team).getByRole('heading', { name: 'Specialists in Airline Distribution' })).toBeInTheDocument()
-    expect(within(team).getByRole('heading', { name: 'Operations Team Member' })).toBeInTheDocument()
+    expect(within(team).getByRole('heading', { name: 'Sync Sirius Operations Lead' })).toBeInTheDocument()
     expect(within(team).getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
     expect(within(team).getByText(/GDS operations, BSP\/ARC reconciliation/)).toBeInTheDocument()
-    expect(within(team).getByRole('heading', { name: 'Technology Team Member' })).toBeInTheDocument()
+    expect(within(team).getByRole('heading', { name: 'Sync Sirius Technology Lead' })).toBeInTheDocument()
     expect(within(team).getByText('Travel Data Integration & Automation Lead')).toBeInTheDocument()
-    expect(within(team).getAllByText((_, element) => element?.getAttribute('data-team-photo-placeholder') === 'true'))
-      .toHaveLength(2)
+    const teamImages = within(team).getAllByRole('img')
+    expect(teamImages).toHaveLength(2)
+    teamImages.forEach(img => {
+      expect(img).toHaveAttribute('width', '320')
+      expect(img).toHaveAttribute('height', '320')
+      expect(img).toHaveAttribute('loading', 'lazy')
+    })
   })
 
   it('updates Team member roles and bios through the real language switcher without navigating', async () => {

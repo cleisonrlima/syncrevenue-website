@@ -8,18 +8,25 @@ const members = [
     role: 'Airline Distribution Lead',
     bio: 'Guides GDS operations, BSP reconciliation, and commission recovery programs.',
     photo: '',
+    linkedinUrl: '',
   },
   {
     name: 'Technology Team Member',
     role: 'Travel Data Automation Lead',
     bio: 'Builds travel data integration and revenue optimization systems.',
-    photo: '/team/technology-lead.jpg',
+    photo: '/team/technology-lead.webp',
+    linkedinUrl: 'https://www.linkedin.com/in/technology-lead',
   },
 ]
 
-const tMock = vi.fn((key: string, options?: { defaultValue?: string; returnObjects?: boolean }) => {
+const tMock = vi.fn((key: string, options?: { defaultValue?: string; returnObjects?: boolean; name?: string }) => {
   if (key === 'team.members' && options?.returnObjects) {
     return members
+  }
+
+  if (key === 'team.linkedinAriaLabel') {
+    const name = options?.name ?? ''
+    return `View ${name} on LinkedIn`
   }
 
   return options?.defaultValue ?? key
@@ -67,12 +74,32 @@ describe('Team', () => {
     const { container } = renderTeam()
 
     expect(container.querySelector('[data-team-photo-placeholder="true"]')).toBeInTheDocument()
-    const image = screen.getByRole('img', { name: 'Technology Team Member' })
+    const image = screen.getByRole('img', {
+      name: 'Technology Team Member, Travel Data Automation Lead',
+    })
 
-    expect(image).toHaveAttribute('src', '/team/technology-lead.jpg')
+    expect(image).toHaveAttribute('src', '/team/technology-lead.webp')
     expect(image).toHaveAttribute('width', '320')
     expect(image).toHaveAttribute('height', '320')
     expect(image).toHaveAttribute('loading', 'lazy')
+  })
+
+  it('renders a LinkedIn link with target/rel and locale-aware aria-label when linkedinUrl is set', () => {
+    renderTeam()
+
+    const link = screen.getByRole('link', { name: 'View Technology Team Member on LinkedIn' })
+    expect(link).toHaveAttribute('href', 'https://www.linkedin.com/in/technology-lead')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('does not render an anchor inside a card when linkedinUrl is empty', () => {
+    const { container } = renderTeam()
+    const cards = container.querySelectorAll('article')
+    const firstCardLinks = cards[0].querySelectorAll('a')
+    expect(firstCardLinks).toHaveLength(0)
+    const secondCardLinks = cards[1].querySelectorAll('a')
+    expect(secondCardLinks).toHaveLength(1)
   })
 
   it('uses mobile-first single-column classes with responsive multi-column breakpoints', () => {
@@ -95,6 +122,7 @@ describe('Team', () => {
         'team.headline',
         'team.subtext',
         'team.members',
+        'team.linkedinAriaLabel',
       ]),
     )
   })

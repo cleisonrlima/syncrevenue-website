@@ -10,6 +10,7 @@ type TeamTranslation = {
     role: string
     bio: string
     photo: string
+    linkedinUrl: string
   }>
 }
 
@@ -115,10 +116,16 @@ describe('i18n initialization', () => {
         expect(typeof member.role).toBe('string')
         expect(typeof member.bio).toBe('string')
         expect(typeof member.photo).toBe('string')
+        expect(typeof member.linkedinUrl).toBe('string')
         expect(member.name).not.toBe('')
         expect(member.role).not.toBe('')
         expect(member.bio).not.toBe('')
       })
+
+      const hasRealPhoto = (members as Array<Record<string, unknown>>).some(
+        member => typeof member.photo === 'string' && member.photo !== '',
+      )
+      expect(hasRealPhoto).toBe(true)
     })
   })
 

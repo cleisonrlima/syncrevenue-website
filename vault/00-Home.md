@@ -54,7 +54,8 @@
   - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
 - Active phase: **Epic 3 (Phase 2)** — content polish, animations, SEO, lead magnet. Prep tasks B1–B3 from Epic 2 retro should be scheduled before Story 3.1.
-- Quality at Epic 2 close: **232 tests pass**; `tsc --noEmit` → 0; `npm run build` clean; bundle-secret scan clean.
+- Story 3.1 (Real Team Photos & Bio Content) — implementation complete, **status: review** (SYN-23). Composed alt `"{name}, {role}"`, optional `linkedinUrl` (i18n parity across EN/PT-BR/ES), interim brand-blue 320×320 webp placeholders at `public/team/` pending real stakeholder photos.
+- Quality at Story 3.1 close: **234 tests pass**; `tsc --noEmit` → 0; `npm run build` clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
 - New tooling: Playwright + @axe-core/playwright + @lhci/cli installed. Scaffold under `tests/e2e/` + `lighthouserc*.json` + `.github/workflows/quality.yml`. Run `npm run test:e2e:install` once locally before `npm run test:e2e`.
 - Known carry-forward debt (must address):

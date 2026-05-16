@@ -28,7 +28,7 @@
 | `src/components/sections/SyncRevenue.tsx` | FR2 | SectionHeader + GDS integration list (Amadeus/Sabre/Galileo/Worldspan) + 99.99% accuracy; light bg; `SyncRevenue.test.tsx` co-located |
 | `src/components/sections/Services.tsx` | FR3 | 4 service cards + contact hint; light bg; `Services.test.tsx` co-located |
 | `src/components/sections/Comparison.tsx` | FR4 | vs. alternatives |
-| `src/components/sections/Team.tsx` | FR5 | Team members |
+| `src/components/sections/Team.tsx` | FR5 | Team members. `TeamMember = { name, role, bio, photo, linkedinUrl }` (Story 3.1). `<img>` `alt` is composed `` `${name}, ${role}` ``; conditional `<a target="_blank" rel="noopener noreferrer">` with i18n-driven `aria-label` only when `linkedinUrl` non-empty; placeholder initials branch unchanged. Photos at `/public/team/*.webp` (320×320, lazy-loaded). |
 | `src/components/sections/Contact.tsx` | FR6 | Contact form section |
 | `src/components/sections/Security.tsx` | FR23–FR25 | Security statement + client refs |
 | `src/components/sections/DemoScheduler.tsx` | FR9, FR15 | Dark-gradient bookend section — SectionHeader (variant=dark) + in-section "Schedule a Demo" GradientButton (lg, min-h-44px) that calls `DemoForm.focusFirstField()` and smooth-scrolls the form container; embeds the single `DemoForm` instance (no modal). Hero/Navbar CTAs scroll to `#demo-scheduler`. Tests: `DemoScheduler.test.tsx`, `Home.story-2-4.e2e.test.tsx` |

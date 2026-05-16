@@ -48,13 +48,15 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 ## Epic 3 — Content Polish & SEO (Phase 2)
 
-| Story | Title | Status |
-|---|---|---|
-| 3.1 | Real Team Photos & Bio Content | `[ ]` |
-| 3.2 | Animations & Micro-Interactions | `[ ]` |
-| 3.3 | SEO Metadata — Meta Tags, OG, hreflang & Sitemap | `[ ]` |
-| 3.4 | Mobile UX Polish Pass | `[ ]` |
-| 3.5 | Commission Audit Lead Magnet | `[ ]` |
+**Jira:** SYN-3 epic; all 5 stories (SYN-23..27) registered in active sprint **SYN Sprint 3** (id 336, 2026-05-15 → 2026-05-16). Status: To Do.
+
+| Story | Title | Jira | Status |
+|---|---|---|---|
+| 3.1 | Real Team Photos & Bio Content | SYN-23 | `[r]` review |
+| 3.2 | Animations & Micro-Interactions | SYN-24 | `[ ]` |
+| 3.3 | SEO Metadata — Meta Tags, OG, hreflang & Sitemap | SYN-25 | `[ ]` |
+| 3.4 | Mobile UX Polish Pass | SYN-26 | `[ ]` |
+| 3.5 | Commission Audit Lead Magnet | SYN-27 | `[ ]` |
 
 ## Epic 4 — Admin Operations (Phase 3)
 

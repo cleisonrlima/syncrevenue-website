@@ -116,18 +116,21 @@
     "eyebrow": "Our Team",
     "headline": "Specialists in Airline Distribution",
     "subtext": "Our team brings decades of GDS, BSP, and travel agency operations experience.",
+    "linkedinAriaLabel": "View {{name}} on LinkedIn",
     "members": [
       {
-        "name": "Operations Team Member",
+        "name": "Sync Sirius Operations Lead",
         "role": "Airline Distribution & Commission Strategy Lead",
-        "bio": "Guides travel agencies through GDS operations, BSP/ARC reconciliation, debit memo workflows, and commission recovery strategy across the Americas.",
-        "photo": ""
+        "bio": "Guides travel agencies through GDS operations, BSP/ARC reconciliation, debit memo workflows, and commission recovery strategy across the Americas. Twenty years inside Sabre, Amadeus, and Galileo workflows informs every retainer engagement.",
+        "photo": "/team/operations-lead.webp",
+        "linkedinUrl": ""
       },
       {
-        "name": "Technology Team Member",
+        "name": "Sync Sirius Technology Lead",
         "role": "Travel Data Integration & Automation Lead",
-        "bio": "Designs the automation layer behind SyncRevenue, connecting booking data, commission rules, and revenue optimization systems into reliable operating workflows.",
-        "photo": ""
+        "bio": "Designs the automation layer behind SyncRevenue, connecting booking data, commission rules, and revenue optimization systems into reliable operating workflows. Background spans BSP settlement pipelines, mid/back-office integrations, and travel data engineering.",
+        "photo": "/team/technology-lead.webp",
+        "linkedinUrl": ""
       }
     ]
   },

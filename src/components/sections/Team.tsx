@@ -6,6 +6,7 @@ type TeamMember = {
   role: string
   bio: string
   photo: string
+  linkedinUrl: string
 }
 
 function isNonEmptyString(value: unknown): value is string {
@@ -32,6 +33,7 @@ function normalizeTeamMember(value: unknown): TeamMember | null {
     role: candidate.role,
     bio: candidate.bio,
     photo: typeof candidate.photo === 'string' ? candidate.photo : '',
+    linkedinUrl: typeof candidate.linkedinUrl === 'string' ? candidate.linkedinUrl : '',
   }
 }
 
@@ -91,7 +93,7 @@ export default function Team() {
                   {isUsablePhoto(member.photo) ? (
                     <img
                       src={member.photo}
-                      alt={member.name}
+                      alt={`${member.name}, ${member.role}`}
                       width="320"
                       height="320"
                       loading="lazy"
@@ -114,6 +116,20 @@ export default function Team() {
                     {member.role}
                   </p>
                   <p className="mt-4 text-sm leading-6 text-brand-slate">{member.bio}</p>
+                  {isNonEmptyString(member.linkedinUrl) && (
+                    <a
+                      href={member.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={t('team.linkedinAriaLabel', {
+                        name: member.name,
+                        defaultValue: 'View {{name}} on LinkedIn',
+                      })}
+                      className="mt-4 inline-block text-sm font-semibold text-brand-deep underline underline-offset-2"
+                    >
+                      LinkedIn
+                    </a>
+                  )}
                 </article>
               )
             })}
