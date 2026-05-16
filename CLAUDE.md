@@ -29,6 +29,24 @@ When creating ANY story (via `/bmad-create-story`, story automator `create-story
 
 This rule applies on **every** story-creation invocation — new chat session, resumed session, new epic, manual run, or orchestrator-spawned agent. No exceptions, no "the user can add them later," no "deferred to dev step." Subtasks land at create-time.
 
+## Cross-Model Review (Mandatory — Story Automator)
+
+In EVERY Story Automator execution — regardless of model (Claude / Codex / any future agent), IDE (VS Code, JetBrains, web, CLI), or epic — the agent that runs the `dev` step (code writer) MUST NOT be the same agent that runs the `review` step (code reviewer).
+
+This applies at agent-configuration time (step `step-02a-preflight-config`):
+
+- If `dev = claude` → `review = codex` (or any non-Claude reviewer)
+- If `dev = codex` → `review = claude`
+- Applies per complexity level (low / medium / high) and per uniform / custom selection
+- Retrospective step is exempt (always Claude by workflow design)
+
+Rationale: same-model self-review produces blind spots and rubber-stamping. Independent cross-model review catches issues the writer missed.
+
+Enforcement:
+- Never accept `[S]uggested` defaults if they pair the same agent for dev+review on any complexity level — propose a `[C]ustom` swap.
+- If the user picks `[U]niform`, warn that it violates this rule and require explicit override.
+- On resume, re-validate the persisted `agentConfig` against this rule; flag violations before continuing.
+
 ## Git Commit + Push After Every Story (Mandatory)
 
 After every story completes (Story Automator or manual workflow), commit AND push to the remote. The Story Automator `commit-story` helper supports `--push` and is invoked with that flag from `step-03b-execute-finish`. If push fails (no remote, network error), log the warning and continue — but do not silently skip the push step.

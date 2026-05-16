@@ -32,8 +32,8 @@ function normalizeTeamMember(value: unknown): TeamMember | null {
     name: candidate.name,
     role: candidate.role,
     bio: candidate.bio,
-    photo: typeof candidate.photo === 'string' ? candidate.photo : '',
-    linkedinUrl: typeof candidate.linkedinUrl === 'string' ? candidate.linkedinUrl : '',
+    photo: typeof candidate.photo === 'string' ? candidate.photo.trim() : '',
+    linkedinUrl: typeof candidate.linkedinUrl === 'string' ? candidate.linkedinUrl.trim() : '',
   }
 }
 

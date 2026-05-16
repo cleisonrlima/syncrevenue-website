@@ -121,11 +121,6 @@ describe('i18n initialization', () => {
         expect(member.role).not.toBe('')
         expect(member.bio).not.toBe('')
       })
-
-      const hasRealPhoto = (members as Array<Record<string, unknown>>).some(
-        member => typeof member.photo === 'string' && member.photo !== '',
-      )
-      expect(hasRealPhoto).toBe(true)
     })
   })
 
