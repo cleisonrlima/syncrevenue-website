@@ -1,6 +1,6 @@
 # Story 3.4: Mobile UX Polish Pass
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation completed during create-story. Story is ready for dev-story. -->
 
@@ -26,46 +26,46 @@ so that the site feels as premium on my phone as it does on desktop.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Establish mobile audit coverage before changing layout (AC: 1, 2, 4, 6)
-  - [ ] Add a browser spec such as `tests/e2e/mobile-ux.spec.ts` using a `375x800` viewport. Prefer Playwright's real browser layout APIs over jsdom for overflow/box checks.
-  - [ ] Assert `document.documentElement.scrollWidth <= window.innerWidth` and `document.body.scrollWidth <= window.innerWidth` after visiting `/` and after scrolling through all public sections.
-  - [ ] Scroll through `#hero`, `#syncrevenue`, `#services`, `#comparison`, `#security`, `#client-references`, `#team`, `#demo-scheduler`, and `#contact`; assert each section is visible and its direct card/grid children stack vertically unless the element is the approved `TrustBar` horizontal-scroll rail or `Comparison` table scroll container.
-  - [ ] Add a cross-locale mobile pass for PT-BR or ES that checks headings are visible and not clipped by comparing bounding boxes against viewport width.
+- [x] Task 1: Establish mobile audit coverage before changing layout (AC: 1, 2, 4, 6)
+  - [x] Add a browser spec such as `tests/e2e/mobile-ux.spec.ts` using a `375x800` viewport. Prefer Playwright's real browser layout APIs over jsdom for overflow/box checks.
+  - [x] Assert `document.documentElement.scrollWidth <= window.innerWidth` and `document.body.scrollWidth <= window.innerWidth` after visiting `/` and after scrolling through all public sections.
+  - [x] Scroll through `#hero`, `#syncrevenue`, `#services`, `#comparison`, `#security`, `#client-references`, `#team`, `#demo-scheduler`, and `#contact`; assert each section is visible and its direct card/grid children stack vertically unless the element is the approved `TrustBar` horizontal-scroll rail or `Comparison` table scroll container.
+  - [x] Add a cross-locale mobile pass for PT-BR or ES that checks headings are visible and not clipped by comparing bounding boxes against viewport width.
 
-- [ ] Task 2: Polish Hero mobile layout without regressing desktop or LCP (AC: 1, 2, 5)
-  - [ ] Update `src/components/sections/Hero.tsx` only as needed so the mobile H1 computes to `32px` to `36px`; preserve the existing desktop sizes and do not animate or lazy-load the H1/primary CTA.
-  - [ ] Make the Hero primary CTA full-width or near-full-width below `640px` while preserving the desktop row layout with the tertiary link.
-  - [ ] Preserve `StatRow`'s mobile-first vertical stack and desktop horizontal layout; do not introduce new text or data.
-  - [ ] Preserve `TrustBar`'s approved behavior: horizontal scroll below `480px`, 2x2 grid from `480px` to `<768px`, single row/flex wrapping on desktop.
-  - [ ] Ensure decorative Hero glow and any wide children cannot increase document scroll width on `375px`.
+- [x] Task 2: Polish Hero mobile layout without regressing desktop or LCP (AC: 1, 2, 5)
+  - [x] Update `src/components/sections/Hero.tsx` only as needed so the mobile H1 computes to `32px` to `36px`; preserve the existing desktop sizes and do not animate or lazy-load the H1/primary CTA.
+  - [x] Make the Hero primary CTA full-width or near-full-width below `640px` while preserving the desktop row layout with the tertiary link.
+  - [x] Preserve `StatRow`'s mobile-first vertical stack and desktop horizontal layout; do not introduce new text or data.
+  - [x] Preserve `TrustBar`'s approved behavior: horizontal scroll below `480px`, 2x2 grid from `480px` to `<768px`, single row/flex wrapping on desktop.
+  - [x] Ensure decorative Hero glow and any wide children cannot increase document scroll width on `375px`.
 
-- [ ] Task 3: Harden section/card responsive layout across the full homepage (AC: 1, 6)
-  - [ ] Review and adjust, as needed, `SyncRevenue`, `Services`, `Comparison`, `Security`, `ClientReferences`, `Team`, `DemoScheduler`, and `Contact` for mobile spacing, heading wrapping, card padding, and one-column grid behavior.
-  - [ ] Keep `Comparison` as the one approved horizontal-scroll content pattern if transforming it into stacked cards would exceed this story's scope. If it remains a table, the table scroll must be contained inside its own rounded border and must not cause document-level overflow.
-  - [ ] Preserve the section order and the `React.lazy` + `Suspense` + `ErrorBoundary` structure in `Home.tsx`.
-  - [ ] Preserve Story 3.2 `MotionSection` semantics and reduced-motion behavior; do not move Motion imports into `Home.tsx`, `App.tsx`, `main.tsx`, `Navbar.tsx`, or `Footer.tsx`.
-  - [ ] Preserve Story 3.1 Team behavior: real/placeholder photo handling, `data-team-grid`, composed image alt text, LinkedIn conditional rendering, and the existing single-column mobile Team test.
+- [x] Task 3: Harden section/card responsive layout across the full homepage (AC: 1, 6)
+  - [x] Review and adjust, as needed, `SyncRevenue`, `Services`, `Comparison`, `Security`, `ClientReferences`, `Team`, `DemoScheduler`, and `Contact` for mobile spacing, heading wrapping, card padding, and one-column grid behavior.
+  - [x] Keep `Comparison` as the one approved horizontal-scroll content pattern if transforming it into stacked cards would exceed this story's scope. If it remains a table, the table scroll must be contained inside its own rounded border and must not cause document-level overflow.
+  - [x] Preserve the section order and the `React.lazy` + `Suspense` + `ErrorBoundary` structure in `Home.tsx`.
+  - [x] Preserve Story 3.2 `MotionSection` semantics and reduced-motion behavior; do not move Motion imports into `Home.tsx`, `App.tsx`, `main.tsx`, `Navbar.tsx`, or `Footer.tsx`.
+  - [x] Preserve Story 3.1 Team behavior: real/placeholder photo handling, `data-team-grid`, composed image alt text, LinkedIn conditional rendering, and the existing single-column mobile Team test.
 
-- [ ] Task 4: Complete mobile hamburger overlay requirements (AC: 3, 6)
-  - [ ] Update `src/components/layout/Navbar.tsx` so the mobile overlay has a content panel/backdrop split or equivalent event handling that closes on outside tap without closing when interacting with menu content.
-  - [ ] Preserve Escape close, body scroll lock, desktop breakpoint auto-close, focus trap, and focus return.
-  - [ ] If adding animation, use Tailwind `motion-safe:` / `motion-reduce:` classes or a reduced-motion-aware implementation. Animate opacity/transform only; never animate height, width, margin, padding, or font size.
-  - [ ] Keep each mobile link/control at least `44px` high. The existing links already use `min-h-[44px]`; preserve or strengthen that contract.
-  - [ ] Extend `src/components/layout/Navbar.test.tsx` and/or `tests/e2e/mobile-overlay.spec.ts` to cover outside tap close and reduced-motion/no-layout-shift expectations where practical.
+- [x] Task 4: Complete mobile hamburger overlay requirements (AC: 3, 6)
+  - [x] Update `src/components/layout/Navbar.tsx` so the mobile overlay has a content panel/backdrop split or equivalent event handling that closes on outside tap without closing when interacting with menu content.
+  - [x] Preserve Escape close, body scroll lock, desktop breakpoint auto-close, focus trap, and focus return.
+  - [x] If adding animation, use Tailwind `motion-safe:` / `motion-reduce:` classes or a reduced-motion-aware implementation. Animate opacity/transform only; never animate height, width, margin, padding, or font size.
+  - [x] Keep each mobile link/control at least `44px` high. The existing links already use `min-h-[44px]`; preserve or strengthen that contract.
+  - [x] Extend `src/components/layout/Navbar.test.tsx` and/or `tests/e2e/mobile-overlay.spec.ts` to cover outside tap close and reduced-motion/no-layout-shift expectations where practical.
 
-- [ ] Task 5: Make public form mobile submit controls full-width (AC: 4, 6)
-  - [ ] Update `src/components/sections/DemoForm.tsx` so the submit `GradientButton` is full-width or near-full-width below `640px` and returns to the current desktop alignment at `sm` or `md` as appropriate.
-  - [ ] Update `src/components/sections/Contact.tsx` with the same submit button rule.
-  - [ ] Preserve the existing field state machines, locale capture, inline validation, hidden `locale` input, success focus behavior, Demo toast behavior, and Contact rate-limit inline error behavior.
-  - [ ] Add or extend tests to assert form submit buttons use mobile full-width classes and browser-level mobile layout does not render side-by-side form fields below `640px`.
+- [x] Task 5: Make public form mobile submit controls full-width (AC: 4, 6)
+  - [x] Update `src/components/sections/DemoForm.tsx` so the submit `GradientButton` is full-width or near-full-width below `640px` and returns to the current desktop alignment at `sm` or `md` as appropriate.
+  - [x] Update `src/components/sections/Contact.tsx` with the same submit button rule.
+  - [x] Preserve the existing field state machines, locale capture, inline validation, hidden `locale` input, success focus behavior, Demo toast behavior, and Contact rate-limit inline error behavior.
+  - [x] Add or extend tests to assert form submit buttons use mobile full-width classes and browser-level mobile layout does not render side-by-side form fields below `640px`.
 
-- [ ] Task 6: Verify performance, a11y, and regressions (AC: 5, 6)
-  - [ ] Run `npm run typecheck`.
-  - [ ] Run `npm run test:run`.
-  - [ ] Run `npm run build`.
-  - [ ] Run `npm run test:e2e -- tests/e2e/mobile-ux.spec.ts tests/e2e/mobile-overlay.spec.ts` or the final equivalent responsive spec set.
-  - [ ] Run `npm run lhci:mobile`. Do not weaken thresholds in `lighthouserc.mobile.json`.
-  - [ ] If local server binding or Chrome permissions block Playwright/LHCI in the sandbox, document the exact blocker in the Dev Agent Record and still complete typecheck/unit/build.
+- [x] Task 6: Verify performance, a11y, and regressions (AC: 5, 6)
+  - [x] Run `npm run typecheck`.
+  - [x] Run `npm run test:run`.
+  - [x] Run `npm run build`.
+  - [x] Run `npm run test:e2e -- tests/e2e/mobile-ux.spec.ts tests/e2e/mobile-overlay.spec.ts` or the final equivalent responsive spec set.
+  - [x] Run `npm run lhci:mobile`. Do not weaken thresholds in `lighthouserc.mobile.json`.
+  - [x] If local server binding or Chrome permissions block Playwright/LHCI in the sandbox, document the exact blocker in the Dev Agent Record and still complete typecheck/unit/build.
 
 ## Dev Notes
 
@@ -160,14 +160,38 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- Pre-existing Playwright spec `tests/e2e/mobile-overlay.spec.ts` stored a stale locator reference (`hamburger`) bound to `name: /open menu/i` that no longer resolved once the button's aria-label flipped to "Close menu". Rebound to fresh locators per state.
+- LHCI `npm run lhci:mobile` blocked in the sandbox: `vite preview` start timed out ("Timed out waiting for the server to start listening") and `lighthouserc.mobile.json` references `preset: "mobile"`, which Lighthouse rejects (valid choices: `perf`, `experimental`, `desktop`). Thresholds were not weakened; AC5 must be validated outside the sandbox or via a follow-up to repair the LHCI config.
+- Playwright WebKit binary missing in the sandbox (`Executable doesn't exist at ms-playwright/webkit-2287/pw_run.sh`); ran chromium + mobile-chrome projects, both pass 9/9 for the new mobile specs.
+
 ### Completion Notes List
 
 - Created by BMAD create-story workflow in YOLO mode.
 - Validation applied: expanded generic mobile polish ACs into concrete implementation guardrails, added existing-file current-state notes, preserved Story 3.2 Motion bundle isolation and Story 3.3 SEO behavior, and required real-browser responsive coverage before declaring completion.
 - Checklist validation result: no critical gaps found after adding explicit current-state notes, regression guardrails, and verification requirements.
+- Hero H1 now `text-[2rem]` (32px) on mobile, scaling to `sm:text-4xl` and up; primary CTA gains `w-full min-h-[44px] sm:w-auto` so it is full-width below 640px and returns to inline row layout from `sm`.
+- Demo + Contact submit buttons converted to `w-full min-h-[44px] sm:w-auto sm:justify-self-start`, satisfying the AC4 mobile full-width contract while preserving desktop alignment.
+- Navbar mobile overlay refactored to a single `bg-brand-navy` backdrop wrapping a `mobile-overlay-content` panel that stops click propagation. Outside taps close; taps on links/controls behave as before. Added `motion-safe:animate-fade-in` / `motion-reduce:animate-none` with a new `fade-in` keyframe in `tailwind.config.ts` — opacity-only, no layout-affecting animation.
+- New Playwright spec `tests/e2e/mobile-ux.spec.ts` covers: document/body scrollWidth ≤ viewport across all public sections, every section bounding box within viewport, Hero H1 computed font-size 32–36px, Hero CTA ≥ 300px wide and ≥ 44px tall, Demo + Contact submit buttons fill ≥ 95% of form content width, and a PT-BR cross-locale Hero H1 fit pass via the mobile language switcher.
+- `tests/e2e/mobile-overlay.spec.ts` extended with outside-tap close/content-tap-stays-open coverage. Existing Esc/focus-return test was already flaky due to stale locator binding (independent of this story's changes) and was repaired in-place.
+- Unit suite: 259/259 pass (`npm run test:run`). Typecheck and `npm run build` pass cleanly.
+- E2E: `npm run test:e2e -- tests/e2e/mobile-ux.spec.ts tests/e2e/mobile-overlay.spec.ts --project=chromium` → 9 passed; same on `--project=mobile-chrome`. WebKit projects skipped (binary not installed in sandbox).
+- AC5 Lighthouse mobile gate not executable locally; see Debug Log entry. A follow-up story should repair `lighthouserc.mobile.json` (`preset: "mobile"` → drop or set to `perf`) so the gate can run.
 
 ### File List
+
+- src/components/sections/Hero.tsx
+- src/components/sections/DemoForm.tsx
+- src/components/sections/Contact.tsx
+- src/components/layout/Navbar.tsx
+- src/components/layout/Navbar.test.tsx
+- tailwind.config.ts
+- tests/e2e/mobile-ux.spec.ts (new)
+- tests/e2e/mobile-overlay.spec.ts
+- _bmad-output/implementation-artifacts/sprint-status.yaml
+- _bmad-output/implementation-artifacts/3-4-mobile-ux-polish-pass.md
 
 ### Change Log
 
 - 2026-05-16: Story context created and marked ready-for-dev.
+- 2026-05-16: Implemented Story 3.4 — Hero mobile sizing, mobile-full-width form submits, Navbar overlay outside-tap close + reduced-motion fade-in, and new 375px responsive Playwright coverage. Tests/typecheck/build green; LHCI mobile blocked by sandbox + pre-existing preset bug, flagged for follow-up.

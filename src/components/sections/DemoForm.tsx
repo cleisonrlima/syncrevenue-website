@@ -338,7 +338,7 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
 
         <input type="hidden" name="locale" value={values.locale} readOnly />
 
-        <GradientButton type="submit" size="lg" disabled={!canSubmit} className="justify-self-start">
+        <GradientButton type="submit" size="lg" disabled={!canSubmit} className="w-full min-h-[44px] sm:w-auto sm:justify-self-start">
           {isSubmitting && (
             <span
               aria-hidden="true"

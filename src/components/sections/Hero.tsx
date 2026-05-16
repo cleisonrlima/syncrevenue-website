@@ -42,8 +42,8 @@ export default function Hero() {
           {t('hero.badge', { defaultValue: '' })}
         </div>
 
-        {/* H1 — responsive scaling */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 max-w-2xl leading-tight">
+        {/* H1 — responsive scaling (mobile 32-36px per UX spec) */}
+        <h1 className="text-[2rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 max-w-2xl">
           {t('hero.headline', { defaultValue: '' })}
         </h1>
 
@@ -54,12 +54,16 @@ export default function Hero() {
 
         {/* CTA + Tertiary Link */}
         <div className="flex flex-col sm:flex-row gap-4 mb-12">
-          <GradientButton size="lg" onClick={handleDemoCta}>
+          <GradientButton
+            size="lg"
+            onClick={handleDemoCta}
+            className="w-full min-h-[44px] sm:w-auto"
+          >
             {t('hero.cta', { defaultValue: '' })}
           </GradientButton>
           <a
             href="#"
-            className="text-brand-electric-blue hover:underline py-4 px-8 self-center"
+            className="text-brand-electric-blue hover:underline py-4 px-8 text-center sm:self-center"
           >
             {t('hero.tertiaryLink', { defaultValue: '' })}
           </a>

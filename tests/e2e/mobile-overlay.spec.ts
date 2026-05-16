@@ -11,17 +11,34 @@ test.describe('@P0 Mobile overlay', () => {
   test('hamburger opens overlay, Esc closes, focus returns to trigger', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const hamburger = page.getByRole('button', { name: /open menu/i })
-    await expect(hamburger).toBeVisible()
-    await hamburger.click()
+    const openTrigger = page.getByRole('button', { name: /open menu/i })
+    await expect(openTrigger).toBeVisible()
+    await openTrigger.click()
 
-    await expect(page.getByRole('button', { name: /close menu/i })).toBeVisible()
-    expect(await hamburger.getAttribute('aria-expanded')).toBe('true')
+    const closeTrigger = page.getByRole('button', { name: /close menu/i })
+    await expect(closeTrigger).toBeVisible()
+    expect(await closeTrigger.getAttribute('aria-expanded')).toBe('true')
 
     await page.keyboard.press('Escape')
 
+    const reopenedTrigger = page.getByRole('button', { name: /open menu/i })
+    await expect(reopenedTrigger).toBeVisible()
+    await expect(reopenedTrigger).toBeFocused()
+  })
+
+  test('tapping the backdrop closes the overlay; tapping content keeps it open', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    const hamburger = page.getByRole('button', { name: /open menu/i })
+    await hamburger.click()
+    await expect(page.getByRole('button', { name: /close menu/i })).toBeVisible()
+
+    await page.getByTestId('mobile-overlay-content').click({ position: { x: 5, y: 5 } })
+    await expect(page.getByRole('button', { name: /close menu/i })).toBeVisible()
+
+    const vw = page.viewportSize()?.width ?? 375
+    await page.getByTestId('mobile-overlay-backdrop').click({ position: { x: vw - 10, y: 400 } })
     await expect(page.getByRole('button', { name: /open menu/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /open menu/i })).toBeFocused()
   })
 
   test('focus stays inside overlay while Tabbing', async ({ page }) => {

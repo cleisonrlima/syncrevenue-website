@@ -110,15 +110,23 @@ export default function Navbar() {
 
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-brand-navy flex flex-col pt-20 px-6 gap-6"
+          className="lg:hidden fixed inset-0 z-40 bg-brand-navy motion-safe:animate-fade-in motion-reduce:animate-none"
           role="navigation"
           aria-label="Mobile navigation"
+          data-testid="mobile-overlay-backdrop"
+          onClick={() => setIsOpen(false)}
           onKeyDown={handleOverlayKeyDown}
         >
-          <a ref={firstLinkRef} href="/#hero" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.home')}</a>
-          <a href="/#contact" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.contact')}</a>
-          <a href="/#demo-scheduler" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.demo')}</a>
-          <div className="mt-4"><LanguageSwitcher /></div>
+          <div
+            className="flex flex-col pt-20 px-6 gap-6"
+            data-testid="mobile-overlay-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <a ref={firstLinkRef} href="/#hero" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.home')}</a>
+            <a href="/#contact" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.contact')}</a>
+            <a href="/#demo-scheduler" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.demo')}</a>
+            <div className="mt-4"><LanguageSwitcher /></div>
+          </div>
         </div>
       )}
     </nav>

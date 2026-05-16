@@ -39,6 +39,24 @@ describe('Navbar', () => {
     expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute('aria-expanded', 'false')
   })
 
+  it('clicking the overlay backdrop closes the overlay', async () => {
+    const user = userEvent.setup()
+    renderNavbar()
+    await user.click(screen.getByRole('button', { name: /open menu/i }))
+    const backdrop = screen.getByTestId('mobile-overlay-backdrop')
+    await user.click(backdrop)
+    expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('clicking inside the overlay content panel does not close the overlay', async () => {
+    const user = userEvent.setup()
+    renderNavbar()
+    await user.click(screen.getByRole('button', { name: /open menu/i }))
+    const content = screen.getByTestId('mobile-overlay-content')
+    await user.click(content)
+    expect(screen.getByRole('button', { name: /close menu/i })).toHaveAttribute('aria-expanded', 'true')
+  })
+
   describe('Story 2.4 — Demo CTA convergence on #demo-scheduler', () => {
     let scrollTargets: HTMLElement[]
     let stubSection: HTMLElement
