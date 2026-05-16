@@ -1,0 +1,61 @@
+// @vitest-environment node
+import { describe, it, expect, beforeEach } from 'vitest'
+import Database from 'better-sqlite3'
+import bcrypt from 'bcryptjs'
+import { initSchema } from './db'
+import { createAdminDao } from './dao/admin.dao'
+import { seedAdminUser } from './db.seed'
+
+describe('seedAdminUser', () => {
+  let dao: ReturnType<typeof createAdminDao>
+
+  beforeEach(() => {
+    const db = new Database(':memory:')
+    initSchema(db)
+    dao = createAdminDao(db)
+  })
+
+  it('creates admin row on first run', () => {
+    const result = seedAdminUser({
+      email: 'admin@example.com',
+      password: 'correcthorse',
+      dao,
+      saltRounds: 4,
+    })
+    expect(result.action).toBe('created')
+    expect(result.user.email).toBe('admin@example.com')
+    expect(bcrypt.compareSync('correcthorse', result.user.password_hash)).toBe(true)
+  })
+
+  it('is idempotent — same email does not duplicate row', () => {
+    seedAdminUser({ email: 'a@b.com', password: 'p1', dao, saltRounds: 4 })
+    const second = seedAdminUser({ email: 'a@b.com', password: 'p1', dao, saltRounds: 4 })
+    expect(second.action).toBe('updated')
+    expect(dao.findByEmail('a@b.com')).toBeDefined()
+  })
+
+  it('refreshes password hash on re-run with new password', () => {
+    seedAdminUser({ email: 'a@b.com', password: 'oldpw', dao, saltRounds: 4 })
+    const updated = seedAdminUser({ email: 'a@b.com', password: 'newpw', dao, saltRounds: 4 })
+    expect(updated.action).toBe('updated')
+    expect(bcrypt.compareSync('newpw', updated.user.password_hash)).toBe(true)
+    expect(bcrypt.compareSync('oldpw', updated.user.password_hash)).toBe(false)
+  })
+
+  it('throws when ADMIN_EMAIL missing', () => {
+    expect(() => seedAdminUser({ password: 'x', dao })).toThrow(/ADMIN_EMAIL/)
+  })
+
+  it('throws when ADMIN_PASSWORD missing', () => {
+    expect(() => seedAdminUser({ email: 'a@b.com', dao })).toThrow(/ADMIN_PASSWORD/)
+  })
+
+  it('uses salt rounds 12 by default', () => {
+    const result = seedAdminUser({
+      email: 'a@b.com',
+      password: 'p',
+      dao,
+    })
+    expect(bcrypt.getRounds(result.user.password_hash)).toBe(12)
+  })
+})

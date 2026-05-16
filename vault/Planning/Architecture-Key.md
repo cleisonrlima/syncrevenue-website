@@ -12,10 +12,14 @@ Source: `_bmad-output/planning-artifacts/architecture.md`
 - All SQL lives in DAO files — NEVER raw SQL in route handlers
 
 ### Auth (Phase 3)
-- JWT in **httpOnly cookie** — SameSite=Strict, 8h expiry
+- JWT in **httpOnly cookie** — cookie name `admin_token`, SameSite=Strict, 8h expiry, `secure` only in production
 - Payload: `{ adminId, email, iat, exp }`
-- Auth middleware: verify → `req.admin` → next. 401 on invalid/expired
-- Admin account: CLI-only via `db.seed.ts`. No UI password reset Phase 1–3
+- Auth middleware (`requireAdmin`): verify → `req.admin` → next. 401 on invalid/expired, 500 when `JWT_SECRET` missing
+- Admin account: CLI-only via `npm run db:seed` (reads `ADMIN_EMAIL`/`ADMIN_PASSWORD` env, bcrypt salt 12, idempotent upsert). No UI password reset Phase 1–3
+- bcrypt: **bcryptjs** package (NOT `bcrypt`); use `bcrypt.compareSync`/`hashSync` to keep route handlers synchronous
+- Invalid credentials: same 401 + `'Invalid credentials'` for unknown email AND wrong password (no info leak)
+- Frontend admin session: Zustand store is a render cache only — NO `persist` middleware. Cookie + `GET /me` is the truth. `AdminLayout` calls `useAdmin().bootstrap()` on mount to hydrate the store from `/me` before rendering protected routes.
+- Status-code → i18n key mapping on the client (not raw API message): 401 → `admin.login.errors.invalidCredentials`, network → `admin.login.errors.network`.
 
 ### Middleware Stack (Express)
 ```

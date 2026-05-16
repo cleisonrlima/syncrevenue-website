@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
+    "db:seed": "tsx server/db.seed.ts",
     "check:client-bundle-secrets": "node scripts/check-client-bundle-secrets.mjs",
     "check:contrast": "node scripts/check-brand-contrast.mjs",
     "test:e2e": "playwright test",

@@ -373,5 +373,22 @@
     "networkError": "Error de conexión. Verifique su conexión e inténtelo de nuevo.",
     "sectionLoad": "Error al cargar la sección.",
     "retry": "Reintentar"
+  },
+  "admin": {
+    "login": {
+      "title": "Acceso de Administrador",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar sesión",
+      "errors": {
+        "invalidCredentials": "Credenciales inválidas",
+        "network": "Error de conexión. Inténtelo de nuevo.",
+        "unknown": "Error al iniciar sesión. Inténtelo de nuevo."
+      }
+    },
+    "dashboard": {
+      "title": "Panel de Administración"
+    },
+    "logout": "Cerrar sesión"
   }
 }

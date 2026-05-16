@@ -115,14 +115,14 @@ describe('Express bootstrap', () => {
     expect(body).toEqual({ success: false, message: 'Unauthorized' })
   })
 
-  it('admin auth login mount returns 501 placeholder', async () => {
+  it('admin auth login mount rejects empty payload with 400', async () => {
     const r = await request(app, {
       method: 'POST',
       path: '/api/admin/auth/login',
       headers: { 'content-type': 'application/json' },
       body: {},
     })
-    expect(r.status).toBe(501)
+    expect(r.status).toBe(400)
   })
 
   it('admin auth /me requires and reads a valid admin cookie', async () => {

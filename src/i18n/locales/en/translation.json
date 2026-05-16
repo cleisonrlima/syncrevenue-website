@@ -373,5 +373,22 @@
     "networkError": "Connection error. Please check your connection and try again.",
     "sectionLoad": "Failed to load section.",
     "retry": "Retry"
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "errors": {
+        "invalidCredentials": "Invalid credentials",
+        "network": "Connection error. Please try again.",
+        "unknown": "Sign in failed. Please try again."
+      }
+    },
+    "dashboard": {
+      "title": "Admin Dashboard"
+    },
+    "logout": "Log out"
   }
 }
