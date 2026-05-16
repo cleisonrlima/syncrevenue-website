@@ -21,8 +21,9 @@ export default function Navbar() {
 
   useEffect(() => {
     if (typeof document === 'undefined') return
+    if (!isOpen) return
     const prev = document.body.style.overflow
-    document.body.style.overflow = isOpen ? 'hidden' : ''
+    document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = prev
     }
@@ -38,11 +39,14 @@ export default function Navbar() {
     return () => mql.removeEventListener('change', handleChange)
   }, [])
 
+  const wasOpenRef = useRef(false)
   useEffect(() => {
     if (isOpen) {
+      wasOpenRef.current = true
       firstLinkRef.current?.focus()
-    } else {
+    } else if (wasOpenRef.current) {
       hamburgerRef.current?.focus()
+      wasOpenRef.current = false
     }
   }, [isOpen])
 
@@ -59,7 +63,7 @@ export default function Navbar() {
     if (e.key !== 'Tab') return
     const overlay = e.currentTarget
     const focusable = overlay.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
     )
     if (focusable.length === 0) return
     const first = focusable[0]
@@ -111,22 +115,26 @@ export default function Navbar() {
       {isOpen && (
         <div
           className="lg:hidden fixed inset-0 z-40 bg-brand-navy motion-safe:animate-fade-in motion-reduce:animate-none"
-          role="navigation"
-          aria-label="Mobile navigation"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
           data-testid="mobile-overlay-backdrop"
-          onClick={() => setIsOpen(false)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsOpen(false)
+          }}
           onKeyDown={handleOverlayKeyDown}
         >
-          <div
-            className="flex flex-col pt-20 px-6 gap-6"
+          <nav
+            className="flex flex-col pt-20 px-6 gap-6 max-w-sm w-full mx-auto"
+            role="navigation"
+            aria-label="Mobile navigation"
             data-testid="mobile-overlay-content"
-            onClick={(e) => e.stopPropagation()}
           >
             <a ref={firstLinkRef} href="/#hero" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.home')}</a>
             <a href="/#contact" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.contact')}</a>
             <a href="/#demo-scheduler" className="text-white text-xl py-3 min-h-[44px] flex items-center" onClick={() => setIsOpen(false)}>{t('nav.demo')}</a>
             <div className="mt-4"><LanguageSwitcher /></div>
-          </div>
+          </nav>
         </div>
       )}
     </nav>

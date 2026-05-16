@@ -24,7 +24,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      role="region"
+      aria-labelledby="hero-heading"
       className="relative min-h-[70vh] md:min-h-[80vh] bg-gradient-to-b from-[#0D0D3A] to-[#080820] overflow-hidden text-white"
       suppressHydrationWarning
     >
@@ -43,7 +43,7 @@ export default function Hero() {
         </div>
 
         {/* H1 — responsive scaling (mobile 32-36px per UX spec) */}
-        <h1 className="text-[2rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 max-w-2xl">
+        <h1 id="hero-heading" className="text-[2rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 max-w-2xl break-words">
           {t('hero.headline', { defaultValue: '' })}
         </h1>
 
@@ -57,12 +57,14 @@ export default function Hero() {
           <GradientButton
             size="lg"
             onClick={handleDemoCta}
-            className="w-full min-h-[44px] sm:w-auto"
+            className="w-full min-h-[44px] sm:w-auto whitespace-nowrap"
+            data-testid="hero-primary-cta"
           >
             {t('hero.cta', { defaultValue: '' })}
           </GradientButton>
           <a
             href="#"
+            onClick={(e) => e.preventDefault()}
             className="text-brand-electric-blue hover:underline py-4 px-8 text-center sm:self-center"
           >
             {t('hero.tertiaryLink', { defaultValue: '' })}

@@ -154,6 +154,17 @@ describe('Contact', () => {
     expect(postContactMock).not.toHaveBeenCalled()
   })
 
+  it('submit button uses mobile full-width classes (Story 3.4 AC4)', () => {
+    render(<Contact />)
+    const submit = screen.getByRole('button', { name: /Send Message/i })
+    // AC4: full-width on mobile, returns to compact at sm:; 44px tap target;
+    // no-wrap to keep long PT-BR labels on a single line.
+    expect(submit).toHaveClass('w-full')
+    expect(submit).toHaveClass('sm:w-auto')
+    expect(submit).toHaveClass('min-h-[44px]')
+    expect(submit).toHaveClass('whitespace-nowrap')
+  })
+
   it('submits valid data with store locale and replaces the form with live success copy', async () => {
     let resolvePost: (value: { success: true; message: string }) => void = () => {}
     postContactMock.mockReturnValue(

@@ -39,13 +39,15 @@ describe('Navbar', () => {
     expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('clicking the overlay backdrop closes the overlay', async () => {
+  it('clicking the overlay backdrop closes the overlay and returns focus to the hamburger', async () => {
     const user = userEvent.setup()
     renderNavbar()
     await user.click(screen.getByRole('button', { name: /open menu/i }))
     const backdrop = screen.getByTestId('mobile-overlay-backdrop')
     await user.click(backdrop)
-    expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute('aria-expanded', 'false')
+    const reopenedTrigger = screen.getByRole('button', { name: /open menu/i })
+    expect(reopenedTrigger).toHaveAttribute('aria-expanded', 'false')
+    expect(reopenedTrigger).toHaveFocus()
   })
 
   it('clicking inside the overlay content panel does not close the overlay', async () => {

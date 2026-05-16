@@ -33,11 +33,29 @@ test.describe('@P0 Mobile overlay', () => {
     await hamburger.click()
     await expect(page.getByRole('button', { name: /close menu/i })).toBeVisible()
 
-    await page.getByTestId('mobile-overlay-content').click({ position: { x: 5, y: 5 } })
+    // Tapping a link inside the content panel should NOT close via the
+    // backdrop handler (the link's own onClick closes after navigation,
+    // but the backdrop's target-guard should not fire).
+    const content = page.getByTestId('mobile-overlay-content')
+    const contentBox = await content.boundingBox()
+    expect(contentBox).not.toBeNull()
+    // Click on the content panel itself (not a child link) — picks a point
+    // inside the panel padding so the click target IS the content element.
+    if (contentBox) {
+      await content.click({ position: { x: 2, y: 2 } })
+    }
     await expect(page.getByRole('button', { name: /close menu/i })).toBeVisible()
 
-    const vw = page.viewportSize()?.width ?? 375
-    await page.getByTestId('mobile-overlay-backdrop').click({ position: { x: vw - 10, y: 400 } })
+    // Tap to the LEFT of the content panel (now constrained to max-w-sm) —
+    // this region is the backdrop, so the click target === backdrop and the
+    // target-guard fires.
+    const backdrop = page.getByTestId('mobile-overlay-backdrop')
+    const backdropBox = await backdrop.boundingBox()
+    expect(backdropBox).not.toBeNull()
+    if (backdropBox && contentBox) {
+      const outsideX = Math.max(2, contentBox.x - 10)
+      await backdrop.click({ position: { x: outsideX, y: 400 } })
+    }
     await expect(page.getByRole('button', { name: /open menu/i })).toBeVisible()
   })
 

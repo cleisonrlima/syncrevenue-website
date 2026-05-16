@@ -145,6 +145,17 @@ describe('DemoForm', () => {
     expect(postDemoMock).not.toHaveBeenCalled()
   })
 
+  it('submit button uses mobile full-width classes (Story 3.4 AC4)', () => {
+    render(<DemoForm />)
+    const submit = screen.getByRole('button', { name: /Request Demo/i })
+    // AC4: full-width on mobile, returns to compact at sm:; 44px tap target;
+    // no-wrap to keep long PT-BR labels on a single line.
+    expect(submit).toHaveClass('w-full')
+    expect(submit).toHaveClass('sm:w-auto')
+    expect(submit).toHaveClass('min-h-[44px]')
+    expect(submit).toHaveClass('whitespace-nowrap')
+  })
+
   it('submits valid data, shows submitting state, and replaces the form with live success copy', async () => {
     let resolvePost: (value: { success: true; message: string }) => void = () => {}
     postDemoMock.mockReturnValue(
