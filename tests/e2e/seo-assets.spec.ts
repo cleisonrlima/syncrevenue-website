@@ -27,6 +27,15 @@ test.describe('@P1 SEO static assets', () => {
     expect(body).toContain('hreflang="pt-BR" href="https://syncsirius.com/?lng=pt-BR"')
     expect(body).toContain('hreflang="es" href="https://syncsirius.com/?lng=es"')
     expect(body).toContain('hreflang="x-default" href="https://syncsirius.com/"')
+
+    expect(body).toContain('hreflang="en" href="https://syncsirius.com/privacy?lng=en"')
+    expect(body).toContain('hreflang="pt-BR" href="https://syncsirius.com/privacy?lng=pt-BR"')
+    expect(body).toContain('hreflang="es" href="https://syncsirius.com/privacy?lng=es"')
+    expect(body).toContain('hreflang="x-default" href="https://syncsirius.com/privacy"')
+
+    const alternateLinks = body.match(/<xhtml:link\b/g) ?? []
+    expect(alternateLinks).toHaveLength(8)
+
     expect(body).not.toContain('/admin')
   })
 

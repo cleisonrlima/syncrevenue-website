@@ -206,3 +206,97 @@ Not applicable — Story 3.2 is public UI animation and interaction polish. No b
 
 - Re-run `npm run test:e2e -- tests/e2e/animations.spec.ts tests/e2e/locale-switch.spec.ts` in an environment that permits local server binding.
 - Re-run `npm run lhci` and `npm run lhci:mobile` where Chromium and preview-server binding are available.
+
+---
+
+# Test Automation Summary - Story 3.3 (SEO Metadata — Meta Tags, OG, hreflang & Sitemap)
+
+Generated: 2026-05-15
+Frameworks: Vitest 4.1.6, Playwright 1.60.0
+Scope: per-route head management, locale-aware title/description/OG/canonical/hreflang, `<html lang>` updates on locale change, querystring locale activation on first paint, indexable Privacy page, build-time `sitemap.xml` and `robots.txt`, admin-route head cleanup.
+Story file: `_bmad-output/implementation-artifacts/3-3-seo-metadata-meta-tags-og-hreflang-sitemap.md`
+
+## Generated Tests
+
+### Unit Tests (already in story scope)
+
+- [x] `src/lib/seo.test.ts` — `getCanonicalUrl`, locale-to-`og:locale` map, supported-locale guard, dev-only `VITE_SITE_URL` fallback warn-once.
+- [x] `src/components/SEO.test.tsx` — `useDocumentMeta` writes title/description/OG/canonical/hreflang for active locale; `i18n.changeLanguage('pt-BR')` updates managed tags without duplication (count constant by `data-seo="managed"`).
+- [x] `src/i18n/index.test.ts` — i18next detection order includes `querystring` first, `lookupQuerystring: 'lng'`, `caches: ['localStorage']` only.
+
+### E2E Tests
+
+- [x] `tests/e2e/seo.spec.ts` — extended for ES coverage and locale-aware Privacy:
+  | # | Scope | AC |
+  |---|-------|----|
+  | 1 | Home EN + PT-BR head tags via switcher | AC1, AC2, AC3 |
+  | 2 | Home switcher cycles EN → PT-BR → ES with correct `og:locale` | AC2 |
+  | 3 | `?lng=pt-BR` first paint activates PT-BR | AC7 |
+  | 4 | `?lng=es` first paint activates ES | AC7 |
+  | 5 | `/privacy` indexable + alternates (en + pt-BR + es + x-default) | AC6 |
+  | 6 | `/privacy?lng=pt-BR` PT-BR title/description/og:url/og:locale | AC6 |
+  | 7 | `/privacy?lng=es` ES title/description/og:url/og:locale | AC6 |
+  | 8 | `/admin` strips public canonical, OG, hreflang on hydration | AC4 (sitemap exclusion mirror) |
+- [x] `tests/e2e/seo-assets.spec.ts` — extended:
+  - sitemap.xml status 200, content-type, sitemaps.org + xhtml namespaces, exactly 2 `<url>` entries, ISO `<lastmod>`, all four hreflang alternates per URL for both `/` and `/privacy` (8 `<xhtml:link>` total), no `/admin`.
+  - robots.txt status 200, content-type, `User-agent: *`, `Allow: /`, `Disallow: /admin`, `Disallow: /api`, absolute `Sitemap:` directive.
+  - Spec is gated on `PLAYWRIGHT_BASE_URL` so it exercises `npm run preview` (dist/client), not the dev server.
+- [x] `tests/e2e/locale-switch.spec.ts` — already extended in story scope to assert `html[lang]` + `document.title` change on locale switch.
+
+### API Tests
+
+Not applicable — Story 3.3 is frontend + static-asset only. No backend endpoint added or changed; SEO assets are served via `express.static` over `dist/client` per existing `server/index.ts`.
+
+## Coverage
+
+- AC1 (locale-aware home head tags) — `seo.spec.ts` specs 1, 2 + `SEO.test.tsx`.
+- AC2 (locale change updates `<html lang>`, `og:locale`, title, description without reload) — `seo.spec.ts` spec 2 + `locale-switch.spec.ts` + `SEO.test.tsx`.
+- AC3 (four `<link rel="alternate" hreflang>` on `/`) — `seo.spec.ts` spec 1 + `SEO.test.tsx`.
+- AC4 (`/sitemap.xml` schema, two URLs, lastmod, four alternates per URL, `/admin` absent) — `seo-assets.spec.ts`.
+- AC5 (`/robots.txt` directives + sitemap pointer) — `seo-assets.spec.ts`.
+- AC6 (Privacy indexable, locale-aware, hreflang) — `seo.spec.ts` specs 5–7.
+- AC7 (querystring `?lng=` first paint for PT-BR and ES) — `seo.spec.ts` specs 3, 4.
+- AC8 (automated test coverage) — covered by the combined unit + e2e set above.
+
+### Intentionally not duplicated
+
+- Bundle-isolation regression (`SEO.tsx` must not pull Motion or sections into main chunk) is exercised by `npm run build` chunk inspection per Story 3.2 conventions; not re-asserted at the e2e layer.
+- ES home meta on locale-switch already covered by spec 2; no separate `?lng=es` privacy querystring duplicate beyond spec 7.
+- og:image asset existence (`dist/client/og-default.png`) is verified by `npm run build` per the story's Task 7; e2e asserts the OG meta `content` URL only.
+
+## Verification
+
+- `npm run typecheck` → passed.
+- `npm run test:run -- src/lib/seo.test.ts src/components/SEO.test.tsx src/i18n/index.test.ts` → passed: 3 files, 21 tests.
+- `npx playwright test tests/e2e/seo.spec.ts tests/e2e/seo-assets.spec.ts --list` → 40 tests discovered across chromium, webkit, mobile-chrome, mobile-webkit (8 specs × 4 projects + 2 asset specs × 4 projects, asset specs auto-skip without `PLAYWRIGHT_BASE_URL`).
+- `npm run test:e2e -- tests/e2e/seo.spec.ts` → blocked: configured `npm run dev` web server cannot bind in this sandbox (`listen EPERM` on `/tmp/tsx-1001/*.pipe` and `127.0.0.1:5173`), same blocker recorded for Story 3.2.
+- `PLAYWRIGHT_BASE_URL=http://127.0.0.1:4173 npx playwright test tests/e2e/seo-assets.spec.ts` → blocked: `npm run preview` requires the same local socket binding that the sandbox denies.
+- `npm run lhci` / `npm run lhci:mobile` → blocked by the same sandbox constraint (LHCI auto-starts a preview server).
+
+## Files Touched
+
+- `tests/e2e/seo.spec.ts` (added ES and locale-aware Privacy specs)
+- `tests/e2e/seo-assets.spec.ts` (added per-URL hreflang assertions and total `<xhtml:link>` count)
+- `_bmad-output/implementation-artifacts/tests/test-summary.md` (Story 3.3 section appended)
+
+## Checklist Validation
+
+- [x] API tests generated (N/A — no API surface).
+- [x] E2E tests generated for SEO head, locale querystring, Privacy locale variants, and static asset emission.
+- [x] Tests use standard Vitest and Playwright APIs.
+- [x] Tests cover happy paths.
+- [x] Tests cover critical regressions: ES locale path, locale-aware Privacy meta, per-URL sitemap hreflang count, admin head cleanup, robots disallow.
+- [ ] All generated Playwright tests run successfully in this sandbox (blocked by local server `listen EPERM`; specs parse and list cleanly).
+- [x] Tests use proper locators (roles, semantic CSS, request fixture).
+- [x] Tests have clear descriptions.
+- [x] No hardcoded waits or sleeps.
+- [x] Tests are independent and do not depend on execution order.
+- [x] Test summary updated.
+- [x] Tests saved to `tests/e2e/`.
+- [x] Summary includes coverage metrics.
+
+## Next Steps
+
+- Re-run `npm run test:e2e -- tests/e2e/seo.spec.ts` in an environment that permits local server binding.
+- Re-run `PLAYWRIGHT_BASE_URL=http://127.0.0.1:4173 npx playwright test tests/e2e/seo-assets.spec.ts` against `npm run preview` so `dist/client/sitemap.xml` and `dist/client/robots.txt` are exercised end-to-end.
+- Re-run `npm run lhci` and `npm run lhci:mobile` where Chromium and preview-server binding are available; SEO category gates already cover hreflang/sitemap discoverability.
