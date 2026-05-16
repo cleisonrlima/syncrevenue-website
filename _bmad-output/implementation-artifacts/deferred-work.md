@@ -4,14 +4,14 @@
 
 ## Deferred from: code review of 1-2-design-system-foundation (2026-05-14)
 
-- Render-blocking `@import` for Google Fonts — `<link rel="preconnect">` + `<link>` in HTML `<head>` would be better for performance [src/index.css:1]
-- `fontWeight.heavy: '800'` duplicates Tailwind's built-in `font-extrabold` (font-weight: 800) — adds config bloat with no new capability [tailwind.config.ts:89-91]
-- `max-w-2xl` on subtext `<p>` inside unconstrained parent div may have no visible effect depending on layout context [src/components/ui/SectionHeader.tsx:39]
-- SectionHeader heading always `<h2>` — no polymorphic `as` prop for correct heading hierarchy when multiple section headers exist on a page [src/components/ui/SectionHeader.tsx:30]
-- SectionSkeleton `bg-muted` resolves to shadcn `hsl(210 40% 96.1%)` — nearly invisible on white backgrounds; may want brand-muted contrast on light sections [src/components/sections/SectionSkeleton.tsx:9]
-- Focus-visible white ring may blend into light-colored surrounding backgrounds (ring contrast assumes button sits on dark/gradient surface) [src/components/ui/GradientButton.tsx:28]
-- Google Fonts URL loads 6 weight-lines (400,500,600,700,800,400i) — 500 and 400i support unused weight-lines; subsetting would save bandwidth [src/index.css:1]
-- SectionSkeleton no visual loading indicator when `motion-safe:` suppresses animation — reduced-motion users see static gray rectangle [src/components/sections/SectionSkeleton.tsx:13]
+- [x] Render-blocking `@import` for Google Fonts — moved to `<link rel="preconnect">` + `<link rel="stylesheet">` in `index.html`; `@import` removed from `src/index.css`. Closed by Story 3.7. [src/index.css, index.html]
+- [x] `fontWeight.heavy: '800'` duplicates Tailwind's built-in `font-extrabold` — token removed; no `font-heavy` usages existed to migrate. Closed by Story 3.7. [tailwind.config.ts]
+- [x] `max-w-2xl` on subtext `<p>` — verified intentional (caps `<p>` width within unconstrained centered parent); inline comment added to `SectionHeader.tsx` documenting the constraint location. Closed by Story 3.7. [src/components/ui/SectionHeader.tsx]
+- [x] SectionHeader heading always `<h2>` — added polymorphic `as?: 'h2' | 'h3'` prop (default `h2`); co-located `SectionHeader.test.tsx` covers both levels. Closed by Story 3.7. [src/components/ui/SectionHeader.tsx, src/components/ui/SectionHeader.test.tsx]
+- [x] SectionSkeleton `bg-muted` invisible on white — replaced with `bg-brand-slate/20` (visible perceptual delta); reduced-motion users now also receive an `aria-live="polite"` + `sr-only` "Loading…" label. Closed by Story 3.7. [src/components/sections/SectionSkeleton.tsx]
+- [x] Focus-visible white ring may blend on light surroundings — replaced `focus-visible:ring-white` with `focus-visible:ring-brand-deep`; visible on both dark gradient and light surfaces. Closed by Story 3.7. [src/components/ui/GradientButton.tsx]
+- [x] Google Fonts URL loaded 6 weight-lines — trimmed to `400;500;600;700;800` (kept `500` because `font-medium` is used; dropped only `400i` — no italic in code). Closed by Story 3.7. [index.html]
+- [x] SectionSkeleton no visual loading indicator under `motion-safe:` suppression — `aria-live="polite"` + `sr-only` label added; `bg-brand-slate/20` fill provides perceptible static affordance. Closed by Story 3.7. [src/components/sections/SectionSkeleton.tsx]
 - GradientButton has no loading/busy state for async actions — no spinner, no disabled-while-loading logic [src/components/ui/GradientButton.tsx:19-36]
 
 ## Deferred from: code review of 1-4-app-shell-routing-navigation (2026-05-14)
@@ -43,3 +43,7 @@ NEW defers surfaced by the now-runnable `npm run lhci:mobile`:
 - AC5 a11y `color-contrast` (homepage + /privacy) — LanguageSwitcher active state `text-brand-electric-blue` on `bg-brand-navy` flagged by axe under LHCI; R-A2 brand-token waiver is project-documented but Lighthouse-CI does not honor it. Either configure an LHCI axe baseline/override, or change the active-state token to a contrast-safe color. [src/i18n/LanguageSwitcher.tsx]
 - AC5 LCP 3018ms (homepage, mobile 4G emulation) — LCP element is Hero `<h1>`. Depends on Story 3.7 (font loading & UI primitive hardening: drop `@import` in `src/index.css`, add `<link rel="preconnect">` + `<link rel="stylesheet">` in `index.html`, trim weight set). Re-run LHCI after Story 3.7 lands. [src/index.css, index.html, src/components/sections/Hero.tsx]
 - TrustBar breakpoint deviation — AC2 specifies 480-767px 2x2 grid; code uses Tailwind default sm: (640-767px). Aligning requires a custom Tailwind breakpoint (`'xs2': '480px'` or similar) and adjusting `TrustBar.tsx`. Not blocking but tracked. [tailwind.config.ts, src/components/sections/TrustBar.tsx]
+
+## Deferred from: code review of 3-6-story-3-1-review-followups-real-team-content-visual-qa (2026-05-16)
+
+- Broken non-empty photo URLs render broken images instead of falling back to initials. `Team.tsx` renders `<img>` for any non-empty `photo` and only uses initials when `photo` is empty; add an `onError` fallback or an asset-decode gate in a future hardening story. [src/components/sections/Team.tsx:94]

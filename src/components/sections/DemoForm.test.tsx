@@ -72,7 +72,7 @@ describe('DemoForm', () => {
       expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
     }
     expect(screen.getAllByText('*').length).toBeGreaterThanOrEqual(5)
-    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveClass('focus-visible:ring-white')
+    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveClass('focus-visible:ring-brand-deep')
 
     const locale = container.querySelector('input[type="hidden"][name="locale"]')
     expect(locale).toHaveValue('en')

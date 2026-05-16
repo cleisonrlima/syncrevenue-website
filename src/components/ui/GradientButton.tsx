@@ -26,7 +26,7 @@ export default function GradientButton({
         'hover:brightness-110',
         'motion-safe:active:scale-[0.98]',
         'disabled:bg-none disabled:bg-brand-slate disabled:opacity-50 disabled:cursor-not-allowed',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-deep focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
         sizeClasses[size],
         className,
       )}

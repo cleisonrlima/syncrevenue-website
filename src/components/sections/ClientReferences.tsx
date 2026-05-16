@@ -70,7 +70,7 @@ export default function ClientReferences() {
             defaultValue:
               'Named references are shared with approval so security-minded agencies can verify real operating experience.',
           })}
-          className="[&>p:first-of-type]:text-brand-deep"
+          className="section-intro-emphasis"
         />
 
         {references.length > 0 && (

@@ -74,7 +74,7 @@ export default function Team() {
             defaultValue:
               'Our team brings decades of GDS, BSP, and travel agency operations experience.',
           })}
-          className="[&>p:first-of-type]:text-brand-deep [&_h2]:scroll-mt-24"
+          className="section-intro-emphasis [&_h2]:scroll-mt-24"
         />
 
         {members.length > 0 && (

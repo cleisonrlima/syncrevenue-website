@@ -63,7 +63,7 @@ describe('Contact', () => {
       expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
     }
     expect(screen.getAllByText('*')).toHaveLength(4)
-    expect(screen.getByRole('button', { name: /Send Message/i })).toHaveClass('focus-visible:ring-white')
+    expect(screen.getByRole('button', { name: /Send Message/i })).toHaveClass('focus-visible:ring-brand-deep')
 
     const subject = screen.getByLabelText(/Subject \/ Service/i)
     for (const option of ['SyncRevenue', 'BI/Data Analytics', 'OBTs', 'Custom Development', 'Other']) {

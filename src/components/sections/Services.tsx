@@ -48,7 +48,7 @@ export default function Services() {
             defaultValue:
               'Whether you need automated reconciliation, data analytics, or custom development, we have the expertise to solve your specific challenge.',
           })}
-          className="[&>p:first-of-type]:text-brand-deep [&_h2]:scroll-mt-24"
+          className="section-intro-emphasis [&_h2]:scroll-mt-24"
         />
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

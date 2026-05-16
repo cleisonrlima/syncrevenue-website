@@ -44,7 +44,7 @@ export default function SyncRevenue() {
             defaultValue:
               'SyncRevenue connects to your GDS feeds and automatically identifies commission discrepancies, disputed debit memos, and BSP/ARC reconciliation failures — recovering revenue your team would otherwise miss.',
           })}
-          className="[&>p:first-of-type]:text-brand-deep [&_h2]:scroll-mt-24"
+          className="section-intro-emphasis [&_h2]:scroll-mt-24"
         />
 
         <div className="mt-12 mx-auto max-w-4xl text-center">

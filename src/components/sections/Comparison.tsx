@@ -109,7 +109,7 @@ export default function Comparison() {
           subtext={t('comparison.subtext', {
             defaultValue: 'See how automated commission management compares to the status quo.',
           })}
-          className="[&>p:first-of-type]:text-brand-deep [&_h2]:scroll-mt-24"
+          className="section-intro-emphasis [&_h2]:scroll-mt-24"
         />
 
         <ComparisonTable ariaLabel={ariaLabel} />

@@ -91,9 +91,6 @@ const config: Config = {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
-      fontWeight: {
-        heavy: '800',
-      },
     },
   },
   plugins: [tailwindcssAnimate],

@@ -1,5 +1,10 @@
 import { cn } from '@/lib/utils'
 
+// `max-w-2xl` on the subtext `<p>` is intentional: parent is `text-center` with no
+// width cap; the constraint caps the paragraph's own max-width at 42rem and `mx-auto`
+// centers it within the unconstrained parent. Do not move it to the outer wrapper —
+// that would also constrain the heading.
+
 type SectionHeaderProps = {
   eyebrow: string
   heading: string
@@ -7,6 +12,7 @@ type SectionHeaderProps = {
   variant?: 'light' | 'dark'
   className?: string
   headingId?: string
+  as?: 'h2' | 'h3'
 }
 
 export default function SectionHeader({
@@ -16,6 +22,7 @@ export default function SectionHeader({
   variant = 'light',
   className,
   headingId,
+  as: HeadingTag = 'h2',
 }: SectionHeaderProps) {
   const isLight = variant === 'light'
 
@@ -29,7 +36,7 @@ export default function SectionHeader({
       >
         {eyebrow}
       </p>
-      <h2
+      <HeadingTag
         id={headingId}
         className={cn(
           'text-3xl lg:text-4xl font-bold mb-4',
@@ -37,7 +44,7 @@ export default function SectionHeader({
         )}
       >
         {heading}
-      </h2>
+      </HeadingTag>
       {subtext && (
         <p
           className={cn(
