@@ -39,7 +39,7 @@ test.describe('@story-3.2 animations', () => {
     expect(before).not.toBeNull()
 
     await cta.hover()
-    await page.waitForTimeout(200)
+    await expect(cta).toHaveCSS('filter', /brightness/)
     const after = await cta.boundingBox()
     expect(after).not.toBeNull()
 

@@ -1,14 +1,18 @@
 import { render, screen, cleanup } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import MotionSection from './MotionSection'
 
 const reducedMotionRef = { current: false }
 const inViewRef = { current: true }
+let useInViewOptions: unknown
 
 vi.mock('motion/react', () => {
   return {
     LazyMotion: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-    useInView: () => inViewRef.current,
+    useInView: (_ref: unknown, options: unknown) => {
+      useInViewOptions = options
+      return inViewRef.current
+    },
     useReducedMotion: () => reducedMotionRef.current,
     domAnimation: {},
   }
@@ -27,6 +31,7 @@ vi.mock('motion/react-m', () => {
 afterEach(() => {
   reducedMotionRef.current = false
   inViewRef.current = true
+  useInViewOptions = undefined
   cleanup()
 })
 
@@ -49,6 +54,16 @@ describe('MotionSection', () => {
     expect(section).toHaveClass('bg-white')
     expect(section).toHaveAttribute('data-motion', 'true')
     expect(screen.getByText('child')).toBeInTheDocument()
+  })
+
+  it('observes section entry once with the expected viewport amount', () => {
+    render(
+      <MotionSection id="entry" aria-label="entry">
+        <p>child</p>
+      </MotionSection>,
+    )
+
+    expect(useInViewOptions).toEqual({ once: true, amount: 0.2 })
   })
 
   it('falls back to plain section without motion props when reduced motion is on', () => {

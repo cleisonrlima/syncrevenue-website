@@ -26,7 +26,7 @@ test.describe('@P1 Locale switch', () => {
 
     const team = page.locator('#team')
     await team.scrollIntoViewIfNeeded()
-    await page.waitForTimeout(150)
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(200)
     const initialScroll = await page.evaluate(() => window.scrollY)
     expect(initialScroll).toBeGreaterThan(200)
 

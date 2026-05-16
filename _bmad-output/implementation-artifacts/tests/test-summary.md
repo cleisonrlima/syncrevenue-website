@@ -133,3 +133,76 @@ Not applicable — Story 3.1 is JSON content + minor component extension. No bac
 - E2E runs via existing `npm run test:e2e` script — already wired into CI per repo convention.
 - When real LinkedIn URLs ship into the i18n JSON, swap spec 5 (anchor absent) for a positive assertion: every member has an anchor with `target="_blank"` + `rel="noopener noreferrer"`.
 - When real human portraits ship, add a lightweight visual-regression snapshot (`toHaveScreenshot`) on `#team` at desktop and mobile viewports.
+
+---
+
+# Test Automation Summary - Story 3.2 (Animations & Micro-Interactions)
+
+Generated: 2026-05-16
+Frameworks: Vitest 4.1.6, Playwright 1.60.0
+Scope: reduced-motion rendering, one-shot section entry, GradientButton hover layout stability, locale switch scroll preservation, and Motion bundle isolation.
+Story file: `_bmad-output/implementation-artifacts/3-2-animations-micro-interactions.md`
+
+## Generated Tests
+
+### API Tests
+
+Not applicable — Story 3.2 is public UI animation and interaction polish. No backend endpoint or service behavior was added or changed.
+
+### E2E Tests
+
+- [x] `tests/e2e/animations.spec.ts` — covers reduced-motion final-state rendering for an animated below-the-fold section and primary CTA hover bounding-box stability within 1px.
+- [x] `tests/e2e/locale-switch.spec.ts` — covers `/` locale switching without navigation plus scroll preservation to a below-the-fold section within 50px.
+
+### Unit Tests
+
+- [x] `src/components/sections/MotionSection.test.tsx` — covers semantic section passthrough, reduced-motion plain-section fallback, one-shot `useInView` options (`once: true`, `amount: 0.2`), and child stability across view-state changes.
+- [x] `src/components/ui/GradientButton.test.tsx` — covers targeted hover transition classes, stable size classes, no hover layout classes, and preserved focus/disabled styling.
+
+## Coverage
+
+- AC1 (one-shot section entry animation) — covered by `MotionSection.test.tsx` asserting the `useInView` one-shot options; production behavior is also exercised through the animated section chunks.
+- AC2 (reduced motion final-state rendering) — covered by unit fallback assertions and `animations.spec.ts` reduced-motion browser scenario.
+- AC3 (CTA hover paint-only transition) — covered by `GradientButton.test.tsx` and `animations.spec.ts` bounding-box stability.
+- AC4 (locale switch stability on `/`) — covered by `locale-switch.spec.ts` pathname and scroll-preservation checks.
+- AC5 (bundle isolation) — covered by `npm run build` plus main chunk string inspection; `motionFeatures-*.js` is emitted as a separate async chunk and no Motion runtime identifiers were found in `index-*.js`.
+- AC6 (automated test coverage) — covered across focused unit and Playwright specs.
+
+## Verification
+
+- `npm run typecheck` -> passed.
+- `npm run test:run -- src/components/sections/MotionSection.test.tsx src/components/ui/GradientButton.test.tsx` -> passed: 2 files, 8 tests.
+- `npm run test:run` -> passed: 45 files, 242 tests.
+- `npm run build` -> passed.
+- `npx playwright test tests/e2e/animations.spec.ts tests/e2e/locale-switch.spec.ts --list` -> passed: 20 tests discovered across chromium, webkit, mobile-chrome, and mobile-webkit.
+- `npm run test:e2e -- tests/e2e/animations.spec.ts tests/e2e/locale-switch.spec.ts` -> blocked before test execution: configured `npm run dev` web server exited with code 1.
+- `npm run dev` -> blocked by sandbox: `Error: listen EPERM: operation not permitted /tmp/tsx-1001/30.pipe`.
+- `npx vite --host 127.0.0.1 --port 5173` -> blocked by sandbox: `Error: listen EPERM: operation not permitted 127.0.0.1:5173`.
+
+## Files Touched
+
+- `src/components/sections/MotionSection.test.tsx`
+- `tests/e2e/animations.spec.ts`
+- `tests/e2e/locale-switch.spec.ts`
+- `_bmad-output/implementation-artifacts/tests/test-summary.md`
+
+## Checklist Validation
+
+- [x] API tests generated (N/A — no API surface).
+- [x] E2E tests generated for UI animation and locale workflows.
+- [x] Tests use standard Vitest and Playwright APIs.
+- [x] Tests cover happy paths.
+- [x] Tests cover critical regression cases: reduced motion, hover layout stability, one-shot viewport behavior, and locale scroll preservation.
+- [ ] All generated Playwright tests run successfully in this sandbox (blocked by local server listen permissions before execution).
+- [x] Tests use proper locators and semantic assertions.
+- [x] Tests have clear descriptions.
+- [x] No hardcoded waits or sleeps.
+- [x] Tests are independent and do not depend on execution order.
+- [x] Test summary updated.
+- [x] Tests saved to appropriate directories.
+- [x] Summary includes coverage metrics.
+
+## Next Steps
+
+- Re-run `npm run test:e2e -- tests/e2e/animations.spec.ts tests/e2e/locale-switch.spec.ts` in an environment that permits local server binding.
+- Re-run `npm run lhci` and `npm run lhci:mobile` where Chromium and preview-server binding are available.
