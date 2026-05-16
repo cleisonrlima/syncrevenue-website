@@ -1,6 +1,6 @@
 # Story 4.2: Leads Dashboard — View & Filter
 
-Status: review
+Status: done
 
 <!-- Created 2026-05-16 by /bmad-create-story. Parent Jira: SYN-29 (per sprint-status.yaml mirror block; verify on next /jira-assistant sync). Sprint: SYN Sprint 3 (336). -->
 
@@ -86,6 +86,11 @@ So that I can quickly find and prioritize leads by locale or status.
   - [x] Update `vault/Code/Frontend.md` to add `src/components/ui/Skeleton.tsx`.
   - [x] Update `vault/Planning/Epics-Index.md` Story 4.2 from `[ ]` → `[~]` → `[x]`.
   - [x] Update `vault/00-Home.md` if the active focus marker changes (Epic 4 progress).
+
+### Review Findings
+
+- [x] [Review][Patch] E2E seed data races under Playwright `fullyParallel` [tests/e2e/admin-leads.spec.ts:58]
+- [x] [Review][Patch] Leads page creates `AbortController` but never passes its signal to `fetch` [src/pages/admin/Leads.tsx:74]
 
 ## Dev Notes
 

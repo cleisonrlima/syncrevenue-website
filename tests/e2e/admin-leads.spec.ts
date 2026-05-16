@@ -51,6 +51,8 @@ function insertSeedLeads() {
 }
 
 test.describe('Admin Leads @P1', () => {
+  test.describe.configure({ mode: 'serial' })
+
   test.beforeAll(() => {
     seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })

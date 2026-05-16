@@ -25,6 +25,13 @@ function renderLeads() {
   )
 }
 
+function expectLastGetAdminLeadsCall(filter: Record<string, unknown>) {
+  const calls = (api.getAdminLeads as unknown as Mock).mock.calls
+  const lastCall = calls[calls.length - 1]
+  expect(lastCall[0]).toEqual(filter)
+  expect(lastCall[1]?.signal).toBeInstanceOf(AbortSignal)
+}
+
 function makeRow(overrides: Partial<AdminLeadRow> = {}): AdminLeadRow {
   return {
     id: 1,
@@ -65,7 +72,7 @@ describe('Leads page', () => {
     renderLeads()
     expect(screen.getByTestId('admin-leads-loading')).toBeInTheDocument()
     expect(api.getAdminLeads).toHaveBeenCalledTimes(1)
-    expect(api.getAdminLeads).toHaveBeenCalledWith({})
+    expectLastGetAdminLeadsCall({})
 
     await act(async () => {
       resolveRequest!([])
@@ -116,7 +123,7 @@ describe('Leads page', () => {
     await user.selectOptions(localeSelect, 'pt-BR')
 
     await waitFor(() => {
-      expect(api.getAdminLeads).toHaveBeenLastCalledWith({ locale: 'pt-BR' })
+      expectLastGetAdminLeadsCall({ locale: 'pt-BR' })
     })
   })
 
@@ -129,7 +136,7 @@ describe('Leads page', () => {
     await user.selectOptions(screen.getByTestId('admin-leads-status-filter'), 'pending')
 
     await waitFor(() => {
-      expect(api.getAdminLeads).toHaveBeenLastCalledWith({ status: 'pending' })
+      expectLastGetAdminLeadsCall({ status: 'pending' })
     })
   })
 
@@ -143,7 +150,7 @@ describe('Leads page', () => {
     await user.selectOptions(screen.getByTestId('admin-leads-status-filter'), 'pending')
 
     await waitFor(() => {
-      expect(api.getAdminLeads).toHaveBeenLastCalledWith({ locale: 'pt-BR', status: 'pending' })
+      expectLastGetAdminLeadsCall({ locale: 'pt-BR', status: 'pending' })
     })
   })
 
@@ -166,7 +173,7 @@ describe('Leads page', () => {
     await user.selectOptions(screen.getByTestId('admin-leads-status-filter'), 'pending')
 
     await waitFor(() => {
-      expect(api.getAdminLeads).toHaveBeenLastCalledWith({ locale: 'pt-BR', status: 'pending' })
+      expectLastGetAdminLeadsCall({ locale: 'pt-BR', status: 'pending' })
     })
 
     const empty = await screen.findByTestId('admin-leads-empty')
@@ -180,7 +187,7 @@ describe('Leads page', () => {
     expect(localeSelect.value).toBe('all')
     expect(statusSelect.value).toBe('all')
     await waitFor(() => {
-      expect(api.getAdminLeads).toHaveBeenLastCalledWith({})
+      expectLastGetAdminLeadsCall({})
     })
   })
 

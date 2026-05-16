@@ -85,7 +85,7 @@ export default function Leads() {
         const statusArg = selectionToValue(statusFilter)
         if (localeArg) filter.locale = localeArg
         if (statusArg) filter.status = statusArg
-        const data = await getAdminLeads(filter)
+        const data = await getAdminLeads(filter, { signal: controller.signal })
         if (cancelled || controller.signal.aborted) return
         setRows(data)
         setLoading(false)

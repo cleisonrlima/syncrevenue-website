@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-16  # Story 4.2 -> review (dev complete)
+# last_updated: 2026-05-16  # Story 4.2 -> done (review fixes applied)
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 4.2 -> review (dev complete)
+last_updated: 2026-05-16  # Story 4.2 -> done (review fixes applied)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -100,7 +100,7 @@ development_status:
   # Epic 4: Admin Operations (Phase 3) — pulled into current sprint on 2026-05-16; sprint membership in mirror block + orchestration storyRange
   epic-4: in-progress
   4-1-admin-authentication-login-session-management: done
-  4-2-leads-dashboard-view-filter: review
+  4-2-leads-dashboard-view-filter: done
   4-3-lead-status-management: backlog
   4-4-team-member-management-create-edit: backlog
   4-5-team-member-display-order-active-toggle: backlog

@@ -318,7 +318,14 @@ export interface AdminLeadsFilter {
   status?: AdminLeadStatus
 }
 
-export async function getAdminLeads(filter: AdminLeadsFilter = {}): Promise<AdminLeadRow[]> {
+export interface AdminLeadsRequestOptions {
+  signal?: AbortSignal
+}
+
+export async function getAdminLeads(
+  filter: AdminLeadsFilter = {},
+  options: AdminLeadsRequestOptions = {}
+): Promise<AdminLeadRow[]> {
   const params = new URLSearchParams()
   if (filter.locale) params.set('locale', filter.locale)
   if (filter.status) params.set('status', filter.status)
@@ -329,6 +336,7 @@ export async function getAdminLeads(filter: AdminLeadsFilter = {}): Promise<Admi
     response = await fetch(`/api/admin/leads${qs}`, {
       method: 'GET',
       credentials: 'include',
+      signal: options.signal,
     })
   } catch {
     throw new AdminApiError(0, 'Network error')
