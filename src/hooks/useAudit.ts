@@ -20,7 +20,11 @@ type AuditError = {
 export function createAuditSchema(t: TFunction) {
   return z.object({
     name: z.string().trim().min(1, t('forms.audit.nameError', { defaultValue: 'Name is required' })),
-    email: z.string().trim().email(t('forms.audit.emailErrorFormat', { defaultValue: 'Enter a valid email' })),
+    email: z
+      .string()
+      .trim()
+      .min(1, t('forms.audit.emailErrorRequired', { defaultValue: 'Email is required' }))
+      .email(t('forms.audit.emailErrorFormat', { defaultValue: 'Enter a valid email' })),
     company: z.string().trim().min(1, t('forms.audit.companyError', { defaultValue: 'Company is required' })),
     role: z.enum(ROLE_OPTIONS, {
       errorMap: () => ({ message: t('forms.audit.roleError', { defaultValue: 'Role is required' }) }),

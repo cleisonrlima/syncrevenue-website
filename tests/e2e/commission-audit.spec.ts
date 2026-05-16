@@ -66,6 +66,35 @@ test.describe('@P0 Commission audit section', () => {
     await expect(status).toBeVisible()
     await expect(status).toHaveAttribute('aria-live', 'polite')
   })
+
+  test('renders ES locale copy in section heading and form labels', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    const isMobile = (page.viewportSize()?.width ?? 1280) < 1024
+    if (isMobile) {
+      await page.getByRole('button', { name: /open menu/i }).click()
+      const switcher = page.getByTestId('mobile-overlay-content').getByRole('group', { name: /select language/i })
+      await switcher.getByRole('button', { name: /^es$/i }).click()
+      await page.keyboard.press('Escape')
+    } else {
+      const switcher = page.locator('nav').getByRole('group', { name: /select language/i }).first()
+      await switcher.getByRole('button', { name: /^es$/i }).click()
+    }
+
+    const audit = page.locator('#commission-audit')
+    await audit.scrollIntoViewIfNeeded()
+
+    // ES heading + form labels must NOT match EN/PT-BR exact strings (locale-distinct copy).
+    const headingText = await audit.locator('h2, h3').first().innerText()
+    expect(headingText.length).toBeGreaterThan(0)
+    expect(headingText.toLowerCase()).not.toContain('commission')
+    expect(headingText.toLowerCase()).not.toContain('auditoria')
+
+    // Form name label rendered in ES — should not equal the EN label "Name".
+    const nameLabel = await page.locator('label[for="audit-name"]').innerText()
+    expect(nameLabel.length).toBeGreaterThan(0)
+    expect(nameLabel.trim().toLowerCase()).not.toBe('name')
+  })
 })
 
 test.describe('@P1 Commission audit mobile contract (375px)', () => {
@@ -97,6 +126,22 @@ test.describe('@P1 Commission audit mobile contract (375px)', () => {
     for (let i = 1; i < sorted.length; i += 1) {
       // No two visible fields share a row (within 8px tolerance for stacked layout).
       expect(sorted[i] - sorted[i - 1]).toBeGreaterThan(8)
+    }
+
+    // Every visible field must match the form content width (full-width contract).
+    const formBox = await page.locator('#audit-form').boundingBox()
+    expect(formBox).not.toBeNull()
+    if (formBox) {
+      const fieldWidths = await page.locator('#audit-form input, #audit-form select, #audit-form textarea').evaluateAll(nodes =>
+        (nodes as HTMLElement[])
+          .filter(n => (n as HTMLInputElement).type !== 'hidden')
+          .map(n => Math.round(n.getBoundingClientRect().width))
+      )
+      const expectedWidth = Math.round(formBox.width) - 48 // form p-6 padding (24+24)
+      for (const w of fieldWidths) {
+        // Each input fills the form content area (within 4px tolerance for borders).
+        expect(Math.abs(w - expectedWidth)).toBeLessThanOrEqual(4)
+      }
     }
 
     // Section is visible without horizontal overflow at 375px.

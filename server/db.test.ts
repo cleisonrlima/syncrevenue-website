@@ -15,15 +15,34 @@ describe('initSchema', () => {
     db = freshDb()
   })
 
-  it('creates all four tables', () => {
+  it('creates all five tables', () => {
     const rows = db
       .prepare(
-        `SELECT name FROM sqlite_master WHERE type='table' AND name IN ('demo_requests','contacts','team_members','admin_users')`
+        `SELECT name FROM sqlite_master WHERE type='table' AND name IN ('demo_requests','contacts','team_members','admin_users','audit_requests')`
       )
       .all() as { name: string }[]
     expect(rows.map((r) => r.name).sort()).toEqual(
-      ['admin_users', 'contacts', 'demo_requests', 'team_members'].sort()
+      ['admin_users', 'audit_requests', 'contacts', 'demo_requests', 'team_members'].sort()
     )
+  })
+
+  it('audit_requests has required columns + locale CHECK + created_at default', () => {
+    const cols = db
+      .prepare(`PRAGMA table_info('audit_requests')`)
+      .all() as { name: string; notnull: number; dflt_value: string | null }[]
+    const byName = Object.fromEntries(cols.map((c) => [c.name, c]))
+    for (const required of ['id', 'name', 'email', 'company', 'role', 'gds', 'notes', 'locale', 'created_at']) {
+      expect(byName[required], `missing column ${required}`).toBeTruthy()
+    }
+    expect(byName.created_at.dflt_value).toMatch(/datetime/i)
+
+    expect(() =>
+      db
+        .prepare(
+          `INSERT INTO audit_requests (name,email,company,role,gds,locale) VALUES (?,?,?,?,?,?)`
+        )
+        .run('A', 'a@b.com', 'C', 'CEO', 'Amadeus', 'fr')
+    ).toThrow(/CHECK/i)
   })
 
   it('demo_requests rejects invalid locale via CHECK', () => {
