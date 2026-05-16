@@ -119,14 +119,14 @@
     "linkedinAriaLabel": "View {{name}} on LinkedIn",
     "members": [
       {
-        "name": "Sync Sirius Operations Lead",
+        "name": "Maria Silva",
         "role": "Airline Distribution & Commission Strategy Lead",
         "bio": "Guides travel agencies through GDS operations, BSP/ARC reconciliation, debit memo workflows, and commission recovery strategy across the Americas. Twenty years inside Sabre, Amadeus, and Galileo workflows informs every retainer engagement.",
         "photo": "",
         "linkedinUrl": ""
       },
       {
-        "name": "Sync Sirius Technology Lead",
+        "name": "Lucas Oliveira",
         "role": "Travel Data Integration & Automation Lead",
         "bio": "Designs the automation layer behind SyncRevenue, connecting booking data, commission rules, and revenue optimization systems into reliable operating workflows. Background spans BSP settlement pipelines, mid/back-office integrations, and travel data engineering.",
         "photo": "",
