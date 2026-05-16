@@ -1,6 +1,6 @@
 # Story 3.11: SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up)
 
-Status: review
+Status: done
 
 <!-- Created from Story 3.3 cross-model review (MEDIUM finding, 2026-05-15). Author: review automation. -->
 
@@ -68,6 +68,10 @@ This is a stylistic/SEO-quality deviation, not a functional bug. Address before 
   - [x] Run `npm run build`; manually inspect `dist/client/sitemap.xml` and `dist/client/index.html` for the agreed values.
   - [x] Update `vault/Code/Frontend.md` (SEO module note) and `vault/Planning/Architecture-Key.md` if the canonical convention is recorded as a project rule.
 
+### Review Findings
+
+- [x] [Review][Patch] Browser SEO suite fails because language switcher locators match both header and footer controls [tests/e2e/seo.spec.ts:89] — fixed by scoping SEO e2e language-switcher interactions to the main navigation on desktop and the mobile navigation dialog on mobile.
+
 ## Dev Notes
 
 ### Source Context
@@ -109,3 +113,10 @@ This is a stylistic/SEO-quality deviation, not a functional bug. Address before 
 
 - Approach (A) selected as recommended in Subtask 1 default. Subtask 3 (sitemap `<loc>` changes) intentionally skipped.
 - Pre-hydration `index.html` left at no-lng URL per Subtask 5 — minimizes drift between built static head and SSR-less expected SEO, and keeps the static file usable as a true x-default snapshot for crawlers that read it before JS hydrates.
+
+### Review Agent Record
+
+- 2026-05-16 — Cross-model code review (Codex):
+  - Dismissed sitemap `<loc>` and static pre-hydration concerns as accepted approach-(A) tradeoffs already documented in the story and code comments.
+  - Patched `tests/e2e/seo.spec.ts` so language-switcher clicks target the main navigation switcher on desktop and the mobile navigation dialog switcher on mobile, avoiding duplicate header/footer accessible matches.
+  - Verification: `npm run typecheck` PASS; `npm run test:e2e -- tests/e2e/seo.spec.ts --project=chromium --project=mobile-chrome` PASS (16/16). Full WebKit projects were not run because local Playwright WebKit binaries are not installed.

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 const seo = {
   en: {
@@ -37,7 +37,7 @@ const privacySeo = {
   },
 } as const
 
-async function expectHomeSeo(page: import('@playwright/test').Page, locale: keyof typeof seo) {
+async function expectHomeSeo(page: Page, locale: keyof typeof seo) {
   await expect(page.locator('html')).toHaveAttribute('lang', locale)
   await expect(page).toHaveTitle(seo[locale].title)
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', seo[locale].description)
@@ -78,15 +78,22 @@ async function expectHomeSeo(page: import('@playwright/test').Page, locale: keyo
   )
 }
 
+async function openNavLanguageSwitcher(page: Page, isMobile: boolean) {
+  if (isMobile) {
+    await page.getByRole('button', { name: /open menu/i }).click()
+    return page.getByRole('dialog', { name: /mobile navigation menu/i }).getByRole('group', { name: /select language/i })
+  }
+
+  return page.getByLabel(/main navigation/i).getByRole('group', { name: /select language/i })
+}
+
 test.describe('@P1 SEO metadata', () => {
   test('home emits locale-aware head tags in EN and PT-BR', async ({ page, isMobile }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
     await expectHomeSeo(page, 'en')
 
-    if (isMobile) {
-      await page.getByRole('button', { name: /open menu/i }).click()
-    }
-    await page.getByRole('group', { name: /select language/i }).getByRole('button', { name: /pt-br/i }).click()
+    const switcher = await openNavLanguageSwitcher(page, isMobile)
+    await switcher.getByRole('button', { name: /pt-br/i }).click()
     await expectHomeSeo(page, 'pt-BR')
   })
 
@@ -94,10 +101,7 @@ test.describe('@P1 SEO metadata', () => {
     await page.goto('/', { waitUntil: 'networkidle' })
     await expectHomeSeo(page, 'en')
 
-    if (isMobile) {
-      await page.getByRole('button', { name: /open menu/i }).click()
-    }
-    const switcher = page.getByRole('group', { name: /select language/i })
+    const switcher = await openNavLanguageSwitcher(page, isMobile)
     await switcher.getByRole('button', { name: /pt-br/i }).click()
     await expectHomeSeo(page, 'pt-BR')
 
