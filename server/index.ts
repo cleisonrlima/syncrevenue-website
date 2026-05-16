@@ -9,6 +9,7 @@ import db from './db'
 import { requireAdmin } from './middleware/auth'
 import demoRouter from './routes/demo'
 import contactRouter from './routes/contact'
+import auditRouter from './routes/audit'
 import adminAuthRouter from './routes/admin/auth'
 import adminLeadsRouter from './routes/admin/leads'
 import adminContactsRouter from './routes/admin/contacts'
@@ -37,6 +38,7 @@ export function createApp(): Express {
 
   app.use('/api/demo', demoRouter)
   app.use('/api/contact', contactRouter)
+  app.use('/api/audit', auditRouter)
 
   app.use('/api/admin/auth', adminAuthRouter)
   app.use('/api/admin/leads', requireAdmin, adminLeadsRouter)

@@ -238,6 +238,14 @@
       "subtext": "See multi-GDS commission recovery applied to your agency's reconciliation workflow.",
       "cta": "Schedule a Demo",
       "ariaLabel": "Schedule a SyncRevenue demo"
+    },
+    "commissionAudit": {
+      "heading": "Free Commission Leakage Audit",
+      "subheading": "Send us 30 days of BSP data and we will return a written report on how much commission your agency is leaving on the table.",
+      "bullet1": "30 days of BSP data — no credentials required.",
+      "bullet2": "Written leakage report with concrete recovery estimates.",
+      "bullet3": "No commitment — bring the numbers to your director first.",
+      "ctaLabel": "Request my free audit"
     }
   },
   "forms": {
@@ -312,6 +320,34 @@
       "successBody": "We received your inquiry and will route it to the right team.",
       "errorRateLimit": "Too many contact requests. Please wait a minute and try again.",
       "errorGeneric": "Something went wrong. Please try again."
+    },
+    "audit": {
+      "title": "Free Commission Audit",
+      "name": "Full Name",
+      "namePlaceholder": "Marcos Pereira",
+      "nameError": "Full name is required",
+      "email": "Work Email",
+      "emailPlaceholder": "you@agency.com",
+      "emailErrorRequired": "Email is required",
+      "emailErrorFormat": "Enter a valid email address",
+      "company": "Company",
+      "companyPlaceholder": "Travel Agency Name",
+      "companyError": "Company name is required",
+      "role": "Your Role",
+      "rolePlaceholder": "Select your role",
+      "roleError": "Please select your role",
+      "gds": "Primary GDS",
+      "gdsPlaceholder": "Select your GDS",
+      "gdsError": "Please select your primary GDS",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "Share anything relevant about your BSP setup or current pain points.",
+      "submit": "Request Audit",
+      "submitting": "Sending...",
+      "successTitle": "Request received!",
+      "successBody": "Our team will analyse your data and reply within 2 business days.",
+      "errorGeneric": "Something went wrong. Please try again.",
+      "errorRateLimit": "Too many requests. Please try again in a few minutes.",
+      "requiredMarker": "required"
     }
   },
   "seo": {

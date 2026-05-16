@@ -5,6 +5,7 @@ import { useDocumentMeta } from '@/components/SEO'
 
 const Hero = lazy(() => import('@/components/sections/Hero'))
 const SyncRevenue = lazy(() => import('@/components/sections/SyncRevenue'))
+const CommissionAudit = lazy(() => import('@/components/sections/CommissionAudit'))
 const Services = lazy(() => import('@/components/sections/Services'))
 const Comparison = lazy(() => import('@/components/sections/Comparison'))
 const Security = lazy(() => import('@/components/sections/Security'))
@@ -32,6 +33,11 @@ export default function Home() {
       <ErrorBoundary>
         <Suspense fallback={<SectionSkeleton className="min-h-[400px]" label="Loading syncrevenue" />}>
           <SyncRevenue />
+        </Suspense>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Suspense fallback={<SectionSkeleton className="min-h-[400px]" label="Loading commission audit" />}>
+          <CommissionAudit />
         </Suspense>
       </ErrorBoundary>
       <ErrorBoundary>

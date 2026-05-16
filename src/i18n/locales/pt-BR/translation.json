@@ -238,6 +238,14 @@
       "subtext": "Veja a recuperação de comissões multi-GDS aplicada ao fluxo de reconciliação da sua agência.",
       "cta": "Agendar uma Demo",
       "ariaLabel": "Agendar uma demonstração SyncRevenue"
+    },
+    "commissionAudit": {
+      "heading": "Auditoria gratuita de vazamento de comissoes",
+      "subheading": "Envie 30 dias de dados BSP e devolvemos um relatorio por escrito mostrando quanto a sua agencia esta deixando de receber.",
+      "bullet1": "30 dias de dados BSP — sem precisar de credenciais.",
+      "bullet2": "Relatorio escrito com estimativas concretas de recuperacao.",
+      "bullet3": "Sem compromisso — leve os numeros ao seu diretor antes de qualquer demo.",
+      "ctaLabel": "Quero minha auditoria gratuita"
     }
   },
   "forms": {
@@ -312,6 +320,34 @@
       "successBody": "Recebemos sua mensagem e vamos encaminhá-la para a equipe certa.",
       "errorRateLimit": "Muitas mensagens de contato. Por favor, aguarde um minuto e tente novamente.",
       "errorGeneric": "Algo deu errado. Por favor, tente novamente."
+    },
+    "audit": {
+      "title": "Auditoria gratuita de comissoes",
+      "name": "Nome completo",
+      "namePlaceholder": "Marcos Pereira",
+      "nameError": "O nome completo e obrigatorio",
+      "email": "Email corporativo",
+      "emailPlaceholder": "voce@agencia.com",
+      "emailErrorRequired": "O email e obrigatorio",
+      "emailErrorFormat": "Informe um email valido",
+      "company": "Empresa",
+      "companyPlaceholder": "Nome da agencia de viagens",
+      "companyError": "O nome da empresa e obrigatorio",
+      "role": "Seu cargo",
+      "rolePlaceholder": "Selecione seu cargo",
+      "roleError": "Selecione seu cargo",
+      "gds": "GDS principal",
+      "gdsPlaceholder": "Selecione seu GDS",
+      "gdsError": "Selecione seu GDS principal",
+      "notes": "Observacoes (opcional)",
+      "notesPlaceholder": "Conte algo relevante sobre seu BSP ou as dores atuais.",
+      "submit": "Solicitar auditoria",
+      "submitting": "Enviando...",
+      "successTitle": "Solicitacao recebida!",
+      "successBody": "Nossa equipe vai analisar seus dados e responder em ate 2 dias uteis.",
+      "errorGeneric": "Algo deu errado. Tente novamente.",
+      "errorRateLimit": "Muitas tentativas. Tente novamente em alguns minutos.",
+      "requiredMarker": "obrigatorio"
     }
   },
   "seo": {

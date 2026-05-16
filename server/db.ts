@@ -69,6 +69,18 @@ export function initSchema(database: Database.Database = db): void {
       password_hash TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS audit_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      company TEXT NOT NULL,
+      role TEXT NOT NULL,
+      gds TEXT NOT NULL,
+      notes TEXT,
+      locale TEXT NOT NULL CHECK (locale IN ('en','pt-BR','es')),
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `)
 }
 

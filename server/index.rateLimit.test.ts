@@ -33,13 +33,19 @@ afterEach(() => {
   }
 })
 
-async function exhaustRoute(app: Express, route: '/api/demo' | '/api/contact', remoteAddress: string) {
+async function exhaustRoute(app: Express, route: '/api/demo' | '/api/contact' | '/api/audit', remoteAddress: string) {
+  const bodyFor = (i: number) => {
+    if (route === '/api/demo') return validDemoPayload(i)
+    if (route === '/api/contact') return validContactPayload(i)
+    return validAuditPayload(i)
+  }
+
   let response
   for (let i = 0; i < FORM_RATE_LIMIT_MAX; i += 1) {
     response = await request(app, {
       method: 'POST',
       path: route,
-      body: route === '/api/demo' ? validDemoPayload(i) : validContactPayload(i),
+      body: bodyFor(i),
       remoteAddress,
     })
     expect(response.status).toBe(201)
@@ -53,7 +59,7 @@ async function exhaustRoute(app: Express, route: '/api/demo' | '/api/contact', r
   return request(app, {
     method: 'POST',
     path: route,
-    body: route === '/api/demo' ? validDemoPayload(FORM_RATE_LIMIT_MAX) : validContactPayload(FORM_RATE_LIMIT_MAX),
+    body: bodyFor(FORM_RATE_LIMIT_MAX),
     remoteAddress,
   })
 }
@@ -77,6 +83,18 @@ function validContactPayload(index: number) {
     email: `rate-contact-${index}@example.com`,
     subject: 'BI/Data Analytics',
     message: 'We need analytics help for agency revenue reporting.',
+    locale: 'pt-BR',
+  }
+}
+
+function validAuditPayload(index: number) {
+  return {
+    name: `Rate Audit ${index}`,
+    email: `rate-audit-${index}@example.com`,
+    company: `Audit Agency ${index}`,
+    role: 'Back-office Manager',
+    gds: 'Amadeus',
+    notes: '',
     locale: 'pt-BR',
   }
 }
@@ -154,5 +172,37 @@ describe('mounted form route rate limiting', () => {
       remoteAddress,
     })
     expect(firstDemo.status).toBe(201)
+  })
+
+  it('returns JSON 429 on /api/audit after the default 20 request limit', async () => {
+    const app = await createIsolatedApp()
+    const response = await exhaustRoute(app, '/api/audit', '127.0.0.15')
+
+    expect(response.status).toBe(429)
+    expect(response.json()).toEqual({ success: false, message: 'Too many requests' })
+  })
+
+  it('exhausting audit quota does not block the same IP from demo or contact', async () => {
+    const app = await createIsolatedApp()
+    const remoteAddress = '127.0.0.16'
+
+    const blockedAudit = await exhaustRoute(app, '/api/audit', remoteAddress)
+    expect(blockedAudit.status).toBe(429)
+
+    const firstDemo = await request(app, {
+      method: 'POST',
+      path: '/api/demo',
+      body: validDemoPayload(200),
+      remoteAddress,
+    })
+    expect(firstDemo.status).toBe(201)
+
+    const firstContact = await request(app, {
+      method: 'POST',
+      path: '/api/contact',
+      body: validContactPayload(200),
+      remoteAddress,
+    })
+    expect(firstContact.status).toBe(201)
   })
 })

@@ -238,6 +238,14 @@
       "subtext": "Vea la recuperación de comisiones multi-GDS aplicada al flujo de reconciliación de su agencia.",
       "cta": "Agendar una Demo",
       "ariaLabel": "Agendar una demostración SyncRevenue"
+    },
+    "commissionAudit": {
+      "heading": "Auditoria gratuita de fuga de comisiones",
+      "subheading": "Envia 30 dias de datos BSP y te devolvemos un informe por escrito con cuanta comision esta perdiendo tu agencia.",
+      "bullet1": "30 dias de datos BSP — sin necesidad de credenciales.",
+      "bullet2": "Informe escrito con estimaciones concretas de recuperacion.",
+      "bullet3": "Sin compromiso — lleva los numeros a tu director antes que cualquier demo.",
+      "ctaLabel": "Quiero mi auditoria gratuita"
     }
   },
   "forms": {
@@ -312,6 +320,34 @@
       "successBody": "Recibimos su consulta y la enviaremos al equipo correcto.",
       "errorRateLimit": "Demasiadas solicitudes de contacto. Por favor, espere un minuto e inténtelo de nuevo.",
       "errorGeneric": "Algo salió mal. Por favor, inténtelo de nuevo."
+    },
+    "audit": {
+      "title": "Auditoria gratuita de comisiones",
+      "name": "Nombre completo",
+      "namePlaceholder": "Marcos Pereira",
+      "nameError": "El nombre completo es obligatorio",
+      "email": "Correo corporativo",
+      "emailPlaceholder": "tu@agencia.com",
+      "emailErrorRequired": "El correo es obligatorio",
+      "emailErrorFormat": "Introduce un correo valido",
+      "company": "Empresa",
+      "companyPlaceholder": "Nombre de la agencia",
+      "companyError": "El nombre de la empresa es obligatorio",
+      "role": "Tu cargo",
+      "rolePlaceholder": "Selecciona tu cargo",
+      "roleError": "Selecciona tu cargo",
+      "gds": "GDS principal",
+      "gdsPlaceholder": "Selecciona tu GDS",
+      "gdsError": "Selecciona tu GDS principal",
+      "notes": "Notas (opcional)",
+      "notesPlaceholder": "Comparte cualquier detalle sobre tu BSP o dolores actuales.",
+      "submit": "Solicitar auditoria",
+      "submitting": "Enviando...",
+      "successTitle": "Solicitud recibida!",
+      "successBody": "Nuestro equipo analizara tus datos y respondera en 2 dias habiles.",
+      "errorGeneric": "Algo salio mal. Intenta de nuevo.",
+      "errorRateLimit": "Demasiadas solicitudes. Intenta en unos minutos.",
+      "requiredMarker": "obligatorio"
     }
   },
   "seo": {
