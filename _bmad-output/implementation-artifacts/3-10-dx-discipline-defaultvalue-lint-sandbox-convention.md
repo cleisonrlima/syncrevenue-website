@@ -1,6 +1,6 @@
 # Story 3.10: DX Discipline — `defaultValue` Lint Rule & Sandbox Port-Binding Convention
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -94,7 +94,7 @@ This story implements the rows A4 and A6 of `_bmad-output/implementation-artifac
   - [x] `npm run test:run` — **326/326 pass** (was 318/318 pre-3.10 per Story 3.9 dev notes; +8 from the new fixture file).
   - [x] `npm run build` — clean `dist/`, no new warnings vs baseline; same bundle structure as pre-3.10.
   - [x] `npm run check:contrast` — exit 0, manifest diff-free (Story 3.9's idempotency preserved).
-  - [x] `vault/Planning/Epics-Index.md` row for Story 3.10 flipped to `SYN-96 [x] review` (will progress to `done` after code review per the standard workflow).
+  - [x] `vault/Planning/Epics-Index.md` row for Story 3.10 flipped to `SYN-96 [x] done` after clean code review.
 
 ## Dev Notes
 
@@ -275,7 +275,7 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]`.
 - `vault/00-Home.md` — added Sandbox-Conventions row to Quick Navigation.
 - `vault/Code/Backend.md` — cross-linked Sandbox-Conventions; upgraded inline command to `npm run test:e2e` form.
 - `vault/Code/Index.md` — Status line refreshed for Story 3.10 closure.
-- `vault/Planning/Epics-Index.md` — Story 3.10 row flipped to `SYN-96 [x] review`.
+- `vault/Planning/Epics-Index.md` — Story 3.10 row flipped to `SYN-96 [x] done`.
 - `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md` — A4, A6 flipped to ✅ Done; B2 annotated done; B9 annotated partial; new post-3.10 Score row appended.
 - `_bmad-output/implementation-artifacts/1-6-syncrevenue-services-sections.md` — lines 59 and 89 retroactive-validation annotations appended (deferred-note text preserved).
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` — `3-10-…` flipped `backlog` → `ready-for-dev` → `in-progress` → `review`.

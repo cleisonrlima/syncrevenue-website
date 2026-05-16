@@ -55,7 +55,7 @@
   - 2.6 Form Accessibility & Locale-Aware Validation (`createDemoSchema(t)` / `createContactSchema(t)` factories)
   - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
-- Active phase: **Epic 3 (Phase 2)** — stories 3.1-3.6 done; 3.7+ remain in Sprint 3 backlog.
+- Active phase: **Epic 3 (Phase 2)** — stories 3.1-3.10 done; 3.11 remains in Sprint 3 backlog.
 - Story 3.6 (Story 3.1 Review Follow-ups) — done under accepted fake-data full-stub override. EN/PT-BR/ES team JSON now uses fabricated temporary names, solid-color WebP stubs, and fabricated LinkedIn-style URLs pending manual stakeholder-content swap.
 - Quality at Story 3.1 close: **234 tests pass**; `tsc --noEmit` → 0; `npm run build` clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
@@ -65,8 +65,8 @@
   - ~~`GradientButton` lacks `loading`/`async-disabled`~~ ✓ landed in Story 2.2.
   - ~~DB tables not yet created~~ ✓ landed in Story 2.1.
   - Admin auth 501 placeholders (`/api/admin/auth/login`/`logout`/`me`) — Epic 4 / Story 4.1.
-  - Playwright sandbox workaround (`PLAYWRIGHT_BASE_URL=http://127.0.0.1:9`) needs central doc — Epic 2 retro B2.
-  - `ErrorBoundary` copy still English-only — Epic 2 retro B8 (Epic 1 A10 carry-forward).
+  - ~~Playwright sandbox workaround (`PLAYWRIGHT_BASE_URL=http://127.0.0.1:9`) needs central doc~~ ✓ landed in Story 3.10.
+  - ~~`ErrorBoundary` copy still English-only~~ ✓ landed in Story 3.8.
   - 24-month retention deletion automation — Epic 5 candidate.
   - WCAG R-A2 waiver: Electric Blue `#0075F0` is large-text only on light bg — locked in `src/lib/brand-tokens.contrast.test.ts` and `vault/Planning/Architecture-Key.md`
 - **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)

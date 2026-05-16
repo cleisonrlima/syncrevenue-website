@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 in-progress: Stories 3.1–3.9 done; Story 3.10 (DX discipline — `defaultValue` lint rule + sandbox conventions) shipped — see [[Planning/Sandbox-Conventions]], `eslint.config.mjs`, and `eslint-rules/t-requires-default-value.mjs`.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 in-progress: Stories 3.1–3.10 done; Story 3.10 (DX discipline — `defaultValue` lint rule + sandbox conventions) shipped — see [[Planning/Sandbox-Conventions]], `eslint.config.mjs`, and `eslint-rules/t-requires-default-value.mjs`.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
