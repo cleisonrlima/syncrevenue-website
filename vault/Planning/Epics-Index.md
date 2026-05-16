@@ -55,14 +55,14 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 3.1 | Real Team Photos & Bio Content | SYN-23 | `[x]` done |
 | 3.2 | Animations & Micro-Interactions | SYN-24 | `[x]` done |
 | 3.3 | SEO Metadata — Meta Tags, OG, hreflang & Sitemap | SYN-25 | `[x]` done |
-| 3.4 | Mobile UX Polish Pass | SYN-26 | `[ ]` |
+| 3.4 | Mobile UX Polish Pass | SYN-26 | `[~]` ready-for-dev |
 | 3.5 | Commission Audit Lead Magnet | SYN-27 | `[ ]` |
 | 3.6 | Story 3.1 Review Follow-ups — Real Team Content & Visual QA | _(pending Jira)_ | `[ ]` |
 | 3.7 | Epic 1 Review Polish — Font Loading & UI Primitive Hardening | _(pending Jira)_ | `[ ]` |
 | 3.8 | ErrorBoundary i18n & Recovery UX | _(pending Jira)_ | `[ ]` |
 | 3.9 | Architecture & Token Hygiene Docs — Patterns Gallery + WCAG Contrast Manifest | _(pending Jira)_ | `[ ]` |
 | 3.10 | DX Discipline — `defaultValue` Lint Rule & Sandbox Port-Binding Convention | _(pending Jira)_ | `[ ]` |
-| 3.11 | SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up) | _(pending Jira)_ | `[ ]` |
+| 3.11 | SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up) | SYN-85 | `[ ]` |
 
 ## Epic 4 — Admin Operations (Phase 3)
 
