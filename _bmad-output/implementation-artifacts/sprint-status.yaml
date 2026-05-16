@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # 3.1 review changes requested
+last_updated: 2026-05-16  # Story 3.2 created -> ready-for-dev
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -78,11 +78,15 @@ development_status:
   # Epic 3: Content Polish & SEO (Phase 2)
   epic-3: in-progress
   3-1-real-team-photos-bio-content: done
-  3-2-animations-micro-interactions: backlog
+  3-2-animations-micro-interactions: ready-for-dev
   3-3-seo-metadata-meta-tags-og-hreflang-sitemap: backlog
   3-4-mobile-ux-polish-pass: backlog
   3-5-commission-audit-lead-magnet: backlog
   3-6-story-3-1-review-followups-real-team-content-visual-qa: backlog
+  3-7-epic-1-review-polish-font-loading-ui-primitives: backlog
+  3-8-errorboundary-i18n-recovery-ux: backlog
+  3-9-architecture-token-hygiene-docs: backlog
+  3-10-dx-discipline-defaultvalue-lint-sandbox-convention: backlog
   epic-3-retrospective: optional
 
   # Epic 4: Admin Operations (Phase 3)

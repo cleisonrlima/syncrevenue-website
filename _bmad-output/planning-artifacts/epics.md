@@ -936,6 +936,142 @@ This story implements the Critical and Medium review follow-ups recorded against
 **When** `npm run typecheck`, `npm test`, and `npm run test:e2e` run
 **Then** all 234+ unit tests continue to pass; the Story 3.1 Playwright spec `tests/e2e/team-section.spec.ts` either continues to pass unchanged or its `"no placeholder leak"` and `"initials fallback count"` specs are updated to reflect the new real-photo state (whichever truthfully matches the shipped data)
 
+### Story 3.7: Epic 1 Review Polish — Font Loading & UI Primitive Hardening
+
+As a SyncRevenue site visitor on a slow or constrained connection (and as the perf-conscious frontend team),
+I want the site's font delivery and shared UI primitives to follow the polish notes captured during Epic 1 reviews,
+So that page load is faster, the design-system primitives are reusable beyond the homepage, and the deferred-work backlog from Epic 1 stories 1.2, 1.5, and Epic 2 retro (A9) is closed.
+
+This story implements the unchecked items in `_bmad-output/implementation-artifacts/deferred-work.md` for Story 1.2 and the cosmetic utility consolidation from `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md` action item A9. No new features — only polish.
+
+**Acceptance Criteria:**
+
+**Given** `src/index.css` currently uses `@import` for Google Fonts
+**When** the font loading strategy is refactored
+**Then** `<link rel="preconnect">` to `https://fonts.googleapis.com` and `https://fonts.gstatic.com` plus the `<link rel="stylesheet">` for the chosen font weights is moved to `index.html` `<head>`; the `@import` line in `src/index.css` is removed; Lighthouse `render-blocking resources` regression for fonts disappears in a manual run
+
+**Given** the current Google Fonts URL loads 6 weight-lines (400, 500, 600, 700, 800, 400i)
+**When** the URL is rewritten
+**Then** only weights actually used in `tailwind.config.ts` and component code remain (400, 600, 700, 800); 500 and 400i are dropped; no component visually regresses; the bundle size delta is recorded in the story commit message
+
+**Given** `tailwind.config.ts` defines `fontWeight.heavy: '800'`
+**When** the config is cleaned up
+**Then** the `heavy` token is removed; all `font-heavy` class usages (grep `font-heavy`) are migrated to Tailwind's built-in `font-extrabold`; typecheck + tests + visual diff remain clean
+
+**Given** `src/components/ui/SectionHeader.tsx` hardcodes the heading element as `<h2>`
+**When** a polymorphic `as` prop is introduced (`as?: 'h2' | 'h3'`)
+**Then** consumers can render an h3 where the section sits inside a higher-level heading hierarchy; default stays `h2` for backwards compatibility; existing consumers do not need to change unless deliberately overriding
+
+**Given** `SectionHeader` `<p>` subtext currently has `max-w-2xl` on an unconstrained parent
+**When** the layout is fixed
+**Then** the constraint is either lifted (no-op) or applied at the correct wrapper so it actually limits the rendered width; the chosen behavior is documented in the file's leading comment if non-obvious
+
+**Given** `src/components/sections/SectionSkeleton.tsx` uses `bg-muted` which is nearly invisible on white surfaces and offers no visible loading affordance under `prefers-reduced-motion`
+**When** the skeleton is hardened
+**Then** the base color uses a brand-muted variant with adequate contrast on white; under `motion-safe:` suppression a small static spinner or `aria-live="polite"` "Loading…" sr-only label is present so reduced-motion users perceive activity
+
+**Given** `src/components/ui/GradientButton.tsx` focus-visible ring is white and assumes a dark/gradient surrounding
+**When** the button is placed on a light surface
+**Then** the focus ring uses a contrast-safe color (brand-deep or token-driven) that remains visible against both dark and light surroundings; the existing dark-surface visual behavior is preserved
+
+**Given** the `[&>p:first-of-type]:text-brand-deep` selector is repeated across multiple section components (Epic 2 retro A9)
+**When** the utility is consolidated
+**Then** it is either lifted to a Tailwind plugin, a documented shared utility class, or absorbed into `SectionHeader`'s contract so consumers don't rediscover the pattern via grep
+
+**Given** all the above
+**When** `npm run typecheck && npm test && npm run build` run
+**Then** all checks pass; no behavioral regression in existing unit tests; the corresponding bullets in `_bmad-output/implementation-artifacts/deferred-work.md` (Story 1.2 section) and Epic 2 retro A9 row are marked `[x]` / `✅ Done`
+
+### Story 3.8: ErrorBoundary i18n & Recovery UX
+
+As a SyncRevenue visitor in PT-BR or ES whose Team or Comparison section fails to load,
+I want the ErrorBoundary fallback to speak my language and offer a recovery path,
+So that I am not stranded by a hardcoded English error and I can retry without a full reload — closing Epic 1 Story 1.4 re-review deferred items and Epic 2 retro action A10.
+
+This story implements the unchecked items in `_bmad-output/implementation-artifacts/deferred-work.md` Story 1.4 re-review section and the `Carry forward` row A10 in `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`.
+
+**Acceptance Criteria:**
+
+**Given** `src/components/ErrorBoundary.tsx` currently renders a hardcoded English fallback `"Failed to load section."`
+**When** the boundary is refactored
+**Then** the fallback message is sourced from `t('errors.sectionLoad', { defaultValue: 'Failed to load section.' })`; PT-BR and ES translations are added under a new `errors.*` top-level i18n key (max 3 levels deep per project convention); the class component is refactored to a function component using `react-error-boundary` or an internal function-component wrapper that consumes `useTranslation()` — whichever path keeps the existing parent contract intact
+
+**Given** the refactored ErrorBoundary
+**When** a child section throws and the fallback renders
+**Then** a "Retry" button (labeled `errors.retry`) is rendered alongside the message; pressing it calls a `resetErrorBoundary` (or equivalent) handler that re-mounts the children once; the button is keyboard accessible, has visible focus state, and uses the existing `GradientButton`/`Button` token-driven styles
+
+**Given** an SPA route change happens (e.g., navigating to `/privacy` then back to `/`)
+**When** the new page mounts
+**Then** scroll position is reset to top by default; a top-level `ScrollRestoration` component (or equivalent useEffect on `useLocation`) handles this; deep-link navigation to `/#section-id` still scrolls to the target anchor as before (no regression)
+
+**Given** the existing ErrorBoundary unit tests at `src/components/ErrorBoundary.test.tsx`
+**When** the tests are updated
+**Then** they cover: (1) localized fallback message under EN/PT-BR/ES; (2) Retry button re-mounts children and clears the error; (3) ScrollRestoration is asserted in a route-change test (mocked `useLocation`); typecheck + test suite remain green
+
+**Given** the changes
+**When** committed
+**Then** the matching bullets in `deferred-work.md` (1-4 re-review section) and Epic 2 retro A10 row are marked `[x]` / `✅ Done`
+
+### Story 3.9: Architecture & Token Hygiene Docs — Patterns Gallery + WCAG Contrast Manifest
+
+As a developer joining the SyncRevenue codebase mid-sprint,
+I want a single discoverable reference for the canonical patterns and a token-level WCAG AA contrast manifest,
+So that I stop rediscovering conventions via grep and we have an enforceable token-contrast baseline — closing Epic 2 retro action items A3 and A5.
+
+This story implements the `❌ Not addressed — Carry forward` rows A3 (Reusable patterns gallery doc) and A5 (Brand-token WCAG AA validation at token level) in `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`.
+
+**Acceptance Criteria:**
+
+**Given** the project's canonical patterns are currently scattered across `vault/Planning/Architecture-Key.md`, individual story files, and code
+**When** a patterns gallery is authored
+**Then** a new vault note `vault/Code/Patterns-Gallery.md` is added that catalogs each canonical pattern (Lazy + Suspense + ErrorBoundary trio, DAO factory + default singleton, `createApp()` test harness, `void sendNotification(...).catch(...)` fire-and-forget SMTP, API-envelope `success: true` strictness, `useImperativeHandle` multi-CTA convergence, defaultValue discipline, `forwardRef` form components, co-located tests, i18n key max-depth, locale-from-store, `data-*` markers); each entry includes: pattern name, where to use it, one-line code snippet, file path with line range, and at least one rejected alternative
+
+**Given** brand tokens are defined in `tailwind.config.ts` (`brand-deep #0055F0`, `brand-electric #0075F0`, `brand-slate`, `brand-navy`, etc.)
+**When** a contrast manifest is generated
+**Then** a new file `src/lib/brand-tokens.contrast.manifest.ts` (or `.json`) exports a typed table of every (foreground, background) brand-token pair with: computed contrast ratio, WCAG AA pass/fail for normal text, WCAG AA pass/fail for large/UI text, and a `waiver` field referencing R-A2 where applicable; the manifest is generated by a small script (`scripts/check-brand-contrast.ts` or similar) that can be run via `npm run check:contrast`
+
+**Given** the existing `src/lib/brand-tokens.contrast.test.ts`
+**When** it is extended
+**Then** it consumes the new manifest and asserts no NEW token pair fails WCAG AA without an explicit waiver; the R-A2 electric-blue waiver continues to be honored; the test fails if a new token pair is added that doesn't meet AA and has no waiver
+
+**Given** the patterns gallery
+**When** linked from existing surfaces
+**Then** `vault/00-Home.md`, `vault/Planning/Architecture-Key.md`, and `vault/Code/Index.md` link to the new gallery; an anti-pattern (e.g., `__tests__/` dirs, hand-rolled fetch wrappers bypassing `src/lib/api.ts`, hardcoded English in ErrorBoundary) is also documented in the gallery as a counter-example
+
+**Given** the changes
+**When** committed
+**Then** Epic 2 retro rows A3 and A5 are marked `✅ Done` with a link to the commit and the new files
+
+### Story 3.10: DX Discipline — `defaultValue` Lint Rule & Sandbox Port-Binding Convention
+
+As the SyncRevenue engineering team,
+I want the `defaultValue` discipline (every `t()` call has one) enforced by tooling rather than reviewer eyeballs, and the sandbox port-binding workaround captured as a documented convention,
+So that we stop rediscovering both in every story and stop relying on per-story discipline — closing Epic 2 retro action items A4 and A6.
+
+This story implements Epic 2 retro rows A4 (`defaultValue` discipline as PR/lint check, currently `⏳ Partial`) and A6 (Resolve sandbox port-binding workflow, currently `⏳ Partial — workaround discovered in 2.7`).
+
+**Acceptance Criteria:**
+
+**Given** the project's ESLint or equivalent lint config
+**When** a custom rule is added (either via `eslint-plugin-local-rules`, a small custom plugin, or `@typescript-eslint/no-restricted-syntax` with an AST selector)
+**Then** any `t('key')` call that lacks a `defaultValue` option errors at lint time; the rule is scoped to `src/**/*.{ts,tsx}` and excludes test files; the rule message links to `vault/Code/i18n.md` for context
+
+**Given** the rule
+**When** `npm run lint` runs
+**Then** the existing codebase passes (all `t()` calls already comply); any net-new `t()` call without `defaultValue` introduced in a PR fails CI; the rule has at least one passing and one failing fixture test under a small `eslint-rules/__tests__/` folder
+
+**Given** the sandbox port-binding workaround (`127.0.0.1:9` base URL plus codified `PLAYWRIGHT_BASE_URL` override pattern, discovered in Story 2.7)
+**When** the convention is codified centrally
+**Then** a new doc `vault/Planning/Sandbox-Conventions.md` records: the symptom (sandbox cannot bind dev-server port), the workaround, the `PLAYWRIGHT_BASE_URL` precedence, and a one-line copy-paste-able command for QA in a sandbox; `playwright.config.ts` honors `PLAYWRIGHT_BASE_URL` (verify it already does and document); manual QA steps that previously fell back to "deferred to manual QA pass" (Stories 1.6 task 3 + 5) reference this doc explicitly
+
+**Given** Stories 1.6 task 3 and task 5 are currently `[x]` with a `_deferred to manual QA pass (sandbox cannot bind dev-server port)_` note
+**When** the new convention exists
+**Then** a follow-up checklist in this story confirms the deferred QA paths now work in the sandbox using the documented workaround; the result is recorded — pass or fail — in this story's file
+
+**Given** the changes
+**When** committed
+**Then** Epic 2 retro rows A4 and A6 are marked `✅ Done` with link to the lint rule + new convention doc
+
 ## Epic 4: Admin Operations (Phase 3)
 
 Sync Sirius ops team can manage the full demo pipeline through a secure, JWT-authenticated admin dashboard — view leads by locale/status, triage, update statuses, and manage team content in all three locales.
