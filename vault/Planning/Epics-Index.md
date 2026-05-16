@@ -53,8 +53,8 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | Story | Title | Jira | Status |
 |---|---|---|---|
 | 3.1 | Real Team Photos & Bio Content | SYN-23 | `[x]` done |
-| 3.2 | Animations & Micro-Interactions | SYN-24 | `[~]` review |
-| 3.3 | SEO Metadata — Meta Tags, OG, hreflang & Sitemap | SYN-25 | `[ ]` |
+| 3.2 | Animations & Micro-Interactions | SYN-24 | `[x]` done |
+| 3.3 | SEO Metadata — Meta Tags, OG, hreflang & Sitemap | SYN-25 | `[~]` ready-for-dev |
 | 3.4 | Mobile UX Polish Pass | SYN-26 | `[ ]` |
 | 3.5 | Commission Audit Lead Magnet | SYN-27 | `[ ]` |
 | 3.6 | Story 3.1 Review Follow-ups — Real Team Content & Visual QA | _(pending Jira)_ | `[ ]` |
