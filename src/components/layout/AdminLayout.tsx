@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAdmin } from '@/hooks/useAdmin'
-import SectionSkeleton from '@/components/sections/SectionSkeleton'
 
 export default function AdminLayout() {
   const location = useLocation()
@@ -30,7 +29,15 @@ export default function AdminLayout() {
   if (!bootstrapped) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brand-navy">
-        <SectionSkeleton label="Loading admin session" className="h-12 w-48" />
+        <div
+          role="status"
+          aria-label="Loading admin session"
+          aria-busy="true"
+          aria-live="polite"
+          className="h-12 w-48 motion-safe:animate-pulse rounded-md bg-brand-slate/60"
+        >
+          <span className="sr-only">Loading admin session...</span>
+        </div>
       </div>
     )
   }

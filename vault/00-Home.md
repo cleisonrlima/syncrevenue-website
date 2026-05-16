@@ -55,7 +55,7 @@
   - 2.6 Form Accessibility & Locale-Aware Validation (`createDemoSchema(t)` / `createContactSchema(t)` factories)
   - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
-- Active phase: **Epic 4 (Phase 3)** — Story 4.1 (admin auth) in review 2026-05-16. Epic 3 done (3.1–3.11) including retrospective.
+- Active phase: **Epic 4 (Phase 3)** — Story 4.1 (admin auth) done 2026-05-16. Next: Story 4.2 leads dashboard. Epic 3 done (3.1–3.11) including retrospective.
 - Story 3.6 (Story 3.1 Review Follow-ups) — done under accepted fake-data full-stub override. EN/PT-BR/ES team JSON now uses fabricated temporary names, solid-color WebP stubs, and fabricated LinkedIn-style URLs pending manual stakeholder-content swap.
 - Quality at Story 3.1 close: **234 tests pass**; `tsc --noEmit` → 0; `npm run build` clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
@@ -64,7 +64,7 @@
   - ClientReferences placeholder agency content — gated by `vault/Planning/client-references-allowlist.md` + `ClientReferences.allowlist.test.tsx` (R-B1). Swap before prod deploy.
   - ~~`GradientButton` lacks `loading`/`async-disabled`~~ ✓ landed in Story 2.2.
   - ~~DB tables not yet created~~ ✓ landed in Story 2.1.
-  - ~~Admin auth 501 placeholders~~ ✓ landed in Story 4.1 (`/api/admin/auth/login` real + JWT cookie; `/logout` clears cookie; `/me` already wired). Cross-model review pending.
+  - ~~Admin auth 501 placeholders~~ ✓ landed in Story 4.1 (`/api/admin/auth/login` real + JWT cookie; `/logout` clears cookie; `/me` already wired). Cross-model review complete.
   - ~~Playwright sandbox workaround (`PLAYWRIGHT_BASE_URL=http://127.0.0.1:9`) needs central doc~~ ✓ landed in Story 3.10.
   - ~~`ErrorBoundary` copy still English-only~~ ✓ landed in Story 3.8.
   - 24-month retention deletion automation — Epic 5 candidate.

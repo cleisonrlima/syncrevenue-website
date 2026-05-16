@@ -47,3 +47,8 @@ NEW defers surfaced by the now-runnable `npm run lhci:mobile`:
 ## Deferred from: code review of 3-6-story-3-1-review-followups-real-team-content-visual-qa (2026-05-16)
 
 - Broken non-empty photo URLs render broken images instead of falling back to initials. `Team.tsx` renders `<img>` for any non-empty `photo` and only uses initials when `photo` is empty; add an `onError` fallback or an asset-decode gate in a future hardening story. [src/components/sections/Team.tsx:94]
+
+## Deferred from: code review of 4-1-admin-authentication-login-session-management (2026-05-16)
+
+- Login endpoint has no auth-specific throttling or lockout. Deferred because Story 4.1 notes explicitly call admin login rate limiting out of scope and direct review findings to follow-up work. [server/routes/admin/auth.ts:31]
+- Existing JWTs are not revoked after password reseed or account removal. Deferred because the current schema has no disabled/token-version/password-changed field; handle as a future admin security hardening story. [server/middleware/auth.ts:37]

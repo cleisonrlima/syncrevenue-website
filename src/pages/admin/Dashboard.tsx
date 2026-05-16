@@ -14,6 +14,7 @@ export default function Dashboard() {
             {email}
           </p>
         ) : null}
+        {/* TODO Story 4.6 */}
         <button
           type="button"
           onClick={() => void logout()}

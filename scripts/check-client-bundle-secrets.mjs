@@ -15,6 +15,8 @@ const forbiddenNames = [
   'SMTP_PASS',
   'SMTP_USER',
   'NOTIFY_EMAIL',
+  'ADMIN_EMAIL',
+  'ADMIN_PASSWORD',
 ]
 
 const seededSecretValues = [
@@ -22,6 +24,8 @@ const seededSecretValues = [
   'client-bundle-smtp-pass-sentinel',
   'client-bundle-smtp-user-sentinel',
   'client-bundle-notify-email-sentinel@example.com',
+  'client-bundle-admin@example.com',
+  'client-bundle-admin-password-sentinel',
 ]
 
 const forbiddenValues = [

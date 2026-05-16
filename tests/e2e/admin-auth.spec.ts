@@ -1,9 +1,19 @@
 import { test, expect } from '@playwright/test'
+import db from '../../server/db'
+import { seedAdminUser } from '../../server/db.seed'
 
-const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL
-const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD
+const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-e2e@example.com'
+const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-e2e-password'
 
 test.describe('Admin Auth @P1', () => {
+  test.beforeAll(() => {
+    seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
+  })
+
+  test.afterAll(() => {
+    db.close()
+  })
+
   test('GET /admin redirects unauthenticated visitor to /admin/login', async ({ page }) => {
     await page.goto('/admin/dashboard')
     await page.waitForURL(/\/admin\/login$/)
@@ -27,11 +37,9 @@ test.describe('Admin Auth @P1', () => {
   })
 
   test('happy path: login → dashboard → logout → redirect back to login', async ({ page, context }) => {
-    test.skip(!TEST_EMAIL || !TEST_PASSWORD, 'ADMIN_TEST_EMAIL/PASSWORD not set; run npm run db:seed and export creds to enable.')
-
     await page.goto('/admin/login')
-    await page.getByLabel(/email/i).fill(TEST_EMAIL!)
-    await page.getByLabel(/password|senha|contraseña/i).fill(TEST_PASSWORD!)
+    await page.getByLabel(/email/i).fill(TEST_EMAIL)
+    await page.getByLabel(/password|senha|contraseña/i).fill(TEST_PASSWORD)
     await page.getByRole('button', { name: /sign in|entrar|iniciar sesión/i }).click()
     await page.waitForURL(/\/admin\/dashboard$/)
 

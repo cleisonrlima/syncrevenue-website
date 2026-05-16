@@ -1,6 +1,6 @@
 # Story 4.1: Admin Authentication — Login & Session Management
 
-Status: review
+Status: done
 
 <!-- Created 2026-05-16 by /bmad-create-story. Parent Jira: SYN-28 (verify on next jira sync — sprint-status mirror notes "assumed keys"). -->
 
@@ -110,7 +110,17 @@ So that I can access lead and team management without re-authenticating every vi
 
 ### Review Findings
 
-<!-- Populated by the reviewer after cross-model code review. Leave empty until then. -->
+- [x] [Review][Decision] Dashboard logout lacks required Story 4.6 marker — Resolved by user choice: use JSX marker comment `{/* TODO Story 4.6 */}`. Evidence: `src/pages/admin/Dashboard.tsx:8`.
+- [x] [Review][Patch] Login validation order returns 500 before 400 when `JWT_SECRET` is missing [server/routes/admin/auth.ts:31]
+- [x] [Review][Patch] Unknown-email and wrong-password paths have a timing side channel despite identical 401 bodies [server/routes/admin/auth.ts:51]
+- [x] [Review][Patch] AdminLayout imports from public sections, violating the admin import boundary [src/components/layout/AdminLayout.tsx:4]
+- [x] [Review][Patch] Login form bypasses required `Label`, `Input`, and `Button` UI primitives [src/pages/admin/Login.tsx:36]
+- [x] [Review][Patch] E2E happy path can be skipped in CI when admin test credentials are not provided [tests/e2e/admin-auth.spec.ts:29]
+- [x] [Review][Patch] Admin API success responses trust `body.data` without runtime shape checks [src/lib/api.ts:200]
+- [x] [Review][Patch] Auth route test seeds password hash with cost 4 instead of required cost 12 [server/routes/admin/auth.test.ts:33]
+- [x] [Review][Patch] Client bundle secret scan does not include `ADMIN_EMAIL` or `ADMIN_PASSWORD` sentinel/name checks [scripts/check-client-bundle-secrets.mjs:9]
+- [x] [Review][Defer] Login endpoint has no auth-specific throttling or lockout [server/routes/admin/auth.ts:31] — deferred, Story 4.1 notes explicitly call admin login rate limiting out of scope and direct review findings to follow-up work.
+- [x] [Review][Defer] Existing JWTs are not revoked after password reseed or account removal [server/middleware/auth.ts:37] — deferred, current schema has no disabled/token-version/password-changed field; handle as a future admin security hardening story.
 
 ## Dev Notes
 
@@ -254,28 +264,28 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — via Claude Code, 2026
 ### Debug Log References
 
 - `npm run typecheck` — PASS (0 errors).
-- `npm run test:run` — PASS (377/377 tests, 64 files).
+- `npm run test:run` — PASS (380/380 tests, 64 files).
 - `npm run build` — PASS (`tsc -p tsconfig.server.json` + `vite build` + `node scripts/generate-seo-assets.mjs`).
 - `npm run check:client-bundle-secrets` — PASS (no JWT_SECRET / ADMIN_PASSWORD / etc. in dist/client/).
 - `npm run db:seed` (idempotency check): first run = `admin user created`, second run = `admin user updated` (same row), missing env = `admin seed failed: ADMIN_EMAIL is required to seed admin user` + exit code 1.
 
 ### Completion Notes List
 
-- All 15 subtasks completed in a single session. AC 1–9 satisfied by code + tests.
+- All 15 subtasks completed in a single session; cross-model review patches applied. AC 1–9 satisfied by code + tests.
 - `bcryptjs` used throughout (NOT the native `bcrypt` package — which is not installed). Login route uses `bcrypt.compareSync` to keep handler synchronous and match the existing seed/test code path.
 - `AUTH_COOKIE_NAME = 'admin_token'` re-used from `server/middleware/auth.ts`; no new cookie names introduced.
-- Login response: 200 + `{ success: true, data: { adminId, email } }` + httpOnly+SameSite=Strict+secure(prod)+8h cookie. Verified in `server/routes/admin/auth.test.ts` happy-path test (asserts Set-Cookie attributes `HttpOnly` and `SameSite=Strict`).
+- Login response: 200 + `{ success: true, data: { adminId, email } }` + httpOnly+SameSite=Strict+secure(prod)+8h cookie. Verified in `server/routes/admin/auth.test.ts` happy-path test (asserts Set-Cookie attributes `HttpOnly` and `SameSite=Strict`). Login validates payload before checking `JWT_SECRET`, and unknown-email/wrong-password both run bcrypt comparison to reduce timing leakage.
 - Logout is idempotent and always clears the cookie via `res.clearCookie` with matching attributes (so browsers actually drop it). Returns 200 even with no prior cookie — covered by test "POST /logout returns 200 + clears cookie (idempotent without prior login)".
 - Invalid-credentials path: same 401 + `'Invalid credentials'` body for unknown email AND wrong password. Two separate tests assert no Set-Cookie header on either branch (no information leak).
-- `JWT_SECRET` missing → 500 + `'Auth not configured'`. Matches `requireAdmin`'s pre-existing envelope.
+- `JWT_SECRET` missing with valid payload → 500 + `'Auth not configured'`. Invalid payload still returns 400 first.
 - `useAdminStore` Zustand store has NO `persist` middleware. Cookie + `GET /me` is the source of truth. Reload triggers `AdminLayout` → `useAdmin().bootstrap()` → `getAdminMe()` → store re-hydrate.
-- `AdminLayout` renders a `SectionSkeleton` loading state while `!bootstrapped` so protected content never flashes. Post-bootstrap: unauth → redirect `/admin/login`; authed on `/admin/login` → redirect `/admin/dashboard`.
+- `AdminLayout` renders a local loading state while `!bootstrapped` so protected content never flashes. Post-bootstrap: unauth → redirect `/admin/login`; authed on `/admin/login` → redirect `/admin/dashboard`.
 - Login form maps status-code → i18n key (`401 → admin.login.errors.invalidCredentials`, `0 → admin.login.errors.network`, other → `admin.login.errors.unknown`) — NOT raw API message. Inline error renders inside `role="alert"` + `aria-live="polite"`. Editing any field clears the error (Login.test.tsx asserts this).
-- `Dashboard.tsx` minimal: heading + email + Logout button. Story 4.6 will move the logout into the persistent admin nav shell.
+- `Dashboard.tsx` minimal: heading + email + Logout button. Story 4.6 will move the logout into the persistent admin nav shell; JSX marker comment added per review decision.
 - i18n: `admin` namespace added to `en`, `pt-BR`, and `es` `translation.json` files (login title/email/password/submit/errors/dashboard/logout). aria-labels and technical attributes stay English per the project a11y i18n boundary rule.
 - `package.json`: added `"db:seed": "tsx server/db.seed.ts"`. `.env.example`: added `ADMIN_EMAIL=` and `ADMIN_PASSWORD=` with a comment scoping them to the seed script.
 - Bumped `server/index.test.ts` `admin auth login mount` assertion from 501 (old stub) to 400 (Zod-rejected empty payload) — the only existing test that needed adjustment.
-- E2E spec covers redirect from `/admin` → `/admin/login`, invalid-credentials path, and a happy-path round-trip (login → dashboard → reload → logout). The happy-path test is `test.skip`-ed unless `ADMIN_TEST_EMAIL`/`ADMIN_TEST_PASSWORD` env vars are exported — same skip-and-document convention Story 3.11 used for sandbox-blocked Playwright projects.
+- E2E spec covers redirect from `/admin` → `/admin/login`, invalid-credentials path, and a mandatory seeded happy-path round-trip (login → dashboard → reload → logout).
 - Sandbox Playwright projects (WebKit, mobile-safari) NOT run in this session — local binaries are not installed in this environment. Document this for the reviewer.
 
 ### File List
@@ -291,6 +301,9 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — via Claude Code, 2026
 - `src/components/layout/AdminLayout.test.tsx`
 - `src/lib/api.admin.test.ts`
 - `tests/e2e/admin-auth.spec.ts`
+- `src/components/ui/Button.tsx`
+- `src/components/ui/Input.tsx`
+- `src/components/ui/Label.tsx`
 
 **Modified:**
 - `server/routes/admin/auth.ts` — implemented `/login` + `/logout` (replaced 501 stubs); `/me` unchanged.
@@ -298,28 +311,33 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — via Claude Code, 2026
 - `server/index.test.ts` — updated `admin auth login mount` test expectation from 501 → 400.
 - `src/store/useAdminStore.ts` — replaced `export {}` stub with Zustand store.
 - `src/hooks/useAdmin.ts` — replaced `export {}` stub with `useAdmin` hook (login/logout/bootstrap + error mapping).
-- `src/lib/api.ts` — added `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `AdminApiError`.
-- `src/components/layout/AdminLayout.tsx` — added auth gate + `/me` bootstrap; preserved SEO meta-strip effect.
-- `src/pages/admin/Login.tsx` — implemented form with i18n + accessible error.
-- `src/pages/admin/Dashboard.tsx` — minimal landing + logout button.
+- `src/lib/api.ts` — added `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `AdminApiError`; added runtime admin session response validation.
+- `src/components/layout/AdminLayout.tsx` — added auth gate + `/me` bootstrap; preserved SEO meta-strip effect; uses local admin loading state (no public section import).
+- `src/pages/admin/Login.tsx` — implemented form with i18n + accessible error using `Label`, `Input`, and `Button` UI primitives.
+- `src/pages/admin/Dashboard.tsx` — minimal landing + logout button + Story 4.6 JSX marker.
 - `src/i18n/locales/en/translation.json` — added `admin` namespace.
 - `src/i18n/locales/pt-BR/translation.json` — added `admin` namespace.
 - `src/i18n/locales/es/translation.json` — added `admin` namespace.
 - `.env.example` — added `ADMIN_EMAIL` + `ADMIN_PASSWORD` with scoping comment.
 - `package.json` — added `db:seed` script.
+- `scripts/check-client-bundle-secrets.mjs` — added `ADMIN_EMAIL`/`ADMIN_PASSWORD` name + sentinel value checks.
 - `vault/Code/Admin.md` — refreshed file/endpoint tables + auth flow; marked Story 4.1 row.
 - `vault/Planning/Architecture-Key.md` — expanded Auth (Phase 3) decision block.
-- `vault/Planning/Epics-Index.md` — Story 4.1 `[ ]` → `[r]`.
+- `vault/Planning/Epics-Index.md` — Story 4.1 `[ ]` → `[r]` → `[x]`.
 - `vault/00-Home.md` — moved active phase to Epic 4; marked admin auth 501 carry-forward as landed.
-- `_bmad-output/implementation-artifacts/sprint-status.yaml` — story 4.1 transitions `ready-for-dev → in-progress → review`.
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — story 4.1 transitions `ready-for-dev → in-progress → review → done`.
 
 ### Change Log
 
 - 2026-05-16 — Implementation (Claude Opus 4.7 1M):
   - Backend: implemented `POST /api/admin/auth/login` (Zod validation, `adminDao.findByEmail`, `bcryptjs.compareSync`, `jwt.sign` 8h, httpOnly + SameSite=Strict + secure-in-prod cookie); `POST /api/admin/auth/logout` (idempotent `clearCookie`); `db.seed.ts` (idempotent bcrypt-12 admin upsert from `ADMIN_EMAIL`/`ADMIN_PASSWORD` env, exit-1 on missing env); `npm run db:seed` script wired.
-  - Frontend: `useAdminStore` (Zustand, no `persist`); `useAdmin` hook (login/logout/bootstrap, status-code → i18n key mapping); `AdminLayout` auth gate with `/me` bootstrap + loading state via `SectionSkeleton`; `Login.tsx` form with `role="alert"` error + i18n; minimal `Dashboard.tsx` with logout button (Story 4.6 will relocate).
+  - Frontend: `useAdminStore` (Zustand, no `persist`); `useAdmin` hook (login/logout/bootstrap, status-code → i18n key mapping); `AdminLayout` auth gate with `/me` bootstrap + loading state; `Login.tsx` form with `role="alert"` error + i18n; minimal `Dashboard.tsx` with logout button (Story 4.6 will relocate).
   - i18n: `admin` namespace added to EN, PT-BR, ES.
   - Tests: new `server/routes/admin/auth.test.ts` (9 cases — happy path, Zod failures, 401 unknown/wrong, 500 missing secret, logout idempotent, /me cookie round-trip); new `server/db.seed.test.ts` (idempotency, missing env, salt rounds default 12); new `src/store/useAdminStore.test.ts`; new `src/hooks/useAdmin.test.tsx`; new `src/pages/admin/Login.test.tsx`; new `src/components/layout/AdminLayout.test.tsx`; new `src/lib/api.admin.test.ts`; updated `server/index.test.ts` login-mount expectation 501 → 400; new `tests/e2e/admin-auth.spec.ts` (redirect, invalid-credentials, gated happy-path).
   - Vault: updated `vault/Code/Admin.md`, `vault/Planning/Architecture-Key.md` (auth decision expansion), `vault/Planning/Epics-Index.md`, `vault/00-Home.md` (active phase + carry-forward debt).
   - Verification: `npm run typecheck` PASS, `npm run test:run` PASS (377/377), `npm run build` PASS, `npm run check:client-bundle-secrets` PASS, `npm run db:seed` idempotency manually verified against scratch DB. Playwright WebKit/mobile-safari projects NOT run — binaries unavailable in sandbox (same precedent as Story 3.11).
-  - Status: review (awaiting cross-model code-review per CLAUDE.md — dev=Claude, review must be Codex/non-Claude).
+- 2026-05-16 — Cross-model review patch (Codex):
+  - Fixed review findings: validation-before-config order, dummy bcrypt compare for unknown email timing parity, admin import-boundary violation, missing UI primitives, mandatory E2E happy path, admin API response shape validation, bcrypt cost 12 in auth route test, admin secret sentinel scan, and Story 4.6 JSX marker.
+  - Deferred follow-ups logged in `deferred-work.md`: admin login rate limiting and JWT revocation after password/account changes.
+  - Verification: `npm run typecheck` PASS; targeted Story 4.1 unit tests PASS; `npm run test:run` PASS (380/380); `npm run test:e2e -- tests/e2e/admin-auth.spec.ts --project=chromium` PASS (4/4); `npm run build` PASS; `npm run check:client-bundle-secrets` PASS with ADMIN sentinel env values.
+  - Status: done.

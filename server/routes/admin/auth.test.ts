@@ -30,7 +30,7 @@ async function createIsolatedApp() {
   currentDb = dbModule.default
   daoModule.adminDao.create({
     email: 'admin@example.com',
-    password_hash: bcrypt.hashSync(PLAINTEXT, 4),
+    password_hash: bcrypt.hashSync(PLAINTEXT, 12),
   })
   app = createApp()
 }
@@ -132,6 +132,20 @@ describe('admin auth routes', () => {
     })
     expect(r.status).toBe(500)
     expect(r.json<{ success: boolean }>().success).toBe(false)
+  })
+
+  it('POST /login returns 400 for invalid payload before JWT_SECRET config check', async () => {
+    delete process.env.JWT_SECRET
+    const r = await request(app, {
+      method: 'POST',
+      path: '/api/admin/auth/login',
+      body: { email: 'not-an-email' },
+    })
+    expect(r.status).toBe(400)
+    expect(r.json<{ success: boolean; field?: string }>()).toMatchObject({
+      success: false,
+      field: 'email',
+    })
   })
 
   it('POST /logout returns 200 + clears cookie (idempotent without prior login)', async () => {

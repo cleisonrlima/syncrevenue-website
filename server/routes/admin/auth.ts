@@ -8,6 +8,7 @@ import { AUTH_COOKIE_NAME, requireAdmin } from '../../middleware/auth'
 const router = Router()
 
 const COOKIE_MAX_AGE_MS = 8 * 60 * 60 * 1000
+const DUMMY_PASSWORD_HASH = '$2b$12$nqwxTjIvSJwvlSMliNlU5eXYW/NB0tSuHrgmxwex60ntj4E1QeIh6'
 
 function cookieOptions() {
   return {
@@ -29,12 +30,6 @@ function clearCookieOptions() {
 }
 
 router.post('/login', (req: Request, res: Response) => {
-  const secret = process.env.JWT_SECRET
-  if (!secret) {
-    res.status(500).json({ success: false, message: 'Auth not configured' })
-    return
-  }
-
   const parsed = loginSchema.safeParse(req.body)
   if (!parsed.success) {
     const firstIssue = parsed.error.issues[0]
@@ -48,14 +43,15 @@ router.post('/login', (req: Request, res: Response) => {
   }
 
   const { email, password } = parsed.data
-  const user = adminDao.findByEmail(email)
-  if (!user) {
-    res.status(401).json({ success: false, message: 'Invalid credentials' })
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    res.status(500).json({ success: false, message: 'Auth not configured' })
     return
   }
 
-  const match = bcrypt.compareSync(password, user.password_hash)
-  if (!match) {
+  const user = adminDao.findByEmail(email)
+  const match = bcrypt.compareSync(password, user?.password_hash ?? DUMMY_PASSWORD_HASH)
+  if (!user || !match) {
     res.status(401).json({ success: false, message: 'Invalid credentials' })
     return
   }

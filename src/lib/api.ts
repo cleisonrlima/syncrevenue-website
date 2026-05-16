@@ -173,6 +173,13 @@ export class AdminApiError extends Error {
   }
 }
 
+function parseAdminSessionData(data: unknown): AdminSessionData | null {
+  if (!data || typeof data !== 'object') return null
+  const candidate = data as Partial<AdminSessionData>
+  if (typeof candidate.adminId !== 'number' || typeof candidate.email !== 'string') return null
+  return { adminId: candidate.adminId, email: candidate.email }
+}
+
 export async function postAdminLogin(payload: AdminLoginPayload): Promise<AdminLoginSuccessResponse> {
   let response: Response
   try {
@@ -197,7 +204,12 @@ export async function postAdminLogin(payload: AdminLoginPayload): Promise<AdminL
     )
   }
 
-  return { success: true, data: body.data as AdminSessionData }
+  const data = parseAdminSessionData(body.data)
+  if (!data) {
+    throw new AdminApiError(response.status, 'Invalid session response')
+  }
+
+  return { success: true, data }
 }
 
 export async function postAdminLogout(): Promise<AdminLogoutSuccessResponse> {
@@ -246,11 +258,12 @@ export async function getAdminMe(): Promise<AdminSessionData | null> {
     message?: string
   }
 
-  if (!response.ok || body.success !== true || !body.data) {
+  const data = parseAdminSessionData(body.data)
+  if (!response.ok || body.success !== true || !data) {
     throw new AdminApiError(response.status, body.message || 'Failed to load session')
   }
 
-  return body.data
+  return data
 }
 
 export async function postAudit(payload: AuditPayload): Promise<AuditSuccessResponse> {

@@ -57,6 +57,20 @@ describe('postAdminLogin', () => {
     expect(init.credentials).toBe('include')
     expect(init.method).toBe('POST')
   })
+
+  it('throws when success response has malformed session data', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: { email: 'a@b.com' } }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await expect(postAdminLogin({ email: 'a@b.com', password: 'x' })).rejects.toMatchObject({
+      name: 'AdminApiError',
+      message: 'Invalid session response',
+    })
+  })
 })
 
 describe('postAdminLogout', () => {
@@ -98,6 +112,16 @@ describe('getAdminMe', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ success: false, message: 'boom' }), {
         status: 500,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getAdminMe()).rejects.toBeInstanceOf(AdminApiError)
+  })
+
+  it('throws when /me success response has malformed session data', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: { adminId: '5', email: 'a@b.com' } }), {
+        status: 200,
         headers: { 'content-type': 'application/json' },
       })
     )
