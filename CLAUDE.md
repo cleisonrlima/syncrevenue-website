@@ -47,6 +47,22 @@ Enforcement:
 - If the user picks `[U]niform`, warn that it violates this rule and require explicit override.
 - On resume, re-validate the persisted `agentConfig` against this rule; flag violations before continuing.
 
+## Review Findings → New Story (Mandatory — Story Automator)
+
+The reviewer agent's findings must materialize as trackable work. After every Story Automator review step, the orchestrator MUST:
+
+1. Scan the review output for "Outstanding," "Deferred," "Not done," "Suggested follow-up," or any new actionable finding that was not auto-patched in the review commit.
+2. For each finding (or thematic cluster), append a new story to the CURRENT sprint:
+   - Add entry to `_bmad-output/planning-artifacts/epics.md` under the active epic.
+   - Create a story file in `_bmad-output/implementation-artifacts/` with AC and 1:1 subtasks via `/bmad-create-story`.
+   - Create parent Jira issue + child Sub-tasks via `/jira-assistant` (rule: Story Subtasks Mandatory).
+   - Update `sprint-status.yaml` to include the new story.
+   - Extend `storyRange` in the active orchestration state document so the loop picks it up.
+
+Auto-applied reviewer patches for trivial fixes are still acceptable. Anything non-trivial — design changes, deferred items, deletions, new dependencies, new tests beyond the AC scope — gets its own story even if the reviewer also tried to patch it.
+
+The previous "review register only" / "review verify cycle" rules are revoked.
+
 ## Git Commit + Push After Every Story (Mandatory)
 
 After every story completes (Story Automator or manual workflow), commit AND push to the remote. The Story Automator `commit-story` helper supports `--push` and is invoked with that flag from `step-03b-execute-finish`. If push fails (no remote, network error), log the warning and continue — but do not silently skip the push step.

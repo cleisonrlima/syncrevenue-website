@@ -902,6 +902,40 @@ So that I can bring concrete evidence of recoverable revenue to my director with
 **When** viewed
 **Then** all fields full-width; submit button full-width; keyboard accessible; confirmation is announced by screen reader
 
+### Story 3.6: Story 3.1 Review Follow-ups — Real Team Content & Visual QA
+
+As a Sync Sirius brand owner,
+I want the team section to render real, stakeholder-approved photos, names, and verified LinkedIn URLs across EN/PT-BR/ES,
+So that the public site presents a credible, accurate team to visitors rather than placeholder identities and initials fallbacks.
+
+This story implements the Critical and Medium review follow-ups recorded against Story 3.1 (file: `_bmad-output/implementation-artifacts/3-1-real-team-photos-bio-content.md` — "Review Follow-ups (AI)" section). The 3.1 code path already supports real photos, locale-aware bios, and conditional LinkedIn anchors; 3.6 supplies the real content + completes the deferred visual QA pass.
+
+**Acceptance Criteria:**
+
+**Given** stakeholder-approved photo assets are supplied
+**When** each photo is committed to `public/team/` (WebP, 320×320, optimized)
+**Then** the corresponding locale `team.members[].photo` field in `src/i18n/locales/{en,pt-BR,es}/translation.json` is set to `/team/<file>.webp`; the placeholder initials block stops rendering for those members; `width=320 height=320 loading=lazy` attributes remain on every `<img>`
+
+**Given** real team member identities are confirmed
+**When** the EN/PT-BR/ES locale `team.members[]` arrays are updated
+**Then** each member entry replaces the placeholder role-as-name (`Sync Sirius Operations Lead`, `Sync Sirius Technology Lead`) with a verified person name; `name`, `role`, and `bio` are locale-distinct (not copy-pasted English); deep-key i18n parity test at `src/i18n/index.test.ts` continues to pass
+
+**Given** real LinkedIn URLs are supplied (when applicable)
+**When** each locale `team.members[].linkedinUrl` is populated
+**Then** the conditional `<a target="_blank" rel="noopener noreferrer">` renders for members with a URL; the `aria-label` uses the existing `team.linkedinAriaLabel` interpolation key (`View {{name}} on LinkedIn` + locale-translated equivalents); members without a URL keep `linkedinUrl: ""` and render no anchor
+
+**Given** the deferred visual QA pass from Story 3.1
+**When** a developer runs the dev server (`npm run dev`) and loads the Team section in EN, PT-BR, and ES
+**Then** the real photos render without layout shift; alt text reads as `"{name}, {role}"` per locale; LinkedIn links open in a new tab where set and are absent where not set; the Team section on mobile (< 768px) stays single column; results are recorded as a checklist in the 3.6 story file
+
+**Given** all 3.1 review follow-ups are resolved
+**When** the 3.6 story is reviewed
+**Then** the unchecked review follow-up list in `_bmad-output/implementation-artifacts/3-1-real-team-photos-bio-content.md` (Critical/Critical/Medium items + the deferred visual check) is reconciled — each item linked to the 3.6 commit that closed it; no new code paths are introduced; only content fields and asset files change
+
+**Given** the unit + e2e suites
+**When** `npm run typecheck`, `npm test`, and `npm run test:e2e` run
+**Then** all 234+ unit tests continue to pass; the Story 3.1 Playwright spec `tests/e2e/team-section.spec.ts` either continues to pass unchanged or its `"no placeholder leak"` and `"initials fallback count"` specs are updated to reflect the new real-photo state (whichever truthfully matches the shipped data)
+
 ## Epic 4: Admin Operations (Phase 3)
 
 Sync Sirius ops team can manage the full demo pipeline through a secure, JWT-authenticated admin dashboard — view leads by locale/status, triage, update statuses, and manage team content in all three locales.
