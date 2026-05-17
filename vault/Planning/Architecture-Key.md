@@ -13,8 +13,9 @@ Source: `_bmad-output/planning-artifacts/architecture.md`
 
 ### Auth (Phase 3)
 - JWT in **httpOnly cookie** — cookie name `admin_token`, SameSite=Strict, 8h expiry, `secure` only in production
-- Payload: `{ adminId, email, iat, exp }`
-- Auth middleware (`requireAdmin`): verify → `req.admin` → next. 401 on invalid/expired, 500 when `JWT_SECRET` missing
+- Payload: `{ adminId, email, tokenVersion, iat, exp }` (Story 4.8 adds `tokenVersion`)
+- Auth middleware (`requireAdmin`): verify → load `admin_users` by `adminId` → strict `payload.tokenVersion === row.token_version` → `req.admin = { adminId, email }` → next. 401 on invalid/expired/missing-row/stale-tokenVersion (legacy tokens missing the claim fail by `undefined !== <number>`), 500 when `JWT_SECRET` missing
+- **JWT revocation (Story 4.8)**: `admin_users.token_version INTEGER NOT NULL DEFAULT 0`. `adminDao.upsert` bumps the counter whenever the row already exists (i.e., every `npm run db:seed` against an existing admin). Trade-off: a same-password re-seed ALSO bumps and revokes outstanding tokens — simpler than diff-detection and avoids a timing channel on hash existence. Acceptable for Phase 3 (single admin, low frequency). DB read per protected request — admin traffic is single-digit RPS; no cache layer.
 - Admin account: CLI-only via `npm run db:seed` (reads `ADMIN_EMAIL`/`ADMIN_PASSWORD` env, bcrypt salt 12, idempotent upsert). No UI password reset Phase 1–3
 - bcrypt: **bcryptjs** package (NOT `bcrypt`); use `bcrypt.compareSync`/`hashSync` to keep route handlers synchronous
 - Invalid credentials: same 401 + `'Invalid credentials'` for unknown email AND wrong password (no info leak)

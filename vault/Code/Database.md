@@ -57,6 +57,7 @@
 | `id` | INTEGER PK AUTOINCREMENT | |
 | `email` | TEXT NOT NULL UNIQUE | |
 | `password_hash` | TEXT NOT NULL | bcrypt, rounds ≥ 12 |
+| `token_version` | INTEGER NOT NULL | DEFAULT 0; Story 4.8 — bumped by `adminDao.upsert` on every existing-row reseed; signed into JWT; middleware rejects mismatch. ALTER TABLE migration with `duplicate column` swallow keeps existing DBs upgradeable. |
 | `created_at` | TEXT | ISO-8601 |
 
 ### `admin_login_attempts` (Story 4.7)

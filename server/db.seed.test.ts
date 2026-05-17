@@ -58,4 +58,31 @@ describe('seedAdminUser', () => {
     })
     expect(bcrypt.getRounds(result.user.password_hash)).toBe(12)
   })
+
+  // Story 4.8 — token_version revocation semantics
+  it('seeds first run with token_version = 0', () => {
+    const result = seedAdminUser({
+      email: 'a@b.com',
+      password: 'p',
+      dao,
+      saltRounds: 4,
+    })
+    expect(result.action).toBe('created')
+    expect(result.user.token_version).toBe(0)
+  })
+
+  it('bumps token_version on each subsequent seed (new password)', () => {
+    seedAdminUser({ email: 'a@b.com', password: 'p0', dao, saltRounds: 4 })
+    const second = seedAdminUser({ email: 'a@b.com', password: 'p1', dao, saltRounds: 4 })
+    expect(second.action).toBe('updated')
+    expect(second.user.token_version).toBe(1)
+    const third = seedAdminUser({ email: 'a@b.com', password: 'p2', dao, saltRounds: 4 })
+    expect(third.user.token_version).toBe(2)
+  })
+
+  it('bumps token_version on same-password re-seed (documented trade-off)', () => {
+    seedAdminUser({ email: 'a@b.com', password: 'same', dao, saltRounds: 4 })
+    const second = seedAdminUser({ email: 'a@b.com', password: 'same', dao, saltRounds: 4 })
+    expect(second.user.token_version).toBe(1)
+  })
 })

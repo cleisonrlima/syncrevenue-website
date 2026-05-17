@@ -75,7 +75,11 @@ router.post('/login', adminLoginRateLimiter, (req: Request, res: Response) => {
   }
 
   adminLoginAttemptsDao.reset(email)
-  const token = jwt.sign({ adminId: user.id, email: user.email }, secret, { expiresIn: '8h' })
+  const token = jwt.sign(
+    { adminId: user.id, email: user.email, tokenVersion: user.token_version },
+    secret,
+    { expiresIn: '8h' }
+  )
   res.cookie(AUTH_COOKIE_NAME, token, cookieOptions())
   res.status(200).json({ success: true, data: { adminId: user.id, email: user.email } })
 })

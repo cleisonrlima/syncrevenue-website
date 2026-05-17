@@ -1,6 +1,6 @@
 # Story 4.8: JWT Revocation via Token Versioning (Story 4.1 Review Follow-up)
 
-Status: ready-for-dev
+Status: review
 
 <!-- Created 2026-05-16 from Story 4.1 cross-model review (Codex). Deferred review finding #2. Parent Jira: SYN-166. Subtasks: SYN-174..181. -->
 
@@ -40,45 +40,45 @@ The fix is a per-admin `token_version` counter included in the JWT payload and c
 
 ## Tasks / Subtasks
 
-- [ ] Subtask 1: Schema migration — add `token_version` column (AC: 1)
-  - [ ] In `server/db.ts` `initSchema`, after the `CREATE TABLE IF NOT EXISTS admin_users (...)` statement, run a defensive `ALTER TABLE admin_users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0` wrapped in a try/catch (SQLite throws `duplicate column name` if the column already exists; swallow that specific error and rethrow others). Document inline why the try/catch is required (SQLite has no `ADD COLUMN IF NOT EXISTS`).
-  - [ ] Update the `CREATE TABLE` statement itself to include `token_version` for fresh DBs so the column exists from row 1.
+- [x] Subtask 1: Schema migration — add `token_version` column (AC: 1)
+  - [x] In `server/db.ts` `initSchema`, after the `CREATE TABLE IF NOT EXISTS admin_users (...)` statement, run a defensive `ALTER TABLE admin_users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0` wrapped in a try/catch (SQLite throws `duplicate column name` if the column already exists; swallow that specific error and rethrow others). Document inline why the try/catch is required (SQLite has no `ADD COLUMN IF NOT EXISTS`).
+  - [x] Update the `CREATE TABLE` statement itself to include `token_version` for fresh DBs so the column exists from row 1.
 
-- [ ] Subtask 2: DAO — `AdminUserRow` type + DAO methods (AC: 1, 2, 3, 7)
-  - [ ] Extend `AdminUserRow` in `server/dao/admin.dao.ts` to include `token_version: number`.
-  - [ ] Add `incrementTokenVersion(email: string): AdminUserRow` method that runs `UPDATE admin_users SET token_version = token_version + 1 WHERE email = ?` and returns the new row.
-  - [ ] Update `upsert` to call `incrementTokenVersion` whenever the row already exists (and whenever the row is freshly inserted, leave `token_version = 0` as the default — first-time seed should NOT pre-bump).
-  - [ ] Extend `admin.dao.test.ts` with token_version coverage: insert → 0; upsert existing → +1; multiple upserts → +N.
+- [x] Subtask 2: DAO — `AdminUserRow` type + DAO methods (AC: 1, 2, 3, 7)
+  - [x] Extend `AdminUserRow` in `server/dao/admin.dao.ts` to include `token_version: number`.
+  - [x] Add `incrementTokenVersion(email: string): AdminUserRow` method that runs `UPDATE admin_users SET token_version = token_version + 1 WHERE email = ?` and returns the new row.
+  - [x] Update `upsert` to call `incrementTokenVersion` whenever the row already exists (and whenever the row is freshly inserted, leave `token_version = 0` as the default — first-time seed should NOT pre-bump).
+  - [x] Extend `admin.dao.test.ts` with token_version coverage: insert → 0; upsert existing → +1; multiple upserts → +N.
 
-- [ ] Subtask 3: Login route — embed `tokenVersion` in JWT (AC: 4, 7)
-  - [ ] In `server/routes/admin/auth.ts` `router.post('/login', ...)`, change `jwt.sign({ adminId: user.id, email: user.email }, secret, { expiresIn: '8h' })` to `jwt.sign({ adminId: user.id, email: user.email, tokenVersion: user.token_version }, secret, { expiresIn: '8h' })`.
-  - [ ] No other route changes here — `/logout` and `/me` do not need updates beyond what middleware does.
+- [x] Subtask 3: Login route — embed `tokenVersion` in JWT (AC: 4, 7)
+  - [x] In `server/routes/admin/auth.ts` `router.post('/login', ...)`, change `jwt.sign({ adminId: user.id, email: user.email }, secret, { expiresIn: '8h' })` to `jwt.sign({ adminId: user.id, email: user.email, tokenVersion: user.token_version }, secret, { expiresIn: '8h' })`.
+  - [x] No other route changes here — `/logout` and `/me` do not need updates beyond what middleware does.
 
-- [ ] Subtask 4: Middleware — enforce `tokenVersion` match (AC: 5, 6)
-  - [ ] In `server/middleware/auth.ts`, extend `AdminTokenPayload` to include `tokenVersion?: number` (optional in the type for migration safety, REQUIRED in runtime check).
-  - [ ] In `requireAdmin`, after `jwt.verify` succeeds and the payload shape check passes, look up `adminDao.findById(payload.adminId)`. If undefined OR `payload.tokenVersion !== row.token_version` (use strict `!==`, treat missing payload `tokenVersion` as `undefined !== <number>` → 401) → call `unauthorized(res)` and return.
-  - [ ] Attach `req.admin = { adminId, email }` (do NOT leak `tokenVersion` onto the request).
-  - [ ] Update `server/middleware/auth.test.ts` to import `createAdminDao` and pre-seed an admin row, build a fresh app per test, and cover: (a) valid token + matching version → 200; (b) valid token + stale version → 401; (c) valid token + deleted admin row → 401.
+- [x] Subtask 4: Middleware — enforce `tokenVersion` match (AC: 5, 6)
+  - [x] In `server/middleware/auth.ts`, extend `AdminTokenPayload` to include `tokenVersion?: number` (optional in the type for migration safety, REQUIRED in runtime check).
+  - [x] In `requireAdmin`, after `jwt.verify` succeeds and the payload shape check passes, look up `adminDao.findById(payload.adminId)`. If undefined OR `payload.tokenVersion !== row.token_version` (use strict `!==`, treat missing payload `tokenVersion` as `undefined !== <number>` → 401) → call `unauthorized(res)` and return.
+  - [x] Attach `req.admin = { adminId, email }` (do NOT leak `tokenVersion` onto the request).
+  - [x] Update `server/middleware/auth.test.ts` to import `createAdminDao` and pre-seed an admin row, build a fresh app per test, and cover: (a) valid token + matching version → 200; (b) valid token + stale version → 401; (c) valid token + deleted admin row → 401.
 
-- [ ] Subtask 5: Seed script — verify token_version bump (AC: 2, 3)
-  - [ ] No code change in `server/db.seed.ts` itself — `adminDao.upsert` is the only call path, and Subtask 2 already wires the bump there.
-  - [ ] Extend `server/db.seed.test.ts` to assert `token_version` starts at 0 on `created`, then becomes 1 / 2 on subsequent `updated` runs.
+- [x] Subtask 5: Seed script — verify token_version bump (AC: 2, 3)
+  - [x] No code change in `server/db.seed.ts` itself — `adminDao.upsert` is the only call path, and Subtask 2 already wires the bump there.
+  - [x] Extend `server/db.seed.test.ts` to assert `token_version` starts at 0 on `created`, then becomes 1 / 2 on subsequent `updated` runs.
 
-- [ ] Subtask 6: Route test updates (AC: 7, 8)
-  - [ ] In `server/routes/admin/auth.test.ts`, add cases (c)–(f) from AC8. The "JWT signed before reseed → 401 after reseed" test should: log in normally, capture the cookie, call `adminDao.upsert` directly (or run the seed function) to bump version, then re-issue the protected request with the OLD cookie and expect 401.
-  - [ ] Update the existing happy-path login + `/me` round-trip test to assert the JWT payload includes `tokenVersion: 0` for a freshly-seeded admin (decode token in the test, do not rely on opacity).
+- [x] Subtask 6: Route test updates (AC: 7, 8)
+  - [x] In `server/routes/admin/auth.test.ts`, add cases (c)–(f) from AC8. The "JWT signed before reseed → 401 after reseed" test should: log in normally, capture the cookie, call `adminDao.upsert` directly (or run the seed function) to bump version, then re-issue the protected request with the OLD cookie and expect 401.
+  - [x] Update the existing happy-path login + `/me` round-trip test to assert the JWT payload includes `tokenVersion: 0` for a freshly-seeded admin (decode token in the test, do not rely on opacity).
 
-- [ ] Subtask 7: Vault + docs (post-implementation)
-  - [ ] Update `vault/Code/Admin.md` — add `token_version` to the schema row + document the revocation flow.
-  - [ ] Update `vault/Code/Database.md` — update `admin_users` table definition row.
-  - [ ] Update `vault/Planning/Architecture-Key.md` Auth (Phase 3) block — document the `tokenVersion` claim + the "seed bump revokes all outstanding tokens" rule + the trade-off (same-password re-seed also revokes).
+- [x] Subtask 7: Vault + docs (post-implementation)
+  - [x] Update `vault/Code/Admin.md` — add `token_version` to the schema row + document the revocation flow.
+  - [x] Update `vault/Code/Database.md` — update `admin_users` table definition row.
+  - [x] Update `vault/Planning/Architecture-Key.md` Auth (Phase 3) block — document the `tokenVersion` claim + the "seed bump revokes all outstanding tokens" rule + the trade-off (same-password re-seed also revokes).
 
-- [ ] Subtask 8: Verification (all ACs)
-  - [ ] `npm run typecheck`
-  - [ ] `npm run test:run` — full suite green
-  - [ ] `npm run build`
-  - [ ] `npm run check:client-bundle-secrets`
-  - [ ] Manual: `npm run db:seed`, log in via `npm run dev` UI, then in another shell re-run `npm run db:seed` with the same email + new password; refresh the admin dashboard, confirm the redirect to `/admin/login` fires within one request cycle.
+- [x] Subtask 8: Verification (all ACs)
+  - [x] `npm run typecheck`
+  - [x] `npm run test:run` — full suite green
+  - [x] `npm run build`
+  - [x] `npm run check:client-bundle-secrets`
+  - [ ] Manual: `npm run db:seed`, log in via `npm run dev` UI, then in another shell re-run `npm run db:seed` with the same email + new password; refresh the admin dashboard, confirm the redirect to `/admin/login` fires within one request cycle. **(Pending end-user verification — agent cannot drive a browser session. Equivalent scenario IS covered automatically: `server/routes/admin/auth.test.ts` "rejects pre-reseed cookie after admin password is reseeded" — login, capture cookie, `adminDao.upsert` to bump, hit `/api/admin/auth/me` with old cookie, expect 401.)**
 
 ### Review Findings
 
@@ -152,12 +152,50 @@ vault/
 
 ### Agent Model Used
 
-<!-- To be filled by the dev agent on implementation. -->
+Claude Opus 4.7 (1M context) — caveman mode active per project CLAUDE.md (chat only; code/docs in normal prose).
 
 ### Debug Log References
 
+- Initial `npm run test:run` after middleware change: 1 regression in `server/index.test.ts` "admin auth /me requires and reads a valid admin cookie" (a synthetic token for `adminId: 7` no longer passes because the middleware now requires a matching DB row). Fixed by seeding a real admin row via `adminDao.create` in the test and signing the token with that row's `id`/`token_version`. Re-run: 440 / 440 passing across 68 files.
+- `npm run typecheck`: clean.
+- `npm run build`: clean (2.57s, no chunks affected).
+- `npm run check:client-bundle-secrets`: pass.
+
 ### Completion Notes List
+
+- Schema: `admin_users.token_version INTEGER NOT NULL DEFAULT 0` added both in the `CREATE TABLE` (fresh DBs) and via a defensive `ALTER TABLE` (existing DBs). The `ALTER` swallows only the SQLite `duplicate column name: token_version` error and rethrows anything else — same idempotent-migration pattern that the rest of the codebase will need for future ALTERs.
+- DAO contract: `AdminUserRow` now carries `token_version`. `upsert` increments the counter only when the row already exists (first-time insert keeps `token_version = 0`). Added `incrementTokenVersion(email)` (used by the upsert path and exposed for tests) and `deleteByEmail(email)` (used by the middleware deleted-row test). Same-password re-seed also bumps — explicitly per AC3.
+- Login route: `jwt.sign` payload extended with `tokenVersion: user.token_version`. No other route changes; `/logout` and `/me` flow through the upgraded middleware.
+- Middleware: refactored to a factory `createRequireAdmin(dao)` so tests can inject an isolated DAO bound to a `:memory:` DB. The exported `requireAdmin` is still the singleton bound to the default app DAO — no call-site change in `server/routes/admin/auth.ts` or elsewhere. Per request: `jwt.verify` → payload shape check → `dao.findById(adminId)` → strict `payload.tokenVersion === row.token_version` → set `req.admin = { adminId, email }`. `tokenVersion` is intentionally NOT placed on `req.admin` (no downstream leak).
+- Seed: `server/db.seed.ts` unchanged — the bump rides on the DAO contract. New test cases assert the transition `created → 0`, then `updated → 1, 2, ...` for both new-password and same-password reseeds.
+- Tests added/updated: `server/dao/admin.dao.test.ts` (token_version transitions + delete), `server/middleware/auth.test.ts` (rewritten to use the DAO factory, covers stale/deleted/legacy/match cases), `server/routes/admin/auth.test.ts` (new `JWT revocation (Story 4.8)` describe block: stale-cookie-after-reseed, post-reseed re-login, deleted row, legacy no-claim token; happy-path test now decodes the JWT and asserts `tokenVersion: 0`), `server/db.seed.test.ts` (3 new cases), `server/index.test.ts` (admin `/me` cookie test re-seeds a real row).
+- Backward compat: tokens minted before this migration carry no `tokenVersion` claim and fail the strict `!==` check (`undefined !== 0`), forcing a re-login. This is the desired security-hardening behavior — see AC1 / Dev Notes.
+- Manual UI verification (the final manual checkbox under Subtask 8) is left unchecked: the equivalent end-to-end scenario IS covered automatically in `server/routes/admin/auth.test.ts` ("rejects pre-reseed cookie after admin password is reseeded"). The agent cannot drive a browser; the end-user can run the documented manual flow against `npm run dev` if they want a UI-level double-check before merging.
 
 ### File List
 
+Modified:
+- `server/db.ts`
+- `server/dao/admin.dao.ts`
+- `server/dao/admin.dao.test.ts`
+- `server/routes/admin/auth.ts`
+- `server/routes/admin/auth.test.ts`
+- `server/middleware/auth.ts`
+- `server/middleware/auth.test.ts`
+- `server/db.seed.test.ts`
+- `server/index.test.ts`
+- `vault/Code/Admin.md`
+- `vault/Code/Database.md`
+- `vault/Planning/Architecture-Key.md`
+- `vault/Planning/Epics-Index.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/implementation-artifacts/4-8-jwt-revocation-after-password-reseed.md` (this file)
+
+Created: none.
+Deleted: none.
+
 ### Change Log
+
+| Date | Change |
+|---|---|
+| 2026-05-17 | Implemented Story 4.8 — `token_version` migration, DAO bump on upsert, JWT payload claim, middleware enforcement; 13 new/updated tests across 5 files; vault + sprint-status updated; status → review. |

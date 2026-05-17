@@ -67,6 +67,7 @@ export function initSchema(database: Database.Database = db): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
+      token_version INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -91,6 +92,18 @@ export function initSchema(database: Database.Database = db): void {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `)
+
+  // Story 4.8: backfill token_version on pre-existing admin_users rows.
+  // SQLite lacks `ADD COLUMN IF NOT EXISTS`; the try/catch swallows the
+  // duplicate-column error on already-migrated DBs and rethrows anything else.
+  try {
+    database.exec(`ALTER TABLE admin_users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0`)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    if (!/duplicate column name: token_version/i.test(message)) {
+      throw err
+    }
+  }
 }
 
 initSchema(db)

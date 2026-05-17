@@ -33,4 +33,44 @@ describe('adminDao', () => {
     const created = dao.upsert({ email: 'fresh@b.com', password_hash: 'h' })
     expect(created.password_hash).toBe('h')
   })
+
+  // Story 4.8 — token_version semantics
+  it('create initialises token_version at 0', () => {
+    const row = dao.create({ email: 'a@b.com', password_hash: 'h' })
+    expect(row.token_version).toBe(0)
+  })
+
+  it('upsert of new row does not pre-bump token_version (stays 0)', () => {
+    const row = dao.upsert({ email: 'a@b.com', password_hash: 'h' })
+    expect(row.token_version).toBe(0)
+  })
+
+  it('upsert of existing row bumps token_version by 1 per call', () => {
+    dao.create({ email: 'a@b.com', password_hash: 'h0' })
+    expect(dao.upsert({ email: 'a@b.com', password_hash: 'h1' }).token_version).toBe(1)
+    expect(dao.upsert({ email: 'a@b.com', password_hash: 'h2' }).token_version).toBe(2)
+    expect(dao.upsert({ email: 'a@b.com', password_hash: 'h3' }).token_version).toBe(3)
+  })
+
+  it('upsert of existing row bumps token_version even when password_hash unchanged', () => {
+    dao.create({ email: 'a@b.com', password_hash: 'same' })
+    expect(dao.upsert({ email: 'a@b.com', password_hash: 'same' }).token_version).toBe(1)
+    expect(dao.upsert({ email: 'a@b.com', password_hash: 'same' }).token_version).toBe(2)
+  })
+
+  it('incrementTokenVersion returns the updated row when present', () => {
+    dao.create({ email: 'a@b.com', password_hash: 'h' })
+    const updated = dao.incrementTokenVersion('a@b.com')
+    expect(updated?.token_version).toBe(1)
+  })
+
+  it('incrementTokenVersion returns undefined when email is unknown', () => {
+    expect(dao.incrementTokenVersion('ghost@b.com')).toBeUndefined()
+  })
+
+  it('deleteByEmail removes the row', () => {
+    dao.create({ email: 'a@b.com', password_hash: 'h' })
+    dao.deleteByEmail('a@b.com')
+    expect(dao.findByEmail('a@b.com')).toBeUndefined()
+  })
 })

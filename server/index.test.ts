@@ -129,9 +129,17 @@ describe('Express bootstrap', () => {
     const missing = await request(app, { path: '/api/admin/auth/me' })
     expect(missing.status).toBe(401)
 
-    const token = jwt.sign({ adminId: 7, email: 'admin@example.com' }, 'test-secret', {
-      expiresIn: '8h',
-    })
+    // Story 4.8: requireAdmin now loads admin_users by id and enforces a
+    // tokenVersion match. Seed a real row and sign with its id + version.
+    const { adminDao } = await import('./dao/admin.dao')
+    const seeded =
+      adminDao.findByEmail('me-bootstrap@example.com') ??
+      adminDao.create({ email: 'me-bootstrap@example.com', password_hash: 'unused' })
+    const token = jwt.sign(
+      { adminId: seeded.id, email: seeded.email, tokenVersion: seeded.token_version },
+      'test-secret',
+      { expiresIn: '8h' }
+    )
     const ok = await request(app, {
       path: '/api/admin/auth/me',
       headers: { cookie: `${AUTH_COOKIE_NAME}=${token}` },
@@ -139,7 +147,7 @@ describe('Express bootstrap', () => {
     expect(ok.status).toBe(200)
     expect(ok.json()).toEqual({
       success: true,
-      data: { adminId: 7, email: 'admin@example.com' },
+      data: { adminId: seeded.id, email: 'me-bootstrap@example.com' },
     })
   })
 

@@ -1,6 +1,6 @@
 # Admin Module (Phase 3)
 
-**Auth:** JWT in httpOnly cookie — SameSite=Strict, 8h expiry, cookie name `admin_token`
+**Auth:** JWT in httpOnly cookie — SameSite=Strict, 8h expiry, cookie name `admin_token`, payload `{ adminId, email, tokenVersion }` (Story 4.8)
 **Route prefix:** `/admin/*` (frontend), `/api/admin/*` (backend)
 
 ---
@@ -25,9 +25,9 @@
 | `server/routes/admin/auth.ts` | POST `/api/admin/auth/login`, POST `/api/admin/auth/logout`, GET `/api/admin/auth/me` |
 | `server/routes/admin/leads.ts` | GET/PATCH `/api/admin/leads` |
 | `server/routes/admin/team.ts` | GET/POST/PATCH/DELETE `/api/admin/team` |
-| `server/middleware/auth.ts` | `requireAdmin` JWT verify middleware; `AUTH_COOKIE_NAME = 'admin_token'` |
+| `server/middleware/auth.ts` | `requireAdmin` JWT verify middleware; loads admin by id and rejects `payload.tokenVersion !== row.token_version` (Story 4.8); factory `createRequireAdmin(dao)` for tests; `AUTH_COOKIE_NAME = 'admin_token'` |
 | `server/middleware/rateLimit.ts` | `createFormRateLimiter` (15min / 20) + `createAdminLoginRateLimiter` (15min / 5) — independent per-route limiters with `'draft-7'` headers and JSON `{success:false,message:'Too many requests'}` 429 envelope |
-| `server/dao/admin.dao.ts` | Admin user lookup (`findByEmail`, `findById`, `create`, `upsert`) |
+| `server/dao/admin.dao.ts` | Admin user lookup (`findByEmail`, `findById`, `create`, `upsert`, `incrementTokenVersion`, `deleteByEmail`); `upsert` of existing row bumps `token_version` (Story 4.8) — same-password reseed also bumps (documented trade-off, single-admin Phase 3) |
 | `server/dao/admin-login-attempts.dao.ts` | Per-email failed-login counter (Story 4.7); durable across restarts via `admin_login_attempts` SQLite table |
 | `server/schemas/admin-auth.schema.ts` | Zod `loginSchema` |
 | `server/schemas/admin-leads-query.schema.ts` | Zod `adminLeadsQuerySchema` — `locale` ∈ {en,pt-BR,es}, `status` ∈ {pending,contacted,qualified}, both optional; unknown query keys ignored |
@@ -38,7 +38,7 @@
 ## Auth Flow
 
 1. POST `/api/admin/auth/login` → **per-IP rate limiter (5 / 15min)** → Zod validate → JWT secret check → **per-email lockout check (5 fails / 15min, durable via `admin_login_attempts`)** → `adminDao.findByEmail` → `bcrypt.compareSync` (with `DUMMY_PASSWORD_HASH` timing-equalization on miss AND on lockout branch) → on success: `adminLoginAttemptsDao.reset(email)` → `jwt.sign` 8h → set `admin_token` cookie (`httpOnly`, `sameSite: 'strict'`, `secure` in prod, `maxAge` 8h). On fail: `adminLoginAttemptsDao.recordFailure(email)` → 401 `Invalid credentials`.
-2. All `/api/admin/{leads,contacts,team}` routes → `requireAdmin` middleware → JWT verify → `req.admin = { adminId, email }`. 401 on miss/expiry/tamper, 500 if `JWT_SECRET` missing.
+2. All `/api/admin/{leads,contacts,team}` routes → `requireAdmin` middleware → JWT verify → `adminDao.findById(payload.adminId)` → strict `payload.tokenVersion === row.token_version` check → `req.admin = { adminId, email }`. 401 on miss/expiry/tamper/missing-row/stale-tokenVersion (incl. legacy tokens missing the claim), 500 if `JWT_SECRET` missing. (Story 4.8)
 3. POST `/api/admin/auth/logout` → `clearCookie` (matching attributes) → always 200 (idempotent)
 4. GET `/api/admin/auth/me` → `requireAdmin` → returns `{ adminId, email }` or 401
 5. Frontend `AdminLayout` mounts → if `!bootstrapped`, call `useAdmin().bootstrap()` → `getAdminMe()` → set or clear session
@@ -77,3 +77,4 @@ Cookie + `/me` is source of truth. Zustand store is a render cache — no `persi
 | 4.5 | — |
 | 4.6 | — |
 | 4.7 | `server/dao/admin-login-attempts.dao.ts` + `admin-login-attempts.dao.test.ts`, `admin_login_attempts` table in `server/db.ts` `initSchema`, `createAdminLoginRateLimiter` + cross-route independence test in `server/middleware/rateLimit.ts` / `rateLimit.test.ts`, per-IP limiter mount + per-email lockout branch in `server/routes/admin/auth.ts`, 6 new lockout cases (IP 429, email 401, lockout-with-correct-password, window-elapsed reset, partial-failure reset, persistence-across-restart) in `server/routes/admin/auth.test.ts` |
+| 4.8 | `token_version` column on `admin_users` (+ ALTER migration in `server/db.ts`), `incrementTokenVersion` / `deleteByEmail` + upsert bump in `server/dao/admin.dao.ts`, `tokenVersion` claim in `server/routes/admin/auth.ts` login JWT, per-request `findById` + strict-equality version check in `server/middleware/auth.ts` (factory `createRequireAdmin`); new tests: stale-cookie-after-reseed, post-reseed re-login, deleted-row, legacy-token rejection across `dao/admin.dao.test.ts`, `middleware/auth.test.ts`, `routes/admin/auth.test.ts`, `db.seed.test.ts`; `index.test.ts` /me cookie test refactored to seed real row |
