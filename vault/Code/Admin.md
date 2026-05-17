@@ -26,7 +26,9 @@
 | `server/routes/admin/leads.ts` | GET/PATCH `/api/admin/leads` |
 | `server/routes/admin/team.ts` | GET/POST/PATCH/DELETE `/api/admin/team` |
 | `server/middleware/auth.ts` | `requireAdmin` JWT verify middleware; `AUTH_COOKIE_NAME = 'admin_token'` |
+| `server/middleware/rateLimit.ts` | `createFormRateLimiter` (15min / 20) + `createAdminLoginRateLimiter` (15min / 5) — independent per-route limiters with `'draft-7'` headers and JSON `{success:false,message:'Too many requests'}` 429 envelope |
 | `server/dao/admin.dao.ts` | Admin user lookup (`findByEmail`, `findById`, `create`, `upsert`) |
+| `server/dao/admin-login-attempts.dao.ts` | Per-email failed-login counter (Story 4.7); durable across restarts via `admin_login_attempts` SQLite table |
 | `server/schemas/admin-auth.schema.ts` | Zod `loginSchema` |
 | `server/schemas/admin-leads-query.schema.ts` | Zod `adminLeadsQuerySchema` — `locale` ∈ {en,pt-BR,es}, `status` ∈ {pending,contacted,qualified}, both optional; unknown query keys ignored |
 | `server/db.seed.ts` | `npm run db:seed` — bcrypt-12-hashed admin upsert from `ADMIN_EMAIL`/`ADMIN_PASSWORD` |
@@ -35,7 +37,7 @@
 
 ## Auth Flow
 
-1. POST `/api/admin/auth/login` → Zod validate → `adminDao.findByEmail` → `bcrypt.compareSync` → `jwt.sign` 8h → set `admin_token` cookie (`httpOnly`, `sameSite: 'strict'`, `secure` in prod, `maxAge` 8h)
+1. POST `/api/admin/auth/login` → **per-IP rate limiter (5 / 15min)** → Zod validate → JWT secret check → **per-email lockout check (5 fails / 15min, durable via `admin_login_attempts`)** → `adminDao.findByEmail` → `bcrypt.compareSync` (with `DUMMY_PASSWORD_HASH` timing-equalization on miss AND on lockout branch) → on success: `adminLoginAttemptsDao.reset(email)` → `jwt.sign` 8h → set `admin_token` cookie (`httpOnly`, `sameSite: 'strict'`, `secure` in prod, `maxAge` 8h). On fail: `adminLoginAttemptsDao.recordFailure(email)` → 401 `Invalid credentials`.
 2. All `/api/admin/{leads,contacts,team}` routes → `requireAdmin` middleware → JWT verify → `req.admin = { adminId, email }`. 401 on miss/expiry/tamper, 500 if `JWT_SECRET` missing.
 3. POST `/api/admin/auth/logout` → `clearCookie` (matching attributes) → always 200 (idempotent)
 4. GET `/api/admin/auth/me` → `requireAdmin` → returns `{ adminId, email }` or 401
@@ -74,3 +76,4 @@ Cookie + `/me` is source of truth. Zustand store is a render cache — no `persi
 | 4.4 | — |
 | 4.5 | — |
 | 4.6 | — |
+| 4.7 | `server/dao/admin-login-attempts.dao.ts` + `admin-login-attempts.dao.test.ts`, `admin_login_attempts` table in `server/db.ts` `initSchema`, `createAdminLoginRateLimiter` + cross-route independence test in `server/middleware/rateLimit.ts` / `rateLimit.test.ts`, per-IP limiter mount + per-email lockout branch in `server/routes/admin/auth.ts`, 6 new lockout cases (IP 429, email 401, lockout-with-correct-password, window-elapsed reset, partial-failure reset, persistence-across-restart) in `server/routes/admin/auth.test.ts` |

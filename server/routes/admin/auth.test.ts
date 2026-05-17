@@ -14,24 +14,36 @@ const PLAINTEXT = 'correcthorsebatterystaple'
 let app: Express
 let currentDb: Database.Database | undefined
 let currentTempDir: string | undefined
+let attemptsDaoModule: typeof import('../../dao/admin-login-attempts.dao') | undefined
 
-async function createIsolatedApp() {
+async function createIsolatedApp(opts: { reuseDbPath?: string; seedAdmin?: boolean } = {}) {
   vi.resetModules()
-  currentTempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'syncrev-admin-auth-db-'))
-  process.env.DB_PATH = path.join(currentTempDir, 'test.db')
+  if (opts.reuseDbPath) {
+    process.env.DB_PATH = opts.reuseDbPath
+  } else {
+    currentTempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'syncrev-admin-auth-db-'))
+    process.env.DB_PATH = path.join(currentTempDir, 'test.db')
+  }
   process.env.ALLOWED_ORIGIN = 'http://localhost:5173'
   process.env.JWT_SECRET = 'test-secret'
 
-  const [{ createApp }, dbModule, daoModule] = await Promise.all([
+  const [{ createApp }, dbModule, daoModule, attemptsModule] = await Promise.all([
     import('../../index'),
     import('../../db'),
     import('../../dao/admin.dao'),
+    import('../../dao/admin-login-attempts.dao'),
   ])
   currentDb = dbModule.default
-  daoModule.adminDao.create({
-    email: 'admin@example.com',
-    password_hash: bcrypt.hashSync(PLAINTEXT, 12),
-  })
+  attemptsDaoModule = attemptsModule
+  if (opts.seedAdmin !== false) {
+    const existing = daoModule.adminDao.findByEmail('admin@example.com')
+    if (!existing) {
+      daoModule.adminDao.create({
+        email: 'admin@example.com',
+        password_hash: bcrypt.hashSync(PLAINTEXT, 12),
+      })
+    }
+  }
   app = createApp()
 }
 
@@ -182,5 +194,129 @@ describe('admin auth routes', () => {
     expect(meResponse.status).toBe(200)
     const body = meResponse.json<{ data: { email: string } }>()
     expect(body.data.email).toBe('admin@example.com')
+  })
+
+  // Story 4.7 — admin login throttling & lockout
+  describe('throttling and lockout (Story 4.7)', () => {
+    it('returns 429 on 6th attempt from same IP within window', async () => {
+      for (let i = 0; i < 5; i++) {
+        const r = await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: 'wrong' },
+          remoteAddress: '10.0.0.1',
+        })
+        expect(r.status).toBe(401)
+      }
+      const r6 = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: 'wrong' },
+        remoteAddress: '10.0.0.1',
+      })
+      expect(r6.status).toBe(429)
+      expect(r6.json()).toEqual({ success: false, message: 'Too many requests' })
+      expect(r6.headers['set-cookie']).toBeUndefined()
+    })
+
+    it('returns 401 (Invalid credentials, not Account locked) on 6th email-bound attempt across IPs', async () => {
+      for (let i = 0; i < 5; i++) {
+        const r = await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: 'wrong' },
+          remoteAddress: `10.0.1.${i + 1}`,
+        })
+        expect(r.status).toBe(401)
+      }
+      const r6 = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: 'wrong' },
+        remoteAddress: '10.0.1.99',
+      })
+      expect(r6.status).toBe(401)
+      expect(r6.json<{ message: string }>().message).toBe('Invalid credentials')
+      expect(r6.headers['set-cookie']).toBeUndefined()
+    })
+
+    it('returns 401 when correct password is submitted during active lockout', async () => {
+      for (let i = 0; i < 5; i++) {
+        await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: 'wrong' },
+          remoteAddress: `10.0.2.${i + 1}`,
+        })
+      }
+      const r = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: PLAINTEXT },
+        remoteAddress: '10.0.2.99',
+      })
+      expect(r.status).toBe(401)
+      expect(r.json<{ message: string }>().message).toBe('Invalid credentials')
+      expect(r.headers['set-cookie']).toBeUndefined()
+    })
+
+    it('grants 200 + cookie + resets counter when correct password arrives after window elapses', async () => {
+      expect(attemptsDaoModule).toBeTruthy()
+      const sixteenMinAgo = new Date(Date.now() - 16 * 60 * 1000)
+      for (let i = 0; i < 5; i++) {
+        attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', sixteenMinAgo)
+      }
+      const r = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: PLAINTEXT },
+        remoteAddress: '10.0.3.1',
+      })
+      expect(r.status).toBe(200)
+      const token = extractCookieValue(r.headers['set-cookie'] as string | string[] | undefined, AUTH_COOKIE_NAME)
+      expect(token).toBeTruthy()
+      expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')).toBeUndefined()
+    })
+
+    it('resets counter after partial failures followed by a successful login', async () => {
+      for (let i = 0; i < 3; i++) {
+        await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: 'wrong' },
+          remoteAddress: `10.0.4.${i + 1}`,
+        })
+      }
+      expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')?.failed_count).toBe(3)
+      const ok = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: PLAINTEXT },
+        remoteAddress: '10.0.4.99',
+      })
+      expect(ok.status).toBe(200)
+      expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')).toBeUndefined()
+    })
+
+    it('failure counter persists across server restart (createApp re-creation)', async () => {
+      const dbPath = process.env.DB_PATH!
+      // Pre-populate 5 failures with a recent timestamp via the live DAO
+      const recent = new Date()
+      for (let i = 0; i < 5; i++) {
+        attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', recent)
+      }
+      // Simulate restart: close current db handle and rebuild app against same file
+      currentDb?.close()
+      await createIsolatedApp({ reuseDbPath: dbPath })
+      const r = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: PLAINTEXT },
+        remoteAddress: '10.0.5.1',
+      })
+      expect(r.status).toBe(401)
+      expect(r.json<{ message: string }>().message).toBe('Invalid credentials')
+      expect(r.headers['set-cookie']).toBeUndefined()
+    })
   })
 })

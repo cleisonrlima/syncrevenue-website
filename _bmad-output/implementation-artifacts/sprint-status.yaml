@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-16  # Story 4.2 -> done (review fixes applied)
+# last_updated: 2026-05-16  # Story 4.7 -> review (dev complete)
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 4.2 -> done (review fixes applied)
+last_updated: 2026-05-16  # Story 4.7 -> review (dev complete)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -106,7 +106,7 @@ development_status:
   4-5-team-member-display-order-active-toggle: backlog
   4-6-admin-dashboard-navigation-shell: backlog
   # 4.7 + 4.8 added 2026-05-16 from Story 4.1 cross-model review deferred findings
-  4-7-admin-login-throttling-lockout: ready-for-dev
+  4-7-admin-login-throttling-lockout: review
   4-8-jwt-revocation-after-password-reseed: ready-for-dev
   epic-4-retrospective: optional
 

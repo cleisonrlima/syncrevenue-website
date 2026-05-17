@@ -70,6 +70,15 @@ export function initSchema(database: Database.Database = db): void {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    -- Per-email failed-login counters for admin throttling. Kept in a dedicated
+    -- table (rather than columns on admin_users) so security state can be
+    -- cleared/inspected without touching credential rows.
+    CREATE TABLE IF NOT EXISTS admin_login_attempts (
+      email TEXT PRIMARY KEY,
+      failed_count INTEGER NOT NULL DEFAULT 0,
+      last_failed_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS audit_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,

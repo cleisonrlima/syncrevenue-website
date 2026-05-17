@@ -18,6 +18,10 @@ Source: `_bmad-output/planning-artifacts/architecture.md`
 - Admin account: CLI-only via `npm run db:seed` (reads `ADMIN_EMAIL`/`ADMIN_PASSWORD` env, bcrypt salt 12, idempotent upsert). No UI password reset Phase 1–3
 - bcrypt: **bcryptjs** package (NOT `bcrypt`); use `bcrypt.compareSync`/`hashSync` to keep route handlers synchronous
 - Invalid credentials: same 401 + `'Invalid credentials'` for unknown email AND wrong password (no info leak)
+- **Login throttling (Story 4.7)**:
+  - **Per-IP**: `express-rate-limit` 5 / 15min on `POST /api/admin/auth/login`. 6th attempt → 429 `{success:false,message:'Too many requests'}`. Limiter instance independent of the form limiters (no cross-route exhaustion).
+  - **Per-email**: durable counter in `admin_login_attempts` table — 5 failures within a rolling 15-min window (relative to `last_failed_at`) ⇒ account locked. Locked attempts respond with the SAME `401 'Invalid credentials'` (no `'Account locked'` message) — locked-account, unknown-email, and wrong-password are indistinguishable by status, body, and timing (lockout branch runs the dummy bcrypt compare for timing parity).
+  - Locked-account responses do NOT increment the counter (prevents permanent lockout via continued knocking). Successful login resets the counter atomically before issuing the cookie. Counter persists across server restarts.
 - Frontend admin session: Zustand store is a render cache only — NO `persist` middleware. Cookie + `GET /me` is the truth. `AdminLayout` calls `useAdmin().bootstrap()` on mount to hydrate the store from `/me` before rendering protected routes.
 - Status-code → i18n key mapping on the client (not raw API message): 401 → `admin.login.errors.invalidCredentials`, network → `admin.login.errors.network`.
 

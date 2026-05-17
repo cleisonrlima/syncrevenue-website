@@ -59,6 +59,15 @@
 | `password_hash` | TEXT NOT NULL | bcrypt, rounds ≥ 12 |
 | `created_at` | TEXT | ISO-8601 |
 
+### `admin_login_attempts` (Story 4.7)
+| Column | Type | Notes |
+|---|---|---|
+| `email` | TEXT PRIMARY KEY | per-email failure counter (separate from credential row to keep security state isolated) |
+| `failed_count` | INTEGER NOT NULL | DEFAULT 0; incremented on each failed login |
+| `last_failed_at` | TEXT NOT NULL | DEFAULT `datetime('now')`; used with `ADMIN_LOGIN_WINDOW_MS` for rolling-window lockout |
+
+**Lockout policy:** `failed_count ≥ 5` within a 15-minute rolling window from `last_failed_at` ⇒ account locked. Locked attempts still return `401 Invalid credentials` (no information leak) and do NOT bump the counter (avoids permanent lockout by continued knocking). Successful login deletes the row.
+
 ---
 
 ## DAOs
@@ -69,6 +78,7 @@
 | `server/dao/contacts.dao.ts` | contact_submissions CRUD |
 | `server/dao/team.dao.ts` | team_members CRUD |
 | `server/dao/admin.dao.ts` | admin_users lookup |
+| `server/dao/admin-login-attempts.dao.ts` | admin_login_attempts counter — `getByEmail`, `recordFailure(email, now?)`, `reset(email)`, `isLocked(email, windowMs, threshold, now?)` |
 
 **Rule:** All SQL in DAO files. No raw SQL in route handlers.
 
