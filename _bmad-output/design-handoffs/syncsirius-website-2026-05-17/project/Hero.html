@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SyncSirius — SyncRevenue Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#0D0D3A;
+    --deep:#080820;
+    --ink:#0A0B2E;
+    --slate:#7A8099;
+    --muted:#5C6377;
+    --offwhite:#F4F6FA;
+    --line:rgba(255,255,255,.08);
+    --line-strong:rgba(255,255,255,.14);
+    --accent:#3D6FE0;
+    --accent-soft:#5B85E8;
+    --accent-dim:rgba(61,111,224,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#06061a;color:#fff;font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  /* ====================== NAV ====================== */
+  .nav{
+    position:absolute;inset:0 0 auto 0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px clamp(20px,4vw,56px);
+  }
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{height:32px;width:auto;display:block}
+  .nav-links{display:flex;gap:34px;font-size:14px;color:rgba(255,255,255,.78);font-weight:500}
+  .nav-links a{transition:color .2s}
+  .nav-links a:hover{color:#fff}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  .lang{font-size:13px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:6px;cursor:pointer}
+  .lang::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-bottom:3px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent);color:#fff;font-weight:600;
+    padding:11px 20px;border-radius:10px;font-size:14px;
+    transition:background .15s,transform .15s;
+    border:none;cursor:pointer;
+  }
+  .btn:hover{background:var(--accent-soft);transform:translateY(-1px)}
+  @media (max-width:900px){.nav-links{display:none}}
+
+  /* ====================== HERO ====================== */
+  .hero{
+    position:relative;min-height:100vh;
+    overflow:hidden;background:var(--ink);
+  }
+
+  /* Background airplane */
+  .bg{
+    position:absolute;inset:0;z-index:0;
+    background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1920&q=85');
+    background-size:cover;background-position:center;
+    filter:saturate(.85);
+  }
+  .bg::after{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(95deg,rgba(10,11,46,.94) 0%,rgba(10,11,46,.82) 40%,rgba(10,11,46,.6) 80%,rgba(10,11,46,.78) 100%),
+      linear-gradient(180deg,rgba(10,11,46,.5) 0%,transparent 35%,transparent 55%,rgba(8,8,28,.92) 100%);
+  }
+
+  .grid-overlay{display:none}
+  .glow{display:none}
+
+  /* ====================== CONTENT ====================== */
+  .wrap{
+    position:relative;z-index:10;
+    max-width:1320px;margin:0 auto;
+    padding:140px clamp(20px,4vw,56px) 80px;
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+
+  .top{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:60px;align-items:center;margin-bottom:60px}
+  @media (max-width:1024px){.top{grid-template-columns:1fr;gap:36px;margin-bottom:44px}}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:7px 14px 7px 9px;border-radius:999px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(12px);
+    font-size:12.5px;color:rgba(255,255,255,.88);font-weight:500;
+    margin-bottom:24px;align-self:flex-start;
+  }
+  .badge-dot{
+    width:18px;height:18px;border-radius:50%;
+    background:var(--accent);display:flex;align-items:center;justify-content:center;
+  }
+  .badge-dot::after{
+    content:"";width:7px;height:7px;border-radius:50%;background:#fff;
+    box-shadow:0 0 0 3px rgba(255,255,255,.25);
+  }
+
+  h1{
+    font-size:clamp(2.4rem,4.8vw,4.2rem);
+    line-height:1.02;letter-spacing:-.025em;font-weight:800;
+    margin:0 0 22px;max-width:16ch;color:#fff;
+  }
+  h1 .accent{color:var(--accent-soft)}
+  .sub{
+    font-size:clamp(15.5px,1.15vw,18px);line-height:1.55;
+    color:rgba(231,234,247,.78);
+    max-width:54ch;margin:0 0 32px;font-weight:400;
+  }
+  .sub strong{color:#fff;font-weight:600}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:36px}
+  .btn-lg{padding:15px 26px;font-size:15px;border-radius:14px}
+  .btn-lg.btn{border-radius:14px}
+  .link{
+    color:rgba(255,255,255,.85);font-size:14px;font-weight:500;
+    padding:14px 6px;display:inline-flex;align-items:center;gap:8px;
+    border-bottom:1px solid transparent;transition:border-color .2s;
+  }
+  .link:hover{border-color:rgba(255,255,255,.4)}
+  .link svg{width:14px;height:14px;transition:transform .2s}
+  .link:hover svg{transform:translateX(3px)}
+
+  /* hero KPI strip — concise outcome statement */
+  .kpi-row{
+    display:flex;gap:36px;padding-top:26px;border-top:1px solid var(--line);
+    max-width:600px;
+  }
+  .kpi-row .v{
+    font-size:clamp(24px,2.4vw,32px);font-weight:700;letter-spacing:-.02em;line-height:1;
+    color:#fff;font-variant-numeric:tabular-nums;
+  }
+  .kpi-row .l{font-size:11.5px;color:rgba(255,255,255,.5);font-weight:500;margin-top:8px;line-height:1.4}
+
+  /* ====================== RIGHT PANEL — product mark ====================== */
+  .panel{
+    position:relative;padding:28px 28px 26px;border-radius:14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line-strong);
+  }
+  .panel-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .panel-mark{
+    width:44px;height:44px;border-radius:10px;
+    background:var(--accent);display:flex;align-items:center;justify-content:center;
+  }
+  .panel-mark svg{width:20px;height:20px;color:#fff}
+  .panel-tag{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;line-height:1;font-weight:600}
+  .panel-name{font-size:22px;font-weight:700;letter-spacing:-.015em;line-height:1.1;margin-top:6px}
+  .panel-line{font-size:14px;line-height:1.55;color:rgba(231,234,247,.78);margin:0 0 22px;font-weight:400}
+  .panel-line strong{color:#fff;font-weight:600}
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+  .chips span{
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;
+    padding:5px 9px;border-radius:6px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+    color:rgba(255,255,255,.82);font-weight:500;letter-spacing:.02em;
+  }
+
+  /* Integration provider cards (Amadeus / Sabre / Travelport) */
+  .ints{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+  .ints-label{
+    font-size:10.5px;
+    color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;
+    margin-bottom:2px;font-weight:600;
+  }
+  .ints-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .int{
+    position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:4px;
+    padding:14px 10px 12px;border-radius:10px;
+    background:#fff;
+    border:1px solid rgba(255,255,255,.1);
+    transition:transform .15s,border-color .15s;
+    min-height:60px;
+  }
+  .int:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.3)}
+  .int img{max-height:22px;max-width:100%;width:auto;height:auto;display:block;object-fit:contain}
+  .int .live{
+    position:absolute;top:8px;right:8px;
+    width:6px;height:6px;border-radius:50%;background:#5BC98C;
+  }
+  .int-sub{
+    font-size:9.5px;
+    color:#5B6478;letter-spacing:.03em;font-weight:500;
+    line-height:1;margin-top:2px;
+  }
+
+  .ints-more{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    font-size:11px;color:rgba(255,255,255,.55);font-weight:500;
+    padding-left:2px;
+  }
+  .ints-more span{
+    font-size:10.5px;
+    padding:3px 8px;border-radius:5px;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);
+    color:rgba(255,255,255,.75);letter-spacing:.02em;font-weight:600;
+    white-space:nowrap;
+  }
+
+  /* live ticker */
+  .ticker{
+    display:flex;align-items:center;gap:12px;
+    padding:13px 14px;border-radius:10px;
+    background:rgba(255,255,255,.03);border:1px solid var(--line);
+    font-size:12.5px;
+  }
+  .ticker-dot{
+    width:7px;height:7px;border-radius:50%;background:#5BC98C;flex-shrink:0;
+  }
+  .ticker-text{flex:1;color:rgba(255,255,255,.75);font-weight:500;line-height:1.35}
+  .ticker-text b{color:#fff;font-weight:600}
+  .ticker-val{font-size:12.5px;color:#5BC98C;font-weight:600;font-variant-numeric:tabular-nums}
+
+  /* ====================== BENEFITS GRID ====================== */
+  .benefits{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  }
+  @media (max-width:960px){.benefits{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.benefits{grid-template-columns:1fr}}
+
+  .ben{
+    position:relative;padding:24px 22px 22px;border-radius:14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    transition:border-color .15s,background .15s;
+  }
+  .ben:hover{border-color:var(--line-strong);background:rgba(255,255,255,.045)}
+  .ben::before{display:none}
+
+  .ben-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .ben-ico{
+    width:38px;height:38px;border-radius:10px;flex-shrink:0;
+    background:var(--accent-dim);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent-soft);
+  }
+  .ben-ico svg{width:18px;height:18px}
+  .ben-metric{
+    font-size:11.5px;font-weight:600;
+    color:rgba(255,255,255,.7);letter-spacing:.02em;
+    padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .ben-metric.blue{color:var(--accent-soft);background:var(--accent-dim);border-color:transparent}
+  .ben-metric.amber{color:rgba(255,255,255,.7)}
+
+  .ben h3{
+    font-size:15px;font-weight:700;letter-spacing:-.01em;
+    margin:0 0 6px;line-height:1.25;color:#fff;
+  }
+  .ben p{
+    font-size:13px;line-height:1.55;color:rgba(231,234,247,.72);margin:0;
+  }
+
+  /* trust */
+  .trust{
+    margin-top:42px;display:flex;flex-wrap:wrap;gap:18px 28px;align-items:center;
+    font-size:11.5px;color:rgba(255,255,255,.5);font-weight:500;
+  }
+  .trust .item{display:flex;align-items:center;gap:8px}
+  .trust .item svg{width:14px;height:14px;color:rgba(255,255,255,.6);flex-shrink:0}
+  .trust .sep{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2)}
+
+  @media (max-width:900px){
+    .wrap{padding-top:120px;padding-bottom:60px}
+    .panel{padding:22px}
+  }
+
+  /* ====================== SECTION BASE (shared) ====================== */
+  .sec{position:relative;overflow:hidden;padding:100px 0;background:var(--ink)}
+  .sec-deep{background:#0A0B22}
+  .sec-inner{position:relative;z-index:5;max-width:1320px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .sec-glow{display:none}
+  .sec-grid{display:none}
+
+  .sec-head{max-width:760px;margin:0 auto 56px;text-align:center}
+  .sec-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;letter-spacing:.12em;
+    color:rgba(255,255,255,.5);font-weight:600;text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .sec-eyebrow::before{
+    content:"";width:24px;height:1px;background:rgba(255,255,255,.3);
+  }
+  .sec-h{
+    font-size:clamp(1.9rem,3.4vw,2.8rem);
+    line-height:1.08;letter-spacing:-.025em;font-weight:700;
+    margin:0 0 16px;color:#fff;
+  }
+  .sec-h .accent{color:var(--accent-soft)}
+  .sec-sub{
+    font-size:clamp(14.5px,1.05vw,16.5px);line-height:1.6;
+    color:rgba(231,234,247,.65);margin:0 auto;max-width:62ch;
+  }
+
+  /* ====================== TESTIMONIALS ====================== */
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:960px){.quotes{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.quotes{grid-template-columns:1fr}}
+
+  .quote{
+    position:relative;padding:30px 28px 24px;border-radius:14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    transition:border-color .15s,background .15s;
+    display:flex;flex-direction:column;
+  }
+  .quote:hover{border-color:var(--line-strong);background:rgba(255,255,255,.05)}
+  .quote::before{display:none}
+
+  .quote-mark{
+    position:absolute;top:20px;right:24px;
+    font-family:Georgia,serif;font-size:64px;font-weight:700;line-height:.6;
+    color:rgba(255,255,255,.08);
+    pointer-events:none;
+  }
+
+  .quote-pill{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;font-weight:600;
+    padding:5px 11px;border-radius:999px;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);
+    color:rgba(255,255,255,.7);letter-spacing:.04em;text-transform:uppercase;
+    align-self:flex-start;margin-bottom:22px;
+  }
+  .quote-pill::before{display:none}
+  .quote-pill.muted{color:rgba(255,255,255,.55)}
+
+  .quote-body{
+    font-size:15px;line-height:1.65;color:rgba(231,234,247,.85);
+    margin:0 0 28px;font-weight:400;
+  }
+  .quote-body.muted{color:rgba(231,234,247,.65);font-style:italic}
+
+  .quote-foot{
+    display:flex;align-items:center;gap:13px;
+    margin-top:auto;padding-top:20px;border-top:1px solid var(--line);
+  }
+  .agency-mark{
+    width:40px;height:40px;border-radius:10px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;letter-spacing:-.02em;color:#fff;
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--line-strong);
+  }
+  .agency-mark.a,
+  .agency-mark.b,
+  .agency-mark.c{background:rgba(255,255,255,.06);color:#fff}
+
+  .agency-name{font-size:14.5px;font-weight:600;color:#fff;letter-spacing:-.01em;line-height:1.15}
+  .agency-loc{
+    font-size:11.5px;color:rgba(255,255,255,.5);
+    margin-top:4px;display:flex;align-items:center;gap:6px;font-weight:500;
+  }
+  .agency-loc svg{width:11px;height:11px;color:rgba(255,255,255,.45)}
+
+  .ref-cta{
+    margin-top:48px;display:flex;justify-content:center;
+  }
+  .ref-cta a{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:12px 22px;border-radius:10px;
+    background:transparent;border:1px solid var(--line-strong);
+    color:#fff;font-size:14px;font-weight:600;
+    transition:background .15s,border-color .15s;
+  }
+  .ref-cta a:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.25)}
+  .ref-cta svg{width:14px;height:14px;transition:transform .15s}
+  .ref-cta a:hover svg{transform:translateX(3px)}
+
+  /* ====================== TEAM ====================== */
+  .team{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:1080px;margin:0 auto}
+  @media (max-width:760px){.team{grid-template-columns:1fr}}
+
+  .tm{
+    position:relative;border-radius:14px;overflow:hidden;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    display:grid;grid-template-columns:200px 1fr;
+    transition:border-color .15s,background .15s;
+  }
+  .tm:hover{border-color:var(--line-strong);background:rgba(255,255,255,.045)}
+  @media (max-width:560px){.tm{grid-template-columns:1fr}}
+
+  .tm-photo{
+    position:relative;aspect-ratio:1/1;width:100%;min-height:200px;
+    background:#0a0b22;overflow:hidden;
+  }
+  .tm-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92)}
+  .tm-photo::after{display:none}
+  .tm-photo-fallback{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:var(--accent);font-size:60px;font-weight:700;color:#fff;letter-spacing:-.02em;
+  }
+  .tm-status{
+    position:absolute;left:12px;bottom:12px;z-index:2;
+    display:inline-flex;align-items:center;gap:7px;
+    padding:5px 10px 5px 9px;border-radius:6px;
+    background:rgba(8,8,28,.75);
+    border:1px solid rgba(255,255,255,.1);
+    font-size:10.5px;font-weight:600;
+    color:rgba(255,255,255,.85);letter-spacing:.04em;
+  }
+  .tm-status::before{
+    content:"";width:6px;height:6px;border-radius:50%;background:#5BC98C;
+  }
+
+  .tm-body{padding:26px 26px 22px;display:flex;flex-direction:column}
+  .tm-name{font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:#fff;margin:0 0 8px}
+  .tm-role{
+    font-size:11.5px;font-weight:600;
+    color:rgba(255,255,255,.55);letter-spacing:.04em;text-transform:uppercase;line-height:1.5;
+    margin:0 0 16px;
+  }
+  .tm-bio{
+    font-size:13.5px;line-height:1.65;color:rgba(231,234,247,.7);
+    margin:0 0 18px;flex:1;
+  }
+  .tm-foot{
+    display:flex;align-items:center;gap:10px;
+    padding-top:14px;border-top:1px solid var(--line);
+    margin-top:auto;
+  }
+  .icon-btn{
+    width:34px;height:34px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background:transparent;border:1px solid var(--line-strong);
+    color:rgba(255,255,255,.75);
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.25);color:#fff}
+  .icon-btn svg{width:15px;height:15px}
+  .icon-btn.linkedin:hover{background:#0A66C2;border-color:#0A66C2;color:#fff}
+  .tm-foot-meta{
+    font-size:11px;color:rgba(255,255,255,.4);
+    letter-spacing:.02em;margin-left:auto;font-weight:500;
+  }
+
+  /* ====================== FORMS ====================== */
+  .form-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:40px;align-items:start;max-width:1180px;margin:0 auto}
+  @media (max-width:900px){.form-grid{grid-template-columns:1fr;gap:32px}}
+
+  .form-info{padding-top:6px}
+  .form-info h3{font-size:20px;font-weight:700;letter-spacing:-.015em;color:#fff;margin:0 0 22px;line-height:1.2}
+
+  .steps{display:flex;flex-direction:column;gap:18px;margin-bottom:32px}
+  .step{display:flex;gap:14px;align-items:flex-start}
+  .step-num{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--accent-dim);color:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .step-text strong{display:block;font-size:14.5px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:4px}
+  .step-text span{font-size:13px;line-height:1.55;color:rgba(231,234,247,.6)}
+
+  .info-card{padding:18px 20px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);display:flex;align-items:center;gap:14px}
+  .info-card-ico{width:38px;height:38px;border-radius:9px;flex-shrink:0;background:var(--accent-dim);color:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+  .info-card-ico svg{width:18px;height:18px}
+  .info-card-t{font-size:13.5px;font-weight:600;color:#fff;line-height:1.25}
+  .info-card-s{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px;line-height:1.4}
+
+  .form-card{padding:32px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--line-strong)}
+  @media (max-width:600px){.form-card{padding:24px 22px}}
+  .form-head{margin-bottom:24px}
+  .form-head h3{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.01em;margin:0 0 4px}
+  .form-head p{font-size:13px;color:rgba(255,255,255,.55);margin:0;line-height:1.5}
+
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:520px){.form-row{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;margin-bottom:14px}
+  .field.full{grid-column:1/-1}
+  .field label{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:7px;display:flex;align-items:center;gap:5px}
+  .field label .req{color:var(--accent-soft);font-weight:700}
+  .field label .opt{font-weight:500;color:rgba(255,255,255,.4);font-size:11px;margin-left:2px}
+  .field input,.field select,.field textarea{
+    width:100%;padding:11px 13px;border-radius:9px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--line-strong);
+    color:#fff;font-family:inherit;font-size:14px;line-height:1.4;
+    transition:border-color .15s,background .15s,box-shadow .15s;
+    -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.32)}
+  .field input:hover,.field select:hover,.field textarea:hover{border-color:rgba(255,255,255,.22)}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--accent);background:rgba(255,255,255,.06);
+    box-shadow:0 0 0 3px rgba(61,111,224,.12);
+  }
+  .field textarea{min-height:96px;resize:vertical}
+
+  .select-wrap{position:relative}
+  .select-wrap::after{
+    content:"";position:absolute;right:14px;top:50%;width:7px;height:7px;
+    border-right:1.5px solid rgba(255,255,255,.5);
+    border-bottom:1.5px solid rgba(255,255,255,.5);
+    transform:translateY(-70%) rotate(45deg);pointer-events:none;
+  }
+  .field select{padding-right:34px}
+  .field select option{background:#0A0B2E;color:#fff}
+
+  .form-foot{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .form-note{font-size:11.5px;color:rgba(255,255,255,.45);font-weight:500;display:flex;align-items:center;gap:7px}
+  .form-note svg{width:13px;height:13px;color:rgba(255,255,255,.45);flex-shrink:0}
+
+  .channels{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+  .channel{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);transition:border-color .15s,background .15s}
+  .channel:hover{border-color:var(--line-strong);background:rgba(255,255,255,.05)}
+  .channel-ico{width:36px;height:36px;border-radius:9px;flex-shrink:0;background:var(--accent-dim);color:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+  .channel-ico svg{width:17px;height:17px}
+  .channel-t{font-size:11.5px;color:rgba(255,255,255,.5);font-weight:500;line-height:1.2}
+  .channel-v{font-size:14px;font-weight:600;color:#fff;margin-top:3px;line-height:1.2}
+</style>
+</head>
+<body>
+
+<section class="hero" id="hero">
+
+  <div class="bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="brand" href="#">
+      <img src="assets/syncsirius-logo-trans.png" alt="SyncSirius" />
+    </a>
+    <nav class="nav-links">
+      <a href="#produto">Produto</a>
+      <a href="#beneficios">Benefícios</a>
+      <a href="#integracoes">Integrações</a>
+      <a href="#seguranca">Segurança</a>
+      <a href="#clientes">Clientes</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="nav-cta">
+      <span class="lang">PT-BR</span>
+      <button class="btn">Agendar Demo</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- HEAD: copy left, product panel right -->
+    <div class="top">
+
+      <div>
+        <h1>
+          Mais comissão por ticket.<br/>
+          <span class="accent">Menos retrabalho no rate desk.</span>
+        </h1>
+
+        <p class="sub">
+          O <strong>SyncRevenue</strong> determina a comissão e o markup corretos
+          <strong>antes do ticketing</strong>, lendo regras de contratos de companhias aéreas
+          em qualquer GDS, NDC ou motor de busca próprio. Sua equipe foca na negociação,
+          o sistema cuida da exceção.
+        </p>
+
+        <div class="cta-row">
+          <button class="btn btn-lg">
+            Agendar Demo
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+          <a class="link" href="#beneficios">
+            Ver como funciona
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="kpi-row">
+          <div><div class="v">+15–20%</div><div class="l">Comissão<br/>recuperada</div></div>
+          <div><div class="v">−40%</div><div class="l">Débitos<br/>(ADM)</div></div>
+          <div><div class="v">−65%</div><div class="l">Erros<br/>de QC</div></div>
+        </div>
+      </div>
+
+      <!-- Product panel -->
+      <aside class="panel">
+        <div class="panel-head">
+          <div class="panel-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="panel-tag">SYNCSIRIUS · MOTOR DE COMISSÕES</div>
+            <div class="panel-name">SyncRevenue</div>
+          </div>
+        </div>
+
+        <p class="panel-line">
+          Sistema especialista que aplica a regra correta de comissão e markup
+          <strong>no fluxo mid-office</strong> — antes da emissão do bilhete.
+        </p>
+
+        <div class="ints">
+          <div class="ints-label">GDS integrados</div>
+          <div class="ints-row">
+            <div class="int">
+              <span class="live"></span>
+              <img src="https://amadeus.com/content/dam/amadeuswebevo/brand/amadeus/logos/amadeus-logo-dark-sky.png" alt="Amadeus" />
+            </div>
+            <div class="int">
+              <span class="live"></span>
+              <img src="https://developer.sabre.com/_next/static/media/sabre-logo-black.4e14cd49.svg" alt="Sabre" />
+            </div>
+            <div class="int">
+              <span class="live"></span>
+              <img src="https://www.travelport.com/travelport-logo.svg" alt="Travelport" />
+              <div class="int-sub">Galileo · Worldspan</div>
+            </div>
+          </div>
+          <div class="ints-more">
+            também suportado &nbsp;<span>NDC</span><span>IBE próprio</span>
+          </div>
+        </div>
+
+        <div class="ticker">
+          <span class="ticker-dot"></span>
+          <span class="ticker-text">Ticket <b>PNR-44128</b> ajustado em mid-office</span>
+          <span class="ticker-val">+ $8.420</span>
+        </div>
+      </aside>
+    </div>
+
+    <!-- BENEFITS -->
+    <div class="benefits" id="beneficios">
+
+      <article class="ben">
+        <div class="ben-head">
+          <div class="ben-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+          <span class="ben-metric">antes do ticket</span>
+        </div>
+        <h3>Comissão correta na emissão</h3>
+        <p>Determina POS, comissão e markup automaticamente em mid-office, eliminando retrabalho do rate desk depois da venda.</p>
+      </article>
+
+      <article class="ben">
+        <div class="ben-head">
+          <div class="ben-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="19" cy="17" r="2"/></svg>
+          </div>
+          <span class="ben-metric blue">multi-fonte</span>
+        </div>
+        <h3>GDS, NDC e IBE — agnóstico</h3>
+        <p>Funciona com Amadeus, Sabre, Galileo, Worldspan, conteúdo NDC e motores de busca próprios. Uma única regra serve a todos.</p>
+      </article>
+
+      <article class="ben">
+        <div class="ben-head">
+          <div class="ben-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          </div>
+          <span class="ben-metric amber">48h</span>
+        </div>
+        <h3>Gestão de contratos</h3>
+        <p>Envie os PDFs dos contratos de cia aérea — nossa equipe estrutura as regras na base de conhecimento em até 48 horas.</p>
+      </article>
+
+      <article class="ben">
+        <div class="ben-head">
+          <div class="ben-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
+          </div>
+          <span class="ben-metric">+15–20%</span>
+        </div>
+        <h3>ROI imediato</h3>
+        <p>Ganho líquido de 15–20% sobre a receita de comissões assim que entra em produção — sem mudar processo do front-office.</p>
+      </article>
+
+      <article class="ben">
+        <div class="ben-head">
+          <div class="ben-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h8"/></svg>
+          </div>
+          <span class="ben-metric">−40% ADM</span>
+        </div>
+        <h3>Menos disputas, menos ADM</h3>
+        <p>Aplicar a regra certa antes da emissão derruba débitos contestados e reduz em até 65% as exceções que chegam ao QC.</p>
+      </article>
+
+      <article class="ben">
+        <div class="ben-head">
+          <div class="ben-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H4.6c-.3 0-.6-.3-.6-.6V3"/><rect x="8" y="11" width="3" height="7"/><rect x="13" y="7" width="3" height="11"/><rect x="18" y="14" width="3" height="4"/></svg>
+          </div>
+          <span class="ben-metric blue">pós-emissão</span>
+        </div>
+        <h3>Analytics para negociar</h3>
+        <p>Relatórios de performance por cia aérea, contrato e POS — munição com dado para a próxima rodada de negociação.</p>
+      </article>
+
+    </div>
+
+    <!-- trust -->
+    <div class="trust">
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Transmissão criptografada
+      </div>
+      <span class="sep"></span>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M9 13l-2 8 5-3 5 3-2-8"/></svg>
+        Roadmap de certificação
+      </div>
+      <span class="sep"></span>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-9 9-5-5"/></svg>
+        Seguro contratual
+      </div>
+      <span class="sep"></span>
+      <div class="item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        Agências dos EUA referenciadas
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====================== TESTIMONIALS / REFERENCES ====================== -->
+<section class="sec sec-deep" id="clientes">
+  <div class="sec-glow tl"></div>
+  <div class="sec-glow br"></div>
+  <div class="sec-grid"></div>
+
+  <div class="sec-inner">
+    <header class="sec-head">
+      <span class="sec-eyebrow">Referências de clientes</span>
+      <h2 class="sec-h">Confiança comprovada por <span class="accent">agências reais</span></h2>
+      <p class="sec-sub">Referências nomeadas são compartilhadas com aprovação para que agências focadas em segurança possam verificar experiência operacional real.</p>
+    </header>
+
+    <div class="quotes">
+
+      <article class="quote">
+        <span class="quote-mark">"</span>
+        <span class="quote-pill">cliente referência</span>
+        <p class="quote-body">O SyncRevenue deu à nossa equipe financeira uma trilha de conciliação de comissões mais clara em relatórios BSP e ARC, recuperando receita que antes escapava da revisão manual.</p>
+        <div class="quote-foot">
+          <div class="agency-mark a">AT</div>
+          <div>
+            <div class="agency-name">Atlas Travel Group</div>
+            <div class="agency-loc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Miami, FL
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="quote">
+        <span class="quote-mark">"</span>
+        <span class="quote-pill muted">referência operacional</span>
+        <p class="quote-body muted">Disponível para chamadas de referência de segurança e implementação com agências de médio porte após aprovação mútua.</p>
+        <div class="quote-foot">
+          <div class="agency-mark b">PS</div>
+          <div>
+            <div class="agency-name">Pacific Sun Voyages</div>
+            <div class="agency-loc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              San Diego, CA
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="quote">
+        <span class="quote-mark">"</span>
+        <span class="quote-pill">integração multi-GDS</span>
+        <p class="quote-body">A visibilidade multi-GDS entre Amadeus, Sabre e Galileo tornou as disputas de débitos mais rápidas de resolver e reduziu o retrabalho do nosso back office.</p>
+        <div class="quote-foot">
+          <div class="agency-mark c">NT</div>
+          <div>
+            <div class="agency-name">Northstar Travel Partners</div>
+            <div class="agency-loc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Minneapolis, MN
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="ref-cta">
+      <a href="#contato">
+        Solicitar referências
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== TEAM ====================== -->
+<section class="sec" id="equipe">
+  <div class="sec-glow tl"></div>
+  <div class="sec-glow br"></div>
+  <div class="sec-grid"></div>
+
+  <div class="sec-inner">
+    <header class="sec-head">
+      <span class="sec-eyebrow">Nossa equipe</span>
+      <h2 class="sec-h">Especialistas em <span class="accent">distribuição aérea</span></h2>
+      <p class="sec-sub">Décadas combinadas em operações GDS, BSP e back-office de agências — cada engajamento liderado por quem já viveu o problema do outro lado do balcão.</p>
+    </header>
+
+    <div class="team">
+
+      <article class="tm">
+        <div class="tm-photo">
+          <img src="assets/team/maria-silva.webp" alt="Maria Silva" loading="lazy" />
+          <span class="tm-status">disponível</span>
+        </div>
+        <div class="tm-body">
+          <h3 class="tm-name">Maria Silva</h3>
+          <p class="tm-role">Liderança em Distribuição Aérea<br/>&amp; Estratégia de Comissões</p>
+          <p class="tm-bio">Orienta agências de viagem em operações GDS, reconciliação BSP/ARC, fluxos de memorandos de débito e estratégia de recuperação de comissões em toda a América. Vinte anos atuando nos fluxos Sabre, Amadeus e Galileo.</p>
+          <div class="tm-foot">
+            <a class="icon-btn linkedin" href="https://www.linkedin.com/in/maria-silva-syncsirius/" target="_blank" rel="noopener noreferrer" aria-label="Ver Maria Silva no LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.36V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+            </a>
+            <span class="tm-foot-meta">20+ anos GDS</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="tm">
+        <div class="tm-photo">
+          <img src="assets/team/lucas-oliveira.webp" alt="Lucas Oliveira" loading="lazy" />
+          <span class="tm-status">disponível</span>
+        </div>
+        <div class="tm-body">
+          <h3 class="tm-name">Lucas Oliveira</h3>
+          <p class="tm-role">Liderança em Integração de Dados<br/>&amp; Automação de Viagem</p>
+          <p class="tm-bio">Projeta a camada de automação por trás do SyncRevenue, conectando dados de reservas, regras de comissão e sistemas de otimização de receita em rotinas operacionais confiáveis. Pipelines BSP, mid/back-office e engenharia de dados.</p>
+          <div class="tm-foot">
+            <a class="icon-btn linkedin" href="https://www.linkedin.com/in/lucas-oliveira-syncsirius/" target="_blank" rel="noopener noreferrer" aria-label="Ver Lucas Oliveira no LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.36V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+            </a>
+            <span class="tm-foot-meta">Mid &amp; back-office</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====================== DEMO ====================== -->
+<section class="sec sec-deep" id="agendar-demo">
+  <div class="sec-inner">
+    <header class="sec-head">
+      <span class="sec-eyebrow">Agendar demonstração</span>
+      <h2 class="sec-h">Veja o SyncRevenue rodando <span class="accent">no seu fluxo</span></h2>
+      <p class="sec-sub">Uma conversa curta com o time, demo personalizada com seus contratos reais e proposta clara em 48 horas. Sem compromisso.</p>
+    </header>
+
+    <div class="form-grid">
+
+      <aside class="form-info">
+        <h3>O que esperar</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>Conversa de descoberta · 30 min</strong>
+              <span>Entendemos volume, GDS em uso, tipos de contrato e onde está vazando comissão hoje.</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>Demo personalizada · 45 min</strong>
+              <span>Rodamos o SyncRevenue com um contrato real seu e mostramos as regras aplicadas pré-ticketing.</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Proposta &amp; timeline · 48h</strong>
+              <span>Escopo, integração, indicadores de ROI esperado e cronograma de go-live.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+          <div>
+            <div class="info-card-t">Resposta em 1 dia útil</div>
+            <div class="info-card-s">Maria ou Lucas entram em contato pessoalmente.</div>
+          </div>
+        </div>
+      </aside>
+
+      <form class="form-card" aria-label="Solicitar demonstração">
+        <div class="form-head">
+          <h3>Solicitar demonstração</h3>
+          <p>Campos com <span style="color:var(--accent-soft);font-weight:700">*</span> são obrigatórios.</p>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="demo-name">Nome completo <span class="req">*</span></label>
+            <input id="demo-name" type="text" placeholder="Maria Souza" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="demo-email">E-mail corporativo <span class="req">*</span></label>
+            <input id="demo-email" type="email" placeholder="maria@suaagencia.com" autocomplete="email" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="demo-company">Agência <span class="req">*</span></label>
+            <input id="demo-company" type="text" placeholder="Nome da agência" autocomplete="organization" required />
+          </div>
+          <div class="field">
+            <label for="demo-phone">Telefone <span class="opt">(opcional)</span></label>
+            <input id="demo-phone" type="tel" placeholder="+55 11 98765 4321" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="demo-role">Seu cargo <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select id="demo-role" required>
+                <option value="">Selecione</option>
+                <option>CEO / Sócio</option>
+                <option>CFO / Financeiro</option>
+                <option>COO / Operações</option>
+                <option>Rate desk / Backoffice</option>
+                <option>TI / Integrações</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="demo-gds">GDS principal <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select id="demo-gds" required>
+                <option value="">Selecione</option>
+                <option>Amadeus</option>
+                <option>Sabre</option>
+                <option>Travelport (Galileo/Worldspan)</option>
+                <option>Mais de um</option>
+                <option>NDC / IBE próprio</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="demo-message">Mensagem <span class="opt">(opcional)</span></label>
+          <textarea id="demo-message" placeholder="Conte sobre seus desafios de reconciliação e comissões"></textarea>
+        </div>
+
+        <div class="form-foot">
+          <div class="form-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Envio criptografado · sem spam
+          </div>
+          <button type="submit" class="btn btn-lg">
+            Agendar demonstração
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====================== CONTACT ====================== -->
+<section class="sec" id="contato">
+  <div class="sec-inner">
+    <header class="sec-head">
+      <span class="sec-eyebrow">Contato</span>
+      <h2 class="sec-h">Fale com a <span class="accent">SyncSirius</span></h2>
+      <p class="sec-sub">Para dúvidas comerciais, suporte, parcerias ou imprensa — sua mensagem vai pro time certo.</p>
+    </header>
+
+    <div class="form-grid">
+
+      <aside class="form-info">
+        <h3>Canais diretos</h3>
+        <div class="channels">
+          <a class="channel" href="mailto:contato@syncsirius.com">
+            <div class="channel-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="channel-t">E-mail</div>
+              <div class="channel-v">contato@syncsirius.com</div>
+            </div>
+          </a>
+          <a class="channel" href="#">
+            <div class="channel-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="channel-t">Telefone</div>
+              <div class="channel-v">+1 (305) 555-0100</div>
+            </div>
+          </a>
+          <div class="channel">
+            <div class="channel-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="channel-t">Sede</div>
+              <div class="channel-v">Miami, FL · Estados Unidos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+          </div>
+          <div>
+            <div class="info-card-t">Tempo médio de resposta</div>
+            <div class="info-card-s">Menos de 4 horas em dias úteis.</div>
+          </div>
+        </div>
+      </aside>
+
+      <form class="form-card" aria-label="Contato">
+        <div class="form-head">
+          <h3>Envie uma mensagem</h3>
+          <p>Direcionamos para o time certo conforme o assunto.</p>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="ct-name">Nome completo <span class="req">*</span></label>
+            <input id="ct-name" type="text" placeholder="Seu nome" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="ct-email">E-mail <span class="req">*</span></label>
+            <input id="ct-email" type="email" placeholder="voce@email.com" autocomplete="email" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ct-subject">Assunto <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="ct-subject" required>
+              <option value="">Selecione um assunto</option>
+              <option>Comercial — SyncRevenue</option>
+              <option>Suporte de cliente</option>
+              <option>Parcerias &amp; integrações</option>
+              <option>Imprensa &amp; mídia</option>
+              <option>Outro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ct-message">Mensagem <span class="req">*</span></label>
+          <textarea id="ct-message" placeholder="Como podemos ajudar?" required></textarea>
+        </div>
+
+        <div class="form-foot">
+          <div class="form-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Mensagem criptografada em trânsito
+          </div>
+          <button type="submit" class="btn btn-lg">
+            Enviar mensagem
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

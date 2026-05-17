@@ -202,6 +202,10 @@ Sync Sirius ops team can manage the full demo pipeline through a secure, JWT-aut
 The site is fully production-ready — deployed on a hosting platform with domain configuration, SSL/TLS, PM2 process management, automated SQLite backups, and uptime monitoring in place.
 **FRs covered:** NFR-R3, NFR-S1 (fully realized here)
 
+### Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
+Re-skin the public site to the sober, single-accent visual direction handed off via the Anthropic Claude Design tool on 2026-05-17 (`_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`). The handoff covers Hero (airplane background + right product panel with Amadeus/Sabre/Travelport tiles + live ticker), Benefits grid (6 cards), Trust strip, ClientReferences (glass quote cards), Team (horizontal cards + LinkedIn icon), and visual refresh of the Demo and Contact forms (40/60 split with steps/channels and matching form-card pattern). The refresh introduces a sober palette anchored on a single accent `#3D6FE0` (no gradients, no glows) and deliberately diverges from UX-DR2/DR3 — the divergence is documented in `vault/Planning/Architecture-Key.md`. Stories are visual-only; existing functional behavior (form validation, submit handlers, locale parity, i18n keys, ClientReferences allowlist test, LinkedIn URLs) is preserved.
+**FRs covered:** none new — UX-only refinement of FR1, FR5, FR6, FR9, FR10, FR24 surfaces. UX-DR2/DR3 deliberately superseded (sober palette + flat accent); divergence locked via updated `brand-tokens.contrast.test`.
+
 ## Epic 1: Visitor Content Experience (Phase 1 MVP — Part A)
 
 Visitors can navigate and read the complete Sync Sirius marketing site in EN, PT-BR, and ES — all 8 sections visible, locale detection working, trust signals in place, privacy policy accessible. Includes full project initialization, design system, all content-only sections (no forms), and i18n foundation.
@@ -1491,3 +1495,35 @@ So that lead capture downtime is detected and resolved before significant demo r
 **Given** the demo form endpoint under normal production load
 **When** `POST /api/demo` is measured
 **Then** p95 response time is ≤ 3s; verified via monitoring or load test before go-live
+
+## Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
+
+Re-skin the public site to match the design handoff from Anthropic Claude Design (`_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`). The handoff iterated to a sober, single-accent visual direction — no gradients on CTAs, no glow effects, no dot-grid backgrounds, no pulsing dots, no per-brand monogram gradients. Anchor palette is navy `#0D0D3A` / ink `#0A0B2E` + single accent `#3D6FE0`. The refresh is intentionally visual-only: form behavior, validation, locale parity, i18n keys, ClientReferences allowlist, and existing test surfaces stay green.
+
+**Source artifacts (read first):**
+- `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/README.md` — handoff README
+- `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/chats/chat1.md` — full design conversation transcript (intent + iterations + verifier feedback)
+- `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/project/Hero.html` — primary canonical design (1093 lines covering hero, benefits, trust, testimonials, team, demo form, contact form)
+- `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/project/Hero v1.html` / `Hero v2.html` / `Hero v3.html` — discarded iterations (do not implement — kept for context only)
+- `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/project/assets/` — logo + team photos used by the prototype
+
+**Story list:**
+
+- **6.1 Design Tokens & Sober Palette** — introduce navy/ink/accent CSS vars + Tailwind tokens; add flat-accent `Button` variant alongside existing `GradientButton`; update `brand-tokens.contrast.test` for `#3D6FE0` on navy; document UX-DR2/DR3 divergence in `vault/Planning/Architecture-Key.md`.
+
+- **6.2 Navbar & Logo Refresh** — adopt `syncsirius-logo-trans.png` at 32px height; nav links: Produto / Benefícios / Integrações / Segurança / Clientes / Contato; minimal lang dropdown trigger; primary CTA "Agendar Demo" with flat accent; navbar overlays hero on landing then sticks on scroll; mobile hamburger overlay preserved.
+
+- **6.3 Hero Left — Background + Copy + KPIs** — airplane background image + dual-layer gradient overlay (legibility); H1 two-line ("Mais comissão por ticket." + accent line "Menos retrabalho no rate desk."); subhead with `<strong>` emphasis; dual CTA row (primary `.btn-lg` + ghost link with arrow); KPI strip below (3 stats with top-border separator, tabular nums).
+
+- **6.4 Hero Right — Product Panel + Integrations + Ticker** — glass panel card with accent square + tag + name "SyncRevenue"; GDS integration block with 3 white tiles (Amadeus / Sabre / Travelport official logos saved locally under `public/integrations/`); "Galileo · Worldspan" sub-tag on Travelport; "também suportado" line with NDC + IBE chips; live ticker (motion-safe; static if `prefers-reduced-motion: reduce`).
+
+- **6.5 Benefits Grid + Trust Strip** — `<section id="beneficios">` with 6 benefit cards (3-col → 2-col → 1-col responsive); each card: 38×38 icon-box (accent-dim bg, accent-soft fg) + metric chip + h3 + paragraph; replace current `TrustBar` styling with 4-item inline strip below the grid (separator dots) — content keys match existing `hero.trustBar.items.*`.
+
+- **6.6 ClientReferences Visual Refresh** — 3 quote cards in responsive grid; decorative Georgia serif quote-mark (`.08` opacity, top-right); status pill (`cliente referência` / `referência operacional` muted-italic / `integração multi-GDS`); footer with 40×40 monogram + agency name + location pin; ghost-variant CTA "Solicitar referências" → `#contato`; allowlist names unchanged; allowlist test continues passing.
+
+- **6.7 Team Section Visual Refresh** — 2 cards horizontal (200px photo left + body right at ≥ 560px, stacks below); photo `aspect-ratio:1/1` `object-fit:cover` saturation `.92`; "disponível" status pill bottom-left of photo with green dot; uppercase blue eyebrow role; 34×34 LinkedIn icon-button (hover → LinkedIn blue `#0A66C2`); right-aligned `tm-foot-meta` experience tag; existing webp assets + LinkedIn URLs preserved.
+
+- **6.8 Demo + Contact Forms Visual Refresh + Locale Parity Sweep** — `DemoScheduler` and `Contact` sections both adopt 40/60 grid (info-side left / form-card right) with shared `.form-card` / `.field` / `.select-wrap` patterns from `Hero.html`; demo info-side: 3 numbered steps + "Resposta em 1 dia útil" info-card; contact info-side: 3 channel cards (email mailto, phone tel, sede static) + "Tempo médio de resposta" info-card; all existing form fields/validation/submit handlers/`useDemo`/`useContact` hooks preserved (visual-only); locale parity sweep adds all new copy keys to en/, pt-BR/, es/ translation JSONs; `Sections.i18n.test.tsx` extended; Lighthouse a11y/perf baselines hold.
+
+**Implementation order:** 6.1 → 6.2 → 6.3 → 6.4 → 6.5 → 6.6 → 6.7 → 6.8 (tokens land first so every other story consumes them; navbar before hero so position-absolute overlay is correct; demo+contact last because they reuse form-card patterns from 6.4).
+
