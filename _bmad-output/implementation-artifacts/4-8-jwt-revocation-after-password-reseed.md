@@ -1,6 +1,6 @@
 # Story 4.8: JWT Revocation via Token Versioning (Story 4.1 Review Follow-up)
 
-Status: review
+Status: done
 
 <!-- Created 2026-05-16 from Story 4.1 cross-model review (Codex). Deferred review finding #2. Parent Jira: SYN-166. Subtasks: SYN-174..181. -->
 
