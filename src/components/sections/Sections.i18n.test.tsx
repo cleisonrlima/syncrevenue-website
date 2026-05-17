@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest'
-import { act, render, screen, cleanup } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi, type Mock } from 'vitest'
+import { act, render, screen, cleanup, waitFor } from '@testing-library/react'
 import i18next from '@/i18n'
 import SyncRevenue from './SyncRevenue'
 import Services from './Services'
@@ -7,6 +7,35 @@ import Comparison from './Comparison'
 import Team from './Team'
 import Security from './Security'
 import ClientReferences from './ClientReferences'
+import { useLocaleStore } from '@/store/useLocaleStore'
+import type { PublicTeamMemberRow } from '@/lib/api'
+
+vi.mock('@/lib/api', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/api')>('@/lib/api')
+  return {
+    ...actual,
+    getPublicTeam: vi.fn(),
+  }
+})
+
+const api = await import('@/lib/api')
+
+const teamFixture: PublicTeamMemberRow[] = [
+  {
+    id: 1,
+    name: 'Maria Silva',
+    role_en: 'Airline Distribution & Commission Strategy Lead',
+    role_pt: 'Liderança em Distribuição Aérea e Estratégia de Comissões',
+    role_es: 'Liderazgo en Distribución Aérea y Estrategia de Comisiones',
+    bio_en: 'Guides GDS operations, BSP/ARC reconciliation.',
+    bio_pt: 'Orienta operações GDS, reconciliação BSP/ARC.',
+    bio_es: 'Guía operaciones GDS, conciliación BSP/ARC.',
+    linkedin: null,
+    photo_url: null,
+    order_index: 0,
+    active: 1,
+  },
+]
 
 describe('Section i18n', () => {
   afterEach(async () => {
@@ -60,18 +89,25 @@ describe('Section i18n', () => {
   })
 
   it('updates Team member roles and bios when locale changes', async () => {
+    ;(api.getPublicTeam as unknown as Mock).mockResolvedValue(teamFixture)
+    useLocaleStore.setState({ locale: 'en' })
     const { rerender } = render(<Team />)
 
     expect(screen.getByRole('heading', { name: 'Specialists in Airline Distribution' })).toBeInTheDocument()
-    expect(screen.getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
+    )
 
     await act(async () => {
       await i18next.changeLanguage('pt-BR')
+      useLocaleStore.setState({ locale: 'pt-BR' })
     })
     rerender(<Team />)
 
     expect(screen.getByRole('heading', { name: 'Especialistas em Distribuição Aérea' })).toBeInTheDocument()
-    expect(screen.getByText('Liderança em Distribuição Aérea e Estratégia de Comissões')).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.getByText('Liderança em Distribuição Aérea e Estratégia de Comissões')).toBeInTheDocument()
+    )
     expect(screen.getByText(/operações GDS, reconciliação BSP\/ARC/)).toBeInTheDocument()
   })
 

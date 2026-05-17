@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
+import { getPublicTeam, type PublicTeamMemberRow } from '@/lib/api'
+import { useLocaleStore } from '@/store/useLocaleStore'
 
-type TeamMember = {
+type DisplayMember = {
+  id: number
   name: string
   role: string
   bio: string
@@ -10,31 +14,26 @@ type TeamMember = {
   linkedinUrl: string
 }
 
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0
+function pickLocaleFields(row: PublicTeamMemberRow, locale: string) {
+  switch (locale) {
+    case 'pt-BR':
+      return { role: row.role_pt, bio: row.bio_pt }
+    case 'es':
+      return { role: row.role_es, bio: row.bio_es }
+    default:
+      return { role: row.role_en, bio: row.bio_en }
+  }
 }
 
-function normalizeTeamMember(value: unknown): TeamMember | null {
-  if (!value || typeof value !== 'object') {
-    return null
-  }
-
-  const candidate = value as Partial<Record<keyof TeamMember, unknown>>
-
-  if (
-    !isNonEmptyString(candidate.name) ||
-    !isNonEmptyString(candidate.role) ||
-    !isNonEmptyString(candidate.bio)
-  ) {
-    return null
-  }
-
+function toDisplayMember(row: PublicTeamMemberRow, locale: string): DisplayMember {
+  const { role, bio } = pickLocaleFields(row, locale)
   return {
-    name: candidate.name,
-    role: candidate.role,
-    bio: candidate.bio,
-    photo: typeof candidate.photo === 'string' ? candidate.photo.trim() : '',
-    linkedinUrl: typeof candidate.linkedinUrl === 'string' ? candidate.linkedinUrl.trim() : '',
+    id: row.id,
+    name: row.name,
+    role,
+    bio,
+    photo: row.photo_url ?? '',
+    linkedinUrl: row.linkedin ?? '',
   }
 }
 
@@ -43,7 +42,7 @@ function getInitials(name: string) {
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map(part => part.charAt(0).toUpperCase())
+    .map((part) => part.charAt(0).toUpperCase())
     .join('')
 }
 
@@ -51,12 +50,32 @@ function isUsablePhoto(photo: string) {
   return photo.trim().length > 0
 }
 
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0
+}
+
 export default function Team() {
   const { t } = useTranslation()
-  const rawMembers = t('team.members', { returnObjects: true, defaultValue: [] }) as unknown
-  const members = Array.isArray(rawMembers)
-    ? rawMembers.map(normalizeTeamMember).filter((member): member is TeamMember => Boolean(member))
-    : []
+  const locale = useLocaleStore((state) => state.locale)
+  const [rows, setRows] = useState<PublicTeamMemberRow[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    void getPublicTeam()
+      .then((data) => {
+        if (!cancelled) setRows(data)
+      })
+      .catch(() => {
+        if (!cancelled) setRows([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const members: DisplayMember[] = rows
+    .map((row) => toDisplayMember(row, locale))
+    .filter((member) => member.name.length > 0 && member.role.length > 0 && member.bio.length > 0)
 
   return (
     <MotionSection
@@ -82,12 +101,12 @@ export default function Team() {
             data-team-grid="true"
             className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
           >
-            {members.map((member, index) => {
-              const headingId = `team-member-${index}`
+            {members.map((member) => {
+              const headingId = `team-member-${member.id}`
 
               return (
                 <article
-                  key={`${member.name}-${index}`}
+                  key={member.id}
                   aria-labelledby={headingId}
                   className="rounded-lg border border-brand-slate/20 bg-white p-6 shadow-sm"
                 >

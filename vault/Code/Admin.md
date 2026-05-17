@@ -13,10 +13,11 @@
 | `src/pages/admin/Login.tsx` | `/admin/login` | i18n login form, accessible error via `role="alert"` |
 | `src/pages/admin/Dashboard.tsx` | `/admin/dashboard` | Minimal landing + logout button (4.6 moves to nav shell) |
 | `src/pages/admin/Leads.tsx` | `/admin/leads` | Leads dashboard (Story 4.2–4.3) — locale + status filters, Skeleton loading, empty/filtered-empty/error states, AbortController per request, status badges (amber/blue/green), message preview + expand, **inline per-row status `<select>` with optimistic update + revert + per-row `role="alert"` error (Story 4.3)**. Admin import boundary: no imports from `components/sections/*` |
-| `src/pages/admin/Team.tsx` | `/admin/team` | (Story 4.4) |
+| `src/pages/admin/Team.tsx` | `/admin/team` | Team CRUD list + inline create/edit form (Story 4.4) — uses `getAdminTeam` / `postAdminTeam` / `putAdminTeam`; per-field blur validation via `src/lib/team-schema.ts`; 401 → `clearSession()`; 400 `field` → inline error on offending input |
 | `src/hooks/useAdmin.ts` | — | `login`/`logout`/`bootstrap`, status-code→i18n-key error mapping |
 | `src/store/useAdminStore.ts` | — | Zustand render-cache: `isAuthenticated`, `adminId`, `email`, `bootstrapped` — NO persist |
-| `src/lib/api.ts` | — | `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `getAdminLeads`, `patchAdminLeadStatus` (Story 4.3), `AdminApiError`, `parseAdminLeadRow`, types `AdminLeadRow`/`AdminLeadStatus`/`AdminLeadLocale` |
+| `src/lib/api.ts` | — | `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `getAdminLeads`, `patchAdminLeadStatus` (Story 4.3), `getAdminTeam`/`postAdminTeam`/`putAdminTeam`/`getPublicTeam` (Story 4.4), `AdminApiError`, `PublicTeamError` (Story 4.4 — public-surface failures never trip `clearSession`), `parseAdminLeadRow`, `parseAdminTeamMemberRow`, types `AdminLeadRow`/`AdminLeadStatus`/`AdminLeadLocale`/`AdminTeamMemberRow`/`AdminTeamMemberInput`/`PublicTeamMemberRow` |
+| `src/lib/team-schema.ts` | — | Client-side i18n-aware Zod mirror of `adminTeamCreateSchema`; `createAdminTeamSchema(t)` returns the schema; `AdminTeamFormValues` form-state type; `initialFormValues` defaults |
 
 ## Backend
 
@@ -24,7 +25,8 @@
 |---|---|
 | `server/routes/admin/auth.ts` | POST `/api/admin/auth/login`, POST `/api/admin/auth/logout`, GET `/api/admin/auth/me` |
 | `server/routes/admin/leads.ts` | GET `/api/admin/leads`, PATCH `/api/admin/leads/:id/status` (Story 4.3) |
-| `server/routes/admin/team.ts` | GET/POST/PATCH/DELETE `/api/admin/team` |
+| `server/routes/admin/team.ts` | GET `/api/admin/team`, POST `/api/admin/team`, PUT `/api/admin/team/:id` (Story 4.4); PATCH `/:id/active` ships in Story 4.5 |
+| `server/routes/team.ts` | Public GET `/api/team` (Story 4.4) — no auth; returns only `active = 1` rows ordered `order_index ASC, id ASC` |
 | `server/middleware/auth.ts` | `requireAdmin` JWT verify middleware; loads admin by id and rejects `payload.tokenVersion !== row.token_version` (Story 4.8); factory `createRequireAdmin(dao)` for tests; `AUTH_COOKIE_NAME = 'admin_token'` |
 | `server/middleware/rateLimit.ts` | `createFormRateLimiter` (15min / 20) + `createAdminLoginRateLimiter` (15min / 5) — independent per-route limiters with `'draft-7'` headers and JSON `{success:false,message:'Too many requests'}` 429 envelope |
 | `server/dao/admin.dao.ts` | Admin user lookup (`findByEmail`, `findById`, `create`, `upsert`, `incrementTokenVersion`, `deleteByEmail`); `upsert` of existing row bumps `token_version` (Story 4.8) — same-password reseed also bumps (documented trade-off, single-admin Phase 3) |
@@ -32,7 +34,8 @@
 | `server/schemas/admin-auth.schema.ts` | Zod `loginSchema` |
 | `server/schemas/admin-leads-query.schema.ts` | Zod `adminLeadsQuerySchema` — `locale` ∈ {en,pt-BR,es}, `status` ∈ {pending,contacted,qualified}, both optional; unknown query keys ignored |
 | `server/schemas/admin-lead-status.schema.ts` | Zod `adminLeadStatusBodySchema` (`status` enum required) + `adminLeadStatusParamsSchema` (`id` coerced int > 0) — Story 4.3 |
-| `server/db.seed.ts` | `npm run db:seed` — bcrypt-12-hashed admin upsert from `ADMIN_EMAIL`/`ADMIN_PASSWORD` |
+| `server/schemas/admin-team.schema.ts` | Zod `adminTeamCreateSchema` + `adminTeamUpdateSchema` (required name/roles/bios, URL-or-empty for `linkedin`/`photo_url`, coerced `order_index` ≥ 0, `active` silently stripped) + `adminTeamParamsSchema` (`id` coerced int > 0) — Story 4.4 |
+| `server/db.seed.ts` | `npm run db:seed` — bcrypt-12-hashed admin upsert from `ADMIN_EMAIL`/`ADMIN_PASSWORD`; `seedTeamMembers` inserts default Maria + Lucas rows when `team_members` is empty (Story 4.4 — idempotent, logs `team members seeded: <n>` or `team members already seeded (n=<count>)`) |
 
 ---
 
@@ -74,7 +77,7 @@ Cookie + `/me` is source of truth. Zustand store is a render cache — no `persi
 | 4.1 | `server/schemas/admin-auth.schema.ts`, `server/db.seed.ts`, `server/routes/admin/auth.ts` (login/logout impl), `src/store/useAdminStore.ts`, `src/hooks/useAdmin.ts`, `src/lib/api.ts` (admin helpers), `src/components/layout/AdminLayout.tsx` (auth gate), `src/pages/admin/Login.tsx`, `src/pages/admin/Dashboard.tsx`, i18n `admin` namespace × 3 locales, `tests/e2e/admin-auth.spec.ts` |
 | 4.2 | `server/schemas/admin-leads-query.schema.ts`, `server/routes/admin/leads.ts` (Zod-hardened query), `server/routes/admin/leads.test.ts`, `src/lib/api.ts` (`getAdminLeads`, `parseAdminLeadRow`, lead types), `src/components/ui/Skeleton.tsx` + `Skeleton.test.tsx`, `src/pages/admin/Leads.tsx` (full dashboard), `src/pages/admin/Leads.test.tsx`, i18n `admin.leads` namespace × 3 locales, `tests/e2e/admin-leads.spec.ts` |
 | 4.3 | `server/schemas/admin-lead-status.schema.ts` + smoke test, extended `server/routes/admin/leads.ts` (PATCH `/:id/status` handler — Zod params + body validation, 404 on missing row, returns updated row), extended `server/routes/admin/leads.test.ts` (+9 PATCH cases), `src/lib/api.ts` `patchAdminLeadStatus` helper, extended `src/lib/api.admin.test.ts` (+7 cases), extended `src/pages/admin/Leads.tsx` (inline `<select>` with optimistic update + revert + per-row `role="alert"`, per-row pending Set + Map, 401 → `clearSession`), extended `src/pages/admin/Leads.test.tsx` (+8 mutation cases), i18n `admin.leads.statusUpdate` namespace × 3 locales, extended `tests/e2e/admin-leads.spec.ts` (mutation + reload durability scenario) |
-| 4.4 | — |
+| 4.4 | `server/schemas/admin-team.schema.ts` + smoke test, extended `server/routes/admin/team.ts` (POST + PUT — Zod body + params validation, 201 on create, 404 on missing row, `active` stripped), new `server/routes/admin/team.test.ts` (auth/cases for POST + PUT), new `server/routes/team.ts` (public GET `/api/team`) + `server/routes/team.test.ts`, extended `server/db.seed.ts` with `seedTeamMembers` + `DEFAULT_TEAM_MEMBERS` + CLI logging + tests, `src/lib/api.ts` admin/public team helpers + `PublicTeamError` + `parseAdminTeamMemberRow` + extended `src/lib/api.admin.test.ts`, new `src/lib/team-schema.ts` + `team-schema.test.ts` (client i18n Zod mirror), rewrote `src/pages/admin/Team.tsx` (full list + create + edit, in-file `TeamMemberForm`, per-row Edit, AbortController fetch) + `src/pages/admin/Team.test.tsx`, replaced `src/components/sections/Team.tsx` to consume `getPublicTeam` + locale-specific role/bio + `src/components/sections/Team.test.tsx`, mounted `/api/team` in `server/index.ts`, i18n `admin.team` namespace × EN/PT-BR/ES, new `tests/e2e/admin-team.spec.ts`, updated `src/components/sections/Sections.i18n.test.tsx` + `src/pages/Home.story-1-8.e2e.test.tsx` to mock `getPublicTeam` |
 | 4.5 | — |
 | 4.6 | — |
 | 4.7 | `server/dao/admin-login-attempts.dao.ts` + `admin-login-attempts.dao.test.ts`, `admin_login_attempts` table in `server/db.ts` `initSchema`, `createAdminLoginRateLimiter` + cross-route independence test in `server/middleware/rateLimit.ts` / `rateLimit.test.ts`, per-IP limiter mount + per-email lockout branch in `server/routes/admin/auth.ts`, 6 new lockout cases (IP 429, email 401, lockout-with-correct-password, window-elapsed reset, partial-failure reset, persistence-across-restart) in `server/routes/admin/auth.test.ts` |

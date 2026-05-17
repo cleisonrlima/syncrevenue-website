@@ -37,13 +37,31 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 | 4.1 Admin auth | SYN-28 | done |
 | 4.2 Leads dashboard | SYN-29 | done |
 | 4.3 Lead status | SYN-30 | done (review fixes applied after commit 9baf111; Jira sync pending) |
-| 4.4 Team CRUD | SYN-31 | backlog |
+| 4.4 Team CRUD | SYN-31 | review (sub-tasks SYN-264..277; implementation complete 2026-05-17, pending Jira sync to mark sub-tasks done + parent REVIEW) |
 | 4.5 Team order/active | SYN-32 | backlog |
 | 4.6 Admin shell | SYN-33 | backlog |
 | 4.7 Login throttling | SYN-165 | done |
 | 4.8 JWT revocation | SYN-166 | done |
 
 Epic 3 story 3.11 → **SYN-97** (not SYN-85; mirror block corrected 2026-05-16).
+
+## Story-to-Issue mapping (Epic 6 — backlog, scaffolded 2026-05-17)
+
+Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic + all stories + sub-tasks remain in "To Do" / `backlog` until user prioritizes — NOT in any active sprint.
+
+| Story | Title | Jira Key | sprint-status | Sub-tasks |
+|-------|-------|----------|---------------|-----------|
+| Epic 6 | Visual Design Refresh — Claude Design Handoff | SYN-202 | backlog | — |
+| 6.1 | Design Tokens — Sober Palette | SYN-203 | backlog | SYN-211..215 (5) |
+| 6.2 | Navbar & Logo Refresh | SYN-204 | backlog | SYN-216..223 (8) |
+| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | SYN-205 | backlog | SYN-224..230 (7) |
+| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | SYN-206 | backlog | SYN-231..237 (7) |
+| 6.5 | Benefits Grid + Trust Strip | SYN-207 | backlog | SYN-238..243 (6) |
+| 6.6 | ClientReferences Visual Refresh | SYN-208 | backlog | SYN-244..249 (6) |
+| 6.7 | Team Section Visual Refresh | SYN-209 | backlog | SYN-250..254 (5) |
+| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | SYN-210 | backlog | SYN-255..263 (9) |
+
+**Sub-task total: 53** (one per top-level Task in each story file's `## Tasks / Subtasks` section; nested checkboxes stay inside each Sub-task's description).
 
 Update tables as new stories are mapped.
 

@@ -1,10 +1,52 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import App from '@/App'
 import i18next from '@/i18n'
 import { useLocaleStore } from '@/store/useLocaleStore'
+import type { PublicTeamMemberRow } from '@/lib/api'
+
+vi.mock('@/lib/api', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/api')>('@/lib/api')
+  return {
+    ...actual,
+    getPublicTeam: vi.fn(),
+  }
+})
+
+const api = await import('@/lib/api')
+
+const teamFixture: PublicTeamMemberRow[] = [
+  {
+    id: 1,
+    name: 'Maria Silva',
+    role_en: 'Airline Distribution & Commission Strategy Lead',
+    role_pt: 'Liderança em Distribuição Aérea e Estratégia de Comissões',
+    role_es: 'Liderazgo en Distribución Aérea y Estrategia de Comisiones',
+    bio_en: 'Guides travel agencies through GDS operations, BSP/ARC reconciliation and commission recovery strategy across the Americas.',
+    bio_pt: 'Orienta agências em operações GDS, reconciliação BSP/ARC e estratégia de recuperação de comissões.',
+    bio_es: 'Guía a agencias en operaciones GDS, conciliación BSP/ARC y estrategia de recuperación de comisiones.',
+    linkedin: null,
+    photo_url: '/team/maria.webp',
+    order_index: 0,
+    active: 1,
+  },
+  {
+    id: 2,
+    name: 'Lucas Oliveira',
+    role_en: 'Travel Data Integration & Automation Lead',
+    role_pt: 'Liderança em Integração de Dados de Viagem e Automação',
+    role_es: 'Liderazgo en Integración de Datos de Viaje y Automatización',
+    bio_en: 'Builds travel data integration and revenue optimization systems.',
+    bio_pt: 'Constrói integrações de dados e rotinas operacionais confiáveis para receita.',
+    bio_es: 'Construye integraciones de datos y rutinas operativas confiables para ingresos.',
+    linkedin: null,
+    photo_url: '/team/lucas.webp',
+    order_index: 1,
+    active: 1,
+  },
+]
 
 describe('Story 1.8 team visitor flow', () => {
   beforeEach(async () => {
@@ -12,6 +54,8 @@ describe('Story 1.8 team visitor flow', () => {
     localStorage.clear()
     useLocaleStore.setState({ locale: 'en' })
     await i18next.changeLanguage('en')
+    ;(api.getPublicTeam as unknown as Mock).mockReset()
+    ;(api.getPublicTeam as unknown as Mock).mockResolvedValue(teamFixture)
   })
 
   afterEach(async () => {

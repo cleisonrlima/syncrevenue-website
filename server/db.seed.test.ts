@@ -4,7 +4,8 @@ import Database from 'better-sqlite3'
 import bcrypt from 'bcryptjs'
 import { initSchema } from './db'
 import { createAdminDao } from './dao/admin.dao'
-import { seedAdminUser } from './db.seed'
+import { createTeamDao } from './dao/team.dao'
+import { DEFAULT_TEAM_MEMBERS, seedAdminUser, seedTeamMembers } from './db.seed'
 
 describe('seedAdminUser', () => {
   let dao: ReturnType<typeof createAdminDao>
@@ -84,5 +85,49 @@ describe('seedAdminUser', () => {
     seedAdminUser({ email: 'a@b.com', password: 'same', dao, saltRounds: 4 })
     const second = seedAdminUser({ email: 'a@b.com', password: 'same', dao, saltRounds: 4 })
     expect(second.user.token_version).toBe(1)
+  })
+})
+
+describe('seedTeamMembers', () => {
+  let teamDao: ReturnType<typeof createTeamDao>
+
+  beforeEach(() => {
+    const db = new Database(':memory:')
+    initSchema(db)
+    teamDao = createTeamDao(db)
+  })
+
+  it('inserts the default members on empty table', () => {
+    const result = seedTeamMembers({ dao: teamDao })
+    expect(result.inserted).toBe(DEFAULT_TEAM_MEMBERS.length)
+    expect(result.skipped).toBe(0)
+    const list = teamDao.list()
+    expect(list).toHaveLength(DEFAULT_TEAM_MEMBERS.length)
+    expect(list.map((row) => row.name)).toEqual(DEFAULT_TEAM_MEMBERS.map((m) => m.name))
+  })
+
+  it('is idempotent — returns skipped count on second run', () => {
+    seedTeamMembers({ dao: teamDao })
+    const second = seedTeamMembers({ dao: teamDao })
+    expect(second.inserted).toBe(0)
+    expect(second.skipped).toBe(DEFAULT_TEAM_MEMBERS.length)
+    expect(teamDao.list()).toHaveLength(DEFAULT_TEAM_MEMBERS.length)
+  })
+
+  it('seeded members surface via list({ activeOnly: true })', () => {
+    seedTeamMembers({ dao: teamDao })
+    const active = teamDao.list({ activeOnly: true })
+    expect(active).toHaveLength(DEFAULT_TEAM_MEMBERS.length)
+    for (const row of active) {
+      expect(row.active).toBe(1)
+    }
+  })
+
+  it('preserves order_index ordering after seed', () => {
+    seedTeamMembers({ dao: teamDao })
+    const list = teamDao.list()
+    const orders = list.map((r) => r.order_index)
+    const sorted = [...orders].sort((a, b) => a - b)
+    expect(orders).toEqual(sorted)
   })
 })

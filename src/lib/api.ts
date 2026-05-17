@@ -401,6 +401,207 @@ export async function patchAdminLeadStatus(
   return parsed
 }
 
+export interface AdminTeamMemberRow {
+  id: number
+  name: string
+  role_en: string
+  role_pt: string
+  role_es: string
+  bio_en: string
+  bio_pt: string
+  bio_es: string
+  linkedin: string | null
+  photo_url: string | null
+  order_index: number
+  active: 0 | 1
+}
+
+export interface AdminTeamMemberInput {
+  name: string
+  role_en: string
+  role_pt: string
+  role_es: string
+  bio_en: string
+  bio_pt: string
+  bio_es: string
+  linkedin: string | null
+  photo_url: string | null
+  order_index: number
+}
+
+export type PublicTeamMemberRow = AdminTeamMemberRow
+
+export function parseAdminTeamMemberRow(value: unknown): AdminTeamMemberRow | null {
+  if (!value || typeof value !== 'object') return null
+  const candidate = value as Record<string, unknown>
+  if (typeof candidate.id !== 'number') return null
+  if (typeof candidate.name !== 'string') return null
+  if (typeof candidate.role_en !== 'string') return null
+  if (typeof candidate.role_pt !== 'string') return null
+  if (typeof candidate.role_es !== 'string') return null
+  if (typeof candidate.bio_en !== 'string') return null
+  if (typeof candidate.bio_pt !== 'string') return null
+  if (typeof candidate.bio_es !== 'string') return null
+  if (candidate.linkedin !== null && typeof candidate.linkedin !== 'string') return null
+  if (candidate.photo_url !== null && typeof candidate.photo_url !== 'string') return null
+  if (typeof candidate.order_index !== 'number') return null
+  if (candidate.active !== 0 && candidate.active !== 1) return null
+  return candidate as unknown as AdminTeamMemberRow
+}
+
+export class PublicTeamError extends Error {
+  status: number
+  constructor(status: number, message: string) {
+    super(message)
+    this.name = 'PublicTeamError'
+    this.status = status
+  }
+}
+
+export interface AdminTeamRequestOptions {
+  signal?: AbortSignal
+}
+
+export async function getAdminTeam(
+  options: AdminTeamRequestOptions = {}
+): Promise<AdminTeamMemberRow[]> {
+  let response: Response
+  try {
+    response = await fetch('/api/admin/team', {
+      method: 'GET',
+      credentials: 'include',
+      signal: options.signal,
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+  }
+
+  if (!response.ok || body.success !== true || !Array.isArray(body.data)) {
+    throw new AdminApiError(response.status, body.message || 'Failed to load team')
+  }
+
+  const rows: AdminTeamMemberRow[] = []
+  for (const item of body.data) {
+    const parsed = parseAdminTeamMemberRow(item)
+    if (!parsed) {
+      throw new AdminApiError(response.status, 'Invalid team response')
+    }
+    rows.push(parsed)
+  }
+  return rows
+}
+
+export async function postAdminTeam(input: AdminTeamMemberInput): Promise<AdminTeamMemberRow> {
+  let response: Response
+  try {
+    response = await fetch('/api/admin/team', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(input),
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+    field?: string
+  }
+
+  if (!response.ok || body.success !== true) {
+    throw new AdminApiError(
+      response.status,
+      body.message || 'Failed to create team member',
+      body.field
+    )
+  }
+
+  const parsed = parseAdminTeamMemberRow(body.data)
+  if (!parsed) {
+    throw new AdminApiError(response.status, 'Invalid team response')
+  }
+  return parsed
+}
+
+export async function putAdminTeam(
+  id: number,
+  input: AdminTeamMemberInput
+): Promise<AdminTeamMemberRow> {
+  let response: Response
+  try {
+    response = await fetch(`/api/admin/team/${id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(input),
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+    field?: string
+  }
+
+  if (!response.ok || body.success !== true) {
+    throw new AdminApiError(
+      response.status,
+      body.message || 'Failed to update team member',
+      body.field
+    )
+  }
+
+  const parsed = parseAdminTeamMemberRow(body.data)
+  if (!parsed) {
+    throw new AdminApiError(response.status, 'Invalid team response')
+  }
+  return parsed
+}
+
+export async function getPublicTeam(): Promise<PublicTeamMemberRow[]> {
+  let response: Response
+  try {
+    response = await fetch('/api/team', {
+      method: 'GET',
+      credentials: 'omit',
+    })
+  } catch {
+    throw new PublicTeamError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+  }
+
+  if (!response.ok || body.success !== true || !Array.isArray(body.data)) {
+    throw new PublicTeamError(response.status, body.message || 'Failed to load team')
+  }
+
+  const rows: PublicTeamMemberRow[] = []
+  for (const item of body.data) {
+    const parsed = parseAdminTeamMemberRow(item)
+    if (!parsed) {
+      throw new PublicTeamError(response.status, 'Invalid team response')
+    }
+    rows.push(parsed)
+  }
+  return rows
+}
+
 export async function postAudit(payload: AuditPayload): Promise<AuditSuccessResponse> {
   let response: Response
   try {

@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-17  # Story 4.3 -> done (review fixes applied)
+last_updated: 2026-05-17  # Story 4.4 -> review (dev complete; cross-model review pending)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -103,7 +103,7 @@ development_status:
   4-1-admin-authentication-login-session-management: done
   4-2-leads-dashboard-view-filter: done
   4-3-lead-status-management: done
-  4-4-team-member-management-create-edit: backlog
+  4-4-team-member-management-create-edit: review
   4-5-team-member-display-order-active-toggle: backlog
   4-6-admin-dashboard-navigation-shell: backlog
   # 4.7 + 4.8 added 2026-05-16 from Story 4.1 cross-model review deferred findings
@@ -119,3 +119,17 @@ development_status:
   5-4-sqlite-backup-automation: backlog
   5-5-uptime-monitoring-health-check: backlog
   epic-5-retrospective: optional
+
+  # Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
+  # Source: _bmad-output/design-handoffs/syncsirius-website-2026-05-17/
+  # Generated 2026-05-17 from Anthropic Claude Design bundle. Visual-only — no FR changes.
+  epic-6: backlog
+  6-1-design-tokens-sober-palette: backlog
+  6-2-navbar-logo-refresh: backlog
+  6-3-hero-left-background-copy-kpis: backlog
+  6-4-hero-right-product-panel-integrations-ticker: backlog
+  6-5-benefits-grid-trust-strip: backlog
+  6-6-clientreferences-visual-refresh: backlog
+  6-7-team-section-visual-refresh: backlog
+  6-8-demo-contact-forms-visual-refresh-locale-parity: backlog
+  epic-6-retrospective: optional

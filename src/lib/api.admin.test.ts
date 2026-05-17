@@ -1,10 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   AdminApiError,
+  PublicTeamError,
   getAdminMe,
+  getAdminTeam,
+  getPublicTeam,
   patchAdminLeadStatus,
   postAdminLogin,
   postAdminLogout,
+  postAdminTeam,
+  putAdminTeam,
+  type AdminTeamMemberInput,
+  type AdminTeamMemberRow,
 } from './api'
 
 beforeEach(() => {
@@ -247,5 +254,189 @@ describe('patchAdminLeadStatus', () => {
       name: 'AdminApiError',
       status: 0,
     })
+  })
+})
+
+const validRow: AdminTeamMemberRow = {
+  id: 1,
+  name: 'Maria',
+  role_en: 'Lead',
+  role_pt: 'Líder',
+  role_es: 'Líder',
+  bio_en: 'en',
+  bio_pt: 'pt',
+  bio_es: 'es',
+  linkedin: null,
+  photo_url: null,
+  order_index: 0,
+  active: 1,
+}
+
+const validInput: AdminTeamMemberInput = {
+  name: 'Maria',
+  role_en: 'Lead',
+  role_pt: 'Líder',
+  role_es: 'Líder',
+  bio_en: 'en',
+  bio_pt: 'pt',
+  bio_es: 'es',
+  linkedin: null,
+  photo_url: null,
+  order_index: 0,
+}
+
+describe('getAdminTeam', () => {
+  it('parses 200 rows', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: [validRow] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getAdminTeam()).resolves.toEqual([validRow])
+  })
+
+  it('throws AdminApiError on 401', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getAdminTeam()).rejects.toMatchObject({ name: 'AdminApiError', status: 401 })
+  })
+
+  it('throws Invalid team response on malformed row', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: [{ id: 'oops' }] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getAdminTeam()).rejects.toMatchObject({ message: 'Invalid team response' })
+  })
+
+  it('throws AdminApiError(0) on network failure', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+    await expect(getAdminTeam()).rejects.toMatchObject({ name: 'AdminApiError', status: 0 })
+  })
+})
+
+describe('postAdminTeam', () => {
+  it('returns parsed row on 201', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: validRow }), {
+        status: 201,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(postAdminTeam(validInput)).resolves.toEqual(validRow)
+  })
+
+  it('throws AdminApiError with field on 400', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({ success: false, message: 'Validation failed', field: 'linkedin' }),
+        { status: 400, headers: { 'content-type': 'application/json' } }
+      )
+    )
+    await expect(postAdminTeam(validInput)).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 400,
+      field: 'linkedin',
+    })
+  })
+
+  it('throws AdminApiError(401) on 401', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(postAdminTeam(validInput)).rejects.toMatchObject({ status: 401 })
+  })
+
+  it('throws Invalid team response on malformed data', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: { id: 'oops' } }), {
+        status: 201,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(postAdminTeam(validInput)).rejects.toMatchObject({
+      message: 'Invalid team response',
+    })
+  })
+
+  it('throws AdminApiError(0) on network failure', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+    await expect(postAdminTeam(validInput)).rejects.toMatchObject({ status: 0 })
+  })
+})
+
+describe('putAdminTeam', () => {
+  it('returns parsed row on 200', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: validRow }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(putAdminTeam(1, validInput)).resolves.toEqual(validRow)
+  })
+
+  it('throws AdminApiError(404) on missing row', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Team member not found' }), {
+        status: 404,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(putAdminTeam(99, validInput)).rejects.toMatchObject({ status: 404 })
+  })
+
+  it('throws AdminApiError(0) on network failure', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+    await expect(putAdminTeam(1, validInput)).rejects.toMatchObject({ status: 0 })
+  })
+})
+
+describe('getPublicTeam', () => {
+  it('parses 200 rows', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: [validRow] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getPublicTeam()).resolves.toEqual([validRow])
+  })
+
+  it('throws PublicTeamError on 500', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'boom' }), {
+        status: 500,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getPublicTeam()).rejects.toBeInstanceOf(PublicTeamError)
+  })
+
+  it('throws PublicTeamError(0) on network failure', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+    await expect(getPublicTeam()).rejects.toMatchObject({ name: 'PublicTeamError', status: 0 })
+  })
+
+  it('uses credentials: omit', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: [] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await getPublicTeam()
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit | undefined
+    expect(init?.credentials).toBe('omit')
   })
 })

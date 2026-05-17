@@ -14,6 +14,7 @@ import adminAuthRouter from './routes/admin/auth'
 import adminLeadsRouter from './routes/admin/leads'
 import adminContactsRouter from './routes/admin/contacts'
 import adminTeamRouter from './routes/admin/team'
+import publicTeamRouter from './routes/team'
 
 export function createApp(): Express {
   const app = express()
@@ -39,6 +40,7 @@ export function createApp(): Express {
   app.use('/api/demo', demoRouter)
   app.use('/api/contact', contactRouter)
   app.use('/api/audit', auditRouter)
+  app.use('/api/team', publicTeamRouter)
 
   app.use('/api/admin/auth', adminAuthRouter)
   app.use('/api/admin/leads', requireAdmin, adminLeadsRouter)

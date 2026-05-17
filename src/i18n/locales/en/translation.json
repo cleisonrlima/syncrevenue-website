@@ -441,6 +441,64 @@
           "generic": "Couldn't update status. Try again."
         }
       }
+    },
+    "team": {
+      "title": "Team Members",
+      "add": "Add Team Member",
+      "columns": {
+        "name": "Name",
+        "role": "Role",
+        "active": "Active",
+        "order": "Order",
+        "actions": "Actions"
+      },
+      "active": {
+        "yes": "Active",
+        "no": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit"
+      },
+      "empty": "No team members yet. Click Add Team Member to create the first one.",
+      "form": {
+        "title": {
+          "create": "New Team Member",
+          "edit": "Edit Team Member"
+        },
+        "labels": {
+          "name": "Name",
+          "role_en": "Role (EN)",
+          "role_pt": "Role (PT-BR)",
+          "role_es": "Role (ES)",
+          "bio_en": "Bio (EN)",
+          "bio_pt": "Bio (PT-BR)",
+          "bio_es": "Bio (ES)",
+          "linkedin": "LinkedIn URL",
+          "photo_url": "Photo URL",
+          "order_index": "Display order"
+        },
+        "required": "Required",
+        "placeholders": {
+          "linkedin": "https://www.linkedin.com/in/...",
+          "photo_url": "https://..."
+        },
+        "submit": {
+          "create": "Create member",
+          "edit": "Save changes"
+        },
+        "cancel": "Cancel",
+        "errors": {
+          "required": "This field is required.",
+          "url": "Must be a valid URL.",
+          "orderIndex": "Must be a non-negative integer.",
+          "generic": "Couldn't save the team member. Try again."
+        }
+      },
+      "errors": {
+        "load": "Failed to load team members.",
+        "retry": "Retry",
+        "generic": "Something went wrong. Try again."
+      }
     }
   }
 }

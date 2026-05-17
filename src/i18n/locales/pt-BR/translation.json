@@ -441,6 +441,64 @@
           "generic": "Não foi possível atualizar o status. Tente novamente."
         }
       }
+    },
+    "team": {
+      "title": "Membros da Equipe",
+      "add": "Adicionar Membro",
+      "columns": {
+        "name": "Nome",
+        "role": "Cargo",
+        "active": "Ativo",
+        "order": "Ordem",
+        "actions": "Ações"
+      },
+      "active": {
+        "yes": "Ativo",
+        "no": "Inativo"
+      },
+      "actions": {
+        "edit": "Editar"
+      },
+      "empty": "Nenhum membro ainda. Clique em Adicionar Membro para criar o primeiro.",
+      "form": {
+        "title": {
+          "create": "Novo Membro",
+          "edit": "Editar Membro"
+        },
+        "labels": {
+          "name": "Nome",
+          "role_en": "Cargo (EN)",
+          "role_pt": "Cargo (PT-BR)",
+          "role_es": "Cargo (ES)",
+          "bio_en": "Bio (EN)",
+          "bio_pt": "Bio (PT-BR)",
+          "bio_es": "Bio (ES)",
+          "linkedin": "URL do LinkedIn",
+          "photo_url": "URL da foto",
+          "order_index": "Ordem de exibição"
+        },
+        "required": "Obrigatório",
+        "placeholders": {
+          "linkedin": "https://www.linkedin.com/in/...",
+          "photo_url": "https://..."
+        },
+        "submit": {
+          "create": "Criar membro",
+          "edit": "Salvar alterações"
+        },
+        "cancel": "Cancelar",
+        "errors": {
+          "required": "Este campo é obrigatório.",
+          "url": "Deve ser uma URL válida.",
+          "orderIndex": "Deve ser um número inteiro não negativo.",
+          "generic": "Não foi possível salvar o membro. Tente novamente."
+        }
+      },
+      "errors": {
+        "load": "Falha ao carregar membros da equipe.",
+        "retry": "Tentar novamente",
+        "generic": "Algo deu errado. Tente novamente."
+      }
     }
   }
 }

@@ -55,7 +55,7 @@
   - 2.6 Form Accessibility & Locale-Aware Validation (`createDemoSchema(t)` / `createContactSchema(t)` factories)
   - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
-- Active phase: **Epic 4 (Phase 3)** — Story 4.1 done 2026-05-16. Story 4.2 done 2026-05-16. Story 4.7 done 2026-05-16. Story 4.8 done 2026-05-17. **Story 4.3 (lead status management) done 2026-05-17 — PATCH `/api/admin/leads/:id/status` + inline `<select>` with optimistic update + revert + per-row `role="alert"`; cross-model review fixes applied for active-filter pruning and select `aria-busy`.** Next: 4.4+. Epic 3 done (3.1–3.11) including retrospective.
+- Active phase: **Epic 4 (Phase 3)** — Story 4.1 done 2026-05-16. Story 4.2 done 2026-05-16. Story 4.7 done 2026-05-16. Story 4.8 done 2026-05-17. Story 4.3 done 2026-05-17. **Story 4.4 (team member management — create & edit) review 2026-05-17 — POST/PUT `/api/admin/team` + Zod admin-team schemas, public `GET /api/team` mounted in `server/index.ts`, full admin Team page with in-file `TeamMemberForm` + per-row Edit, public Team section now consumes `getPublicTeam` with locale-specific role/bio, `seedTeamMembers` ensures `npm run db:seed` populates default Maria + Lucas rows on a fresh DB, EN/PT-BR/ES i18n + E2E spec. typecheck 0; 74 files / 560 tests pass; build clean; secret scan passed.** Next: cross-model review, then 4.5+. Epic 3 done (3.1–3.11) including retrospective.
 - Story 3.6 (Story 3.1 Review Follow-ups) — done under accepted fake-data full-stub override. EN/PT-BR/ES team JSON now uses fabricated temporary names, solid-color WebP stubs, and fabricated LinkedIn-style URLs pending manual stakeholder-content swap.
 - Quality at Story 3.1 close: **234 tests pass**; `tsc --noEmit` → 0; `npm run build` clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)
@@ -70,6 +70,7 @@
   - 24-month retention deletion automation — Epic 5 candidate.
   - WCAG R-A2 waiver: Electric Blue `#0075F0` is large-text only on light bg — locked in `src/lib/brand-tokens.contrast.test.ts` and `vault/Planning/Architecture-Key.md`
 - **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)
+- **Epic 6 (Visual Design Refresh) scaffolded 2026-05-17** — 8 backlog stories (6.1–6.8) from the Anthropic Claude Design handoff (`_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`). Sober single-accent palette `#3D6FE0`, airplane hero background + right product panel with Amadeus/Sabre/Travelport tiles + live ticker, 6-card benefits grid, glass quote cards for ClientReferences, horizontal team cards with LinkedIn icon-button, 40/60 form layout for Demo + Contact. UX-DR2/DR3 deliberately superseded after Story 6.1 lands; all existing functional surfaces (form validation, locale parity, ClientReferences allowlist) preserved.
 
 ---
 

@@ -71,7 +71,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 4.1 | Admin Authentication — Login & Session Management | `[x]` |
 | 4.2 | Leads Dashboard — View & Filter | `[x]` |
 | 4.3 | Lead Status Management | `[x]` |
-| 4.4 | Team Member Management — Create & Edit | `[ ]` |
+| 4.4 | Team Member Management — Create & Edit | `[r]` review |
 | 4.5 | Team Member Display Order & Active Toggle | `[ ]` |
 | 4.6 | Admin Dashboard & Navigation Shell | `[ ]` |
 | 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[r]` review |
@@ -86,3 +86,18 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 5.3 | Environment Variable Hardening | `[ ]` |
 | 5.4 | SQLite Backup Automation | `[ ]` |
 | 5.5 | Uptime Monitoring & Health Check | `[ ]` |
+
+## Epic 6 — Visual Design Refresh — Claude Design Handoff (Phase 5)
+
+Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Sober palette anchored on single accent `#3D6FE0`; no gradients/glows/dot-grids. Visual-only — preserves all existing FR behavior; UX-DR2/DR3 deliberately superseded (divergence documented in `Planning/Architecture-Key.md` after Story 6.1 lands).
+
+| Story | Title | Status |
+|---|---|---|
+| 6.1 | Design Tokens — Sober Palette | `[ ]` |
+| 6.2 | Navbar & Logo Refresh | `[ ]` |
+| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[ ]` |
+| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[ ]` |
+| 6.5 | Benefits Grid + Trust Strip | `[ ]` |
+| 6.6 | ClientReferences Visual Refresh | `[ ]` |
+| 6.7 | Team Section Visual Refresh | `[ ]` |
+| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[ ]` |
