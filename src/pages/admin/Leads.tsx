@@ -173,7 +173,15 @@ export default function Leads() {
 
       try {
         const updated = await patchAdminLeadStatus(rowId, nextStatus)
-        setRows(prev => (prev ? prev.map(r => (r.id === rowId ? updated : r)) : prev))
+        setRows(prev => {
+          if (!prev) return prev
+          const localeMatches = localeFilter === 'all' || updated.locale === localeFilter
+          const statusMatches = statusFilter === 'all' || updated.status === statusFilter
+          if (!localeMatches || !statusMatches) {
+            return prev.filter(r => r.id !== rowId)
+          }
+          return prev.map(r => (r.id === rowId ? updated : r))
+        })
       } catch (err) {
         if (err instanceof AdminApiError && err.status === 401) {
           clearSession()
@@ -193,7 +201,7 @@ export default function Leads() {
         markPending(rowId, false)
       }
     },
-    [clearSession, markPending, setRowError]
+    [clearSession, localeFilter, markPending, setRowError, statusFilter]
   )
 
   const language = i18n.language || 'en'
@@ -227,6 +235,7 @@ export default function Leads() {
               <select
                 data-testid={`lead-status-select-${row.id}`}
                 aria-label={t('admin.leads.statusUpdate.label')}
+                aria-busy={isPending || undefined}
                 disabled={isPending}
                 value={row.status}
                 onChange={e =>

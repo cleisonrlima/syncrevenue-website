@@ -36,7 +36,7 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 | Epic 4 | SYN-4 | in-progress |
 | 4.1 Admin auth | SYN-28 | done |
 | 4.2 Leads dashboard | SYN-29 | done |
-| 4.3 Lead status | SYN-30 | review (subtasks SYN-192..201 also REVIEW; commit 9baf111) |
+| 4.3 Lead status | SYN-30 | done (review fixes applied after commit 9baf111; Jira sync pending) |
 | 4.4 Team CRUD | SYN-31 | backlog |
 | 4.5 Team order/active | SYN-32 | backlog |
 | 4.6 Admin shell | SYN-33 | backlog |

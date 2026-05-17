@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-17  # Story 4.3 -> review (dev complete)
+last_updated: 2026-05-17  # Story 4.3 -> done (review fixes applied)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -102,7 +102,7 @@ development_status:
   epic-4: in-progress
   4-1-admin-authentication-login-session-management: done
   4-2-leads-dashboard-view-filter: done
-  4-3-lead-status-management: review
+  4-3-lead-status-management: done
   4-4-team-member-management-create-edit: backlog
   4-5-team-member-display-order-active-toggle: backlog
   4-6-admin-dashboard-navigation-shell: backlog

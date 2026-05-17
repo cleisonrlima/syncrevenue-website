@@ -282,6 +282,7 @@ describe('Leads page', () => {
       await user.selectOptions(select, 'contacted')
 
       expect(select).toBeDisabled()
+      expect(select.getAttribute('aria-busy')).toBe('true')
       const tr = screen.getByTestId('lead-row-50')
       expect(tr.getAttribute('aria-busy')).toBe('true')
 
@@ -292,6 +293,32 @@ describe('Leads page', () => {
       await waitFor(() => {
         expect(select).not.toBeDisabled()
       })
+    })
+
+    it('removes a row from the visible table when mutation no longer matches the active status filter', async () => {
+      const row: AdminLeadRow = makeRow({ id: 55, name: 'Filtered Lead', status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([row])
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockResolvedValue({
+        ...row,
+        status: 'contacted',
+      })
+      renderLeads()
+      await screen.findByText('Filtered Lead')
+
+      const user = userEvent.setup()
+      await user.selectOptions(screen.getByTestId('admin-leads-status-filter'), 'pending')
+      await waitFor(() => {
+        expectLastGetAdminLeadsCall({ status: 'pending' })
+      })
+
+      await user.selectOptions(screen.getByTestId('lead-status-select-55'), 'contacted')
+
+      await waitFor(() => {
+        expect(screen.queryByText('Filtered Lead')).toBeNull()
+      })
+      expect(await screen.findByTestId('admin-leads-empty')).toHaveTextContent(
+        /no leads match this filter/i
+      )
     })
 
     it('reverts the badge and shows invalidStatus alert on AdminApiError(400, "status")', async () => {

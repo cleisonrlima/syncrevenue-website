@@ -1,6 +1,6 @@
 # Story 4.3: Lead Status Management
 
-Status: review
+Status: done
 
 <!-- Created 2026-05-17 by /bmad-create-story. Parent Jira: SYN-30 (per sprint-status.yaml mirror block; verify on next /jira-assistant sync). Sprint: SYN Sprint 3 (336). -->
 
@@ -112,6 +112,11 @@ So that I can track pipeline progression without leaving the admin interface.
   - [x] Update `vault/Code/Frontend.md` if a new shared primitive is introduced (likely not — inline `<select>` stays inline).
   - [x] Update `vault/Planning/Epics-Index.md` Story 4.3 from `[ ]` → `[~]` → `[r]` → `[x]` as status moves.
   - [x] Update `vault/00-Home.md` Project Status section to reflect Story 4.3 progression.
+
+### Review Findings
+
+- [x] [Review][Patch] Active status filter shows stale rows after inline mutation [src/pages/admin/Leads.tsx:175]
+- [x] [Review][Patch] Pending state aria-busy is on the row instead of the status select [src/pages/admin/Leads.tsx:227]
 
 ## Dev Notes
 
@@ -248,13 +253,14 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — 2026-05-17.
 - `npx vitest run server/schemas/admin-lead-status.schema.test.ts` → **9/9 pass** (Subtask 1 gate).
 - `npx vitest run server/routes/admin/leads.test.ts` → **17/17 pass** (8 GET + 9 PATCH; Subtask 3 gate).
 - `npx vitest run src/lib/api.admin.test.ts` → **18/18 pass** (11 prior + 7 patchAdminLeadStatus; Subtask 4 gate).
-- `npx vitest run src/pages/admin/Leads.test.tsx` → **18/18 pass** (10 prior + 8 mutation; Subtasks 5+6 gate).
+- `npx vitest run src/pages/admin/Leads.test.tsx` → **19/19 pass** (10 prior + 8 mutation + 1 review patch; Subtasks 5+6 gate).
 - `npm run typecheck` → 0 errors (after `AdminLeadRow`-typed promise refactor in Leads.test.tsx).
-- `npm run test:run` → **69 files, 473/473 pass** (Story 4.2 baseline 402 + Story 4.3 additions = 473; no regressions).
+- `npm run test:run` → **69 files, 474/474 pass** (Story 4.2 baseline 402 + Story 4.3 additions + review patch coverage; no regressions).
 - `npm run build` → clean; `dist/client/assets/index-DsKE2S9x.js` 357.41 kB / 112.29 kB gzip.
 - `npm run check:client-bundle-secrets` → `Client bundle secret scan passed.`
 - `npm run test:e2e` → NOT executed in sandbox (Playwright binaries not present; spec ships and will run in CI). New scenario `inline status mutation updates badge without navigation and persists across reload` is wired alongside the existing Story 4.2 admin-leads spec, reusing its seed + auth scaffolding.
 - `npm run dev` manual smoke — deferred to cross-model review per CLAUDE.md.
+- Review patch verification: `npm run test:run -- src/pages/admin/Leads.test.tsx` → **19/19 pass**; `npm run test:run -- server/routes/admin/leads.test.ts src/pages/admin/Leads.test.tsx src/lib/api.admin.test.ts server/schemas/admin-lead-status.schema.test.ts` → **63/63 pass**; `npm run typecheck` → 0 errors; `npm run test:run` → **69 files, 474/474 pass**.
 
 ### Completion Notes List
 
@@ -267,7 +273,7 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — 2026-05-17.
 - i18n: `admin.leads.statusUpdate.{label, errors.invalidStatus, errors.notFound, errors.generic}` populated in EN, PT-BR, ES. `label` ("Update status" / "Atualizar status" / "Actualizar estado") is used as `aria-label` on the per-row select since the badge already provides the visible label. ARIA attrs and `data-testid` stay technical English per the project a11y i18n boundary.
 - E2E: extended `tests/e2e/admin-leads.spec.ts` with a single new test `inline status mutation updates badge without navigation and persists across reload`. Re-uses Story 4.2 seed admin + seed leads harness. Asserts (a) badge text moves pending → contacted, (b) `page.url()` is unchanged (no navigation), (c) badge stays on contacted after `page.reload()` (durability check, AC 9).
 - Architecture decisions enforced: no new dependencies, admin import boundary preserved (no `components/sections/*` imports), no new `Badge`/`Table` primitives, no `Toast` adoption for admin, no client-side re-fetch of `GET /api/admin/leads` after a mutation, last-write-wins (no ETag), `requireAdmin` 401 envelope unchanged, `tokenVersion` Story 4.8 flow inherited transparently.
-- Story 4.2 baseline 402 → Story 4.3 review 473 (+71 tests across 9 schema + 9 route + 7 helper + 8 page = 33 directly attributable to Story 4.3; the remaining +38 are pre-existing test files counted differently in the previous run — the file count went from 67 → 69, two new files: `admin-lead-status.schema.test.ts` and (re-)expanded `Leads.test.tsx`).
+- Story 4.2 baseline 402 → Story 4.3 done 474 (+72 tests including 1 cross-model review regression test; file count 69).
 - Cross-model review still owed per CLAUDE.md rule (Claude implemented → reviewer must be non-Claude). Story automator disabled per project memory; user will run the review step manually.
 
 ### File List
@@ -299,3 +305,4 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — 2026-05-17.
 | Date | Author | Change |
 |---|---|---|
 | 2026-05-17 | Claude Opus 4.7 (1M context) | Story 4.3 implemented end-to-end: new `admin-lead-status.schema.ts` + smoke test, `PATCH /api/admin/leads/:id/status` handler with Zod params + body validation and 404 on missing row, 9 new server route tests, `patchAdminLeadStatus` admin API helper + 7 new helper tests, inline per-row `<select>` mutation control on `Leads.tsx` with optimistic update + per-row revert + per-row `role="alert"`, 8 new page tests, `admin.leads.statusUpdate` i18n namespace × EN/PT-BR/ES, E2E mutation + reload durability scenario, vault notes synced. typecheck 0; full suite 69/473 pass; build clean; secret scan passed. Status → review. |
+| 2026-05-17 | Codex GPT-5 | Cross-model code review applied 2 fixes: successful inline status mutation now removes rows that no longer match active locale/status filters, and the row status `<select>` now carries `aria-busy` while pending. Added regression coverage for active status-filter removal and select `aria-busy`. Focused story suite 63/63 pass. Status → done. |
