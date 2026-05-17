@@ -432,6 +432,14 @@
         "more": "Show more",
         "less": "Show less",
         "none": "—"
+      },
+      "statusUpdate": {
+        "label": "Update status",
+        "errors": {
+          "invalidStatus": "Invalid status value.",
+          "notFound": "This lead no longer exists. Refresh to see the latest list.",
+          "generic": "Couldn't update status. Try again."
+        }
       }
     }
   }

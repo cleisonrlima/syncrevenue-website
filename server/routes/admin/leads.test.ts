@@ -101,7 +101,21 @@ async function authedGet(pathWithQuery: string, token: string) {
   })
 }
 
+async function authedPatch(
+  pathWithQuery: string,
+  token: string,
+  body: Record<string, unknown> | string | undefined
+) {
+  return request(app, {
+    method: 'PATCH',
+    path: pathWithQuery,
+    headers: { cookie: `${AUTH_COOKIE_NAME}=${token}` },
+    body,
+  })
+}
+
 type LeadsBody = { success: true; data: DemoRequestRow[] }
+type LeadBody = { success: true; data: DemoRequestRow }
 type ErrBody = { success: false; message: string; field?: string }
 
 describe('admin leads route', () => {
@@ -189,5 +203,134 @@ describe('admin leads route', () => {
     expect(r.status).toBe(200)
     const body = r.json<LeadsBody>()
     expect(body.data).toHaveLength(SEED_LEADS.length)
+  })
+})
+
+describe('PATCH /api/admin/leads/:id/status', () => {
+  beforeEach(async () => {
+    await createIsolatedApp()
+  })
+
+  afterEach(() => {
+    teardown()
+  })
+
+  function getFirstSeededLead(): DemoRequestRow {
+    const rows = leadsDao.list()
+    if (rows.length === 0) throw new Error('seed data missing')
+    return rows[0]
+  }
+
+  it('returns 401 without cookie', async () => {
+    const target = getFirstSeededLead()
+    const r = await request(app, {
+      method: 'PATCH',
+      path: `/api/admin/leads/${target.id}/status`,
+      body: { status: 'contacted' },
+    })
+    expect(r.status).toBe(401)
+    expect(r.json<{ success: boolean }>().success).toBe(false)
+  })
+
+  it('200 updates status; DB reflects new value', async () => {
+    const token = await loginAndGetCookie()
+    const target = getFirstSeededLead()
+    const r = await authedPatch(`/api/admin/leads/${target.id}/status`, token, {
+      status: 'contacted',
+    })
+    expect(r.status).toBe(200)
+    const body = r.json<LeadBody>()
+    expect(body.success).toBe(true)
+    expect(body.data.id).toBe(target.id)
+    expect(body.data.status).toBe<LeadStatus>('contacted')
+    expect(typeof body.data.updated_at).toBe('string')
+    const persisted = leadsDao.getById(target.id)
+    expect(persisted?.status).toBe<LeadStatus>('contacted')
+  })
+
+  it('returns 400 on invalid status with field: status', async () => {
+    const token = await loginAndGetCookie()
+    const target = getFirstSeededLead()
+    const before = target.status
+    const r = await authedPatch(`/api/admin/leads/${target.id}/status`, token, {
+      status: 'archived',
+    })
+    expect(r.status).toBe(400)
+    const body = r.json<ErrBody>()
+    expect(body.success).toBe(false)
+    expect(body.field).toBe('status')
+    expect(leadsDao.getById(target.id)?.status).toBe(before)
+  })
+
+  it('returns 400 on missing status with field: status', async () => {
+    const token = await loginAndGetCookie()
+    const target = getFirstSeededLead()
+    const before = target.status
+    const r = await authedPatch(`/api/admin/leads/${target.id}/status`, token, {})
+    expect(r.status).toBe(400)
+    const body = r.json<ErrBody>()
+    expect(body.field).toBe('status')
+    expect(leadsDao.getById(target.id)?.status).toBe(before)
+  })
+
+  it('returns 400 on non-numeric :id with field: id', async () => {
+    const token = await loginAndGetCookie()
+    const r = await authedPatch('/api/admin/leads/abc/status', token, {
+      status: 'contacted',
+    })
+    expect(r.status).toBe(400)
+    const body = r.json<ErrBody>()
+    expect(body.field).toBe('id')
+    expect(body.message).toBe('Invalid lead id')
+  })
+
+  it('returns 400 on negative :id with field: id', async () => {
+    const token = await loginAndGetCookie()
+    const r = await authedPatch('/api/admin/leads/-1/status', token, {
+      status: 'contacted',
+    })
+    expect(r.status).toBe(400)
+    const body = r.json<ErrBody>()
+    expect(body.field).toBe('id')
+  })
+
+  it('returns 404 on unknown id with valid body', async () => {
+    const token = await loginAndGetCookie()
+    const r = await authedPatch('/api/admin/leads/999999/status', token, {
+      status: 'qualified',
+    })
+    expect(r.status).toBe(404)
+    const body = r.json<ErrBody>()
+    expect(body.success).toBe(false)
+    expect(body.message).toBe('Lead not found')
+  })
+
+  it('silently ignores unknown body keys', async () => {
+    const token = await loginAndGetCookie()
+    const target = getFirstSeededLead()
+    const r = await authedPatch(`/api/admin/leads/${target.id}/status`, token, {
+      status: 'qualified',
+      foo: 'bar',
+    })
+    expect(r.status).toBe(200)
+    const body = r.json<LeadBody>()
+    expect(body.data.status).toBe<LeadStatus>('qualified')
+    expect(leadsDao.getById(target.id)?.status).toBe<LeadStatus>('qualified')
+  })
+
+  it('updated_at moves forward (or stays a valid ISO date if SQLite resolution masks it)', async () => {
+    const token = await loginAndGetCookie()
+    const target = getFirstSeededLead()
+    const beforeUpdatedAt = target.updated_at
+    await new Promise(resolve => setTimeout(resolve, 1100))
+    const r = await authedPatch(`/api/admin/leads/${target.id}/status`, token, {
+      status: 'contacted',
+    })
+    expect(r.status).toBe(200)
+    const body = r.json<LeadBody>()
+    const afterUpdatedAt = body.data.updated_at
+    expect(typeof afterUpdatedAt).toBe('string')
+    expect(Number.isNaN(Date.parse(afterUpdatedAt))).toBe(false)
+    expect(Date.parse(afterUpdatedAt)).toBeGreaterThanOrEqual(Date.parse(beforeUpdatedAt))
   })
 })

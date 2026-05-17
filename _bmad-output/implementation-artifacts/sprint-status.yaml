@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 4.7 -> done (review fixes applied)
+last_updated: 2026-05-17  # Story 4.3 -> review (dev complete)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -51,6 +51,7 @@ story_location: _bmad-output/implementation-artifacts
 #       4.1 SYN-28 done, 4.2 SYN-29, 4.3 SYN-30, 4.4 SYN-31, 4.5 SYN-32, 4.6 SYN-33, # ← 4.1 done 2026-05-16
 #       4.7 SYN-165, 4.8 SYN-166                                                    # ← Story 4.1 review-deferred follow-ups (added 2026-05-16; subtasks SYN-167..173, SYN-174..181)
 #     Story 4.2 subtasks SYN-182..191 created 2026-05-16 (10 Sub-tasks under SYN-29)
+#     Story 4.3 subtasks SYN-192..201 created 2026-05-17 (10 Subtasks under SYN-30)
 current_jira_sprint: SYN Sprint 3
 
 development_status:
@@ -101,7 +102,7 @@ development_status:
   epic-4: in-progress
   4-1-admin-authentication-login-session-management: done
   4-2-leads-dashboard-view-filter: done
-  4-3-lead-status-management: backlog
+  4-3-lead-status-management: review
   4-4-team-member-management-create-edit: backlog
   4-5-team-member-display-order-active-toggle: backlog
   4-6-admin-dashboard-navigation-shell: backlog

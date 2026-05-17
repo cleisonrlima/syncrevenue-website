@@ -143,4 +143,31 @@ test.describe('Admin Leads @P1', () => {
     await expect(empty).toBeVisible()
     await expect(empty).toContainText(/no leads yet|nenhum lead ainda|aún no hay leads/i)
   })
+
+  test('inline status mutation updates badge without navigation and persists across reload', async ({ page }) => {
+    await login(page)
+    await page.goto('/admin/leads')
+    await page.getByTestId('admin-leads-table').waitFor()
+
+    const pendingSeed = SEED_LEADS.find(s => s.status === 'pending' && s.name === 'Alice EN E2E')!
+    const dbRow = db
+      .prepare('SELECT id FROM demo_requests WHERE email = ?')
+      .get(pendingSeed.email) as { id: number } | undefined
+    expect(dbRow?.id).toBeGreaterThan(0)
+    const rowId = dbRow!.id
+
+    const badge = page.getByTestId(`lead-status-${rowId}`)
+    const select = page.getByTestId(`lead-status-select-${rowId}`)
+    await expect(badge).toHaveText(/pending/i)
+
+    const beforeUrl = page.url()
+    await select.selectOption('contacted')
+    await expect(badge).toHaveText(/contacted/i)
+    expect(page.url()).toBe(beforeUrl)
+
+    // Durability: reload the page, the new status must persist
+    await page.reload()
+    await page.getByTestId('admin-leads-table').waitFor()
+    await expect(page.getByTestId(`lead-status-${rowId}`)).toHaveText(/contacted/i)
+  })
 })

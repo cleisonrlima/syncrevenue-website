@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   AdminApiError,
   getAdminLeads,
+  patchAdminLeadStatus,
   type AdminLeadRow,
   type AdminLeadLocale,
   type AdminLeadStatus,
@@ -60,6 +61,21 @@ function MessageCell({ value }: { value: string | null }) {
   )
 }
 
+type StatusErrorKey =
+  | 'admin.leads.statusUpdate.errors.invalidStatus'
+  | 'admin.leads.statusUpdate.errors.notFound'
+  | 'admin.leads.statusUpdate.errors.generic'
+
+function mapStatusError(err: AdminApiError): StatusErrorKey {
+  if (err.status === 400 && err.field === 'status') {
+    return 'admin.leads.statusUpdate.errors.invalidStatus'
+  }
+  if (err.status === 404) {
+    return 'admin.leads.statusUpdate.errors.notFound'
+  }
+  return 'admin.leads.statusUpdate.errors.generic'
+}
+
 export default function Leads() {
   const { t, i18n } = useTranslation()
   const clearSession = useAdminStore(state => state.clearSession)
@@ -70,6 +86,10 @@ export default function Leads() {
   const [loading, setLoading] = useState(true)
   const [errorKey, setErrorKey] = useState<string | null>(null)
   const [refetchToken, setRefetchToken] = useState(0)
+  const [pendingRowIds, setPendingRowIds] = useState<ReadonlySet<number>>(() => new Set())
+  const [rowErrorKeys, setRowErrorKeys] = useState<ReadonlyMap<number, StatusErrorKey>>(
+    () => new Map()
+  )
 
   useEffect(() => {
     const controller = new AbortController()
@@ -122,33 +142,127 @@ export default function Leads() {
     setRefetchToken(token => token + 1)
   }, [])
 
+  const markPending = useCallback((id: number, isPending: boolean) => {
+    setPendingRowIds(prev => {
+      const next = new Set(prev)
+      if (isPending) next.add(id)
+      else next.delete(id)
+      return next
+    })
+  }, [])
+
+  const setRowError = useCallback((id: number, key: StatusErrorKey | null) => {
+    setRowErrorKeys(prev => {
+      const next = new Map(prev)
+      if (key === null) next.delete(id)
+      else next.set(id, key)
+      return next
+    })
+  }, [])
+
+  const handleStatusChange = useCallback(
+    async (rowId: number, previousStatus: AdminLeadStatus, nextStatus: AdminLeadStatus) => {
+      if (nextStatus === previousStatus) return
+      setRows(prev =>
+        prev
+          ? prev.map(r => (r.id === rowId ? { ...r, status: nextStatus } : r))
+          : prev
+      )
+      markPending(rowId, true)
+      setRowError(rowId, null)
+
+      try {
+        const updated = await patchAdminLeadStatus(rowId, nextStatus)
+        setRows(prev => (prev ? prev.map(r => (r.id === rowId ? updated : r)) : prev))
+      } catch (err) {
+        if (err instanceof AdminApiError && err.status === 401) {
+          clearSession()
+          return
+        }
+        setRows(prev =>
+          prev
+            ? prev.map(r => (r.id === rowId ? { ...r, status: previousStatus } : r))
+            : prev
+        )
+        const errorKeyForRow =
+          err instanceof AdminApiError
+            ? mapStatusError(err)
+            : 'admin.leads.statusUpdate.errors.generic'
+        setRowError(rowId, errorKeyForRow)
+      } finally {
+        markPending(rowId, false)
+      }
+    },
+    [clearSession, markPending, setRowError]
+  )
+
   const language = i18n.language || 'en'
 
   const tableBody = useMemo(() => {
     if (!rows) return null
-    return rows.map(row => (
-      <tr key={row.id} className="border-t border-white/10">
-        <td className="px-3 py-2 align-top">{row.name}</td>
-        <td className="px-3 py-2 align-top">{row.company}</td>
-        <td className="px-3 py-2 align-top">{row.email}</td>
-        <td className="px-3 py-2 align-top">{row.gds}</td>
-        <td className="px-3 py-2 align-top">{row.role}</td>
-        <td className="px-3 py-2 align-top">{t(`admin.leads.locale.${row.locale}`)}</td>
-        <td className="px-3 py-2 align-top">
-          <span
-            data-testid={`lead-status-${row.id}`}
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_BADGE_CLASS[row.status]}`}
-          >
-            {t(`admin.leads.status.${row.status}`)}
-          </span>
-        </td>
-        <td className="px-3 py-2 align-top">{formatCreated(row.created_at, language)}</td>
-        <td className="px-3 py-2 align-top max-w-md">
-          <MessageCell value={row.message} />
-        </td>
-      </tr>
-    ))
-  }, [rows, t, language])
+    return rows.map(row => {
+      const isPending = pendingRowIds.has(row.id)
+      const rowErrorKey = rowErrorKeys.get(row.id) ?? null
+      return (
+        <tr
+          key={row.id}
+          aria-busy={isPending || undefined}
+          data-testid={`lead-row-${row.id}`}
+          className="border-t border-white/10"
+        >
+          <td className="px-3 py-2 align-top">{row.name}</td>
+          <td className="px-3 py-2 align-top">{row.company}</td>
+          <td className="px-3 py-2 align-top">{row.email}</td>
+          <td className="px-3 py-2 align-top">{row.gds}</td>
+          <td className="px-3 py-2 align-top">{row.role}</td>
+          <td className="px-3 py-2 align-top">{t(`admin.leads.locale.${row.locale}`)}</td>
+          <td className="px-3 py-2 align-top">
+            <div className="flex flex-col gap-2">
+              <span
+                data-testid={`lead-status-${row.id}`}
+                className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_BADGE_CLASS[row.status]}`}
+              >
+                {t(`admin.leads.status.${row.status}`)}
+              </span>
+              <select
+                data-testid={`lead-status-select-${row.id}`}
+                aria-label={t('admin.leads.statusUpdate.label')}
+                disabled={isPending}
+                value={row.status}
+                onChange={e =>
+                  void handleStatusChange(
+                    row.id,
+                    row.status,
+                    e.target.value as AdminLeadStatus
+                  )
+                }
+                className="rounded-md border border-white/20 bg-white/10 px-2 py-1 text-xs text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {STATUS_OPTIONS.map(option => (
+                  <option key={option} value={option}>
+                    {t(`admin.leads.status.${option}`)}
+                  </option>
+                ))}
+              </select>
+              {rowErrorKey ? (
+                <p
+                  role="alert"
+                  data-testid={`lead-status-error-${row.id}`}
+                  className="text-xs text-red-200"
+                >
+                  {t(rowErrorKey)}
+                </p>
+              ) : null}
+            </div>
+          </td>
+          <td className="px-3 py-2 align-top">{formatCreated(row.created_at, language)}</td>
+          <td className="px-3 py-2 align-top max-w-md">
+            <MessageCell value={row.message} />
+          </td>
+        </tr>
+      )
+    })
+  }, [rows, t, language, pendingRowIds, rowErrorKeys, handleStatusChange])
 
   return (
     <main className="min-h-screen px-6 py-12">

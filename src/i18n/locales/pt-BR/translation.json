@@ -432,6 +432,14 @@
         "more": "Ver mais",
         "less": "Ver menos",
         "none": "—"
+      },
+      "statusUpdate": {
+        "label": "Atualizar status",
+        "errors": {
+          "invalidStatus": "Valor de status inválido.",
+          "notFound": "Este lead não existe mais. Atualize para ver a lista atual.",
+          "generic": "Não foi possível atualizar o status. Tente novamente."
+        }
       }
     }
   }

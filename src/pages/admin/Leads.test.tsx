@@ -12,6 +12,7 @@ vi.mock('@/lib/api', async () => {
   return {
     ...actual,
     getAdminLeads: vi.fn(),
+    patchAdminLeadStatus: vi.fn(),
   }
 })
 
@@ -52,6 +53,7 @@ function makeRow(overrides: Partial<AdminLeadRow> = {}): AdminLeadRow {
 
 beforeEach(() => {
   ;(api.getAdminLeads as unknown as Mock).mockReset()
+  ;(api.patchAdminLeadStatus as unknown as Mock).mockReset()
   useAdminStore.setState({
     isAuthenticated: true,
     adminId: 1,
@@ -216,5 +218,198 @@ describe('Leads page', () => {
     })
     expect(screen.queryByRole('alert')).toBeNull()
     expect(screen.queryByTestId('admin-leads-table')).toBeNull()
+  })
+
+  describe('inline status mutation', () => {
+    it('renders a status <select> per row with the current status pre-selected', async () => {
+      const rows = [
+        makeRow({ id: 30, status: 'pending' }),
+        makeRow({ id: 31, status: 'contacted' }),
+      ]
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue(rows)
+      renderLeads()
+
+      const select30 = (await screen.findByTestId('lead-status-select-30')) as HTMLSelectElement
+      const select31 = (await screen.findByTestId('lead-status-select-31')) as HTMLSelectElement
+      expect(select30.value).toBe('pending')
+      expect(select31.value).toBe('contacted')
+    })
+
+    it('optimistically updates the badge before the helper resolves and calls patchAdminLeadStatus once with (id, status)', async () => {
+      const initialRow = makeRow({ id: 40, status: 'pending' })
+      const updatedRow = { ...initialRow, status: 'contacted' as const }
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([initialRow])
+      let resolvePatch: ((row: typeof updatedRow) => void) | undefined
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockReturnValue(
+        new Promise<typeof updatedRow>(resolve => {
+          resolvePatch = resolve
+        })
+      )
+      renderLeads()
+      await screen.findByTestId('lead-status-select-40')
+
+      const user = userEvent.setup()
+      const select = screen.getByTestId('lead-status-select-40') as HTMLSelectElement
+      await user.selectOptions(select, 'contacted')
+
+      expect((screen.getByTestId('lead-status-40') as HTMLElement).textContent).toBe('Contacted')
+      expect(api.patchAdminLeadStatus).toHaveBeenCalledTimes(1)
+      expect((api.patchAdminLeadStatus as unknown as Mock).mock.calls[0]).toEqual([40, 'contacted'])
+
+      await act(async () => {
+        resolvePatch!(updatedRow)
+      })
+
+      await waitFor(() => {
+        expect((screen.getByTestId('lead-status-40') as HTMLElement).textContent).toBe('Contacted')
+      })
+    })
+
+    it('disables the row select and sets aria-busy while mutation is in flight', async () => {
+      const row: AdminLeadRow = makeRow({ id: 50, status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([row])
+      let resolvePatch: ((row: AdminLeadRow) => void) | undefined
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockReturnValue(
+        new Promise<AdminLeadRow>(resolve => {
+          resolvePatch = resolve
+        })
+      )
+      renderLeads()
+      await screen.findByTestId('lead-status-select-50')
+
+      const user = userEvent.setup()
+      const select = screen.getByTestId('lead-status-select-50') as HTMLSelectElement
+      await user.selectOptions(select, 'contacted')
+
+      expect(select).toBeDisabled()
+      const tr = screen.getByTestId('lead-row-50')
+      expect(tr.getAttribute('aria-busy')).toBe('true')
+
+      await act(async () => {
+        resolvePatch!({ ...row, status: 'contacted' })
+      })
+
+      await waitFor(() => {
+        expect(select).not.toBeDisabled()
+      })
+    })
+
+    it('reverts the badge and shows invalidStatus alert on AdminApiError(400, "status")', async () => {
+      const row = makeRow({ id: 60, status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([row])
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockRejectedValue(
+        new AdminApiError(400, 'Invalid status', 'status')
+      )
+      renderLeads()
+      await screen.findByTestId('lead-status-select-60')
+
+      const user = userEvent.setup()
+      await user.selectOptions(screen.getByTestId('lead-status-select-60'), 'contacted')
+
+      const alert = await screen.findByTestId('lead-status-error-60')
+      expect(alert).toHaveTextContent(/invalid status value/i)
+      await waitFor(() => {
+        expect((screen.getByTestId('lead-status-60') as HTMLElement).textContent).toBe('Pending')
+      })
+    })
+
+    it('reverts the badge and shows notFound alert on AdminApiError(404)', async () => {
+      const row = makeRow({ id: 61, status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([row])
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockRejectedValue(
+        new AdminApiError(404, 'Lead not found')
+      )
+      renderLeads()
+      await screen.findByTestId('lead-status-select-61')
+
+      const user = userEvent.setup()
+      await user.selectOptions(screen.getByTestId('lead-status-select-61'), 'contacted')
+
+      const alert = await screen.findByTestId('lead-status-error-61')
+      expect(alert).toHaveTextContent(/no longer exists/i)
+      await waitFor(() => {
+        expect((screen.getByTestId('lead-status-61') as HTMLElement).textContent).toBe('Pending')
+      })
+    })
+
+    it('reverts the badge and shows generic alert on AdminApiError(500)', async () => {
+      const row = makeRow({ id: 62, status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([row])
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockRejectedValue(
+        new AdminApiError(500, 'boom')
+      )
+      renderLeads()
+      await screen.findByTestId('lead-status-select-62')
+
+      const user = userEvent.setup()
+      await user.selectOptions(screen.getByTestId('lead-status-select-62'), 'contacted')
+
+      const alert = await screen.findByTestId('lead-status-error-62')
+      expect(alert).toHaveTextContent(/couldn't update status/i)
+      await waitFor(() => {
+        expect((screen.getByTestId('lead-status-62') as HTMLElement).textContent).toBe('Pending')
+      })
+    })
+
+    it('AdminApiError(401) triggers clearSession with no per-row alert', async () => {
+      const row = makeRow({ id: 63, status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([row])
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockRejectedValue(
+        new AdminApiError(401, 'Unauthorized')
+      )
+      renderLeads()
+      await screen.findByTestId('lead-status-select-63')
+
+      const user = userEvent.setup()
+      await user.selectOptions(screen.getByTestId('lead-status-select-63'), 'contacted')
+
+      await waitFor(() => {
+        expect(useAdminStore.getState().isAuthenticated).toBe(false)
+      })
+      expect(screen.queryByTestId('lead-status-error-63')).toBeNull()
+    })
+
+    it('keeps per-row mutation state isolated when two rows mutate concurrently', async () => {
+      const rowA = makeRow({ id: 70, status: 'pending' })
+      const rowB = makeRow({ id: 71, status: 'pending' })
+      ;(api.getAdminLeads as unknown as Mock).mockResolvedValue([rowA, rowB])
+
+      const pendingResolvers: Record<number, ((row: AdminLeadRow) => void) | undefined> = {}
+      ;(api.patchAdminLeadStatus as unknown as Mock).mockImplementation(
+        (id: number, _status: string) =>
+          new Promise<AdminLeadRow>(resolve => {
+            pendingResolvers[id] = resolve
+          })
+      )
+
+      renderLeads()
+      await screen.findByTestId('lead-status-select-70')
+
+      const user = userEvent.setup()
+      await user.selectOptions(screen.getByTestId('lead-status-select-70'), 'contacted')
+      await user.selectOptions(screen.getByTestId('lead-status-select-71'), 'qualified')
+
+      const selectA = screen.getByTestId('lead-status-select-70') as HTMLSelectElement
+      const selectB = screen.getByTestId('lead-status-select-71') as HTMLSelectElement
+      expect(selectA).toBeDisabled()
+      expect(selectB).toBeDisabled()
+
+      await act(async () => {
+        pendingResolvers[70]!({ ...rowA, status: 'contacted' })
+      })
+
+      await waitFor(() => {
+        expect(selectA).not.toBeDisabled()
+      })
+      expect(selectB).toBeDisabled()
+
+      await act(async () => {
+        pendingResolvers[71]!({ ...rowB, status: 'qualified' })
+      })
+
+      await waitFor(() => {
+        expect(selectB).not.toBeDisabled()
+      })
+    })
   })
 })

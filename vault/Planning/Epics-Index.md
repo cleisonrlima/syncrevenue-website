@@ -70,7 +70,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 |---|---|---|
 | 4.1 | Admin Authentication — Login & Session Management | `[x]` |
 | 4.2 | Leads Dashboard — View & Filter | `[x]` |
-| 4.3 | Lead Status Management | `[ ]` |
+| 4.3 | Lead Status Management | `[r]` review |
 | 4.4 | Team Member Management — Create & Edit | `[ ]` |
 | 4.5 | Team Member Display Order & Active Toggle | `[ ]` |
 | 4.6 | Admin Dashboard & Navigation Shell | `[ ]` |

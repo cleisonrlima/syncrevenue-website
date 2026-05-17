@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AdminApiError, getAdminMe, postAdminLogin, postAdminLogout } from './api'
+import {
+  AdminApiError,
+  getAdminMe,
+  patchAdminLeadStatus,
+  postAdminLogin,
+  postAdminLogout,
+} from './api'
 
 beforeEach(() => {
   vi.restoreAllMocks()
@@ -126,5 +132,120 @@ describe('getAdminMe', () => {
       })
     )
     await expect(getAdminMe()).rejects.toBeInstanceOf(AdminApiError)
+  })
+})
+
+describe('patchAdminLeadStatus', () => {
+  const sampleRow = {
+    id: 42,
+    name: 'Alice',
+    email: 'alice@example.com',
+    company: 'AcmeCo',
+    phone: null,
+    role: 'Owner',
+    gds: 'Amadeus',
+    message: null,
+    locale: 'en',
+    status: 'contacted',
+    created_at: '2026-05-17T12:00:00.000Z',
+    updated_at: '2026-05-17T12:34:56.000Z',
+  }
+
+  it('returns the parsed row on 200', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: sampleRow }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await expect(patchAdminLeadStatus(42, 'contacted')).resolves.toMatchObject({
+      id: 42,
+      status: 'contacted',
+    })
+  })
+
+  it('sends PATCH with credentials: include and JSON body', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: sampleRow }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await patchAdminLeadStatus(42, 'contacted')
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(url).toBe('/api/admin/leads/42/status')
+    expect(init.method).toBe('PATCH')
+    expect(init.credentials).toBe('include')
+    expect(init.body).toBe(JSON.stringify({ status: 'contacted' }))
+  })
+
+  it('throws AdminApiError with field on 400', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({ success: false, message: 'Invalid status', field: 'status' }),
+        { status: 400, headers: { 'content-type': 'application/json' } }
+      )
+    )
+
+    await expect(patchAdminLeadStatus(42, 'contacted')).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 400,
+      message: 'Invalid status',
+      field: 'status',
+    })
+  })
+
+  it('throws AdminApiError(401) on 401 (does not soft-resolve)', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await expect(patchAdminLeadStatus(42, 'contacted')).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 401,
+    })
+  })
+
+  it('throws AdminApiError(404) on 404', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Lead not found' }), {
+        status: 404,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await expect(patchAdminLeadStatus(42, 'contacted')).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 404,
+      message: 'Lead not found',
+    })
+  })
+
+  it('throws on malformed row shape', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({ success: true, data: { ...sampleRow, status: 'archived' } }),
+        { status: 200, headers: { 'content-type': 'application/json' } }
+      )
+    )
+
+    await expect(patchAdminLeadStatus(42, 'contacted')).rejects.toMatchObject({
+      name: 'AdminApiError',
+      message: 'Invalid lead update response',
+    })
+  })
+
+  it('throws AdminApiError(0) on network failure', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+
+    await expect(patchAdminLeadStatus(42, 'contacted')).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 0,
+    })
   })
 })

@@ -363,6 +363,44 @@ export async function getAdminLeads(
   return rows
 }
 
+export async function patchAdminLeadStatus(
+  id: number,
+  status: AdminLeadStatus
+): Promise<AdminLeadRow> {
+  let response: Response
+  try {
+    response = await fetch(`/api/admin/leads/${id}/status`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ status }),
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+    field?: string
+  }
+
+  if (!response.ok || body.success !== true) {
+    throw new AdminApiError(
+      response.status,
+      body.message || 'Failed to update lead status',
+      body.field
+    )
+  }
+
+  const parsed = parseAdminLeadRow(body.data)
+  if (!parsed) {
+    throw new AdminApiError(response.status, 'Invalid lead update response')
+  }
+  return parsed
+}
+
 export async function postAudit(payload: AuditPayload): Promise<AuditSuccessResponse> {
   let response: Response
   try {
