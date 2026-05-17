@@ -16,29 +16,50 @@ const TOKENS = {
   muted:           '#8080A0',
   offwhite:        '#F4F6FA',
   white:           '#FFFFFF',
+  // Sober palette refresh (Epic 6 — 2026-05-17). New surfaces / accents.
+  // `ink` is the new dark text-bearing surface (deeper than navy). `accent` is the sober blue.
+  ink:             '#0A0B2E',
+  accent:          '#3D6FE0',
 }
 
 // Audit scope: every brand foreground on the text-bearing surface tokens used in production.
 // Non-surface brand colors are not text-bearing backgrounds; adding one requires extending this list.
-const SURFACES = ['white', 'offwhite', 'navy']
+// `ink` joins the surface set (new dark surface introduced in Epic 6).
+const SURFACES = ['white', 'offwhite', 'navy', 'ink']
 const FOREGROUNDS = Object.keys(TOKENS)
 
 // Waivers — see vault/Planning/Architecture-Key.md → "WCAG Contrast Exceptions".
 // R-A2: electric-blue family decorative accents.
+// R-A3: sober accent #3D6FE0 — AA Large only on dark surfaces (Epic 6).
 // R-M1: muted token is helper-text only — passes AA Large.
 // R-NT1: structural non-text pairs within the text-surface audit scope.
 const WAIVERS = {
   'electric-blue|white':    { id: 'R-A2',  reason: 'Electric Blue reserved for large text only, gradient stops, decorative accents.' },
   'electric-blue|offwhite': { id: 'R-A2',  reason: 'Electric Blue reserved for large text only, gradient stops, decorative accents.' },
   'electric-blue|navy':     { id: 'R-A2',  reason: 'Electric Blue on navy is a decorative accent (gradient stops, hairlines); reserve for large text only on dark surfaces.' },
+  'electric-blue|ink':      { id: 'R-A2',  reason: 'Electric Blue on ink remains in the R-A2 decorative family; reserved for large text on dark surfaces.' },
   'highlight|white':        { id: 'R-A2',  reason: 'Highlight #00A0F0 is the same decorative blue family as electric-blue — reserve for large text, gradient stops, decorative accents.' },
   'highlight|offwhite':     { id: 'R-A2',  reason: 'Highlight #00A0F0 is the same decorative blue family as electric-blue — reserve for large text, gradient stops, decorative accents.' },
+  'highlight|ink':          { id: 'R-NT1', reason: 'Legacy gradient stop never paired with ink in production (ink is Epic 6-only).' },
   'muted|white':            { id: 'R-M1',  reason: 'Muted #8080A0 reserved for de-emphasized helper text and meta labels — passes AA Large only.' },
   'muted|offwhite':         { id: 'R-M1',  reason: 'Muted #8080A0 reserved for de-emphasized helper text and meta labels — passes AA Large only.' },
+  'muted|ink':              { id: 'R-NT1', reason: 'Legacy muted not paired with ink — Epic 6 dark surfaces use muted-token / offwhite.' },
   'offwhite|white':         { id: 'R-NT1', reason: 'Surface-on-surface pair; never used for text in production.' },
   'white|offwhite':         { id: 'R-NT1', reason: 'Surface-on-surface pair; never used for text in production.' },
   'deep|navy':              { id: 'R-NT1', reason: 'Brand-deep is a light-surface accent; not paired on dark navy surfaces in production.' },
+  'deep|ink':               { id: 'R-NT1', reason: 'Brand-deep is a light-surface accent; never paired on ink in production.' },
   'slate|navy':             { id: 'R-NT1', reason: 'Slate is a mid-tone label for light surfaces only; dark surfaces use offwhite or white.' },
+  'slate|ink':              { id: 'R-NT1', reason: 'Slate is a light-surface label; ink dark surface uses offwhite or white.' },
+  // R-A3: sober accent on dark surfaces — passes AA Large only.
+  'accent|navy':            { id: 'R-A3',  reason: 'Sober accent #3D6FE0 on navy ≈ 3.97:1 — passes AA Large, reserved for large/decorative usage on dark surfaces (Epic 6).' },
+  'accent|ink':             { id: 'R-A3',  reason: 'Sober accent #3D6FE0 on ink ≈ 4.10:1 — passes AA Large only; same R-A3 reservation as accent-on-navy.' },
+  'accent|white':           { id: 'R-A3',  reason: 'Sober accent #3D6FE0 on white ≈ 4.65:1 — borderline AA Normal; treat as R-A3 accent usage (large/decorative preferred) until Epic 6 light-surface contrast pass.' },
+  'accent|offwhite':        { id: 'R-A3',  reason: 'Sober accent #3D6FE0 on offwhite — same R-A3 reservation as accent-on-white.' },
+  // ink (new dark surface) foregrounds on existing surfaces — ink is treated as decorative-only text on light surfaces.
+  'ink|white':              { id: 'R-NT1', reason: 'Ink is a dark surface token; never used as foreground on light surfaces in production.' },
+  'ink|offwhite':           { id: 'R-NT1', reason: 'Ink is a dark surface token; never used as foreground on light surfaces in production.' },
+  'ink|navy':               { id: 'R-NT1', reason: 'Surface-on-surface pair; ink and navy are both dark surfaces — never text in production.' },
+  'navy|ink':               { id: 'R-NT1', reason: 'Surface-on-surface pair; ink and navy are both dark surfaces — never text in production.' },
 }
 
 function hexToRgb(hex) {
@@ -91,7 +112,7 @@ const unwaivedFailures = entries.filter(e => !e.aaNormal && e.waiver === null)
 const generatedOn = new Date().toISOString().slice(0, 10)
 const header = `// AUTO-GENERATED by scripts/check-brand-contrast.mjs. Do not edit by hand — run \`npm run check:contrast\`.
 // Generated on: ${generatedOn}
-// Audit scope: brand foregrounds on production text-bearing surfaces (white, offwhite, navy).
+// Audit scope: brand foregrounds on production text-bearing surfaces (white, offwhite, navy, ink).
 // Source-of-truth for token hexes: src/index.css (CSS custom properties).
 // Waivers documented in: vault/Planning/Architecture-Key.md → WCAG Contrast Exceptions.
 

@@ -9,6 +9,9 @@ import { BRAND_CONTRAST_MANIFEST } from './brand-tokens.contrast.manifest'
  * Body text on light backgrounds MUST use brand-deep #0055F0 (≈ 4.7:1).
  *
  * See: vault/Planning/Architecture-Key.md → "WCAG Contrast Exceptions" → R-A2.
+ *
+ * R-A2 — deprecated for new dark-section usage (see R-A3, Epic 6).
+ * New work on dark surfaces uses the sober accent (#3D6FE0) under the R-A3 waiver.
  */
 
 const BRAND_TOKENS = {
@@ -20,6 +23,9 @@ const BRAND_TOKENS = {
   muted: '#8080A0',
   offwhite: '#F4F6FA',
   white: '#FFFFFF',
+  // Sober palette refresh (Epic 6 — 2026-05-17).
+  accent: '#3D6FE0',
+  ink: '#0A0B2E',
 } as const
 
 const MANIFEST_FOREGROUNDS = [
@@ -31,8 +37,10 @@ const MANIFEST_FOREGROUNDS = [
   'muted',
   'offwhite',
   'white',
+  'accent',
+  'ink',
 ] as const
-const MANIFEST_SURFACES = ['white', 'offwhite', 'navy'] as const
+const MANIFEST_SURFACES = ['white', 'offwhite', 'navy', 'ink'] as const
 
 function hexToRgb(hex: string): [number, number, number] {
   const clean = hex.replace('#', '')
@@ -84,6 +92,8 @@ describe('Brand token contrast (WCAG 2.1 AA)', () => {
    * R-A2 — Locked exception. Electric Blue on white is the known WCAG AA miss.
    * If this snapshot changes, either the hex moved (update the exception) or
    * the token was darkened (in which case promote it to body text and remove this allowance).
+   *
+   * Deprecated for NEW dark-section usage as of Epic 6 — see R-A3 below.
    */
   it('electric-blue on white is the documented WCAG AA exception (R-A2)', () => {
     const ratio = contrastRatio(BRAND_TOKENS.electricBlue, BRAND_TOKENS.white)
@@ -95,6 +105,29 @@ describe('Brand token contrast (WCAG 2.1 AA)', () => {
   it('electric-blue passes AA large-text on white (≥ 3:1)', () => {
     const ratio = contrastRatio(BRAND_TOKENS.electricBlue, BRAND_TOKENS.white)
     expect(ratio).toBeGreaterThanOrEqual(3.0)
+  })
+
+  /**
+   * R-A3 — Sober accent #3D6FE0 on navy.
+   *
+   * Measured ≈ 4.00:1 on #0D0D3A (spec target ≈ 3.97:1 within tolerance).
+   * Passes WCAG AA Large (≥ 3:1). Fails WCAG AA Normal (< 4.5:1).
+   * Reserve for large/decorative usage on dark surfaces (Epic 6 — Hero CTA, KPI accents).
+   */
+  it('accent on navy carries R-A3 waiver — AA Large only', () => {
+    const ratio = contrastRatio(BRAND_TOKENS.accent, BRAND_TOKENS.navy)
+    expect(ratio).toBeGreaterThanOrEqual(3.0)
+    expect(ratio).toBeLessThan(4.5)
+    expect(ratio).toBeCloseTo(3.97, 1)
+  })
+
+  /**
+   * White on ink — primary dark-surface body text under the sober palette.
+   * Ink is intentionally deeper than navy to lift body-text contrast comfortably into AAA.
+   */
+  it('white on ink passes AAA normal text (≥ 7:1)', () => {
+    const ratio = contrastRatio(BRAND_TOKENS.white, BRAND_TOKENS.ink)
+    expect(ratio).toBeGreaterThanOrEqual(7.0)
   })
 })
 
@@ -125,6 +158,16 @@ describe('Brand contrast manifest', () => {
     expect(entry!.aaNormal).toBe(false)
     expect(entry!.aaLarge).toBe(true)
     expect(entry!.waiver?.id).toBe('R-A2')
+  })
+
+  it('accent on navy carries the R-A3 waiver (Epic 6 sober palette)', () => {
+    const entry = BRAND_CONTRAST_MANIFEST.find(
+      e => e.fg === 'accent' && e.bg === 'navy',
+    )
+    expect(entry).toBeDefined()
+    expect(entry!.aaNormal).toBe(false)
+    expect(entry!.aaLarge).toBe(true)
+    expect(entry!.waiver?.id).toBe('R-A3')
   })
 
   it('every entry ratio matches the math within 0.05 tolerance', () => {

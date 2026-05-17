@@ -44,6 +44,26 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+
+    /*
+     * Sober palette refresh (Epic 6 — 2026-05-17).
+     * Additive — legacy --color-* tokens above retire per-section in stories 6.2–6.8.
+     * Placed after the shadcn block so `--accent` (and any future collisions) win the cascade
+     * and resolve to the brand value rather than shadcn's HSL component string.
+     * shadcn's --accent / --accent-foreground have no consumers in src/ at the time of writing;
+     * the override is intentional — see Architecture-Key.md → Sober Palette Refresh.
+     */
+    --navy: #0D0D3A;
+    --ink: #0A0B2E;
+    --deep-bg: #080820;
+    --accent: #3D6FE0;
+    --accent-soft: #5B85E8;
+    --accent-dim: rgba(61, 111, 224, 0.12);
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --slate-token: #7A8099;
+    --muted-token: #5C6377;
+    --offwhite: #F4F6FA;
   }
 
   .dark {
