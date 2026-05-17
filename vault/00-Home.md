@@ -55,7 +55,7 @@
   - 2.6 Form Accessibility & Locale-Aware Validation (`createDemoSchema(t)` / `createContactSchema(t)` factories)
   - 2.7 Security Hardening (per-route `createFormRateLimiter()`, exact 429 body, build-output secret scan)
 - Retrospective: `_bmad-output/implementation-artifacts/epic-2-retro-2026-05-15.md`
-- Active phase: **Epic 4 (Phase 3)** — Story 4.1 (admin auth) done 2026-05-16. Story 4.2 (leads dashboard) done 2026-05-16 after cross-model review fixes. Next: Story 4.3+ + the two follow-up stories (4.7 login throttling, 4.8 JWT revocation). Epic 3 done (3.1–3.11) including retrospective.
+- Active phase: **Epic 4 (Phase 3)** — Story 4.1 (admin auth) done 2026-05-16. Story 4.2 (leads dashboard) done 2026-05-16 after cross-model review fixes. Story 4.7 (login throttling) is in review; Story 4.8 (JWT revocation) is ready for dev. Next: Story 4.3+ or Story 4.8. Epic 3 done (3.1–3.11) including retrospective.
 - Story 3.6 (Story 3.1 Review Follow-ups) — done under accepted fake-data full-stub override. EN/PT-BR/ES team JSON now uses fabricated temporary names, solid-color WebP stubs, and fabricated LinkedIn-style URLs pending manual stakeholder-content swap.
 - Quality at Story 3.1 close: **234 tests pass**; `tsc --noEmit` → 0; `npm run build` clean.
 - Test Design Epic 1 artifact: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (27 risks, 56-scenario gap plan)

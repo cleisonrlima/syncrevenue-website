@@ -69,7 +69,7 @@ router.post('/login', adminLoginRateLimiter, (req: Request, res: Response) => {
   const user = adminDao.findByEmail(email)
   const match = bcrypt.compareSync(password, user?.password_hash ?? DUMMY_PASSWORD_HASH)
   if (!user || !match) {
-    adminLoginAttemptsDao.recordFailure(email)
+    adminLoginAttemptsDao.recordFailure(email, new Date(), ADMIN_LOGIN_WINDOW_MS)
     res.status(401).json({ success: false, message: 'Invalid credentials' })
     return
   }

@@ -29,6 +29,15 @@ describe('adminLoginAttemptsDao', () => {
     expect(row.last_failed_at).toBe('2026-05-16 10:05:00')
   })
 
+  it('recordFailure restarts the counter when the previous failure window expired', () => {
+    const t1 = new Date('2026-05-16T10:00:00.000Z')
+    const t2 = new Date('2026-05-16T10:20:00.000Z')
+    for (let i = 0; i < 5; i++) dao.recordFailure('admin@example.com', t1, 15 * 60 * 1000)
+    const row = dao.recordFailure('admin@example.com', t2, 15 * 60 * 1000)
+    expect(row.failed_count).toBe(1)
+    expect(row.last_failed_at).toBe('2026-05-16 10:20:00')
+  })
+
   it('reset deletes the row', () => {
     dao.recordFailure('admin@example.com')
     dao.reset('admin@example.com')

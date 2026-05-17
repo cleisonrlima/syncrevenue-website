@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-16  # Story 4.7 -> review (dev complete)
+# last_updated: 2026-05-16  # Story 4.7 -> done (review fixes applied)
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-16  # Story 4.7 -> review (dev complete)
+last_updated: 2026-05-16  # Story 4.7 -> done (review fixes applied)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -47,7 +47,7 @@ story_location: _bmad-output/implementation-artifacts
 #   SYN Sprint 3 (id 336) — 2026-05-15 → 2026-05-16 — current sprint (expanded 2026-05-16)
 #     Active stories (ordered):
 #       3.1 SYN-23 done, 3.2 SYN-24 done, 3.3 SYN-25 done, 3.4 SYN-26 done, 3.5 SYN-27 done,
-#       3.6 SYN-92, 3.7 SYN-93, 3.8 SYN-94, 3.9 SYN-95, 3.10 SYN-96, 3.11 SYN-97,   # ← 3.* moved from backlog (top of list)
+#       3.6 SYN-92, 3.7 SYN-93, 3.8 SYN-94, 3.9 SYN-95, 3.10 SYN-96, 3.11 SYN-97,   # ← 3.* moved from backlog (top of list); was SYN-85 (invalid key)
 #       4.1 SYN-28 done, 4.2 SYN-29, 4.3 SYN-30, 4.4 SYN-31, 4.5 SYN-32, 4.6 SYN-33, # ← 4.1 done 2026-05-16
 #       4.7 SYN-165, 4.8 SYN-166                                                    # ← Story 4.1 review-deferred follow-ups (added 2026-05-16; subtasks SYN-167..173, SYN-174..181)
 #     Story 4.2 subtasks SYN-182..191 created 2026-05-16 (10 Sub-tasks under SYN-29)
@@ -106,7 +106,7 @@ development_status:
   4-5-team-member-display-order-active-toggle: backlog
   4-6-admin-dashboard-navigation-shell: backlog
   # 4.7 + 4.8 added 2026-05-16 from Story 4.1 cross-model review deferred findings
-  4-7-admin-login-throttling-lockout: review
+  4-7-admin-login-throttling-lockout: done
   4-8-jwt-revocation-after-password-reseed: ready-for-dev
   epic-4-retrospective: optional
 

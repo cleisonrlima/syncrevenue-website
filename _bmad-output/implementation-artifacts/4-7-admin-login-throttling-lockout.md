@@ -1,8 +1,8 @@
 # Story 4.7: Admin Login Throttling & Account Lockout (Story 4.1 Review Follow-up)
 
-Status: review
+Status: done
 
-<!-- Created 2026-05-16 from Story 4.1 cross-model review (Codex). Deferred review finding #1. Parent Jira: TBD (created on next sync). -->
+<!-- Created 2026-05-16 from Story 4.1 cross-model review (Codex). Deferred review finding #1. Parent Jira: SYN-165. -->
 
 ## Story
 
@@ -77,7 +77,8 @@ Story 4.1 itself explicitly scoped admin login rate limiting OUT (defer to follo
 
 ### Review Findings
 
-<!-- Populated by the reviewer after cross-model code review. Leave empty until then. -->
+- [x] [Review][Patch] IP limiter counts successful login attempts [server/routes/admin/auth.ts:39]
+- [x] [Review][Patch] Expired email-lockout windows keep stale failure counts [server/dao/admin-login-attempts.dao.ts:26]
 
 ## Dev Notes
 
@@ -152,7 +153,8 @@ Claude Opus 4.7 (1M context), CLI (Claude Code).
 ### Debug Log References
 
 - `npm run typecheck` — clean
-- `npm run test:run` — 418/418 (added: 6 DAO cases, 3 rateLimit cases, 6 admin-auth lockout cases)
+- `npm run test:run -- server/dao/admin-login-attempts.dao.test.ts server/middleware/rateLimit.test.ts server/routes/admin/auth.test.ts` — 32/32 passing after review fixes
+- `npm run test:run` — 422/422 (added review regression coverage for failed-only IP limiting + expired email-window restart)
 - `npm run build` — vite + SEO clean
 - `npm run check:client-bundle-secrets` — clean
 
@@ -161,6 +163,9 @@ Claude Opus 4.7 (1M context), CLI (Claude Code).
 - Schema added under `CREATE TABLE IF NOT EXISTS admin_login_attempts (...)` so prod upgrades cleanly without manual migration step.
 - DAO uses `INSERT ... ON CONFLICT(email) DO UPDATE` to keep `recordFailure` a single statement; `last_failed_at` formatted as `YYYY-MM-DD HH:MM:SS` UTC to match SQLite's `datetime('now')` output exactly (DAO accepts `now?: Date` injection for deterministic test windows).
 - Per-IP limiter is mounted via `router.post('/login', adminLoginRateLimiter, ...)` — limiter store is per-instance (independent from form limiters), instance is created at module load time so test re-creation via `createApp()` gives each test a fresh counter (verified by 418-test suite).
+- Review fix: admin login IP limiter now uses `skipSuccessfulRequests: true`, so repeated successful operator logins do not consume the failed-attempt quota; regression coverage exists in both limiter and route tests.
+- Review fix: `recordFailure(email, now, windowMs)` restarts the per-email counter at 1 when the previous `last_failed_at` is outside the lockout window; regression coverage catches stale-count relock after expiry.
+- Test harness fix: `server/test-utils/request.ts` now emits `finish` from the in-process response helper so middleware that observes response completion behaves like it does under Node's real HTTP server.
 - Lockout branch runs `bcrypt.compareSync(password, DUMMY_PASSWORD_HASH)` to keep response timing indistinguishable from the wrong-password branch (per AC2/AC3 and Story 4.1's timing-equalization invariant). Body, status, and `set-cookie` absence are all identical across locked / unknown-email / wrong-password responses.
 - Failure counter persists across server restart: persistence test closes the current `Database` handle, then calls `createIsolatedApp({reuseDbPath})` to re-import the module graph against the same `DB_PATH`, then asserts that a correct-password attempt is still rejected as locked.
 - Manual curl smoke (AC7-h) deferred: the automated suite exercises the equivalent surfaces — IP-bound 429 (test a), per-email 401 across distinct IPs (test b), correct-during-lockout 401 (test c) — and runs against the same Express app via `createApp()`. Story-template manual step kept for the operator-handover smoke at release time.
@@ -173,10 +178,11 @@ Claude Opus 4.7 (1M context), CLI (Claude Code).
 
 **Modified:**
 - `server/db.ts` — added `admin_login_attempts` table + rationale comment in `initSchema`
-- `server/middleware/rateLimit.ts` — added `ADMIN_LOGIN_WINDOW_MS`, `ADMIN_LOGIN_MAX`, `createAdminLoginRateLimiter`
-- `server/middleware/rateLimit.test.ts` — added admin login limiter cases + cross-route independence test
-- `server/routes/admin/auth.ts` — mounted per-IP limiter on `/login`; added per-email lockout check + recordFailure + reset
-- `server/routes/admin/auth.test.ts` — added `throttling and lockout (Story 4.7)` describe block with 6 cases; refactored `createIsolatedApp` to accept `reuseDbPath` + `seedAdmin` opts for the persistence-across-restart test
+- `server/middleware/rateLimit.ts` — added `ADMIN_LOGIN_WINDOW_MS`, `ADMIN_LOGIN_MAX`, `createAdminLoginRateLimiter`; review fix excludes successful responses from the failed-attempt quota
+- `server/middleware/rateLimit.test.ts` — added admin login limiter cases + cross-route independence test + successful-login non-counting regression
+- `server/routes/admin/auth.ts` — mounted per-IP limiter on `/login`; added per-email lockout check + recordFailure / reset; review fix passes lockout window to stale-counter reset path
+- `server/routes/admin/auth.test.ts` — added `throttling and lockout (Story 4.7)` describe block with 8 cases; refactored `createIsolatedApp` to accept `reuseDbPath` + `seedAdmin` opts for the persistence-across-restart test
+- `server/test-utils/request.ts` — emits response `finish` event for middleware completion hooks in in-process tests
 - `vault/Code/Admin.md` — added rateLimit middleware row, admin-login-attempts DAO row, Story 4.7 status row, expanded Auth Flow step 1
 - `vault/Code/Database.md` — added `admin_login_attempts` table + DAO row + lockout policy note
 - `vault/Planning/Architecture-Key.md` — Auth (Phase 3) block updated with throttling/lockout details
@@ -188,3 +194,4 @@ Claude Opus 4.7 (1M context), CLI (Claude Code).
 | Date | Change |
 |---|---|
 | 2026-05-16 | Story 4.7 implemented: per-IP admin-login rate limit (5/15min) + durable per-email lockout (5/15min via `admin_login_attempts` table). 401 `Invalid credentials` envelope reused on lockout for no-info-leak; timing-equalized via dummy bcrypt compare. 15 new tests added; full suite green (418/418). Status → review. |
+| 2026-05-16 | Review fixes applied: IP limiter now counts failed responses only, stale per-email windows restart at count 1 on the next failure, and response test helper emits `finish` for middleware completion hooks. Added regression coverage; full suite green (422/422). Status → done. |

@@ -29,7 +29,23 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 | 1.7 Comparison section | SYN-8 |
 | 1.8 Team section | SYN-9 |
 
-Update this table as new stories are mapped.
+## Story-to-Issue mapping (Epic 4 — active)
+
+| Story | Jira Key | sprint-status |
+|-------|----------|---------------|
+| Epic 4 | SYN-4 | in-progress |
+| 4.1 Admin auth | SYN-28 | done |
+| 4.2 Leads dashboard | SYN-29 | done |
+| 4.3 Lead status | SYN-30 | backlog |
+| 4.4 Team CRUD | SYN-31 | backlog |
+| 4.5 Team order/active | SYN-32 | backlog |
+| 4.6 Admin shell | SYN-33 | backlog |
+| 4.7 Login throttling | SYN-165 | review |
+| 4.8 JWT revocation | SYN-166 | ready-for-dev |
+
+Epic 3 story 3.11 → **SYN-97** (not SYN-85; mirror block corrected 2026-05-16).
+
+Update tables as new stories are mapped.
 
 ## Sync rule
 

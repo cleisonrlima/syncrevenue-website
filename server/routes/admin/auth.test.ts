@@ -278,6 +278,42 @@ describe('admin auth routes', () => {
       expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')).toBeUndefined()
     })
 
+    it('starts a fresh email failure window after the previous lockout expires', async () => {
+      expect(attemptsDaoModule).toBeTruthy()
+      const sixteenMinAgo = new Date(Date.now() - 16 * 60 * 1000)
+      for (let i = 0; i < 5; i++) {
+        attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', sixteenMinAgo)
+      }
+      const wrong = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: 'wrong' },
+        remoteAddress: '10.0.6.1',
+      })
+      expect(wrong.status).toBe(401)
+      expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')?.failed_count).toBe(1)
+
+      const ok = await request(app, {
+        method: 'POST',
+        path: '/api/admin/auth/login',
+        body: { email: 'admin@example.com', password: PLAINTEXT },
+        remoteAddress: '10.0.6.2',
+      })
+      expect(ok.status).toBe(200)
+    })
+
+    it('does not throttle repeated successful logins from the same IP', async () => {
+      for (let i = 0; i < 6; i++) {
+        const r = await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: PLAINTEXT },
+          remoteAddress: '10.0.7.1',
+        })
+        expect(r.status).toBe(200)
+      }
+    })
+
     it('resets counter after partial failures followed by a successful login', async () => {
       for (let i = 0; i < 3; i++) {
         await request(app, {

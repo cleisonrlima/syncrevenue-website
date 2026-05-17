@@ -44,15 +44,29 @@ describe('adminLoginRateLimiter', () => {
     const app = express()
     app.use(express.json())
     const limiter = createAdminLoginRateLimiter({ limit: 2, windowMs: 60_000 })
-    app.post('/api/admin/auth/login', limiter, (_req, res) => res.json({ success: true }))
+    app.post('/api/admin/auth/login', limiter, (_req, res) =>
+      res.status(401).json({ success: false, message: 'Invalid credentials' })
+    )
 
     const r1 = await request(app, { method: 'POST', path: '/api/admin/auth/login' })
-    expect(r1.status).toBe(200)
+    expect(r1.status).toBe(401)
     const r2 = await request(app, { method: 'POST', path: '/api/admin/auth/login' })
-    expect(r2.status).toBe(200)
+    expect(r2.status).toBe(401)
     const r3 = await request(app, { method: 'POST', path: '/api/admin/auth/login' })
     expect(r3.status).toBe(429)
     expect(r3.json()).toEqual({ success: false, message: 'Too many requests' })
+  })
+
+  it('does not count successful login responses against the limit', async () => {
+    const app = express()
+    app.use(express.json())
+    const limiter = createAdminLoginRateLimiter({ limit: 2, windowMs: 60_000 })
+    app.post('/api/admin/auth/login', limiter, (_req, res) => res.json({ success: true }))
+
+    for (let i = 0; i < 4; i++) {
+      const r = await request(app, { method: 'POST', path: '/api/admin/auth/login' })
+      expect(r.status).toBe(200)
+    }
   })
 
   it('admin login limiter is independent of form limiter (cross-route)', async () => {
@@ -60,7 +74,9 @@ describe('adminLoginRateLimiter', () => {
     app.use(express.json())
     const loginLimiter = createAdminLoginRateLimiter({ limit: 2, windowMs: 60_000 })
     const formLimiter = createFormRateLimiter({ limit: 2, windowMs: 60_000 })
-    app.post('/api/admin/auth/login', loginLimiter, (_req, res) => res.json({ success: true }))
+    app.post('/api/admin/auth/login', loginLimiter, (_req, res) =>
+      res.status(401).json({ success: false, message: 'Invalid credentials' })
+    )
     app.post('/api/demo', formLimiter, (_req, res) => res.json({ success: true }))
 
     // Exhaust the admin login limiter from one IP

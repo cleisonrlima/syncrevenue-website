@@ -2,7 +2,7 @@
 
 Status: ready-for-dev
 
-<!-- Created 2026-05-16 from Story 4.1 cross-model review (Codex). Deferred review finding #2. Parent Jira: TBD (created on next sync). -->
+<!-- Created 2026-05-16 from Story 4.1 cross-model review (Codex). Deferred review finding #2. Parent Jira: SYN-166. Subtasks: SYN-174..181. -->
 
 ## Story
 

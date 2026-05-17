@@ -97,6 +97,7 @@ export function request(app: Express, options: AppRequestOptions): Promise<AppRe
       }
       const cb = typeof encodingOrCallback === 'function' ? encodingOrCallback : callback
       cb?.()
+      res.emit('finish')
       finish()
       return res
     }) as typeof res.end

@@ -27,6 +27,7 @@ export function createAdminLoginRateLimiter(overrides: Partial<Options> = {}) {
   return rateLimit({
     windowMs: ADMIN_LOGIN_WINDOW_MS,
     limit: ADMIN_LOGIN_MAX,
+    skipSuccessfulRequests: true,
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     handler: (_req: Request, res: Response) => {

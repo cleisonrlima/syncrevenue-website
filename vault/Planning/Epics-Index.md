@@ -62,7 +62,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 3.8 | ErrorBoundary i18n & Recovery UX | SYN-94 | `[x]` done |
 | 3.9 | Architecture & Token Hygiene Docs — Patterns Gallery + WCAG Contrast Manifest | SYN-95 | `[x]` done |
 | 3.10 | DX Discipline — `defaultValue` Lint Rule & Sandbox Port-Binding Convention | SYN-96 | `[x]` done |
-| 3.11 | SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up) | SYN-85 | `[ ]` |
+| 3.11 | SEO Canonical Self-Reference Alignment (Story 3.3 Review Follow-up) | SYN-85 | `[x]` done |
 
 ## Epic 4 — Admin Operations (Phase 3)
 
@@ -74,8 +74,8 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 4.4 | Team Member Management — Create & Edit | `[ ]` |
 | 4.5 | Team Member Display Order & Active Toggle | `[ ]` |
 | 4.6 | Admin Dashboard & Navigation Shell | `[ ]` |
-| 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[ ]` |
-| 4.8 | JWT Revocation via Token Versioning (Story 4.1 review follow-up) | `[ ]` |
+| 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[r]` review |
+| 4.8 | JWT Revocation via Token Versioning (Story 4.1 review follow-up) | `[~]` ready-for-dev |
 
 ## Epic 5 — Production Deployment (Phase 4)
 
