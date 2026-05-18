@@ -21,7 +21,7 @@ export default function DemoScheduler() {
       id="demo-scheduler"
       role="region"
       aria-label={t('sections.demoScheduler.ariaLabel', { defaultValue: 'Schedule a SyncRevenue demo' })}
-      className="bg-gradient-to-b from-[#0D0D3A] to-[#080820] text-white overflow-hidden"
+      className="bg-[var(--ink)] text-white overflow-hidden"
     >
       <div className="mx-auto max-w-[960px] px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <SectionHeader

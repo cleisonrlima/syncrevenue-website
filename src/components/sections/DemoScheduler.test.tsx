@@ -29,13 +29,14 @@ describe('DemoScheduler', () => {
     expect(section).toHaveAttribute('id', 'demo-scheduler')
   })
 
-  it('applies the dark gradient bookend background', () => {
+  it('applies the sober dark bookend background (Story 6.8 — Epic 6 sober palette)', () => {
     render(<DemoScheduler />)
 
     const section = screen.getByRole('region', { name: 'Schedule a SyncRevenue demo' })
-    expect(section.className).toMatch(/bg-gradient-to-b/)
-    expect(section.className).toMatch(/from-\[#0D0D3A\]/)
-    expect(section.className).toMatch(/to-\[#080820\]/)
+    // Story 6.8 replaced the brand gradient (`bg-gradient-to-b from-[#0D0D3A] to-[#080820]`)
+    // with the flat `--ink` token from the Epic 6 sober palette.
+    expect(section.className).toContain('bg-[var(--ink)]')
+    expect(section.className).not.toMatch(/bg-gradient-to-b/)
     expect(section.className).toMatch(/text-white/)
   })
 
