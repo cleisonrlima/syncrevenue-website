@@ -40,6 +40,28 @@
         "label": "QC\nerrors"
       }
     },
+    "panel": {
+      "tag": "SYNCSIRIUS · COMMISSION ENGINE",
+      "name": "SyncRevenue",
+      "line": "Expert system that applies the correct commission and markup rule <0>in the mid-office flow</0> — before ticket issuance.",
+      "intsLabel": "GDS integrations",
+      "intsMore": {
+        "prefix": "also supported",
+        "ndc": "NDC",
+        "ibe": "Custom IBE"
+      },
+      "ticker": {
+        "label": "Ticket <0>{{pnr}}</0> adjusted in mid-office",
+        "entries": [
+          { "pnr": "PNR-44128", "value": "+ $8,420" },
+          { "pnr": "PNR-92710", "value": "+ $3,985" },
+          { "pnr": "PNR-58044", "value": "+ $12,310" },
+          { "pnr": "PNR-67219", "value": "+ $5,670" },
+          { "pnr": "PNR-39816", "value": "+ $2,140" },
+          { "pnr": "PNR-71452", "value": "+ $9,870" }
+        ]
+      }
+    },
     "stats": {
       "0": {
         "label": "Commission Assertivity",

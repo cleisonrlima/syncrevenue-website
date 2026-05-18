@@ -2,6 +2,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import StatRow from './StatRow'
 import TrustBar from './TrustBar'
+import HeroProductPanel from './HeroProductPanel'
 
 /**
  * Hero — Epic 6 sober-palette rebuild (Story 6.3).
@@ -145,8 +146,10 @@ export default function Hero() {
             <StatRow />
           </div>
 
-          {/* Right column — product panel placeholder for Story 6.4 */}
-          <div aria-hidden="true" data-testid="hero-right-placeholder" />
+          {/* Right column — product panel (Story 6.4) */}
+          <div data-testid="hero-right-column">
+            <HeroProductPanel />
+          </div>
         </div>
 
         <div className="mt-16">

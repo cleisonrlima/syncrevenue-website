@@ -40,6 +40,28 @@
         "label": "Errores\nde QC"
       }
     },
+    "panel": {
+      "tag": "SYNCSIRIUS · MOTOR DE COMISIONES",
+      "name": "SyncRevenue",
+      "line": "Sistema experto que aplica la regla correcta de comisión y markup <0>en el flujo mid-office</0> — antes de la emisión del billete.",
+      "intsLabel": "GDS integrados",
+      "intsMore": {
+        "prefix": "también compatible",
+        "ndc": "NDC",
+        "ibe": "IBE propio"
+      },
+      "ticker": {
+        "label": "Ticket <0>{{pnr}}</0> ajustado en mid-office",
+        "entries": [
+          { "pnr": "PNR-44128", "value": "+ $8.420" },
+          { "pnr": "PNR-92710", "value": "+ $3.985" },
+          { "pnr": "PNR-58044", "value": "+ $12.310" },
+          { "pnr": "PNR-67219", "value": "+ $5.670" },
+          { "pnr": "PNR-39816", "value": "+ $2.140" },
+          { "pnr": "PNR-71452", "value": "+ $9.870" }
+        ]
+      }
+    },
     "stats": {
       "0": {
         "label": "Asertividad de Comisiones",

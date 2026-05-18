@@ -145,11 +145,12 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
     })
   })
 
-  describe('Right column placeholder for Story 6.4', () => {
-    it('renders the empty right-column placeholder so the 6.4 panel can drop in', () => {
+  describe('Right column — product panel (Story 6.4)', () => {
+    it('mounts HeroProductPanel inside the right column', () => {
       renderHero()
-      const placeholder = screen.getByTestId('hero-right-placeholder')
-      expect(placeholder.getAttribute('aria-hidden')).toBe('true')
+      const right = screen.getByTestId('hero-right-column')
+      expect(right).toBeInTheDocument()
+      expect(screen.getByTestId('hero-product-panel')).toBeInTheDocument()
     })
   })
 })
