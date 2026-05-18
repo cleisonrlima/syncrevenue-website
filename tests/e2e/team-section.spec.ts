@@ -23,14 +23,14 @@ async function gotoHomeWithLocale(page: import('@playwright/test').Page, locale:
     }
   }, locale)
   await page.goto('/', { waitUntil: 'networkidle' })
-  await page.locator('#team').scrollIntoViewIfNeeded()
+  await page.locator('#equipe').scrollIntoViewIfNeeded()
 }
 
 test.describe('@P0 Team section — member media', () => {
   test('renders the Team region with 2 article cards', async ({ page }) => {
     await gotoHomeWithLocale(page, 'en')
 
-    const region = page.locator('#team')
+    const region = page.locator('#equipe')
     await expect(region).toBeVisible()
 
     const articles = page.locator(TEAM_ARTICLE)

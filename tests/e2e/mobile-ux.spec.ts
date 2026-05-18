@@ -13,7 +13,7 @@ const SECTION_IDS = [
   '#comparison',
   '#security',
   '#clientes',
-  '#team',
+  '#equipe',
   '#demo-scheduler',
   '#contact',
 ]

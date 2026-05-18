@@ -93,7 +93,8 @@ describe('Section i18n', () => {
     useLocaleStore.setState({ locale: 'en' })
     const { rerender } = render(<Team />)
 
-    expect(screen.getByRole('heading', { name: 'Specialists in Airline Distribution' })).toBeInTheDocument()
+    // Story 6.7 reshaped this headline into accent-split form.
+    expect(screen.getByRole('heading', { name: /Specialists in\s+airline distribution/i })).toBeInTheDocument()
     await waitFor(() =>
       expect(screen.getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
     )
@@ -104,7 +105,7 @@ describe('Section i18n', () => {
     })
     rerender(<Team />)
 
-    expect(screen.getByRole('heading', { name: 'Especialistas em Distribuição Aérea' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Especialistas em\s+distribuição aérea/i })).toBeInTheDocument()
     await waitFor(() =>
       expect(screen.getByText('Liderança em Distribuição Aérea e Estratégia de Comissões')).toBeInTheDocument()
     )

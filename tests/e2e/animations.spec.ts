@@ -12,7 +12,7 @@ test.describe('@story-3.2 animations', () => {
     const page = await context.newPage()
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const team = page.locator('#team')
+    const team = page.locator('#equipe')
     await team.scrollIntoViewIfNeeded()
     await expect(team).toBeVisible()
 

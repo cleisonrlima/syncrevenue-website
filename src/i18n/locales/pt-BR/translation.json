@@ -203,8 +203,10 @@
   "team": {
     "ariaLabel": "Especialistas da equipe Sync Sirius",
     "eyebrow": "Nossa Equipe",
-    "headline": "Especialistas em Distribuição Aérea",
+    "headline": "Especialistas em",
+    "headlineAccent": "distribuição aérea",
     "subtext": "Nossa equipe traz décadas de experiência em operações GDS, BSP e agências de viagem.",
+    "statusLabel": "disponível",
     "linkedinAriaLabel": "Ver {{name}} no LinkedIn",
     "members": [
       {

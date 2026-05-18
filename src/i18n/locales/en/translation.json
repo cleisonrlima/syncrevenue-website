@@ -203,8 +203,10 @@
   "team": {
     "ariaLabel": "Sync Sirius team specialists",
     "eyebrow": "Our Team",
-    "headline": "Specialists in Airline Distribution",
+    "headline": "Specialists in",
+    "headlineAccent": "airline distribution",
     "subtext": "Our team brings decades of GDS, BSP, and travel agency operations experience.",
+    "statusLabel": "available",
     "linkedinAriaLabel": "View {{name}} on LinkedIn",
     "members": [
       {

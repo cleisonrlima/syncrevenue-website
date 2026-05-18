@@ -60,7 +60,8 @@ describe('Team (public section)', () => {
     ;(api.getPublicTeam as unknown as Mock).mockResolvedValue([])
     render(<Team />)
     const section = screen.getByRole('region', { name: 'Sync Sirius team specialists' })
-    expect(section).toHaveAttribute('id', 'team')
+    // Story 6.7 renamed `team` → `equipe` to match Epic 6 PT-BR-first id vocabulary.
+    expect(section).toHaveAttribute('id', 'equipe')
     await waitFor(() => expect(api.getPublicTeam).toHaveBeenCalled())
   })
 

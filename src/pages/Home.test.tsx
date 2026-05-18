@@ -37,7 +37,7 @@ describe('Home', () => {
     expect(comparison).toHaveAttribute('id', 'comparison')
     expect(security).toHaveAttribute('id', 'security')
     expect(clientReferences).toHaveAttribute('id', 'clientes')
-    expect(team).toHaveAttribute('id', 'team')
+    expect(team).toHaveAttribute('id', 'equipe')
     expect(demoScheduler).toHaveAttribute('id', 'demo-scheduler')
     expect(syncRevenue.compareDocumentPosition(services)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(services.compareDocumentPosition(comparison)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)

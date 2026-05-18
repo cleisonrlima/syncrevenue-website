@@ -90,7 +90,8 @@ describe('Story 1.8 team visitor flow', () => {
 
     expect(clientReferences.compareDocumentPosition(team)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(team.compareDocumentPosition(demoScheduler)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
-    expect(within(team).getByRole('heading', { name: 'Specialists in Airline Distribution' })).toBeInTheDocument()
+    // Story 6.7 reshaped this headline into accent-split form.
+    expect(within(team).getByRole('heading', { name: /Specialists in\s+airline distribution/i })).toBeInTheDocument()
     expect(within(team).getByRole('heading', { name: 'Maria Silva' })).toBeInTheDocument()
     expect(within(team).getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
     expect(within(team).getByText(/GDS operations, BSP\/ARC reconciliation/)).toBeInTheDocument()
@@ -121,7 +122,7 @@ describe('Story 1.8 team visitor flow', () => {
       name: 'Especialistas da equipe Sync Sirius',
     })
     expect(
-      within(translatedTeam).getByRole('heading', { name: 'Especialistas em Distribuição Aérea' }),
+      within(translatedTeam).getByRole('heading', { name: /Especialistas em\s+distribuição aérea/i }),
     ).toBeInTheDocument()
     expect(
       within(translatedTeam).getByText('Liderança em Distribuição Aérea e Estratégia de Comissões'),

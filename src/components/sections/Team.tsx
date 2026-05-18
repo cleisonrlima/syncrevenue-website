@@ -1,9 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import MotionSection from './MotionSection'
-import SectionHeader from '@/components/ui/SectionHeader'
 import { getPublicTeam, type PublicTeamMemberRow } from '@/lib/api'
 import { useLocaleStore } from '@/store/useLocaleStore'
+
+/**
+ * Team — Story 6.7 sober refresh.
+ *
+ * Source: Hero.html `.team` / `.tm` / `.tm-photo` / `.tm-status` / `.tm-body` /
+ * `.tm-foot` (lines 381–447, 804–857).
+ *
+ * Preserves the existing API-backed data flow (Story 4.4 — `/api/team`) and the
+ * Story 1.8 LinkedIn aria-label contract. Visual layer rebuilt: dark-bg section,
+ * 2-col horizontal cards (photo 200px / body), status pill overlaid on photo
+ * (static green dot — pulsing keyframes explicitly removed per chat line 510),
+ * LinkedIn icon-button in the footer (34×34, hover swaps to LinkedIn blue).
+ *
+ * Section id renamed `team` → `equipe` to match the Epic 6 PT-BR-first id
+ * vocabulary. The Story 6.2 navbar doesn't link to it yet (no `#equipe` anchor
+ * in the nav list), so the rename has no external consumers beyond
+ * `Hero.story-1-8.e2e.test.tsx` and `Home.test.tsx` which both follow.
+ */
 
 type DisplayMember = {
   id: number
@@ -42,7 +59,7 @@ function getInitials(name: string) {
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((part) => part.charAt(0).toUpperCase())
+    .map(part => part.charAt(0).toUpperCase())
     .join('')
 }
 
@@ -56,13 +73,13 @@ function isNonEmptyString(value: unknown): value is string {
 
 export default function Team() {
   const { t } = useTranslation()
-  const locale = useLocaleStore((state) => state.locale)
+  const locale = useLocaleStore(state => state.locale)
   const [rows, setRows] = useState<PublicTeamMemberRow[]>([])
 
   useEffect(() => {
     let cancelled = false
     void getPublicTeam()
-      .then((data) => {
+      .then(data => {
         if (!cancelled) setRows(data)
       })
       .catch(() => {
@@ -74,82 +91,118 @@ export default function Team() {
   }, [])
 
   const members: DisplayMember[] = rows
-    .map((row) => toDisplayMember(row, locale))
-    .filter((member) => member.name.length > 0 && member.role.length > 0 && member.bio.length > 0)
+    .map(row => toDisplayMember(row, locale))
+    .filter(m => m.name.length > 0 && m.role.length > 0 && m.bio.length > 0)
 
   return (
     <MotionSection
-      id="team"
+      id="equipe"
       role="region"
       aria-label={t('team.ariaLabel', { defaultValue: 'Sync Sirius team specialists' })}
-      className="bg-[#F4F6FA]"
+      className="bg-[var(--ink)] text-white scroll-mt-24"
     >
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <SectionHeader
-          variant="light"
-          eyebrow={t('team.eyebrow', { defaultValue: 'Our Team' })}
-          heading={t('team.headline', { defaultValue: 'Specialists in Airline Distribution' })}
-          subtext={t('team.subtext', {
-            defaultValue:
-              'Our team brings decades of GDS, BSP, and travel agency operations experience.',
-          })}
-          className="section-intro-emphasis [&_h2]:scroll-mt-24"
-        />
+      <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
+        <div className="mx-auto mb-14 max-w-[760px] text-center">
+          <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.12em] text-white/50">
+            <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
+            {t('team.eyebrow', { defaultValue: 'Our Team' })}
+          </div>
+          <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight text-white scroll-mt-24">
+            {t('team.headline', { defaultValue: 'Specialists in' })}{' '}
+            <span className="text-[var(--accent-soft)]" data-testid="team-headline-accent">
+              {t('team.headlineAccent', { defaultValue: 'airline distribution' })}
+            </span>
+          </h2>
+          <p className="mt-5 mx-auto max-w-[62ch] text-[15px] leading-[1.65] text-white/[0.65]">
+            {t('team.subtext', { defaultValue: '' })}
+          </p>
+        </div>
 
         {members.length > 0 && (
           <div
             data-team-grid="true"
-            className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 min-[760px]:grid-cols-2 gap-6 max-w-[1080px] mx-auto"
           >
-            {members.map((member) => {
+            {members.map(member => {
               const headingId = `team-member-${member.id}`
-
               return (
                 <article
                   key={member.id}
                   aria-labelledby={headingId}
-                  className="rounded-lg border border-brand-slate/20 bg-white p-6 shadow-sm"
+                  data-testid={`team-card-${member.id}`}
+                  className="grid grid-cols-1 min-[560px]:grid-cols-[200px_1fr] overflow-hidden rounded-[14px] border border-[var(--line)] bg-white/[0.03] motion-safe:transition-colors motion-safe:duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.045]"
                 >
-                  {isUsablePhoto(member.photo) ? (
-                    <img
-                      src={member.photo}
-                      alt={`${member.name}, ${member.role}`}
-                      width="320"
-                      height="320"
-                      loading="lazy"
-                      className="aspect-square w-full rounded-lg object-cover"
-                    />
-                  ) : (
-                    <div
-                      aria-hidden="true"
-                      data-team-photo-placeholder="true"
-                      className="flex aspect-square w-full items-center justify-center rounded-lg bg-brand-navy/10 text-3xl font-bold text-brand-navy"
+                  <div className="relative aspect-square min-h-[200px] overflow-hidden bg-[#0A0B22]">
+                    {isUsablePhoto(member.photo) ? (
+                      <img
+                        src={member.photo}
+                        alt={`${member.name}, ${member.role}`}
+                        width="200"
+                        height="200"
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                        style={{ filter: 'saturate(0.92)' }}
+                      />
+                    ) : (
+                      <div
+                        aria-hidden="true"
+                        data-team-photo-placeholder="true"
+                        className="flex h-full w-full items-center justify-center bg-[var(--accent)] text-[60px] font-bold text-white"
+                      >
+                        {getInitials(member.name)}
+                      </div>
+                    )}
+                    <span
+                      data-testid={`team-status-${member.id}`}
+                      className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-[rgba(8,8,28,0.75)] px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-white"
                     >
-                      {getInitials(member.name)}
-                    </div>
-                  )}
+                      <span
+                        aria-hidden="true"
+                        className="inline-block h-1.5 w-1.5 rounded-full bg-[#5BC98C]"
+                      />
+                      {t('team.statusLabel', { defaultValue: 'available' })}
+                    </span>
+                  </div>
 
-                  <h3 id={headingId} className="mt-6 text-xl font-bold text-brand-navy">
-                    {member.name}
-                  </h3>
-                  <p className="mt-2 text-sm font-semibold uppercase text-brand-deep">
-                    {member.role}
-                  </p>
-                  <p className="mt-4 text-sm leading-6 text-brand-slate">{member.bio}</p>
-                  {isNonEmptyString(member.linkedinUrl) && (
-                    <a
-                      href={member.linkedinUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={t('team.linkedinAriaLabel', {
-                        name: member.name,
-                        defaultValue: 'View {{name}} on LinkedIn',
-                      })}
-                      className="mt-4 inline-block text-sm font-semibold text-brand-deep underline underline-offset-2"
+                  <div className="flex flex-col px-7 pt-6 pb-[22px]">
+                    <h3
+                      id={headingId}
+                      className="text-[20px] font-bold tracking-[-0.02em] text-white"
                     >
-                      LinkedIn
-                    </a>
-                  )}
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-white/55">
+                      {member.role}
+                    </p>
+                    <p className="mt-3 flex-1 text-[13.5px] leading-[1.65] text-white/70">
+                      {member.bio}
+                    </p>
+                    <div className="mt-4 flex items-center gap-2.5 border-t border-[var(--line)] pt-3.5">
+                      {isNonEmptyString(member.linkedinUrl) && (
+                        <a
+                          href={member.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-testid={`team-linkedin-${member.id}`}
+                          aria-label={t('team.linkedinAriaLabel', {
+                            name: member.name,
+                            defaultValue: 'View {{name}} on LinkedIn',
+                          })}
+                          className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--line-strong)] text-white/75 motion-safe:transition-colors motion-safe:duration-150 hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white"
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 11.01-4.13 2.07 2.07 0 010 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.21 24 24 23.23 24 22.28V1.72C24 .77 23.21 0 22.22 0z" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </article>
               )
             })}

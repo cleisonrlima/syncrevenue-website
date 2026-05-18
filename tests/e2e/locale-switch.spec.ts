@@ -37,7 +37,7 @@ test.describe('@P1 Locale switch', () => {
   test('switching locale on / preserves scroll position to below-the-fold section', async ({ page, isMobile }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const team = page.locator('#team')
+    const team = page.locator('#equipe')
     await team.scrollIntoViewIfNeeded()
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(200)
     const initialScroll = await page.evaluate(() => window.scrollY)
