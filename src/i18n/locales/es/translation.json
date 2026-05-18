@@ -62,6 +62,44 @@
         ]
       }
     },
+    "benefits": {
+      "0": {
+        "metric": "antes del ticket",
+        "metricVariant": "neutral",
+        "title": "Comisión correcta en la emisión",
+        "body": "Determina POS, comisión y markup automáticamente en mid-office, eliminando retrabajo del rate desk después de la venta."
+      },
+      "1": {
+        "metric": "multi-fuente",
+        "metricVariant": "blue",
+        "title": "GDS, NDC e IBE — agnóstico",
+        "body": "Funciona con Amadeus, Sabre, Galileo, Worldspan, contenido NDC y motores de búsqueda propios. Una sola regla sirve a todos."
+      },
+      "2": {
+        "metric": "48h",
+        "metricVariant": "neutral",
+        "title": "Gestión de contratos",
+        "body": "Envíenos los PDFs de los contratos de aerolíneas — nuestro equipo estructura las reglas en la base de conocimiento en hasta 48 horas."
+      },
+      "3": {
+        "metric": "+15–20%",
+        "metricVariant": "neutral",
+        "title": "ROI inmediato",
+        "body": "Ganancia neta del 15–20% sobre los ingresos por comisiones desde el primer día — sin cambiar el proceso del front-office."
+      },
+      "4": {
+        "metric": "−40% ADM",
+        "metricVariant": "neutral",
+        "title": "Menos disputas, menos ADM",
+        "body": "Aplicar la regla correcta antes de la emisión reduce los débitos en disputa y baja hasta un 65% las excepciones que llegan al QC."
+      },
+      "5": {
+        "metric": "post-emisión",
+        "metricVariant": "blue",
+        "title": "Analítica para negociar",
+        "body": "Reportes de rendimiento por aerolínea, contrato y POS — munición con datos para la próxima ronda de negociación."
+      }
+    },
     "stats": {
       "0": {
         "label": "Asertividad de Comisiones",

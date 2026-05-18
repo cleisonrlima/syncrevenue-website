@@ -137,11 +137,21 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
     })
   })
 
-  describe('TrustBar preservation', () => {
-    it('keeps the TrustBar rendering 4 trust items', () => {
+  describe('TrustBar preservation (refactored in Story 6.5)', () => {
+    it('keeps the TrustBar rendering 4 trust items (now in a single wrap row)', () => {
       renderHero()
       const allSvgs = document.querySelectorAll('svg[aria-label="verified"]')
-      expect(allSvgs.length).toBeGreaterThanOrEqual(4)
+      // Single row now — 4 verified ticks total (no responsive duplication)
+      expect(allSvgs.length).toBe(4)
+    })
+  })
+
+  describe('BenefitsGrid mount (Story 6.5)', () => {
+    it('mounts the 6-card benefits grid with #beneficios anchor inside Hero', () => {
+      renderHero()
+      const grid = screen.getByTestId('benefits-grid')
+      expect(grid).toBeInTheDocument()
+      expect(grid.getAttribute('id')).toBe('beneficios')
     })
   })
 

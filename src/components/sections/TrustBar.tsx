@@ -1,44 +1,55 @@
 import { useTranslation } from 'react-i18next'
 
+/**
+ * Trust strip — Story 6.5 refactor.
+ *
+ * Source: Hero.html `.trust` (lines 256–271, 707–725). Replaces the
+ * Story 1.5 three-variant responsive split (horizontal-scroll / 2×2 / row)
+ * with a single wrap-allowed flex row separated by 3×3 round dots.
+ *
+ * Preserves the existing `hero.trustBar.items.0..3` i18n keys per Story 6.5
+ * AC7 (do NOT rename).
+ */
+
+const ITEM_COUNT = 4
+
 export default function TrustBar() {
   const { t } = useTranslation()
 
-  const renderTrustItem = (index: number) => (
-    <div
-      key={index}
-      className="bg-brand-navy/30 text-brand-offwhite px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap"
-    >
-      <svg
-        className="w-4 h-4 flex-shrink-0"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        role="img"
-        aria-label="verified"
-      >
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
-      <span>{t(`hero.trustBar.items.${index}`, { defaultValue: '' })}</span>
-    </div>
-  )
-
   return (
-    <div className="mt-16 w-full" data-testid="trust-bar" suppressHydrationWarning>
-      {/* < 640px (Tailwind sm): horizontal scroll */}
-      <div className="sm:hidden flex gap-2 overflow-x-auto pb-2" data-testid="trust-bar-scroll">
-        {Array.from({ length: 4 }).map((_, i) => renderTrustItem(i))}
-      </div>
-
-      {/* 640–767px (Tailwind sm to md): 2×2 grid */}
-      <div className="hidden sm:grid md:hidden grid-cols-2 gap-4" data-testid="trust-bar-grid">
-        {Array.from({ length: 4 }).map((_, i) => renderTrustItem(i))}
-      </div>
-
-      {/* >= 768px (Tailwind md+): single row */}
-      <div className="hidden md:flex gap-6 justify-center flex-wrap" data-testid="trust-bar-row">
-        {Array.from({ length: 4 }).map((_, i) => renderTrustItem(i))}
-      </div>
+    <div
+      data-testid="trust-bar"
+      className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3"
+      suppressHydrationWarning
+    >
+      {Array.from({ length: ITEM_COUNT }).map((_, i) => (
+        <div key={i} className="contents">
+          <div
+            data-testid={`trust-item-${i}`}
+            className="inline-flex items-center gap-2 text-[11.5px] text-white/50"
+          >
+            <svg
+              className="h-3.5 w-3.5 shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              role="img"
+              aria-label="verified"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>{t(`hero.trustBar.items.${i}`, { defaultValue: '' })}</span>
+          </div>
+          {i < ITEM_COUNT - 1 ? (
+            <span
+              aria-hidden="true"
+              data-testid={`trust-sep-${i}`}
+              className="inline-block h-[3px] w-[3px] rounded-full bg-white/25"
+            />
+          ) : null}
+        </div>
+      ))}
     </div>
   )
 }

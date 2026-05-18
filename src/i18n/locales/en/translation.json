@@ -62,6 +62,44 @@
         ]
       }
     },
+    "benefits": {
+      "0": {
+        "metric": "before ticket",
+        "metricVariant": "neutral",
+        "title": "Correct commission on issuance",
+        "body": "Determines POS, commission, and markup automatically in mid-office — no rate-desk rework after the sale."
+      },
+      "1": {
+        "metric": "multi-source",
+        "metricVariant": "blue",
+        "title": "GDS, NDC, and IBE — agnostic",
+        "body": "Works across Amadeus, Sabre, Galileo, Worldspan, NDC content, and proprietary search engines. One rule serves all."
+      },
+      "2": {
+        "metric": "48h",
+        "metricVariant": "neutral",
+        "title": "Contract management",
+        "body": "Send us your airline contract PDFs — our team structures the rules in the knowledge base within 48 hours."
+      },
+      "3": {
+        "metric": "+15–20%",
+        "metricVariant": "neutral",
+        "title": "Immediate ROI",
+        "body": "Net 15–20% gain on commission revenue as soon as it ships — no change to front-office process."
+      },
+      "4": {
+        "metric": "−40% ADM",
+        "metricVariant": "neutral",
+        "title": "Fewer disputes, fewer ADMs",
+        "body": "Applying the right rule before issuance crushes debit memos and cuts QC exceptions by up to 65%."
+      },
+      "5": {
+        "metric": "post-issuance",
+        "metricVariant": "blue",
+        "title": "Analytics to negotiate",
+        "body": "Performance reports by airline, contract, and POS — data-backed ammo for the next negotiation round."
+      }
+    },
     "stats": {
       "0": {
         "label": "Commission Assertivity",

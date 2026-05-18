@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button'
 import StatRow from './StatRow'
 import TrustBar from './TrustBar'
 import HeroProductPanel from './HeroProductPanel'
+import BenefitsGrid from './BenefitsGrid'
 
 /**
  * Hero — Epic 6 sober-palette rebuild (Story 6.3).
@@ -152,7 +153,11 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="mt-16">
+        <div className="mt-20">
+          <BenefitsGrid />
+        </div>
+
+        <div className="mt-10">
           <TrustBar />
         </div>
       </div>
