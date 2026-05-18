@@ -3,7 +3,16 @@
     "demo": "Solicitar Demo",
     "contact": "Contato",
     "home": "Início",
-    "privacy": "Política de Privacidade"
+    "privacy": "Política de Privacidade",
+    "cta": "Agendar Demo",
+    "links": {
+      "produto": "Produto",
+      "beneficios": "Benefícios",
+      "integracoes": "Integrações",
+      "seguranca": "Segurança",
+      "clientes": "Clientes",
+      "contato": "Contato"
+    }
   },
   "hero": {
     "badge": "Recuperação de Comissões para Agências de Viagem",

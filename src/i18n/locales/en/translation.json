@@ -3,7 +3,16 @@
     "demo": "Request Demo",
     "contact": "Contact",
     "home": "Home",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "cta": "Schedule a Demo",
+    "links": {
+      "produto": "Product",
+      "beneficios": "Benefits",
+      "integracoes": "Integrations",
+      "seguranca": "Security",
+      "clientes": "Clients",
+      "contato": "Contact"
+    }
   },
   "hero": {
     "badge": "Commission Recovery for Travel Agencies",

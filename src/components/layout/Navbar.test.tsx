@@ -1,12 +1,22 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import Navbar from './Navbar'
 import '@/i18n'
 
+const NAV_LABEL_REGEX = {
+  produto: /^Product$/i,
+  beneficios: /^Benefits$/i,
+  integracoes: /^Integrations$/i,
+  seguranca: /^Security$/i,
+  clientes: /^Clients$/i,
+  contato: /^Contact$/i,
+} as const
+
 describe('Navbar', () => {
-  const renderNavbar = () => render(<Navbar />, { wrapper: MemoryRouter })
+  const renderNavbar = (initialRoute = '/') =>
+    render(<Navbar />, { wrapper: ({ children }) => <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter> })
 
   it('hamburger button exists with aria-expanded false initially', () => {
     renderNavbar()
@@ -34,8 +44,8 @@ describe('Navbar', () => {
     renderNavbar()
     await user.click(screen.getByRole('button', { name: /open menu/i }))
     const overlay = screen.getByRole('navigation', { name: /mobile navigation/i })
-    const overlayHomeLink = within(overlay).getByRole('link', { name: /home/i })
-    await user.click(overlayHomeLink)
+    const overlayFirstLink = within(overlay).getByRole('link', { name: NAV_LABEL_REGEX.produto })
+    await user.click(overlayFirstLink)
     expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute('aria-expanded', 'false')
   })
 
@@ -59,7 +69,80 @@ describe('Navbar', () => {
     expect(screen.getByRole('button', { name: /close menu/i })).toHaveAttribute('aria-expanded', 'true')
   })
 
-  describe('Story 2.4 — Demo CTA convergence on #demo-scheduler', () => {
+  describe('Story 6.2 — six anchor links', () => {
+    it('desktop nav surfaces six anchor links with i18n labels and correct hrefs', () => {
+      renderNavbar()
+      // Each link appears twice (desktop + mobile-overlay markup). We assert
+      // the desktop set by filtering on aria context, but the simpler
+      // signal-preserving check is to assert at least one link with each
+      // expected href.
+      const expected = [
+        ['Product', '#produto'],
+        ['Benefits', '#beneficios'],
+        ['Integrations', '#integracoes'],
+        ['Security', '#seguranca'],
+        ['Clients', '#clientes'],
+        ['Contact', '#contato'],
+      ] as const
+      for (const [label, href] of expected) {
+        const links = screen.getAllByRole('link', { name: new RegExp(`^${label}$`, 'i') })
+        expect(links.length).toBeGreaterThanOrEqual(1)
+        expect(links.some(l => l.getAttribute('href') === href)).toBe(true)
+      }
+    })
+
+    it('mobile overlay surfaces the same six anchor links plus a Demo CTA link', async () => {
+      const user = userEvent.setup()
+      renderNavbar()
+      await user.click(screen.getByRole('button', { name: /open menu/i }))
+      const overlay = screen.getByRole('navigation', { name: /mobile navigation/i })
+      for (const label of Object.values(NAV_LABEL_REGEX)) {
+        expect(within(overlay).getByRole('link', { name: label })).toBeInTheDocument()
+      }
+      const demoCtaLink = within(overlay).getByRole('link', { name: /schedule a demo/i })
+      expect(demoCtaLink).toHaveAttribute('href', '/#agendar-demo')
+    })
+  })
+
+  describe('Story 6.2 — overlay-at-top vs. sticky transition', () => {
+    afterEach(() => {
+      Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 })
+    })
+
+    it('renders transparent overlay state on the home route at scroll-y = 0', () => {
+      renderNavbar('/')
+      const root = screen.getByTestId('navbar-root')
+      expect(root.getAttribute('data-overlay')).toBe('true')
+      expect(root.className).toContain('bg-transparent')
+      expect(root.className).not.toMatch(/backdrop-blur-md/)
+    })
+
+    it('switches to sticky filled state once scroll exceeds the threshold', async () => {
+      renderNavbar('/')
+      const root = screen.getByTestId('navbar-root')
+      expect(root.getAttribute('data-overlay')).toBe('true')
+
+      act(() => {
+        Object.defineProperty(window, 'scrollY', { configurable: true, value: 1200 })
+        window.dispatchEvent(new Event('scroll'))
+      })
+
+      // Wait one rAF tick — the listener throttles via requestAnimationFrame.
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+
+      expect(root.getAttribute('data-overlay')).toBe('false')
+      expect(root.className).toContain('backdrop-blur-md')
+    })
+
+    it('renders the filled state on non-home routes regardless of scroll position', () => {
+      renderNavbar('/privacy')
+      const root = screen.getByTestId('navbar-root')
+      expect(root.getAttribute('data-overlay')).toBe('false')
+      expect(root.className).toContain('backdrop-blur-md')
+    })
+  })
+
+  describe('Story 6.2 — primary CTA (Schedule a Demo)', () => {
     let scrollTargets: HTMLElement[]
     let stubSection: HTMLElement
 
@@ -82,25 +165,47 @@ describe('Navbar', () => {
       vi.restoreAllMocks()
     })
 
-    it('desktop nav.demo CTA scrolls to the #demo-scheduler section', async () => {
-      const user = userEvent.setup()
+    it('uses the solid-accent Button variant (Epic 6 sober palette)', () => {
       renderNavbar()
-
-      const desktopCta = screen.getByRole('button', { name: /request demo/i })
-      const originalHash = window.location.hash
-      await user.click(desktopCta)
-
-      expect(scrollTargets).toContain(stubSection)
-      expect(window.location.hash).toBe(originalHash)
+      const cta = screen.getByRole('button', { name: /schedule a demo/i })
+      // solid-accent fingerprint (from Story 6.1 Button.tsx)
+      expect(cta.className).toContain('bg-[var(--accent)]')
+      expect(cta.className).not.toMatch(/bg-gradient-/)
     })
 
-    it('mobile menu exposes the /#demo-scheduler anchor for the demo CTA', async () => {
+    it('falls back to the legacy #demo-scheduler section when #agendar-demo is absent', async () => {
       const user = userEvent.setup()
       renderNavbar()
-      await user.click(screen.getByRole('button', { name: /open menu/i }))
-      const overlay = screen.getByRole('navigation', { name: /mobile navigation/i })
-      const demoLink = within(overlay).getByRole('link', { name: /request demo/i })
-      expect(demoLink).toHaveAttribute('href', '/#demo-scheduler')
+      const cta = screen.getByRole('button', { name: /schedule a demo/i })
+      await user.click(cta)
+      expect(scrollTargets).toContain(stubSection)
+    })
+
+    it('prefers #agendar-demo when present (spec target)', async () => {
+      const user = userEvent.setup()
+      const newTarget = document.createElement('section')
+      newTarget.id = 'agendar-demo'
+      document.body.appendChild(newTarget)
+      try {
+        renderNavbar()
+        const cta = screen.getByRole('button', { name: /schedule a demo/i })
+        await user.click(cta)
+        expect(scrollTargets).toContain(newTarget)
+        expect(scrollTargets).not.toContain(stubSection)
+      } finally {
+        newTarget.remove()
+      }
+    })
+  })
+
+  describe('Story 6.2 — logo asset', () => {
+    it('renders the SyncSirius logo with explicit width/height (CLS prevention)', () => {
+      renderNavbar()
+      const logo = screen.getByAltText('SyncSirius') as HTMLImageElement
+      expect(logo.getAttribute('src')).toBe('/syncsirius-logo-trans.png')
+      expect(logo.getAttribute('width')).toBe('32')
+      expect(logo.getAttribute('height')).toBe('32')
+      expect(logo.getAttribute('loading')).toBe('eager')
     })
   })
 })
