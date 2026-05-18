@@ -1,121 +1,68 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import ClientReferences from './ClientReferences'
+import i18next from '@/i18n'
 
-const references = [
-  {
-    agencyName: 'Approved Travel Partners',
-    location: 'Miami, FL',
-    relationship: 'SyncRevenue reference customer',
-    testimonial:
-      'SyncRevenue gave our finance team a clearer commission reconciliation trail across BSP and ARC reporting.',
-  },
-  {
-    agencyName: 'Northstar Agency Group',
-    location: 'Dallas, TX',
-    relationship: 'Operations reference',
-    referenceDetail: 'Available for security and implementation reference calls after mutual approval.',
-  },
-]
-
-const tMock = vi.fn(
-  (key: string, options?: { defaultValue?: string; returnObjects?: boolean }): unknown => {
-    if (key === 'references.items' && options?.returnObjects) {
-      return references
-    }
-
-    return options?.defaultValue ?? key
-  },
-)
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: tMock }),
-}))
-
-describe('ClientReferences', () => {
-  beforeEach(() => {
-    tMock.mockClear()
+describe('ClientReferences (Story 6.6 sober refresh)', () => {
+  afterEach(async () => {
+    cleanup()
+    await i18next.changeLanguage('en')
   })
 
-  it('renders a named references region with the correct id', () => {
+  it('renders a named region with the #clientes anchor (Story 6.2 deep-link target)', () => {
     render(<ClientReferences />)
-
-    const section = screen.getByRole('region', {
+    const region = screen.getByRole('region', {
       name: 'Verified US travel agency references',
     })
-
-    expect(section).toHaveAttribute('id', 'client-references')
+    expect(region).toHaveAttribute('id', 'clientes')
   })
 
-  it('renders SectionHeader copy from i18n keys', () => {
+  it('renders the eyebrow + heading + accent span', () => {
     render(<ClientReferences />)
-
     expect(screen.getByText('Client References')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Trusted by US Travel Agencies' })).toBeInTheDocument()
-    expect(screen.getByText(/Named references are shared with approval/)).toBeInTheDocument()
+    const accent = screen.getByTestId('references-accent')
+    expect(accent.tagName).toBe('SPAN')
+    expect(accent.textContent).toMatch(/agencies/i)
+    expect(accent.className).toContain('text-[var(--accent-soft)]')
   })
 
-  it('renders named agency references with verifiable details', () => {
+  it('renders three quote cards with sober monogram (neutral fill — no per-brand gradient)', () => {
     render(<ClientReferences />)
-
-    references.forEach(reference => {
-      const card = screen.getByRole('article', { name: reference.agencyName })
-
-      expect(within(card).getByRole('heading', { name: reference.agencyName })).toBeInTheDocument()
-      expect(within(card).getByText(reference.location)).toBeInTheDocument()
-      expect(within(card).getByText(reference.relationship)).toBeInTheDocument()
-    })
-
-    expect(screen.getByText(/clearer commission reconciliation trail/)).toBeInTheDocument()
-    expect(screen.getByText(/security and implementation reference calls/)).toBeInTheDocument()
+    const grid = screen.getByTestId('quotes-grid')
+    expect(grid.children.length).toBe(3)
+    for (let i = 0; i < 3; i++) {
+      const card = screen.getByTestId(`quote-card-${i}`)
+      expect(card).toBeInTheDocument()
+      expect(card.className).not.toMatch(/bg-gradient-/)
+    }
   })
 
-  it('normalizes bad translation data without crashing or rendering incomplete cards', () => {
-    tMock.mockImplementationOnce((key: string, options?: { defaultValue?: string; returnObjects?: boolean }) => {
-      if (key === 'references.ariaLabel') {
-        return options?.defaultValue ?? key
-      }
-
-      if (key === 'references.items' && options?.returnObjects) {
-        return [
-          references[0],
-          { agencyName: 'Missing Details' },
-          'invalid reference',
-          { agencyName: 'Missing Testimonial', location: 'Boston, MA', relationship: 'Reference' },
-        ]
-      }
-
-      return options?.defaultValue ?? key
-    })
-
+  it('Pacific Sun Voyages card uses the muted pill variant + italic body', () => {
     render(<ClientReferences />)
-
-    expect(screen.getAllByRole('article')).toHaveLength(1)
-    expect(screen.getByRole('article', { name: 'Approved Travel Partners' })).toBeInTheDocument()
-    expect(screen.queryByRole('article', { name: 'Missing Details' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('article', { name: 'Missing Testimonial' })).not.toBeInTheDocument()
+    const card = screen.getByTestId('quote-card-1')
+    expect(within(card).getByText('Pacific Sun Voyages')).toBeInTheDocument()
+    const body = screen.getByTestId('quote-body-1')
+    expect(body.className).toContain('italic')
   })
 
-  it('does not render vague fallback reference patterns as production copy', () => {
-    const { container } = render(<ClientReferences />)
-    const renderedCopy = container.textContent ?? ''
-
-    expect(renderedCopy).not.toMatch(/a leading TMC/i)
-    expect(renderedCopy).not.toMatch(/recognized agency/i)
-  })
-
-  it('uses translation keys for visible section copy and references data', () => {
+  it('the other two cards use the default pill variant (no italic body)', () => {
     render(<ClientReferences />)
+    expect(screen.getByTestId('quote-body-0').className).not.toContain('italic')
+    expect(screen.getByTestId('quote-body-2').className).not.toContain('italic')
+  })
 
-    const usedKeys = tMock.mock.calls.map(([key]) => key)
-    expect(usedKeys).toEqual(
-      expect.arrayContaining([
-        'references.ariaLabel',
-        'references.eyebrow',
-        'references.headline',
-        'references.subtext',
-        'references.items',
-      ]),
-    )
+  it('renders the ghost CTA linking to #contato', () => {
+    render(<ClientReferences />)
+    const cta = screen.getByTestId('ref-cta').querySelector('a')!
+    expect(cta).toBeInTheDocument()
+    expect(cta.getAttribute('href')).toBe('#contato')
+    expect(cta.textContent).toMatch(/Request References/i)
+  })
+
+  it('preserves the canonical agency names (allowlist invariant Story 1.9 R-B1)', () => {
+    render(<ClientReferences />)
+    expect(screen.getByText('Atlas Travel Group')).toBeInTheDocument()
+    expect(screen.getByText('Pacific Sun Voyages')).toBeInTheDocument()
+    expect(screen.getByText('Northstar Travel Partners')).toBeInTheDocument()
   })
 })

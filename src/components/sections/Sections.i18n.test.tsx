@@ -129,7 +129,8 @@ describe('Section i18n', () => {
   it('updates ClientReferences copy when locale changes', async () => {
     const { rerender } = render(<ClientReferences />)
 
-    expect(screen.getByRole('heading', { name: 'Trusted by US Travel Agencies' })).toBeInTheDocument()
+    // Story 6.6 reshaped this headline into "Trusted by real <accent>agencies</accent>".
+    expect(screen.getByRole('heading', { name: /Trusted by real\s+agencies/i })).toBeInTheDocument()
     expect(screen.getByText(/Named references are shared with approval/)).toBeInTheDocument()
 
     await act(async () => {
@@ -137,7 +138,7 @@ describe('Section i18n', () => {
     })
     rerender(<ClientReferences />)
 
-    expect(screen.getByRole('heading', { name: 'Confiado por Agências de Viagem nos EUA' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Confiança comprovada por\s+agências reais/i })).toBeInTheDocument()
     expect(screen.getByText(/Referências nomeadas são compartilhadas com aprovação/)).toBeInTheDocument()
   })
 })

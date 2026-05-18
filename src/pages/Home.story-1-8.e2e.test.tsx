@@ -75,7 +75,7 @@ describe('Story 1.8 team visitor flow', () => {
     renderHome()
 
     const clientReferences = await waitFor(() => {
-      const section = document.querySelector('#client-references')
+      const section = document.querySelector('#clientes')
       expect(section).toBeInTheDocument()
       return section as HTMLElement
     })

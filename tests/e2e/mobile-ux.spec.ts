@@ -12,7 +12,7 @@ const SECTION_IDS = [
   '#services',
   '#comparison',
   '#security',
-  '#client-references',
+  '#clientes',
   '#team',
   '#demo-scheduler',
   '#contact',

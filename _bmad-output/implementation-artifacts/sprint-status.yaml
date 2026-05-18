@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-17  # Story 6.5 -> review
+last_updated: 2026-05-17  # Story 6.6 -> review
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -129,7 +129,7 @@ development_status:
   6-3-hero-left-background-copy-kpis: review
   6-4-hero-right-product-panel-integrations-ticker: review
   6-5-benefits-grid-trust-strip: review
-  6-6-clientreferences-visual-refresh: ready-for-dev
+  6-6-clientreferences-visual-refresh: review
   6-7-team-section-visual-refresh: ready-for-dev
   6-8-demo-contact-forms-visual-refresh-locale-parity: ready-for-dev
   epic-6-retrospective: optional

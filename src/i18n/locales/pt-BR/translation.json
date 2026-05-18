@@ -249,7 +249,8 @@
   "references": {
     "ariaLabel": "Referências verificadas de agências de viagem dos EUA",
     "eyebrow": "Referências de Clientes",
-    "headline": "Confiado por Agências de Viagem nos EUA",
+    "headline": "Confiança comprovada por",
+    "headlineAccent": "agências reais",
     "subtext": "Referências nomeadas são compartilhadas com aprovação para que agências focadas em segurança possam verificar experiência operacional real.",
     "cta": "Solicitar Referências",
     "items": [
@@ -257,18 +258,21 @@
         "agencyName": "Atlas Travel Group",
         "location": "Miami, FL",
         "relationship": "Cliente de referência SyncRevenue",
+        "pillVariant": "default",
         "testimonial": "O SyncRevenue deu à nossa equipe financeira uma trilha de conciliação de comissões mais clara em relatórios BSP e ARC, recuperando receita que antes escapava da revisão manual."
       },
       {
         "agencyName": "Pacific Sun Voyages",
         "location": "San Diego, CA",
         "relationship": "Referência operacional",
+        "pillVariant": "muted",
         "referenceDetail": "Disponível para chamadas de referência de segurança e implementação com agências de médio porte após aprovação mútua."
       },
       {
         "agencyName": "Northstar Travel Partners",
         "location": "Minneapolis, MN",
         "relationship": "Referência de integração multi-GDS",
+        "pillVariant": "default",
         "testimonial": "A visibilidade multi-GDS entre Amadeus, Sabre e Galileo tornou as disputas de debit memos mais rápidas de resolver e reduziu o retrabalho do nosso back office."
       }
     ]

@@ -74,7 +74,8 @@ describe('Story 1.9 trust sequence', () => {
     const renderedCopy = clientReferences.textContent ?? ''
 
     expect(
-      within(clientReferences).getByRole('heading', { name: 'Trusted by US Travel Agencies' }),
+      // Story 6.6 reshaped this headline.
+      within(clientReferences).getByRole('heading', { name: /Trusted by real\s+agencies/i }),
     ).toBeInTheDocument()
     expect(within(clientReferences).getByText(/Named references are shared with approval/)).toBeInTheDocument()
     expect(renderedCopy).not.toMatch(/a leading TMC/i)
@@ -98,7 +99,8 @@ describe('Story 1.9 trust sequence', () => {
     expect(await screen.findByRole('heading', { name: 'Sus Datos Están Protegidos' }, lazySectionWait)).toBeInTheDocument()
     expect(screen.getByText(/Las credenciales GDS nunca tocan el sitio web/)).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'Confiado por Agencias de Viajes en EE.UU.' }),
+      // Story 6.6 reshaped this headline.
+      screen.getByRole('heading', { name: /Confianza demostrada por\s+agencias reales/i }),
     ).toBeInTheDocument()
     expect(screen.getByText(/Las referencias nombradas se comparten con aprobación/)).toBeInTheDocument()
   })

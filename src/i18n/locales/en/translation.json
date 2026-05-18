@@ -249,7 +249,8 @@
   "references": {
     "ariaLabel": "Verified US travel agency references",
     "eyebrow": "Client References",
-    "headline": "Trusted by US Travel Agencies",
+    "headline": "Trusted by real",
+    "headlineAccent": "agencies",
     "subtext": "Named references are shared with approval so security-minded agencies can verify real operating experience.",
     "cta": "Request References",
     "items": [
@@ -257,18 +258,21 @@
         "agencyName": "Atlas Travel Group",
         "location": "Miami, FL",
         "relationship": "SyncRevenue reference customer",
+        "pillVariant": "default",
         "testimonial": "SyncRevenue gave our finance team a clearer commission reconciliation trail across BSP and ARC reporting, recovering revenue that previously slipped past manual review."
       },
       {
         "agencyName": "Pacific Sun Voyages",
         "location": "San Diego, CA",
         "relationship": "Operations reference",
+        "pillVariant": "muted",
         "referenceDetail": "Available for security and implementation reference calls with mid-market agencies after mutual approval."
       },
       {
         "agencyName": "Northstar Travel Partners",
         "location": "Minneapolis, MN",
         "relationship": "Multi-GDS integration reference",
+        "pillVariant": "default",
         "testimonial": "Multi-GDS visibility across Amadeus, Sabre, and Galileo made debit memo disputes faster to resolve and reduced rework for our back office."
       }
     ]
