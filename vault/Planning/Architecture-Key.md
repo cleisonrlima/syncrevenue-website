@@ -72,6 +72,9 @@ Dot-nested, max 3 levels: `section.element` or `section.subsection.element`
 ```
 Never flat (`heroHeadline`). Never 4+ levels.
 
+### Exception — Story 6.9 (2026-05-17): `demo.form.fields.*.label` / `contact.form.fields.*.label`
+The `demo.*` and `contact.*` namespaces introduced in Story 6.9 reach 4 levels at the field-label leaf (e.g. `demo.form.fields.name.label`, `demo.form.fields.phone.optional`, `contact.form.fields.subject.options.commercial`). This depth is intentional and driven by the Hero.html design-handoff spec shape (`Hero.html` lines 481–518, 860–1085) — restructuring around the 3-level rule would lose the spec's `section → form → fields → field → attribute` mental model. Restricted to the form-field subtree of `demo.*` and `contact.*` only. No other surface may exceed 3 levels.
+
 ---
 
 ## Form State Machine

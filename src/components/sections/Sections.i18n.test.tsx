@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { act, render, screen, cleanup, waitFor } from '@testing-library/react'
 import i18next from '@/i18n'
+import enResources from '@/i18n/locales/en/translation.json'
+import ptResources from '@/i18n/locales/pt-BR/translation.json'
+import esResources from '@/i18n/locales/es/translation.json'
 import SyncRevenue from './SyncRevenue'
 import Services from './Services'
 import Comparison from './Comparison'
@@ -141,5 +144,142 @@ describe('Section i18n', () => {
 
     expect(screen.getByRole('heading', { name: /Confiança comprovada por\s+agências reais/i })).toBeInTheDocument()
     expect(screen.getByText(/Referências nomeadas são compartilhadas com aprovação/)).toBeInTheDocument()
+  })
+})
+
+// Story 6.9 — namespace parity for new `demo.*` / `contact.*` / `forms.encryptedNote` keys.
+// Each locale must carry every leaf path; missing keys in any locale fail the build.
+
+type Json = Record<string, unknown>
+
+function collectLeafPaths(obj: unknown, prefix = ''): string[] {
+  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+    return [prefix]
+  }
+  const out: string[] = []
+  for (const [k, v] of Object.entries(obj as Json)) {
+    const next = prefix ? `${prefix}.${k}` : k
+    out.push(...collectLeafPaths(v, next))
+  }
+  return out
+}
+
+function getByPath(obj: unknown, path: string): unknown {
+  return path.split('.').reduce<unknown>((acc, key) => {
+    if (acc !== null && typeof acc === 'object' && !Array.isArray(acc)) {
+      return (acc as Json)[key]
+    }
+    return undefined
+  }, obj)
+}
+
+const REQUIRED_DEMO_PATHS = [
+  'demo.eyebrow',
+  'demo.heading.text',
+  'demo.heading.accent',
+  'demo.subhead',
+  'demo.info.h3',
+  'demo.info.steps.0.title',
+  'demo.info.steps.0.body',
+  'demo.info.steps.1.title',
+  'demo.info.steps.1.body',
+  'demo.info.steps.2.title',
+  'demo.info.steps.2.body',
+  'demo.info.infoCard.title',
+  'demo.info.infoCard.subtitle',
+  'demo.form.heading',
+  'demo.form.helper',
+  'demo.form.fields.name.label',
+  'demo.form.fields.name.placeholder',
+  'demo.form.fields.email.label',
+  'demo.form.fields.email.placeholder',
+  'demo.form.fields.company.label',
+  'demo.form.fields.company.placeholder',
+  'demo.form.fields.phone.label',
+  'demo.form.fields.phone.placeholder',
+  'demo.form.fields.phone.optional',
+  'demo.form.fields.role.label',
+  'demo.form.fields.role.placeholder',
+  'demo.form.fields.gds.label',
+  'demo.form.fields.gds.placeholder',
+  'demo.form.fields.message.label',
+  'demo.form.fields.message.placeholder',
+  'demo.form.submit',
+]
+
+const REQUIRED_CONTACT_PATHS = [
+  'contact.eyebrow',
+  'contact.heading.text',
+  'contact.heading.accent',
+  'contact.subhead',
+  'contact.channels.0.label',
+  'contact.channels.0.value',
+  'contact.channels.0.kind',
+  'contact.channels.1.label',
+  'contact.channels.1.value',
+  'contact.channels.1.kind',
+  'contact.channels.2.label',
+  'contact.channels.2.value',
+  'contact.channels.2.kind',
+  'contact.infoCard.title',
+  'contact.infoCard.subtitle',
+  'contact.form.heading',
+  'contact.form.helper',
+  'contact.form.fields.name.label',
+  'contact.form.fields.name.placeholder',
+  'contact.form.fields.email.label',
+  'contact.form.fields.email.placeholder',
+  'contact.form.fields.subject.label',
+  'contact.form.fields.subject.placeholder',
+  'contact.form.fields.subject.options.commercial',
+  'contact.form.fields.subject.options.support',
+  'contact.form.fields.subject.options.partnerships',
+  'contact.form.fields.subject.options.press',
+  'contact.form.fields.subject.options.other',
+  'contact.form.fields.message.label',
+  'contact.form.fields.message.placeholder',
+  'contact.form.submit',
+]
+
+const REQUIRED_FORMS_PATHS = ['forms.encryptedNote']
+
+const REQUIRED_PATHS = [...REQUIRED_DEMO_PATHS, ...REQUIRED_CONTACT_PATHS, ...REQUIRED_FORMS_PATHS]
+
+const LOCALES = [
+  ['en', enResources as unknown],
+  ['pt-BR', ptResources as unknown],
+  ['es', esResources as unknown],
+] as const
+
+describe('Story 6.9 — namespace parity for demo.*, contact.*, forms.encryptedNote', () => {
+  it.each(LOCALES)('locale %s carries every required key as a non-empty string', (_locale, bundle) => {
+    const missing: string[] = []
+    const empty: string[] = []
+    for (const path of REQUIRED_PATHS) {
+      const value = getByPath(bundle, path)
+      if (value === undefined) {
+        missing.push(path)
+      } else if (typeof value !== 'string' || value.trim() === '') {
+        empty.push(path)
+      }
+    }
+    expect(missing).toEqual([])
+    expect(empty).toEqual([])
+  })
+
+  it('demo.* tree shape is identical across en/pt-BR/es (no extra keys per locale)', () => {
+    const enPaths = collectLeafPaths((enResources as Json).demo, 'demo').sort()
+    const ptPaths = collectLeafPaths((ptResources as Json).demo, 'demo').sort()
+    const esPaths = collectLeafPaths((esResources as Json).demo, 'demo').sort()
+    expect(ptPaths).toEqual(enPaths)
+    expect(esPaths).toEqual(enPaths)
+  })
+
+  it('contact.* tree shape is identical across en/pt-BR/es', () => {
+    const enPaths = collectLeafPaths((enResources as Json).contact, 'contact').sort()
+    const ptPaths = collectLeafPaths((ptResources as Json).contact, 'contact').sort()
+    const esPaths = collectLeafPaths((esResources as Json).contact, 'contact').sort()
+    expect(ptPaths).toEqual(enPaths)
+    expect(esPaths).toEqual(enPaths)
   })
 })

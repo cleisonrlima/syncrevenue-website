@@ -443,6 +443,79 @@
       "errorGeneric": "Algo salio mal. Intenta de nuevo.",
       "errorRateLimit": "Demasiadas solicitudes. Intenta en unos minutos.",
       "requiredMarker": "obligatorio"
+    },
+    "encryptedNote": "Conexión cifrada. Datos protegidos."
+  },
+  "demo": {
+    "eyebrow": "Agendar demostración",
+    "heading": {
+      "text": "Vea SyncRevenue funcionando",
+      "accent": "en su flujo"
+    },
+    "subhead": "Una conversación breve con el equipo, una demo personalizada con sus contratos reales y una propuesta clara en 48 horas. Sin compromiso.",
+    "info": {
+      "h3": "Qué esperar",
+      "steps": {
+        "0": { "title": "Conversación de descubrimiento · 30 min", "body": "Entendemos su volumen, GDS en uso, tipos de contrato y dónde se fuga la comisión hoy." },
+        "1": { "title": "Demo personalizada · 45 min", "body": "Ejecutamos SyncRevenue con uno de sus contratos reales y mostramos las reglas aplicadas antes del ticketing." },
+        "2": { "title": "Propuesta y cronograma · 48h", "body": "Alcance, integración, indicadores de ROI esperados y cronograma de go-live." }
+      },
+      "infoCard": {
+        "title": "Respuesta en 1 día hábil",
+        "subtitle": "María o Lucas se ponen en contacto personalmente."
+      }
+    },
+    "form": {
+      "heading": "Solicitar demostración",
+      "helper": "Los campos con * son obligatorios.",
+      "fields": {
+        "name":    { "label": "Nombre completo",     "placeholder": "María Sosa" },
+        "email":   { "label": "Correo corporativo",  "placeholder": "maria@suagencia.com" },
+        "company": { "label": "Agencia",             "placeholder": "Nombre de la agencia" },
+        "phone":   { "label": "Teléfono",            "placeholder": "+52 55 0000 0000", "optional": "(opcional)" },
+        "role":    { "label": "Su cargo",            "placeholder": "Seleccione" },
+        "gds":     { "label": "GDS principal",       "placeholder": "Seleccione" },
+        "message": { "label": "Mensaje",             "placeholder": "Cuéntenos sobre sus desafíos de conciliación y comisiones" }
+      },
+      "submit": "Agendar demostración"
+    }
+  },
+  "contact": {
+    "eyebrow": "Contacto",
+    "heading": {
+      "text": "Hable con",
+      "accent": "SyncSirius"
+    },
+    "subhead": "Para consultas comerciales, soporte, alianzas o prensa — su mensaje llega al equipo correcto.",
+    "channels": {
+      "0": { "label": "Correo",   "value": "contato@syncsirius.com",       "kind": "email" },
+      "1": { "label": "Teléfono", "value": "+1 (305) 555-0100",            "kind": "phone" },
+      "2": { "label": "Sede",     "value": "Miami, FL · Estados Unidos",   "kind": "address" }
+    },
+    "infoCard": {
+      "title": "Tiempo medio de respuesta",
+      "subtitle": "Menos de 4 horas en días hábiles."
+    },
+    "form": {
+      "heading": "Envíe un mensaje",
+      "helper": "Direccionamos el mensaje según el asunto.",
+      "fields": {
+        "name":  { "label": "Nombre completo", "placeholder": "Su nombre" },
+        "email": { "label": "Correo",          "placeholder": "usted@correo.com" },
+        "subject": {
+          "label": "Asunto",
+          "placeholder": "Seleccione un asunto",
+          "options": {
+            "commercial":   "Comercial — SyncRevenue",
+            "support":      "Soporte al cliente",
+            "partnerships": "Alianzas e integraciones",
+            "press":        "Prensa y medios",
+            "other":        "Otro"
+          }
+        },
+        "message": { "label": "Mensaje", "placeholder": "¿Cómo podemos ayudar?" }
+      },
+      "submit": "Enviar mensaje"
     }
   },
   "seo": {

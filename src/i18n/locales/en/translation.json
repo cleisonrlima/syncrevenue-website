@@ -443,6 +443,79 @@
       "errorGeneric": "Something went wrong. Please try again.",
       "errorRateLimit": "Too many requests. Please try again in a few minutes.",
       "requiredMarker": "required"
+    },
+    "encryptedNote": "Encrypted in transit. Your data is protected."
+  },
+  "demo": {
+    "eyebrow": "Schedule a demo",
+    "heading": {
+      "text": "See SyncRevenue running",
+      "accent": "in your workflow"
+    },
+    "subhead": "A short conversation with the team, a personalized demo on your real contracts, and a clear proposal in 48 hours. No commitment.",
+    "info": {
+      "h3": "What to expect",
+      "steps": {
+        "0": { "title": "Discovery call · 30 min", "body": "We learn your volume, GDS in use, contract types, and where commission leaks today." },
+        "1": { "title": "Personalized demo · 45 min", "body": "We run SyncRevenue on one of your real contracts and show the rules applied pre-ticketing." },
+        "2": { "title": "Proposal & timeline · 48h", "body": "Scope, integration, expected ROI indicators, and go-live timeline." }
+      },
+      "infoCard": {
+        "title": "Reply within 1 business day",
+        "subtitle": "Maria or Lucas reaches out personally."
+      }
+    },
+    "form": {
+      "heading": "Request a demonstration",
+      "helper": "Fields marked with * are required.",
+      "fields": {
+        "name":    { "label": "Full name",      "placeholder": "Maria Souza" },
+        "email":   { "label": "Work email",     "placeholder": "maria@youragency.com" },
+        "company": { "label": "Agency",         "placeholder": "Agency name" },
+        "phone":   { "label": "Phone",          "placeholder": "+1 305 555 0100", "optional": "(optional)" },
+        "role":    { "label": "Your role",      "placeholder": "Select" },
+        "gds":     { "label": "Primary GDS",    "placeholder": "Select" },
+        "message": { "label": "Message",        "placeholder": "Tell us about your reconciliation and commission challenges" }
+      },
+      "submit": "Schedule demonstration"
+    }
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "heading": {
+      "text": "Talk to",
+      "accent": "SyncSirius"
+    },
+    "subhead": "For commercial questions, support, partnerships, or press — your message reaches the right team.",
+    "channels": {
+      "0": { "label": "Email",        "value": "contato@syncsirius.com",      "kind": "email" },
+      "1": { "label": "Phone",        "value": "+1 (305) 555-0100",           "kind": "phone" },
+      "2": { "label": "Headquarters", "value": "Miami, FL · United States",   "kind": "address" }
+    },
+    "infoCard": {
+      "title": "Average response time",
+      "subtitle": "Under 4 hours on business days."
+    },
+    "form": {
+      "heading": "Send a message",
+      "helper": "We route the message based on the subject.",
+      "fields": {
+        "name":  { "label": "Full name", "placeholder": "Your name" },
+        "email": { "label": "Email",     "placeholder": "you@email.com" },
+        "subject": {
+          "label": "Subject",
+          "placeholder": "Select a subject",
+          "options": {
+            "commercial":   "Commercial — SyncRevenue",
+            "support":      "Customer support",
+            "partnerships": "Partnerships & integrations",
+            "press":        "Press & media",
+            "other":        "Other"
+          }
+        },
+        "message": { "label": "Message", "placeholder": "How can we help?" }
+      },
+      "submit": "Send message"
     }
   },
   "seo": {

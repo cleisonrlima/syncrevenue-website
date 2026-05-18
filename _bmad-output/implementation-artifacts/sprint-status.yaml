@@ -1,5 +1,5 @@
 # generated: 2026-05-14
-# last_updated: 2026-05-17  # Story 4.8 -> done
+# last_updated: 2026-05-17  # Story 6.9 -> review
 # project: syncrevenue-website
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-17  # Stories 6.9-6.12 -> ready-for-dev (Story 6.8 deferrals materialized as follow-up stories)
+last_updated: 2026-05-17  # Story 6.9 -> review (dev complete; tests + lint + typecheck green)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -133,7 +133,7 @@ development_status:
   6-7-team-section-visual-refresh: review
   6-8-demo-contact-forms-visual-refresh-locale-parity: review
   # 6.9-6.12 added 2026-05-17 from Story 6.8 deferred-work materialization (per CLAUDE.md "Review Findings → New Story" rule)
-  6-9-shared-form-primitives-i18n-namespace-restructure: ready-for-dev
+  6-9-shared-form-primitives-i18n-namespace-restructure: review
   6-10-demoscheduler-grid-demoform-restyle-gds-enum: ready-for-dev
   6-11-contact-grid-contactform-restyle: ready-for-dev
   6-12-lighthouse-axe-legacy-cleanup: ready-for-dev
