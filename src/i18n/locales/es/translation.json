@@ -16,10 +16,30 @@
   },
   "hero": {
     "badge": "Recuperación de Comisiones para Agencias de Viajes",
-    "headline": "Gestión de Comisiones para Agencias de Viajes Modernas",
-    "subheadline": "Recupere el 15–25% de los ingresos por comisiones perdidos en discrepancias de GDS, disputas de débitos y fallos de reconciliación BSP/ARC.",
-    "cta": "Programar Demo",
+    "headline": {
+      "line1": "Más comisión por ticket.",
+      "line2": "Menos retrabajo en el rate desk."
+    },
+    "subheadline": "<0>SyncRevenue</0> determina la comisión y el markup correctos <1>antes del ticketing</1>, leyendo reglas de contratos aéreos en cualquier GDS, NDC o motor de búsqueda propio. Tu equipo se enfoca en la negociación; el sistema gestiona las excepciones.",
     "tertiaryLink": "Más información sobre recuperación de comisiones",
+    "cta": {
+      "primary": "Agendar Demo",
+      "secondary": "Ver cómo funciona"
+    },
+    "kpis": {
+      "0": {
+        "value": "+15–20%",
+        "label": "Comisión\nrecuperada"
+      },
+      "1": {
+        "value": "−40%",
+        "label": "Débitos\n(ADM)"
+      },
+      "2": {
+        "value": "−65%",
+        "label": "Errores\nde QC"
+      }
+    },
     "stats": {
       "0": {
         "label": "Asertividad de Comisiones",

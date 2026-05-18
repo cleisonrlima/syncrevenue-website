@@ -16,10 +16,30 @@
   },
   "hero": {
     "badge": "Commission Recovery for Travel Agencies",
-    "headline": "Commission Management Built for Modern Travel Agencies",
-    "subheadline": "Recover 15–25% of commission revenue lost to GDS discrepancies, debit memo disputes, and manual BSP/ARC reconciliation failures.",
-    "cta": "Schedule a Demo",
+    "headline": {
+      "line1": "More commission per ticket.",
+      "line2": "Less rework at the rate desk."
+    },
+    "subheadline": "<0>SyncRevenue</0> determines the correct commission and markup <1>before ticketing</1>, reading airline contract rules in any GDS, NDC, or proprietary search engine. Your team focuses on negotiation; the system handles exceptions.",
     "tertiaryLink": "Learn about commission recovery",
+    "cta": {
+      "primary": "Schedule a Demo",
+      "secondary": "See how it works"
+    },
+    "kpis": {
+      "0": {
+        "value": "+15–20%",
+        "label": "Commission\nrecovered"
+      },
+      "1": {
+        "value": "−40%",
+        "label": "Debit memos\n(ADM)"
+      },
+      "2": {
+        "value": "−65%",
+        "label": "QC\nerrors"
+      }
+    },
     "stats": {
       "0": {
         "label": "Commission Assertivity",

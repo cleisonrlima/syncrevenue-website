@@ -1,23 +1,49 @@
-import { useTranslation } from 'react-i18next'
-import GradientButton from '@/components/ui/GradientButton'
+import { useTranslation, Trans } from 'react-i18next'
+import { Button } from '@/components/ui/Button'
 import StatRow from './StatRow'
 import TrustBar from './TrustBar'
+
+/**
+ * Hero — Epic 6 sober-palette rebuild (Story 6.3).
+ *
+ * Layout source: Hero.html `.hero` / `.bg` / `.wrap` / `.top` / `h1` / `.sub` /
+ * `.cta-row` / `.kpi-row` (lines 52–138, 522–582).
+ *
+ * Replaces the Story 1.5 gradient-bg + glow + gradient-text headline with:
+ *   - Airplane photo background (license-clean local asset `public/hero/airplane.jpg`,
+ *     copied from `1351_rev_1.jpg` in the repo root; swap when stakeholder picks a
+ *     different shot — see story 6.3 dev notes).
+ *   - Dual-gradient legibility scrim (95° horizontal + 180° vertical fade) per AC1.
+ *   - Two-line H1 with accent span on line 2 (replaces gradient-text from UX-DR19).
+ *   - Sub paragraph with `<strong>` slots via `<Trans>` (`SyncRevenue` + `before ticketing`).
+ *   - Dual CTAs: primary solid-accent + tertiary text link with arrow.
+ *   - KPI strip (refactored `StatRow` consuming `hero.kpis.*`).
+ *
+ * Right column (product panel) is intentionally empty — Story 6.4 fills it.
+ * Grid is wired now so 6.4 only drops in the right `<aside>`.
+ */
+
+const SUBHEAD_COMPONENTS = [
+  <strong key="brand" className="text-white font-semibold" />,
+  <strong key="emphasis" className="text-white font-semibold" />,
+]
 
 export default function Hero() {
   const { t } = useTranslation()
 
   const handleDemoCta = () => {
     try {
-      const demoSection = document.getElementById('demo-scheduler')
-      if (demoSection) {
-        demoSection.scrollIntoView({ behavior: 'smooth' })
+      const target =
+        document.getElementById('agendar-demo') ?? document.getElementById('demo-scheduler')
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' })
       } else if (typeof window !== 'undefined' && window.top !== window) {
-        window.parent.location.href = '/#demo-scheduler'
+        window.parent.location.href = '/#agendar-demo'
       } else {
-        window.location.href = '/#demo-scheduler'
+        window.location.href = '/#agendar-demo'
       }
     } catch (e) {
-      console.warn('Failed to scroll to demo-scheduler', e)
+      console.warn('Failed to scroll to demo section', e)
     }
   }
 
@@ -25,57 +51,107 @@ export default function Hero() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="relative min-h-[70vh] md:min-h-[80vh] bg-gradient-to-b from-[#0D0D3A] to-[#080820] overflow-hidden text-white"
+      className="relative min-h-screen overflow-hidden text-white bg-[var(--ink)]"
       suppressHydrationWarning
     >
-      {/* Radial glow top-right */}
+      {/* Airplane background — Hero.html .bg */}
       <div
-        className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20 pointer-events-none"
+        aria-hidden="true"
+        className="absolute inset-0 z-0 bg-cover bg-center"
         style={{
-          background: 'radial-gradient(circle at center, rgba(0, 165, 240, 0.2), transparent 70%)',
+          backgroundImage: "url('/hero/airplane.jpg')",
+          filter: 'saturate(0.85)',
+        }}
+        data-testid="hero-bg"
+      />
+      {/* Dual-gradient overlay scrim — Hero.html .bg::after */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 z-0"
+        style={{
+          background: [
+            'linear-gradient(95deg, rgba(10,11,46,0.94) 0%, rgba(10,11,46,0.82) 40%, rgba(10,11,46,0.60) 80%, rgba(10,11,46,0.78) 100%)',
+            'linear-gradient(180deg, rgba(10,11,46,0.50) 0%, transparent 35%, transparent 55%, rgba(8,8,28,0.92) 100%)',
+          ].join(', '),
         }}
       />
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        {/* Badge */}
-        <div className="mb-6 inline-block bg-brand-slate/20 text-brand-offwhite px-3 py-1 rounded-full text-sm">
-          {t('hero.badge', { defaultValue: '' })}
+      {/* Content wrap — Hero.html .wrap */}
+      <div className="relative z-10 mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 pt-[140px] pb-20 min-h-screen flex flex-col justify-center">
+        {/* Top split — left copy, right product panel (right column lands in Story 6.4) */}
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-9 lg:gap-[60px] items-center">
+          <div>
+            <h1
+              id="hero-heading"
+              className="font-extrabold tracking-[-0.025em] text-white max-w-[16ch] mb-6 text-[clamp(2rem,4.8vw,4.2rem)] leading-[1.02]"
+            >
+              {t('hero.headline.line1', { defaultValue: '' })}
+              <br />
+              <span className="text-[var(--accent-soft)]" data-testid="hero-headline-accent">
+                {t('hero.headline.line2', { defaultValue: '' })}
+              </span>
+            </h1>
+
+            <p className="mb-8 max-w-[54ch] text-white/[0.78] font-normal leading-[1.55] text-[clamp(15.5px,1.15vw,18px)]">
+              <Trans i18nKey="hero.subheadline" components={SUBHEAD_COMPONENTS} />
+            </p>
+
+            <div className="mb-9 flex flex-wrap items-center gap-[14px]">
+              <Button
+                variant="solid-accent"
+                size="lg"
+                onClick={handleDemoCta}
+                className="min-h-[44px] inline-flex items-center gap-2"
+                data-testid="hero-primary-cta"
+              >
+                {t('hero.cta.primary', { defaultValue: '' })}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 5l7 7-7 7" />
+                </svg>
+              </Button>
+              <a
+                href="#beneficios"
+                data-testid="hero-secondary-link"
+                className="group inline-flex items-center gap-2 py-[14px] px-[6px] text-[14px] font-medium text-white/[0.85] border-b border-transparent hover:border-white/40 motion-safe:transition-colors motion-safe:duration-200"
+              >
+                {t('hero.cta.secondary', { defaultValue: '' })}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-[3px]"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+
+            <StatRow />
+          </div>
+
+          {/* Right column — product panel placeholder for Story 6.4 */}
+          <div aria-hidden="true" data-testid="hero-right-placeholder" />
         </div>
 
-        {/* H1 — responsive scaling (mobile 32-36px per UX spec) */}
-        <h1 id="hero-heading" className="text-[2rem] leading-tight sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 max-w-2xl break-words">
-          {t('hero.headline', { defaultValue: '' })}
-        </h1>
-
-        {/* Subheadline */}
-        <p className="text-lg text-brand-offwhite mb-8 max-w-2xl">
-          {t('hero.subheadline', { defaultValue: '' })}
-        </p>
-
-        {/* CTA + Tertiary Link */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-12">
-          <GradientButton
-            size="lg"
-            onClick={handleDemoCta}
-            className="w-full min-h-[44px] sm:w-auto whitespace-nowrap"
-            data-testid="hero-primary-cta"
-          >
-            {t('hero.cta', { defaultValue: '' })}
-          </GradientButton>
-          <a
-            href="#"
-            onClick={(e) => e.preventDefault()}
-            className="text-brand-electric-blue hover:underline py-4 px-8 text-center sm:self-center"
-          >
-            {t('hero.tertiaryLink', { defaultValue: '' })}
-          </a>
+        <div className="mt-16">
+          <TrustBar />
         </div>
-
-        {/* StatRow */}
-        <StatRow />
-
-        {/* TrustBar */}
-        <TrustBar />
       </div>
     </section>
   )

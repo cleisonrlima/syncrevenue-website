@@ -19,7 +19,8 @@ function renderAppAt(path: string) {
 }
 
 function findHomeHeroHeading() {
-  return screen.findByRole('heading', { name: /Commission Management Built/i }, { timeout: 5000 })
+  // Hero H1 was reshaped in Story 6.3 to a two-line sober-palette headline.
+  return screen.findByRole('heading', { name: /More commission per ticket/i }, { timeout: 5000 })
 }
 
 describe('Story 1.10 privacy policy visitor flow', () => {
