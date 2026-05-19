@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-18  # Story 6.10 in-progress → review (DemoScheduler grid + DemoForm restyle + Travelport GDS merge; 648/648 vitest green)
+last_updated: 2026-05-19  # Story 6.12 in-progress → review (Lighthouse + axe sweep + legacy i18n cleanup; --color-* shim retained per AC10(a) — Tailwind brand-* still depends on it; deferred stragglers + CLS/LCP/heading-order materialised as Story 6.13)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -136,5 +136,7 @@ development_status:
   6-9-shared-form-primitives-i18n-namespace-restructure: review
   6-10-demoscheduler-grid-demoform-restyle-gds-enum: review
   6-11-contact-grid-contactform-restyle: review
-  6-12-lighthouse-axe-legacy-cleanup: ready-for-dev
+  6-12-lighthouse-axe-legacy-cleanup: review
+  # 6.13 added 2026-05-19 from Story 6.12 deferred-work materialisation (per CLAUDE.md "Review Findings → New Story")
+  6-13-epic-6-followups-stragglers-cls-lcp-heading-order: ready-for-dev
   epic-6-retrospective: optional

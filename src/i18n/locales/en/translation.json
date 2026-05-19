@@ -15,13 +15,11 @@
     }
   },
   "hero": {
-    "badge": "Commission Recovery for Travel Agencies",
     "headline": {
       "line1": "More commission per ticket.",
       "line2": "Less rework at the rate desk."
     },
     "subheadline": "<0>SyncRevenue</0> determines the correct commission and markup <1>before ticketing</1>, reading airline contract rules in any GDS, NDC, or proprietary search engine. Your team focuses on negotiation; the system handles exceptions.",
-    "tertiaryLink": "Learn about commission recovery",
     "cta": {
       "primary": "Schedule a Demo",
       "secondary": "See how it works"
@@ -98,20 +96,6 @@
         "metricVariant": "blue",
         "title": "Analytics to negotiate",
         "body": "Performance reports by airline, contract, and POS — data-backed ammo for the next negotiation round."
-      }
-    },
-    "stats": {
-      "0": {
-        "label": "Commission Assertivity",
-        "value": "99.99%"
-      },
-      "1": {
-        "label": "Revenue Leakage Recovered",
-        "value": "15–25%"
-      },
-      "2": {
-        "label": "Amadeus · Sabre · Galileo · Worldspan",
-        "value": "Multi-GDS"
       }
     },
     "trustBar": {
@@ -327,13 +311,6 @@
     }
   },
   "sections": {
-    "demoScheduler": {
-      "eyebrow": "Ready When You Are",
-      "heading": "Schedule Your SyncRevenue Demo",
-      "subtext": "See multi-GDS commission recovery applied to your agency's reconciliation workflow.",
-      "cta": "Schedule a Demo",
-      "ariaLabel": "Schedule a SyncRevenue demo"
-    },
     "commissionAudit": {
       "heading": "Free Commission Leakage Audit",
       "subheading": "Send us 30 days of BSP data and we will return a written report on how much commission your agency is leaving on the table.",

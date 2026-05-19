@@ -47,7 +47,7 @@ Epic 3 story 3.11 → **SYN-97** (not SYN-85; mirror block corrected 2026-05-16)
 
 ## Story-to-Issue mapping (Epic 6 — active)
 
-Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic SYN-202 transitioned to In Progress; stories 6.1–6.9 in REVIEW; 6.10–6.12 in To Do.
+Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic SYN-202 in In Progress; stories 6.1–6.12 all in REVIEW; 6.13 in To Do (created 2026-05-19 from 6.12 deferred-work materialisation).
 
 | Story | Title | Jira Key | sprint-status | Sub-tasks |
 |-------|-------|----------|---------------|-----------|
@@ -63,9 +63,10 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Vi
 | 6.9 | Shared Form Primitives + i18n Namespace Restructure | SYN-328 | review | SYN-332..343 (12, all Done) |
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum | SYN-329 | review | SYN-344..356 (13, all Done — synced 2026-05-19) |
 | 6.11 | Contact Grid + ContactForm Restyle | SYN-330 | review | SYN-357..366 (10, all Done — synced 2026-05-19) |
-| 6.12 | Lighthouse + Axe Regression + Legacy Cleanup | SYN-331 | ready-for-dev | SYN-367..377 (11, all To Do) |
+| 6.12 | Lighthouse + Axe Regression + Legacy Cleanup | SYN-331 | review | SYN-367..377 (11, all Done — parent + 11 sub-tasks synced 2026-05-19) |
+| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order | SYN-378 | ready-for-dev | SYN-379..392 (14, all To Do — created 2026-05-19) |
 
-**Sub-task total: 99** (53 original 6.1–6.8 + 46 new across 6.9–6.12). One per top-level Task in each story file's `## Tasks / Subtasks` section.
+**Sub-task total: 113** (53 original 6.1–6.8 + 46 across 6.9–6.12 + 14 across 6.13). One per top-level Task in each story file's `## Tasks / Subtasks` section.
 
 Update tables as new stories are mapped.
 

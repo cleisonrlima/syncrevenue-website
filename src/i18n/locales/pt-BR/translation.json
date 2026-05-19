@@ -15,13 +15,11 @@
     }
   },
   "hero": {
-    "badge": "Recuperação de Comissões para Agências de Viagem",
     "headline": {
       "line1": "Mais comissão por ticket.",
       "line2": "Menos retrabalho no rate desk."
     },
     "subheadline": "O <0>SyncRevenue</0> determina a comissão e o markup corretos <1>antes do ticketing</1>, lendo regras de contratos de companhias aéreas em qualquer GDS, NDC ou motor de busca próprio. Sua equipe foca na negociação, o sistema cuida da exceção.",
-    "tertiaryLink": "Saiba mais sobre recuperação de comissões",
     "cta": {
       "primary": "Agendar Demo",
       "secondary": "Ver como funciona"
@@ -98,20 +96,6 @@
         "metricVariant": "blue",
         "title": "Analytics para negociar",
         "body": "Relatórios de performance por cia aérea, contrato e POS — munição com dado para a próxima rodada de negociação."
-      }
-    },
-    "stats": {
-      "0": {
-        "label": "Assertividade de Comissões",
-        "value": "99,99%"
-      },
-      "1": {
-        "label": "Vazamento de Receita Recuperado",
-        "value": "15–25%"
-      },
-      "2": {
-        "label": "Amadeus · Sabre · Galileo · Worldspan",
-        "value": "Multi-GDS"
       }
     },
     "trustBar": {
@@ -327,13 +311,6 @@
     }
   },
   "sections": {
-    "demoScheduler": {
-      "eyebrow": "Quando Você Estiver Pronto",
-      "heading": "Agende sua Demonstração SyncRevenue",
-      "subtext": "Veja a recuperação de comissões multi-GDS aplicada ao fluxo de reconciliação da sua agência.",
-      "cta": "Agendar uma Demo",
-      "ariaLabel": "Agendar uma demonstração SyncRevenue"
-    },
     "commissionAudit": {
       "heading": "Auditoria gratuita de vazamento de comissoes",
       "subheading": "Envie 30 dias de dados BSP e devolvemos um relatorio por escrito mostrando quanto a sua agencia esta deixando de receber.",

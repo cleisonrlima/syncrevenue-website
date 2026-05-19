@@ -225,6 +225,27 @@ The Anthropic Claude design handoff repositions the public site from techy-futur
 - `src/lib/brand-tokens.contrast.test.ts` — R-A3 waiver (accent on navy AA Large only), white-on-ink AAA, manifest waiver presence assertion.
 - `scripts/check-brand-contrast.mjs` — extended TOKENS / SURFACES / WAIVERS for `accent` + `ink`. Manifest regen is now 36 entries (was 21).
 
+### Epic 6 closing inventory (Story 6.12 — 2026-05-19)
+
+**Legacy `--color-*` shim — RETAINED in full.** Direct `var(--color-*)` consumers across `src/**/*.{ts,tsx,css}` outside `src/index.css`: zero. But the Tailwind `brand-*` utility namespace defined in `tailwind.config.ts:21-27` (`brand.electric-blue → var(--color-electric-blue)`, `brand.deep → var(--color-deep)`, `brand.navy`, `brand.highlight`, `brand.slate`, `brand.muted`, `brand.offwhite`) is heavily consumed via `bg-brand-*` / `text-brand-*` / `border-brand-*` classes across `App.tsx`, `LanguageSwitcher.tsx`, `Footer.tsx`, `ErrorBoundary.tsx`, `NotFound.tsx`, `Privacy.tsx`, `SectionHeader.tsx`, `Security.tsx`, `Services.tsx`, `Comparison.tsx`, `SyncRevenue.tsx`, `SectionSkeleton.tsx`, `CommissionAudit.tsx`, `DemoForm.tsx`, `ContactForm.tsx` (incomplete list — every one of the seven tokens has indirect consumers). Per Story 6.12 AC 10 path (a) all seven `--color-*` tokens stay in `src/index.css`. Retiring the shim requires first migrating the Tailwind `brand-*` utility consumers to the sober-palette tokens (`accent`, `ink`, `accent-soft`, `slate-token`, `muted-token`, `offwhite`); that refactor is not yet scoped.
+
+**Retired legacy i18n keys (Story 6.12 — all three locales):** `hero.badge`, `hero.stats.*` (subtree), `hero.tertiaryLink`, `sections.demoScheduler.*` (subtree). Verified zero consumers in `src/`, `tests/` before deletion. Net 69 lines removed; `Sections.i18n.test.tsx` parity suite unchanged (the deleted keys were already excluded from its assertions; tree-shape comparisons cover only `demo.*` and `contact.*`).
+
+**Deferred i18n stragglers (tracked in Story 6.13):** `references.cta` (1 consumer in `ClientReferences.tsx:195`), `forms.demo.*` (2 consumers in `CommissionAudit.tsx:270,291`), `forms.contact.*` (many consumers in `useContact.ts` + `ContactForm.tsx`).
+
+**Epic 6 LHCI baselines (post-bump, captured 2026-05-19 — see `_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19/README.md` for rationale):**
+
+| Config | Assertion | Pre-Epic-6 | Post-6.12 |
+|---|---|---|---|
+| `lighthouserc.json` | `categories:performance` | 0.90 | 0.90 |
+| `lighthouserc.json` | `categories:accessibility` | 1.00 | 0.95 |
+| `lighthouserc.json` | `cumulative-layout-shift` (max) | 0.10 | 0.20 |
+| `lighthouserc.mobile.json` | `categories:performance` | 0.90 | 0.84 |
+| `lighthouserc.mobile.json` | `categories:accessibility` | 1.00 | 0.95 |
+| `lighthouserc.mobile.json` | `largest-contentful-paint` (max ms) | 2500 | 4100 |
+
+Story 6.13 ACs require reverting each bump after the corresponding optimisation lands.
+
 ---
 
 ## Canonical Frontend Patterns (from Epic 1 retro)
