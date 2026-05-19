@@ -16,7 +16,9 @@ describe('FormFoot', () => {
     const foot = container.querySelector('.form-foot') as HTMLElement
     expect(foot).not.toBeNull()
     expect(foot.className).toContain('flex-col')
+    expect(foot.className).toContain('gap-[16px]')
     expect(foot.className).toContain('min-[600px]:flex-row')
+    expect(foot.className).toContain('min-[600px]:items-center')
     expect(foot.className).toContain('min-[600px]:justify-between')
   })
 })

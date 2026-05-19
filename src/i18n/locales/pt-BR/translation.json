@@ -415,6 +415,7 @@
         "company": "Nome da agência é obrigatório",
         "role": "Por favor, selecione seu cargo",
         "gds": "Por favor, selecione seu GDS principal",
+        "rateLimit": "Muitas solicitações de demonstração. Por favor, aguarde um minuto e tente novamente.",
         "generic": "Algo deu errado. Por favor, tente novamente."
       },
       "success": {

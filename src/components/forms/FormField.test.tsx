@@ -36,13 +36,19 @@ describe('FormField', () => {
 
   it('renders error with id matching {htmlFor}-error', () => {
     render(
-      <FormField label="Email" htmlFor="demo-email" error="Bad email">
-        <input id="demo-email" />
+      <FormField label="Email" htmlFor="demo-email" error="Bad email" describedById="demo-email-help">
+        <input id="demo-email" aria-describedby="demo-email-hint" />
       </FormField>,
     )
+    const input = screen.getByLabelText('Email')
     const err = screen.getByText('Bad email')
     expect(err.id).toBe('demo-email-error')
     expect(err).toHaveAttribute('role', 'alert')
+    expect(input).toHaveAttribute(
+      'aria-describedby',
+      'demo-email-hint demo-email-help demo-email-error',
+    )
+    expect(input).toHaveAttribute('aria-invalid', 'true')
   })
 
   it('omits error node when no error', () => {
@@ -56,11 +62,20 @@ describe('FormField', () => {
 
   it('does not render required + optional simultaneously without explicit override', () => {
     render(
-      <FormField label="Mixed" htmlFor="mixed">
+      <FormField label="Mixed" htmlFor="mixed" required optional>
         <input id="mixed" />
       </FormField>,
     )
-    expect(screen.queryByText('*')).toBeNull()
+    expect(screen.getByText('*')).toBeInTheDocument()
     expect(screen.queryByText(/opcional/)).toBeNull()
+  })
+
+  it('adds aria-required to the wrapped control', () => {
+    render(
+      <FormField label="Name" htmlFor="name" required>
+        <input id="name" />
+      </FormField>,
+    )
+    expect(screen.getByLabelText(/Name/)).toHaveAttribute('aria-required', 'true')
   })
 })

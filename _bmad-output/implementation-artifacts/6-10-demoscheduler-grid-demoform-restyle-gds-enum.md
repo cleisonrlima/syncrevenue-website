@@ -1,6 +1,6 @@
 # Story 6.10: DemoScheduler 40/60 Grid + DemoForm Restyle + GDS Enum Reconciliation
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -77,6 +77,12 @@ So that the demo CTA surface reads as one cohesive conversion experience aligned
 - [x] Task 11 — Update `src/components/sections/DemoForm.test.tsx` with new asterisk / optional-label / chevron a11y / focus-ring assertions; preserve all Story 2.2 / 2.4 / 2.6 assertions (AC: 15).
 - [x] Task 12 — Update `tests/e2e/demo-request.spec.ts` selectors + the home-page e2e specs that target `#demo-scheduler` to use `#agendar-demo` (AC: 16). Confirm axe run shows zero serious/critical on the demo region.
 - [x] Task 13 — Full Vitest regression + `npm run build` + targeted Playwright run; confirm green.
+
+### Review Findings
+
+- [x] [Review][Patch] 429 responses have no visible inline rate-limit error [src/components/sections/DemoForm.tsx:96]
+- [x] [Review][Patch] Demo GDS CHECK migration rebuild does not preserve dependent schema objects or guarantee rollback [server/db.ts:159]
+- [x] [Review][Patch] Demo i18n parity required-path list omits Story 6.10 demo runtime keys [src/components/sections/Sections.i18n.test.tsx:181]
 
 ## Dev Agent Record
 

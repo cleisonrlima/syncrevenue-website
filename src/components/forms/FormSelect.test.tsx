@@ -27,15 +27,19 @@ describe('FormSelect', () => {
     expect(screen.getByRole('combobox', { name: 'GDS' })).toHaveAttribute('aria-invalid', 'true')
   })
 
-  it('passes children options through', () => {
+  it('passes children options through and forces option background', () => {
     render(
       <FormSelect id="x" aria-label="X">
         <option value="">Select</option>
-        <option value="a">Alpha</option>
+        <option value="a" style={{ color: 'white', background: 'red' }}>
+          Alpha
+        </option>
         <option value="b">Beta</option>
       </FormSelect>,
     )
-    expect(screen.getByRole('option', { name: 'Alpha' })).toBeInTheDocument()
+    const alpha = screen.getByRole('option', { name: 'Alpha' })
+    expect(alpha).toBeInTheDocument()
+    expect(alpha).toHaveStyle({ color: 'rgb(255, 255, 255)', background: '#0A0B2E' })
     expect(screen.getByRole('option', { name: 'Beta' })).toBeInTheDocument()
   })
 })

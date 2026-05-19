@@ -157,27 +157,73 @@ export function initSchema(database: Database.Database = db): void {
     .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='demo_requests'")
     .get() as { sql?: string } | undefined
   if (liveDemoSchema?.sql && !liveDemoSchema.sql.includes('Travelport')) {
-    database.exec(`
-      BEGIN;
-      CREATE TABLE demo_requests_new (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        company TEXT NOT NULL,
-        phone TEXT,
-        role TEXT NOT NULL,
-        gds TEXT NOT NULL CHECK (gds IN ('Amadeus','Sabre','Travelport (Galileo/Worldspan)','Galileo','Worldspan','Other','None yet')),
-        message TEXT,
-        locale TEXT NOT NULL CHECK (locale IN ('en','pt-BR','es')),
-        status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','contacted','qualified')),
-        created_at TEXT NOT NULL DEFAULT (datetime('now')),
-        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-      );
-      INSERT INTO demo_requests_new SELECT * FROM demo_requests;
-      DROP TABLE demo_requests;
-      ALTER TABLE demo_requests_new RENAME TO demo_requests;
-      COMMIT;
-    `)
+    const dependentObjects = database
+      .prepare(
+        `
+          SELECT type, name, sql
+          FROM sqlite_master
+          WHERE tbl_name = 'demo_requests'
+            AND type IN ('index', 'trigger')
+            AND sql IS NOT NULL
+          ORDER BY type, name
+        `
+      )
+      .all() as Array<{ type: 'index' | 'trigger'; name: string; sql: string }>
+
+    const migrateDemoGdsCheck = database.transaction(() => {
+      database.exec(`
+        CREATE TABLE demo_requests_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          company TEXT NOT NULL,
+          phone TEXT,
+          role TEXT NOT NULL,
+          gds TEXT NOT NULL CHECK (gds IN ('Amadeus','Sabre','Travelport (Galileo/Worldspan)','Galileo','Worldspan','Other','None yet')),
+          message TEXT,
+          locale TEXT NOT NULL CHECK (locale IN ('en','pt-BR','es')),
+          status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','contacted','qualified')),
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        INSERT INTO demo_requests_new (
+          id,
+          name,
+          email,
+          company,
+          phone,
+          role,
+          gds,
+          message,
+          locale,
+          status,
+          created_at,
+          updated_at
+        )
+        SELECT
+          id,
+          name,
+          email,
+          company,
+          phone,
+          role,
+          gds,
+          message,
+          locale,
+          status,
+          created_at,
+          updated_at
+        FROM demo_requests;
+        DROP TABLE demo_requests;
+        ALTER TABLE demo_requests_new RENAME TO demo_requests;
+      `)
+
+      for (const object of dependentObjects) {
+        database.exec(object.sql)
+      }
+    })
+
+    migrateDemoGdsCheck()
   }
 }
 

@@ -185,6 +185,12 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
   }
 
   const canSubmit = demoSchema.safeParse(values).success && !isSubmitting
+  const formError =
+    status === 'error' && error?.status === 429
+      ? t('demo.form.errors.rateLimit', {
+          defaultValue: 'Too many demo requests. Please wait a minute and try again.',
+        })
+      : null
 
   if (status === 'success') {
     return (
@@ -422,6 +428,17 @@ const DemoForm = forwardRef<DemoFormHandle>(function DemoForm(_props, ref) {
           }
         />
       </form>
+
+      {formError && (
+        <p
+          className="mt-[14px] text-[13px] font-medium"
+          style={{ color: 'var(--form-error, #FF6B6B)' }}
+          aria-live="polite"
+          role="alert"
+        >
+          {formError}
+        </p>
+      )}
 
       {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>

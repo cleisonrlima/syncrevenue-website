@@ -1,4 +1,13 @@
-import { forwardRef, type SelectHTMLAttributes } from 'react'
+import {
+  Children,
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  type CSSProperties,
+  type ReactElement,
+  type ReactNode,
+  type SelectHTMLAttributes,
+} from 'react'
 import { cn } from '@/lib/utils'
 
 export type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
@@ -14,12 +23,38 @@ const baseFieldClasses = cn(
   'focus:outline-none focus:bg-white/[0.06]',
 )
 
+const OPTION_BACKGROUND = '#0A0B2E'
+
+type OptionLikeProps = {
+  children?: ReactNode
+  style?: CSSProperties
+}
+
+function withOptionBackground(children: ReactNode): ReactNode {
+  return Children.map(children, child => {
+    if (!isValidElement<OptionLikeProps>(child)) return child
+
+    if (child.type === 'option') {
+      const option = child as ReactElement<OptionLikeProps>
+      return cloneElement(option, {
+        style: { ...option.props.style, background: OPTION_BACKGROUND },
+      })
+    }
+
+    if (child.type === 'optgroup') {
+      const group = child as ReactElement<OptionLikeProps>
+      return cloneElement(group, {
+        children: withOptionBackground(group.props.children),
+      })
+    }
+
+    return child
+  })
+}
+
 /**
  * Story 6.9 — Native `<select>` wrapped in `.select-wrap` with a span-based chevron
  * (preferred over `::after` pseudo-element so the icon is component-level).
- *
- * Forces `<option>` background via inline style on each option site;
- * consumers should pass `<option style={{ background: '#0A0B2E' }}>` for stable Firefox/Chrome rendering.
  */
 const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(function FormSelect(
   { className, invalid, wrapperClassName, children, ...rest },
@@ -40,7 +75,7 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(function FormS
         )}
         {...rest}
       >
-        {children}
+        {withOptionBackground(children)}
       </select>
       <span
         aria-hidden="true"

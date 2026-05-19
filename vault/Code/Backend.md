@@ -10,7 +10,7 @@
 | File | Description |
 |---|---|
 | `server/index.ts` | Express bootstrap; graceful shutdown with 10s forced exit if `close` hangs |
-| `server/db.ts` | SQLite connection singleton; open failure logs and `process.exit(1)` |
+| `server/db.ts` | SQLite connection singleton; schema init + idempotent migrations. Story 6.10 GDS CHECK migration rebuilds `demo_requests` transactionally, copies explicit columns, and recreates dependent index/trigger SQL before commit. Open failure logs and `process.exit(1)` |
 | `server/db.seed.ts` | Admin user seed / reset CLI |
 | `server/middleware/auth.ts` | JWT cookie verify → `req.admin` |
 | `server/middleware/rateLimit.ts` | Exports `createFormRateLimiter()` factory — invoked per POST route, never shared singleton |
@@ -74,6 +74,7 @@ helmet() → cors() → express.json() → rateLimit (form routes) → auth (adm
 | 2.5 | `server/lib/mailer.ts` body formatting; both routes call `void sendNotification(...).catch(console.error)`; em-dash subjects |
 | 2.6 | (frontend-only — `createDemoSchema(t)` / `createContactSchema(t)` factories in `src/hooks/*`) |
 | 2.7 | `server/middleware/rateLimit.ts` refactored to `createFormRateLimiter()` factory; per-route instances in `demo.ts` / `contact.ts`; exact 429 body `{ success: false, message: 'Too many requests' }`; `scripts/check-client-bundle-secrets.mjs` post-build sentinel scan |
+| 6.10 | `server/schemas/demo.schema.ts` accepts canonical `Travelport (Galileo/Worldspan)` plus legacy `Galileo` / `Worldspan` / `None yet`; `server/db.ts` extends `demo_requests.gds` CHECK via transactional table rebuild that preserves dependent indexes/triggers; route/schema/db tests cover new + legacy + invalid GDS |
 
 ---
 

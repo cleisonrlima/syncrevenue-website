@@ -1,4 +1,11 @@
-import { type ReactNode } from 'react'
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type AriaAttributes,
+  type ReactElement,
+  type ReactNode,
+} from 'react'
 import { cn } from '@/lib/utils'
 
 export type FormFieldProps = {
@@ -11,6 +18,16 @@ export type FormFieldProps = {
   describedById?: string
   className?: string
   children: ReactNode
+}
+
+type ControlProps = AriaAttributes & {
+  'aria-describedby'?: string
+  'aria-invalid'?: boolean | 'true' | 'false'
+}
+
+function mergeIdRefs(...refs: Array<string | undefined>) {
+  const ids = refs.flatMap(ref => ref?.split(/\s+/).filter(Boolean) ?? [])
+  return ids.length ? Array.from(new Set(ids)).join(' ') : undefined
 }
 
 /**
@@ -30,6 +47,20 @@ export default function FormField({
 }: FormFieldProps) {
   const errorId = error ? `${htmlFor}-error` : undefined
   const describedBy = [describedById, errorId].filter(Boolean).join(' ') || undefined
+  let renderedChildren = children
+
+  if (Children.count(children) === 1) {
+    const onlyChild = Children.only(children)
+    if (isValidElement<ControlProps>(onlyChild)) {
+      const child = onlyChild as ReactElement<ControlProps>
+      renderedChildren = cloneElement(child, {
+        'aria-describedby': mergeIdRefs(child.props['aria-describedby'], describedBy),
+        'aria-invalid': error ? 'true' : child.props['aria-invalid'],
+        'aria-required': required ? 'true' : child.props['aria-required'],
+      })
+    }
+  }
+
   return (
     <div
       className={cn('field flex flex-col', className)}
@@ -47,11 +78,11 @@ export default function FormField({
             *
           </span>
         )}
-        {optional && (
+        {optional && !required && (
           <span className="opt ml-[2px] text-[11px] font-medium text-white/40">{optionalLabel}</span>
         )}
       </label>
-      {children}
+      {renderedChildren}
       {error && (
         <p
           id={errorId}

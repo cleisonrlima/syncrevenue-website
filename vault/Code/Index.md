@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 in-progress: Stories 3.1–3.10 done; Story 3.10 (DX discipline — `defaultValue` lint rule + sandbox conventions) shipped — see [[Planning/Sandbox-Conventions]], `eslint.config.mjs`, and `eslint-rules/t-requires-default-value.mjs`.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 in-progress: Stories 6.9 and 6.10 now done after review closure; shared form primitives, demo grid/form restyle, GDS enum reconciliation, hardened DB migration, and demo/a11y Playwright coverage are current.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`

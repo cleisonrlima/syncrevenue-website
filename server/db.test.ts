@@ -106,4 +106,55 @@ describe('initSchema', () => {
     expect(() => initSchema(db)).not.toThrow()
     expect(() => initSchema(db)).not.toThrow()
   })
+
+  it('migrates the legacy demo_requests GDS CHECK without dropping dependent indexes or triggers', () => {
+    const legacyDb = new Database(':memory:')
+    legacyDb.exec(`
+      CREATE TABLE demo_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        company TEXT NOT NULL,
+        phone TEXT,
+        role TEXT NOT NULL,
+        gds TEXT NOT NULL CHECK (gds IN ('Amadeus','Sabre','Galileo','Worldspan','Other','None yet')),
+        message TEXT,
+        locale TEXT NOT NULL CHECK (locale IN ('en','pt-BR','es')),
+        status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','contacted','qualified')),
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      CREATE INDEX demo_requests_email_idx ON demo_requests(email);
+      CREATE TRIGGER demo_requests_touch_updated_at
+      AFTER UPDATE ON demo_requests
+      FOR EACH ROW
+      BEGIN
+        UPDATE demo_requests SET updated_at = datetime('now') WHERE id = OLD.id;
+      END;
+      INSERT INTO demo_requests (name,email,company,role,gds,locale)
+      VALUES ('A','a@b.com','C','CEO','Galileo','en');
+    `)
+
+    initSchema(legacyDb)
+
+    expect(() =>
+      legacyDb
+        .prepare(`INSERT INTO demo_requests (name,email,company,role,gds,locale) VALUES (?,?,?,?,?,?)`)
+        .run('B', 'b@b.com', 'C', 'CEO', 'Travelport (Galileo/Worldspan)', 'en')
+    ).not.toThrow()
+    expect(
+      legacyDb
+        .prepare("SELECT name FROM sqlite_master WHERE type='index' AND name='demo_requests_email_idx'")
+        .get()
+    ).toMatchObject({ name: 'demo_requests_email_idx' })
+    expect(
+      legacyDb
+        .prepare(
+          "SELECT name FROM sqlite_master WHERE type='trigger' AND name='demo_requests_touch_updated_at'"
+        )
+        .get()
+    ).toMatchObject({ name: 'demo_requests_touch_updated_at' })
+
+    legacyDb.close()
+  })
 })

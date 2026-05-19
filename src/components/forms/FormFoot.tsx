@@ -18,7 +18,7 @@ export default function FormFoot({ note, submit, className }: FormFootProps) {
   return (
     <div
       className={cn(
-        'form-foot mt-[20px] flex flex-col gap-[14px] pt-[8px]',
+        'form-foot mt-[20px] flex flex-col gap-[16px] pt-[8px]',
         'min-[600px]:flex-row min-[600px]:items-center min-[600px]:justify-between',
         className,
       )}

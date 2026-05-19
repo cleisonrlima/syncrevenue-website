@@ -11,12 +11,17 @@ type DemoPayload = {
   locale: string
 }
 
+function demoForm(page: Page) {
+  return page.getByRole('form', { name: /Request a demonstration|Solicitar demonstração/i })
+}
+
 async function fillRequiredDemoFields(page: Page) {
-  await page.getByLabel(/Full name/i).fill('Jane Smith')
-  await page.getByLabel(/Work email/i).fill('jane@example.com')
-  await page.getByLabel(/Agency/i).fill('Example Travel')
-  await page.getByLabel(/Your role/i).selectOption('Owner')
-  await page.getByLabel(/Primary GDS/i).selectOption('Sabre')
+  const form = demoForm(page)
+  await form.getByLabel(/Full name/i).fill('Jane Smith')
+  await form.getByLabel(/Work email/i).fill('jane@example.com')
+  await form.getByLabel(/Agency/i).fill('Example Travel')
+  await form.getByLabel(/Your role/i).selectOption('Owner')
+  await form.getByLabel(/Primary GDS/i).selectOption('Sabre')
 }
 
 function captureDemoRequest(page: Page) {
@@ -52,15 +57,15 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await page.goto('/', { waitUntil: 'networkidle' })
     await page.locator('#agendar-demo').scrollIntoViewIfNeeded()
 
-    const demoForm = page.getByRole('form', { name: /Request a demonstration/i })
-    await expect(demoForm).toBeVisible()
-    await expect(page.getByLabel(/Full name/i)).toBeVisible()
-    await expect(page.getByLabel(/Work email/i)).toBeVisible()
-    await expect(page.getByLabel(/Agency/i)).toBeVisible()
-    await expect(page.getByLabel(/Phone/i)).toBeVisible()
-    await expect(page.getByLabel(/Your role/i)).toBeVisible()
-    await expect(page.getByLabel(/Primary GDS/i)).toBeVisible()
-    await expect(page.getByLabel(/Message/i)).toBeVisible()
+    const form = demoForm(page)
+    await expect(form).toBeVisible()
+    await expect(form.getByLabel(/Full name/i)).toBeVisible()
+    await expect(form.getByLabel(/Work email/i)).toBeVisible()
+    await expect(form.getByLabel(/Agency/i)).toBeVisible()
+    await expect(form.getByLabel(/Phone/i)).toBeVisible()
+    await expect(form.getByLabel(/Your role/i)).toBeVisible()
+    await expect(form.getByLabel(/Primary GDS/i)).toBeVisible()
+    await expect(form.getByLabel(/Message/i)).toBeVisible()
 
     let requestCount = 0
     await page.route('**/api/demo', async route => {
@@ -72,7 +77,7 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
       })
     })
 
-    const nameField = page.getByLabel(/Full name/i)
+    const nameField = form.getByLabel(/Full name/i)
     await nameField.focus()
     await nameField.blur()
     const nameError = page.getByText('Full name is required')
@@ -80,8 +85,8 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await expect(nameField).toHaveAttribute('aria-describedby', 'demo-name-error')
     await expect(page.getByRole('button', { name: /Schedule demonstration/i })).toBeDisabled()
 
-    await demoForm.evaluate(form => {
-      if (form instanceof HTMLFormElement) form.requestSubmit()
+    await form.evaluate(element => {
+      if (element instanceof HTMLFormElement) element.requestSubmit()
     })
     expect(requestCount).toBe(0)
 
@@ -90,8 +95,8 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await demoRequest.install()
 
     await fillRequiredDemoFields(page)
-    await page.getByLabel(/Phone/i).fill('+1 305 555 0100')
-    await page.getByLabel(/Message/i).fill('We need help reconciling commissions.')
+    await form.getByLabel(/Phone/i).fill('+1 305 555 0100')
+    await form.getByLabel(/Message/i).fill('We need help reconciling commissions.')
     await page.getByRole('button', { name: /Schedule demonstration/i }).click()
 
     await expect(page.getByRole('button', { name: /Sending/i })).toBeDisabled()
@@ -123,11 +128,12 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await page.goto('/', { waitUntil: 'networkidle' })
     await page.locator('#agendar-demo').scrollIntoViewIfNeeded()
 
-    await page.getByLabel(/Full name/i).fill('Maria Souza')
-    await page.getByLabel(/Work email/i).fill('maria@agency.com')
-    await page.getByLabel(/Agency/i).fill('Souza Travel')
-    await page.getByLabel(/Your role/i).selectOption('Owner')
-    await page.getByLabel(/Primary GDS/i).selectOption('Travelport (Galileo/Worldspan)')
+    const form = demoForm(page)
+    await form.getByLabel(/Full name/i).fill('Maria Souza')
+    await form.getByLabel(/Work email/i).fill('maria@agency.com')
+    await form.getByLabel(/Agency/i).fill('Souza Travel')
+    await form.getByLabel(/Your role/i).selectOption('Owner')
+    await form.getByLabel(/Primary GDS/i).selectOption('Travelport (Galileo/Worldspan)')
     await page.getByRole('button', { name: /Schedule demonstration/i }).click()
 
     await expect(page.getByRole('button', { name: /Sending/i })).toBeDisabled()
@@ -148,13 +154,14 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await page.goto('/', { waitUntil: 'networkidle' })
     await page.locator('#agendar-demo').scrollIntoViewIfNeeded()
 
-    const name = page.getByLabel(/Full name/i)
-    const email = page.getByLabel(/Work email/i)
-    const company = page.getByLabel(/Agency/i)
-    const phone = page.getByLabel(/Phone/i)
-    const role = page.getByLabel(/Your role/i)
-    const gds = page.getByLabel(/Primary GDS/i)
-    const message = page.getByLabel(/Message/i)
+    const form = demoForm(page)
+    const name = form.getByLabel(/Full name/i)
+    const email = form.getByLabel(/Work email/i)
+    const company = form.getByLabel(/Agency/i)
+    const phone = form.getByLabel(/Phone/i)
+    const role = form.getByLabel(/Your role/i)
+    const gds = form.getByLabel(/Primary GDS/i)
+    const message = form.getByLabel(/Message/i)
     const submit = page.getByRole('button', { name: /Schedule demonstration/i })
 
     await name.fill('Jane Smith')
@@ -208,7 +215,7 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await page.getByRole('button', { name: /Schedule demonstration/i }).click()
 
     await expect(page.getByRole('alert')).toContainText('Something went wrong. Please try again.')
-    await expect(page.getByLabel(/Full name/i)).toHaveValue('Jane Smith')
+    await expect(demoForm(page).getByLabel(/Full name/i)).toHaveValue('Jane Smith')
     await expect(page.getByRole('button', { name: /Schedule demonstration/i })).toBeEnabled()
   })
 
@@ -217,14 +224,17 @@ test.describe('@P1 Demo request form (Story 6.10 — agendar-demo + Travelport)'
     await demoRequest.install()
 
     await page.goto('/', { waitUntil: 'networkidle' })
-    await page.getByRole('group', { name: /select language/i }).getByRole('button', { name: /pt-br/i }).click()
+    const languageSwitcher = page.getByRole('group', { name: /select language/i }).first()
+    await languageSwitcher.getByRole('button').click()
+    await page.getByRole('menuitemradio', { name: 'PT-BR' }).click()
     await page.locator('#agendar-demo').scrollIntoViewIfNeeded()
 
-    await page.getByLabel(/Nome completo/i).fill('Ana Silva')
-    await page.getByLabel(/E-mail corporativo/i).fill('ana@agencia.com.br')
-    await page.getByLabel(/Agência/i).fill('Agencia Exemplo')
-    await page.getByLabel(/Seu cargo/i).selectOption('Owner')
-    await page.getByLabel(/GDS principal/i).selectOption('Sabre')
+    const form = demoForm(page)
+    await form.getByLabel(/Nome completo/i).fill('Ana Silva')
+    await form.getByLabel(/E-mail corporativo/i).fill('ana@agencia.com.br')
+    await form.getByLabel(/Agência/i).fill('Agencia Exemplo')
+    await form.getByLabel(/Seu cargo/i).selectOption('Owner')
+    await form.getByLabel(/GDS principal/i).selectOption('Sabre')
     await page.getByRole('button', { name: /Agendar demonstração/i }).click()
 
     await expect(page.getByRole('button', { name: /Enviando/i })).toBeDisabled()

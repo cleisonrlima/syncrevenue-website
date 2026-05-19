@@ -223,7 +223,7 @@ describe('DemoForm', () => {
     expect(screen.getByLabelText(/Full name/i)).toHaveValue('Jane Smith')
   })
 
-  it('clears a previous Toast before retrying and does not Toast for 429 failures', async () => {
+  it('clears a previous Toast before retrying and renders inline guidance for 429 failures', async () => {
     postDemoMock
       .mockRejectedValueOnce(new DemoApiError(500, 'Server error'))
       .mockRejectedValueOnce(new DemoApiError(429, 'Too many requests'))
@@ -237,7 +237,9 @@ describe('DemoForm', () => {
     )
 
     await user.click(screen.getByRole('button', { name: /Schedule demonstration/i }))
-    await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument())
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /Too many demo requests. Please wait a minute and try again./i,
+    )
   })
 
   it('renders PT-BR labels, blur errors, and success confirmation', async () => {

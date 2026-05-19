@@ -1,6 +1,6 @@
 # Story 6.9: Shared Form Primitives + i18n Namespace Restructure
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -90,6 +90,13 @@ So that both restyle stories can consume the primitives 1:1 with the design-hand
 - [x] Task 10 — Add to `vault/Planning/Architecture-Key.md` → exceptions section: 4-level depth exception for `demo.form.fields.*.label` and `contact.form.fields.*.label` (AC: 9).
 - [x] Task 11 — Full Vitest regression run (AC: 11). 619/622 tests pass on the new state; the 3 failures are in `server/routes/admin/auth.test.ts` (Story 4.7 bcrypt cost timing out under concurrent load) — verified pre-existing by isolated rerun (22/22 pass) and untouched by this story's changes.
 - [x] Task 12 — Local smoke check (AC: 12). The dev server was NOT started for this story because no consumer reads the new `demo.*` / `contact.*` / `forms.encryptedNote` keys yet (consumer migration is the Story 6.10 + 6.11 scope). Missing-key behavior is therefore not observable from the page; the i18n parity test covers the only failure mode this story can produce (key shape divergence across locales). 6.10 + 6.11 will run the in-browser smoke when they flip consumers to the new keys.
+
+### Review Findings
+
+- [x] [Review][Patch] FormField does not wire error / describedBy state to the wrapped control [src/components/forms/FormField.tsx:31]
+- [x] [Review][Patch] FormSelect leaves required option background styling to consumers [src/components/forms/FormSelect.tsx:21]
+- [x] [Review][Patch] FormFoot gap / alignment misses the specified footer row contract [src/components/forms/FormFoot.tsx:21]
+- [x] [Review][Patch] FormField can render required and optional markers together [src/components/forms/FormField.tsx:45]
 
 ## Dev Notes
 

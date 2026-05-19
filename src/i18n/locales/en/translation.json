@@ -415,6 +415,7 @@
         "company": "Agency name is required",
         "role": "Please select your role",
         "gds": "Please select your primary GDS",
+        "rateLimit": "Too many demo requests. Please wait a minute and try again.",
         "generic": "Something went wrong. Please try again."
       },
       "success": {

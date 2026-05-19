@@ -30,10 +30,10 @@
 | `src/components/sections/Services.tsx` | FR3 | 4 service cards + contact hint; light bg; `Services.test.tsx` co-located |
 | `src/components/sections/Comparison.tsx` | FR4 | vs. alternatives |
 | `src/components/sections/Team.tsx` | FR5 | Team members. API-backed public `/api/team` data maps locale-specific role/bio/experience fields into sober `.tm` cards (Story 6.7 review). `<img>` `alt` is composed `` `${name}, ${role}` ``; conditional `.icon-btn.linkedin` `<a target="_blank" rel="noopener noreferrer">` with i18n-driven `aria-label` only when `linkedinUrl` non-empty; `.tm-foot-meta` renders the localized experience tag; placeholder initials branch unchanged. Photos at `/public/team/*.webp` (200×200 display, lazy-loaded). |
-| `src/components/sections/Contact.tsx` | FR6 | Contact form section |
+| `src/components/sections/Contact.tsx` | FR6 | Epic 6 contact section: sober `.sec` + 40/60 `.form-grid`, channel rows, info card, embeds `ContactForm` |
 | `src/components/sections/Security.tsx` | FR23–FR25 | Security statement + client refs |
-| `src/components/sections/DemoScheduler.tsx` | FR9, FR15 | Dark-gradient bookend section — SectionHeader (variant=dark) + in-section "Schedule a Demo" GradientButton (lg, min-h-44px) that calls `DemoForm.focusFirstField()` and smooth-scrolls the form container; embeds the single `DemoForm` instance (no modal). Hero/Navbar CTAs scroll to `#demo-scheduler`. Tests: `DemoScheduler.test.tsx`, `Home.story-2-4.e2e.test.tsx` |
-| `src/components/sections/DemoForm.tsx` | FR9 | `forwardRef<DemoFormHandle>` exposing `focusFirstField()` (focuses the Full Name input via internal `nameInputRef`); state machine, validation, and submit flow unchanged |
+| `src/components/sections/DemoScheduler.tsx` | FR9, FR15 | Epic 6 dark `#agendar-demo` section: sober `.sec sec-deep`, 40/60 `.form-grid`, numbered expectation steps, info card, embeds the single `DemoForm` instance. Hero/Navbar CTAs scroll to `#agendar-demo`. Tests: `DemoScheduler.test.tsx`, `Home.story-2-4.e2e.test.tsx`, `tests/e2e/demo-request.spec.ts` |
+| `src/components/sections/DemoForm.tsx` | FR9 | `forwardRef<DemoFormHandle>` exposing `focusFirstField()`; Story 6.10 form-card uses shared `src/components/forms/*` primitives, canonical 4-value GDS dropdown, inline 429 guidance, Toast only for non-rate-limit transport failures |
 
 ---
 
@@ -56,6 +56,11 @@
 | `src/components/ui/SectionHeader.tsx` | Section header — eyebrow + h2 + optional subtext, light/dark variant |
 | `src/components/ui/Toast.tsx` | Toast notifications (custom, Story 2.2) — replaces what shadcn would have generated; repo never ran `npx shadcn add` |
 | `src/components/ui/Skeleton.tsx` | (Story 4.2) Minimal shadcn-style skeleton primitive for admin loading states — `role="status"` + `aria-busy="true"` defaults, `motion-safe:animate-pulse` + `bg-brand-slate/60`, `cn(className)` merge. Admin-page-safe replacement for `SectionSkeleton` per admin import-boundary rule |
+| `src/components/forms/FormField.tsx` | Story 6.9 shared dark-form field wrapper; owns label, required/optional markers, error node, and injects `aria-describedby`, `aria-invalid`, `aria-required` into a single wrapped control |
+| `src/components/forms/FormSelect.tsx` | Story 6.9 native select wrapper; `.select-wrap` chevron, focus styling, and forced option background `#0A0B2E` including nested `optgroup` children |
+| `src/components/forms/FormTextarea.tsx` | Story 6.9 textarea primitive; dark field styling, vertical resize, shared focus/error state |
+| `src/components/forms/FormFoot.tsx` | Story 6.9 footer primitive; note + submit row, stacks below 600px |
+| `src/components/forms/EncryptedTransitNote.tsx` | Story 6.9 shared shield note backed by `forms.encryptedNote` |
 
 ---
 
@@ -72,6 +77,7 @@
 - **Duplicate-submit ref guard** — `useDemo` / `useContact` use `useRef<boolean>` set synchronously before `await`, restored after settle (Stories 2.2, 2.3)
 - **Locale-aware Zod factories** — `createDemoSchema(t)` / `createContactSchema(t)` close over the i18n `t` function; consumers `useMemo` over `[t]` and revalidate touched fields on locale change (Story 2.6)
 - **`DemoFormHandle` imperative handle** — `forwardRef` + `useImperativeHandle` exposes `focusFirstField()`; exactly one `DemoForm` on Home enforced by `Home.story-2-4.e2e.test.tsx` (Story 2.4)
+- **Shared form primitives (Story 6.9 review closure)** — `FormField` owns aria wiring for a single wrapped control; consumers may still pass explicit ARIA props but the primitive merges error/help IDs and required/invalid state. `FormSelect` normalizes option backgrounds internally so consumers do not rely on per-option inline styles.
 - **No shadcn/ui** — custom `GradientButton`, `SectionHeader`, `Toast`; native `<select>` / `<input>` preserved for a11y
 - **Motion isolation (Story 3.2)** — section animation is opt-in via `<MotionSection>` only; never import `motion`/`LazyMotion`/`useInView`/`useReducedMotion` from always-loaded files (`main.tsx`, `App.tsx`, `Home.tsx`, `Navbar.tsx`, `Footer.tsx`). `LazyMotion strict` + dynamic `motionFeatures.ts` keep Motion code in the async `motionFeatures-*.js` chunk. Entry animation is opacity + `y` transform only — no height/width/margin/padding/font-size animation. `useReducedMotion()` short-circuit is mandatory; Tailwind `motion-safe:` alone is not enough for JS-driven Motion
 - **Stale a11y state reset on value change** — corrected fields clear `aria-invalid` + `aria-describedby` immediately, not on next blur (Stories 2.3, 2.6)
