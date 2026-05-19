@@ -1,6 +1,6 @@
 # Story 6.11: Contact 40/60 Grid + ContactForm Restyle + Section ID Rename
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -134,7 +134,7 @@ So that the conversion rhythm carries through from hero to demo to contact consi
 
 ## Story Completion Status
 
-- Status: review
+- Status: done
 
 ## Dev Agent Record
 

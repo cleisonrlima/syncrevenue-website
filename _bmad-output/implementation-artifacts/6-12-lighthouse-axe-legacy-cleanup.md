@@ -1,6 +1,6 @@
 # Story 6.12: Lighthouse + axe Sweep + Legacy i18n & Token Cleanup
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff) — final story.
 
@@ -238,4 +238,4 @@ Migrating the Tailwind `brand-*` utility consumers to the new sober-palette toke
 
 ## Story Completion Status
 
-- Status: review
+- Status: done

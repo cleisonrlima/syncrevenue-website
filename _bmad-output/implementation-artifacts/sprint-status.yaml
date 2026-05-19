@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-19  # Stories 6.9 + 6.10 review complete → done (form primitive a11y contracts fixed; demo 429 inline error restored; GDS CHECK migration hardened; demo i18n parity + Playwright demo/axe coverage green); Stories 6.1 + 6.2 review complete → done (Button native type restored, raw navy alias added, navbar sub-route links/CTA + 900px breakpoint + e2e coverage fixed); Story 6.13 in-progress → review (i18n stragglers migrated; LH heading-order + a11y color-contrast + CLS fixed; mobile LCP improved ~1.1s but partial threshold revert documented — pre-fix 2500ms target deferred to Epic 5 SSG/prerender); Stories 6.7 + 6.8 review complete → done (team experience meta fixed; 6.8 deferrals materialized into 6.9-6.13)
+last_updated: 2026-05-19  # Stories 6.11 + 6.12 review complete → done; Story 6.13 review found unresolved mobile / LCP AC (2884–2942 ms vs 2500 ms target) and stays in-progress; mobile TBT threshold restored 250 → 200; Epic 6 remains in-progress
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -135,8 +135,8 @@ development_status:
   # 6.9-6.12 added 2026-05-17 from Story 6.8 deferred-work materialization (per CLAUDE.md "Review Findings → New Story" rule)
   6-9-shared-form-primitives-i18n-namespace-restructure: done
   6-10-demoscheduler-grid-demoform-restyle-gds-enum: done
-  6-11-contact-grid-contactform-restyle: review
-  6-12-lighthouse-axe-legacy-cleanup: review
+  6-11-contact-grid-contactform-restyle: done
+  6-12-lighthouse-axe-legacy-cleanup: done
   # 6.13 added 2026-05-19 from Story 6.12 deferred-work materialisation (per CLAUDE.md "Review Findings → New Story")
-  6-13-epic-6-followups-stragglers-cls-lcp-heading-order: review
+  6-13-epic-6-followups-stragglers-cls-lcp-heading-order: in-progress
   epic-6-retrospective: optional

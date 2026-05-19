@@ -27,7 +27,7 @@ Three runs per URL per form factor; raw `lhr-*.json` + `lhr-*.html` are split un
 
 ## Threshold reverts (per Story 6.13 AC 5, AC 6, AC 7)
 
-The Story 6.12 baselines were rebaselined to capture three deferred-quality items. With those items now fixed (or substantially closed), `lighthouserc.json` + `lighthouserc.mobile.json` are restored as follows:
+The Story 6.12 baselines were rebaselined to capture three deferred-quality items. Desktop a11y/CLS and mobile a11y/performance are restored; mobile `/` LCP still has a review finding because it remains above the original 2500 ms target.
 
 | Config                     | Assertion                  | 6.12 baseline | 6.13 final | Notes |
 |----------------------------|----------------------------|---------------|------------|-------|
@@ -36,7 +36,7 @@ The Story 6.12 baselines were rebaselined to capture three deferred-quality item
 | `lighthouserc.mobile.json` | `categories:accessibility` | 0.95          | **1.00**   | Same a11y remediation as desktop. |
 | `lighthouserc.mobile.json` | `categories:performance`   | 0.84          | **0.90**   | Hero re-encoded as `<picture>` with mobile/desktop webp variants (4–11 KB) + `fetchpriority="high"` + image preload in `index.html`. Mobile perf restored to the pre-6.12 0.90 target. |
 | `lighthouserc.mobile.json` | `largest-contentful-paint` | 4,100         | **3,100**  | Pre-6.12 target was 2,500. Mobile `/` LCP measured at 2,884–2,942 ms across runs — substantial improvement (~1,100 ms), but the residual gap to 2,500 is gated by JS execution under simulated 4G + 4x CPU throttling rather than asset weight (the hero image itself loads in <50 ms via the preloaded 4 KB mobile webp). Pushing below 2,500 ms on `/` would require SSG / prerender of the static hero markup so the LCP candidate paints before React hydrates — that is an architectural change deliberately deferred to Epic 5 (Production Deployment). Mobile `/privacy` already reaches 2,404–2,405 ms (under the original 2,500 ms target). |
-| `lighthouserc.mobile.json` | `total-blocking-time`      | 200           | **250**    | Mobile `/` TBT measured 65–108 ms — well under 250 ms. The threshold is widened modestly to absorb Lighthouse run-to-run variance on the same architectural ceiling. |
+| `lighthouserc.mobile.json` | `total-blocking-time`      | 200           | **200**    | Mobile `/` TBT measured 65–108 ms, so the original 200 ms threshold remains valid. |
 
 `render-blocking-resources` and `unused-javascript` remain `warn`.
 

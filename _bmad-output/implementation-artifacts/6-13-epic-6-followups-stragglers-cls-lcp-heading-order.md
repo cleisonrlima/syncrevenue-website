@@ -1,6 +1,6 @@
 # Story 6.13: Epic 6 Follow-ups — Legacy i18n Stragglers + CLS/LCP/Heading-Order Optimisation
 
-Status: review
+Status: in-progress
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff). Post-epic follow-up materialising deferred work from Story 6.12.
 
@@ -46,8 +46,13 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - [x] Task 10 — Investigate Lighthouse `heading-order` audit findings on `/` and `/privacy`; restructure heading levels so the audit passes (AC: 5).
 - [x] Task 11 — Diagnose desktop CLS = 0.184 on `/` via Lighthouse layout-shift detail; fix the contributor(s) via reserved-space placeholders or motion-tuning (AC: 6).
 - [x] Task 12 — Optimise mobile LCP on `/`: convert the airplane hero asset to `avif`/`webp`, add `<link rel="preload">`, and/or ship a mobile-specific lower-resolution variant (AC: 7).
-- [x] Task 13 — Re-run `npm run lhci` + `npm run lhci:mobile`; capture the new report under a fresh date-stamped folder; confirm scores meet the reverted thresholds (AC: 8).
-- [x] Task 14 — Revert `lighthouserc.json` and `lighthouserc.mobile.json` baselines back to the pre-6.12 values; commit alongside the post-fix LH report (AC: 5, 6, 7).
+- [x] Task 13 — Re-run `npm run lhci` + `npm run lhci:mobile`; capture the new report under a fresh date-stamped folder. The run passes current thresholds, but review found the mobile `/` LCP threshold is still relaxed above the AC 7 target (AC: 8).
+- [ ] Task 14 — Revert `lighthouserc.json` and `lighthouserc.mobile.json` baselines back to the pre-6.12 values; commit alongside the post-fix LH report (AC: 5, 6, 7). Pending: mobile `largest-contentful-paint` must return to 2500 ms.
+
+### Review Findings
+
+- [ ] [Review][Patch] Mobile `/` LCP acceptance remains unresolved — AC 7 requires observed mobile `/` LCP below 2.5s and `lighthouserc.mobile.json` `largest-contentful-paint` restored from 4100 to 2500. The post-fix LHCI report records 2884–2942 ms, and the config currently allows 3100, so the story cannot be marked done until this is fixed or formally rescoped. [lighthouserc.mobile.json:16]
+- [x] [Review][Patch] Restore mobile TBT threshold — the pre-6.12 mobile threshold was 200 ms, Story 6.13 widened it to 250 ms, and the post-fix LHCI report records only 65–108 ms. Restored to 200 ms. [lighthouserc.mobile.json:18]
 
 ## Dev Notes
 
@@ -126,7 +131,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - Color-contrast (AC 5, secondary): the residual a11y gap below 1.0 was driven by `text-brand-electric-blue` (~2.95:1 on navy) and `text-brand-muted` (~4.05:1 on navy) — both failing AA-normal on the dark Navbar / Footer surfaces. Fixed in [LanguageSwitcher.tsx](src/i18n/LanguageSwitcher.tsx) (active: `text-white font-semibold underline`, inactive: `text-white/70 hover:text-white`) and [Privacy.tsx](src/pages/Privacy.tsx) email link (`text-[#5B85E8]` — accent-soft, ~5.85:1 on navy). Lighthouse a11y category now reports 1.00 on `/` and `/privacy` for both form factors.
 - CLS (AC 6): Lighthouse `layout-shifts` audit attributed the desktop 0.184 shift to "Web font loaded" — the Plus Jakarta Sans woff2 swap reflowed the HeroProductPanel right column. Fix: self-host the variable woff2 file under [public/fonts/plus-jakarta-sans.woff2](public/fonts/plus-jakarta-sans.woff2) (27 KB, covers weights 200–800) and preload it from [index.html](index.html). Removed the Google Fonts preconnect/preload/stylesheet trio. Observed desktop CLS = 0.000 across three runs. Secondary improvement: [Home.tsx](src/pages/Home.tsx) keeps `Hero` eager (LCP candidate paints on first render) and re-lazies the below-the-fold sections with `null` Suspense fallback so skeleton→real height transitions no longer accrue CLS.
 - Mobile LCP (AC 7): airplane hero re-encoded with Pillow into [public/hero/airplane.webp](public/hero/airplane.webp) (1920×1075, 11 KB), [public/hero/airplane-mobile.webp](public/hero/airplane-mobile.webp) (960×537, 4 KB), and a re-optimised [public/hero/airplane.jpg](public/hero/airplane.jpg) fallback (1920×1075, 27 KB — down from 138 KB). Hero swapped from a CSS `background-image` to a `<picture>` element with media-conditional webp sources and a real `<img>` LCP candidate (`fetchpriority="high"`, `decoding="async"`). `index.html` preloads the same mobile/desktop variants via `imagesrcset`. Mobile `/` LCP improved from the 6.12 baseline of 3,913–4,060 ms to 2,884–2,942 ms.
-- LHCI threshold reverts (AC 5–7, Task 14): all 6.12-relaxed thresholds restored in [lighthouserc.json](lighthouserc.json) and [lighthouserc.mobile.json](lighthouserc.mobile.json), with one partial revert: mobile `largest-contentful-paint` set to 3,100 ms instead of the pre-6.12 2,500 ms. Rationale captured in [post-fix README](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/README.md): the residual ~400 ms gap to 2,500 ms on `/` is gated by JS execution under simulated 4G + 4× CPU throttling, not asset weight (the preloaded 4 KB mobile webp loads in <50 ms). Closing this fully would require SSG / prerender — an architectural change deliberately deferred to Epic 5 (Production Deployment). Mobile `/privacy` already reaches 2,404–2,405 ms (under the original 2,500 ms target). Mobile `total-blocking-time` widened from 200 ms → 250 ms to absorb run-to-run variance (observed range 65–108 ms).
+- LHCI threshold reverts (AC 5–7, Task 14): all 6.12-relaxed thresholds restored in [lighthouserc.json](lighthouserc.json) and [lighthouserc.mobile.json](lighthouserc.mobile.json), with one partial revert: mobile `largest-contentful-paint` set to 3,100 ms instead of the pre-6.12 2,500 ms. Rationale captured in [post-fix README](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/README.md): the residual ~400 ms gap to 2,500 ms on `/` is gated by JS execution under simulated 4G + 4× CPU throttling, not asset weight (the preloaded 4 KB mobile webp loads in <50 ms). Closing this fully would require SSG / prerender — an architectural change deliberately deferred to Epic 5 (Production Deployment). Mobile `/privacy` already reaches 2,404–2,405 ms (under the original 2,500 ms target). Mobile `total-blocking-time` was restored to the original 200 ms threshold after review because the observed range was only 65–108 ms.
 - LHCI artifact (Task 13, AC 8): three-run desktop + mobile reports saved under [_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/) with a README documenting the deltas from the Story 6.12 baseline.
 
 ### File List
@@ -151,7 +156,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - [tailwind.config.ts](tailwind.config.ts) — font-family reverted to canonical (fallback face removed)
 - [index.html](index.html) — Google Fonts trio removed, font + image preloads added
 - [lighthouserc.json](lighthouserc.json) — desktop thresholds restored to pre-6.12 values
-- [lighthouserc.mobile.json](lighthouserc.mobile.json) — mobile thresholds restored (LCP 3100, TBT 250)
+- [lighthouserc.mobile.json](lighthouserc.mobile.json) — mobile thresholds restored except partial LCP relaxation (LCP 3100, TBT 200)
 
 **Added:**
 - [public/fonts/plus-jakarta-sans.woff2](public/fonts/plus-jakarta-sans.woff2) — self-hosted variable font (27 KB)
@@ -170,4 +175,4 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 
 ## Story Completion Status
 
-- Status: review
+- Status: in-progress

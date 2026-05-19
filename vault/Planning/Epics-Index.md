@@ -103,6 +103,6 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 | 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[x]` done |
 | 6.9 | Shared Form Primitives + i18n Namespace Restructure (6.8 deferral) | `[x]` done |
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | `[x]` done |
-| 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[r]` review |
-| 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | `[r]` review |
-| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[r]` review |
+| 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[x]` done |
+| 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | `[x]` done |
+| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[~]` in-progress — review found mobile `/` LCP still above 2500 ms |

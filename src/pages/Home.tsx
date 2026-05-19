@@ -4,7 +4,8 @@ import { useDocumentMeta } from '@/components/SEO'
 // Story 6.13 (AC 6 + AC 7): Hero stays eager so the LCP image renders on
 // first paint with no React.lazy delay. The remaining sections are below
 // the fold during the LH measurement window, so we re-lazy them to slim the
-// initial JS chunk and bring mobile LCP under 2.5s on `/`. The Suspense
+// initial JS chunk and reduce mobile LCP on `/`. The remaining 2.5s target
+// gap is tracked in the Story 6.13 review findings. The Suspense
 // fallback is null (no skeleton) — when each chunk lands the section
 // inserts itself below the fold, where Lighthouse weights the shift by
 // (offscreen_distance / viewport_height) → effectively zero CLS impact
