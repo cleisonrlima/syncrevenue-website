@@ -62,7 +62,7 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Vi
 | 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | SYN-210 | review | SYN-255..263 (9; only SYN-256 + SYN-262 Done — rest deferred → 6.9/6.10/6.11/6.12 per comment on SYN-210) |
 | 6.9 | Shared Form Primitives + i18n Namespace Restructure | SYN-328 | review | SYN-332..343 (12, all Done) |
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum | SYN-329 | review | SYN-344..356 (13, all Done — synced 2026-05-19) |
-| 6.11 | Contact Grid + ContactForm Restyle | SYN-330 | ready-for-dev | SYN-357..366 (10, all To Do) |
+| 6.11 | Contact Grid + ContactForm Restyle | SYN-330 | review | SYN-357..366 (10, all Done — synced 2026-05-19) |
 | 6.12 | Lighthouse + Axe Regression + Legacy Cleanup | SYN-331 | ready-for-dev | SYN-367..377 (11, all To Do) |
 
 **Sub-task total: 99** (53 original 6.1–6.8 + 46 new across 6.9–6.12). One per top-level Task in each story file's `## Tasks / Subtasks` section.
