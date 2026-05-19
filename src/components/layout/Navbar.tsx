@@ -68,7 +68,7 @@ export default function Navbar() {
       window.removeEventListener('scroll', onScroll)
       if (rafId) window.cancelAnimationFrame(rafId)
     }
-  }, [])
+  }, [location.pathname])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -92,7 +92,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
-    const mql = window.matchMedia('(min-width: 1024px)')
+    const mql = window.matchMedia('(min-width: 900px)')
     const handleChange = (e: MediaQueryListEvent) => {
       if (e.matches) setIsOpen(false)
     }
@@ -114,6 +114,11 @@ export default function Navbar() {
   // Demo CTA convergence (Story 2.4). Targets `#agendar-demo` directly —
   // the legacy `#demo-scheduler` id was retired in Story 6.10.
   const handleDemoCta = () => {
+    if (!isHomeRoute) {
+      window.location.href = '/#agendar-demo'
+      return
+    }
+
     const target = document.getElementById('agendar-demo')
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' })
@@ -144,6 +149,7 @@ export default function Navbar() {
   // Anywhere else (sub-routes or scrolled past the hero) we render the filled
   // sticky navbar.
   const showOverlay = isHomeRoute && !isScrolled
+  const sectionHref = (href: string) => (isHomeRoute ? href : `/${href}`)
 
   return (
     <nav
@@ -172,11 +178,11 @@ export default function Navbar() {
           />
         </a>
 
-        <div className="hidden lg:flex items-center gap-7">
+        <div className="hidden min-[900px]:flex items-center gap-7">
           {NAV_LINKS.map(({ key, href }) => (
             <a
               key={key}
-              href={href}
+              href={sectionHref(href)}
               className="text-[14px] font-medium text-white/[0.78] hover:text-white motion-safe:transition-colors motion-safe:duration-150"
             >
               {t(`nav.links.${key}`)}
@@ -184,9 +190,9 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden min-[900px]:flex items-center gap-3">
           <LanguageSwitcher />
-          <Button variant="solid-accent" size="md" onClick={handleDemoCta}>
+          <Button type="button" variant="solid-accent" size="md" onClick={handleDemoCta}>
             {t('nav.cta')}
           </Button>
         </div>
@@ -194,7 +200,7 @@ export default function Navbar() {
         <button
           ref={hamburgerRef}
           type="button"
-          className="lg:hidden w-11 h-11 flex items-center justify-center text-white"
+          className="min-[900px]:hidden w-11 h-11 flex items-center justify-center text-white"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
           onClick={() => setIsOpen(!isOpen)}
@@ -213,7 +219,7 @@ export default function Navbar() {
 
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-[rgba(8,8,32,0.96)] motion-safe:animate-fade-in motion-reduce:animate-none"
+          className="min-[900px]:hidden fixed inset-0 z-40 bg-[rgba(8,8,32,0.96)] motion-safe:animate-fade-in motion-reduce:animate-none"
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation menu"
@@ -233,7 +239,7 @@ export default function Navbar() {
               <a
                 key={key}
                 ref={idx === 0 ? firstLinkRef : undefined}
-                href={href}
+                href={sectionHref(href)}
                 className="text-white text-xl py-3 min-h-[44px] flex items-center"
                 onClick={() => setIsOpen(false)}
               >

@@ -32,6 +32,12 @@ describe('Button', () => {
       const btn = screen.getByRole('button', { name: 'lbl' })
       expect(btn.className).toContain('extra')
     })
+
+    it('preserves native button type behavior unless type is provided', () => {
+      render(<Button>Default</Button>)
+      const btn = screen.getByRole('button', { name: 'Default' })
+      expect(btn).not.toHaveAttribute('type')
+    })
   })
 
   describe('solid-accent variant', () => {

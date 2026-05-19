@@ -41,7 +41,7 @@
 
 | File | Description |
 |---|---|
-| `src/components/layout/Navbar.tsx` | Sticky fixed nav (`z-50 bg-brand-navy`); desktop: logo + anchor links + LanguageSwitcher + Demo CTA (button `onClick`); mobile: hamburger overlay + Escape/click-to-close + body scroll lock; `aria-expanded` on toggle; `Navbar.test.tsx` co-located (4 tests) |
+| `src/components/layout/Navbar.tsx` | Epic 6 overlay/fill fixed nav; desktop ≥900px: logo + six route-safe anchor links + dropdown LanguageSwitcher + solid-accent Demo CTA; sub-routes link back to `/#section`; mobile: hamburger overlay + Escape/click-to-close + body scroll lock; `aria-expanded` on toggle; `Navbar.test.tsx` co-located + `tests/e2e/navbar.spec.ts` |
 | `src/components/layout/Footer.tsx` | Block-flow footer; company address, copyright, anchor nav links, Privacy `<Link>`, `<LanguageSwitcher />` |
 | `src/components/layout/AdminLayout.tsx` | Shell with `<Outlet />` — no auth guard (deferred to future epic) |
 
@@ -116,6 +116,7 @@
   - `skip-link.spec.ts` — P1-5, skip-to-main is first tab stop
   - `team-section.spec.ts` — Story 3.1, 7 specs: Team region renders 2 cards, composed `"{name}, {role}"` alt, `width=320`/`height=320`/`loading=lazy`, no placeholder leak, no `linkedinUrl===""` anchor leak, mobile single-column grid, role text differs across en/pt-BR/es
   - `hero.spec.ts` — Stories 6.3/6.4 review closure: hero airplane image + two-line H1, product panel above fold, bundled integration wordmark images, mobile no-overflow, hero axe serious/critical scan
+  - `navbar.spec.ts` — Story 6.2 review closure: transparent-to-filled nav transition, logo dimensions, sub-route section links, mobile overlay CTA/link parity
 - Local bootstrap: `npm run test:e2e:install` once → `npm run test:e2e`
 - Auto-starts dev server via `webServer` config (or honors `PLAYWRIGHT_BASE_URL` for preview/prod URL)
 

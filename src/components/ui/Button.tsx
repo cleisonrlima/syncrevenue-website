@@ -30,12 +30,11 @@ const SOLID_ACCENT_SIZE_CLASSES: Record<ButtonSize, string> = {
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'md', type = 'button', ...props }, ref) => {
+  ({ className, variant = 'default', size = 'md', ...props }, ref) => {
     const sizeClasses = variant === 'solid-accent' ? SOLID_ACCENT_SIZE_CLASSES[size] : ''
     return (
       <button
         ref={ref}
-        type={type}
         className={cn(VARIANT_CLASSES[variant], sizeClasses, className)}
         {...props}
       />

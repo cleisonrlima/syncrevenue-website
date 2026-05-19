@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-19  # Story 6.13 in-progress → review (i18n stragglers migrated; LH heading-order + a11y color-contrast + CLS fixed; mobile LCP improved ~1.1s but partial threshold revert documented — pre-fix 2500ms target deferred to Epic 5 SSG/prerender); Stories 6.7 + 6.8 review complete → done (team experience meta fixed; 6.8 deferrals materialized into 6.9-6.13)
+last_updated: 2026-05-19  # Stories 6.1 + 6.2 review complete → done (Button native type restored, raw navy alias added, navbar sub-route links/CTA + 900px breakpoint + e2e coverage fixed); Story 6.13 in-progress → review (i18n stragglers migrated; LH heading-order + a11y color-contrast + CLS fixed; mobile LCP improved ~1.1s but partial threshold revert documented — pre-fix 2500ms target deferred to Epic 5 SSG/prerender); Stories 6.7 + 6.8 review complete → done (team experience meta fixed; 6.8 deferrals materialized into 6.9-6.13)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -124,8 +124,8 @@ development_status:
   # Source: _bmad-output/design-handoffs/syncsirius-website-2026-05-17/
   # Generated 2026-05-17 from Anthropic Claude Design bundle. Visual-only — no FR changes.
   epic-6: in-progress
-  6-1-design-tokens-sober-palette: review
-  6-2-navbar-logo-refresh: review
+  6-1-design-tokens-sober-palette: done
+  6-2-navbar-logo-refresh: done
   6-3-hero-left-background-copy-kpis: done
   6-4-hero-right-product-panel-integrations-ticker: done
   6-5-benefits-grid-trust-strip: done

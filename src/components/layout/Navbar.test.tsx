@@ -91,6 +91,12 @@ describe('Navbar', () => {
       }
     })
 
+    it('routes section links back to the landing page from sub-routes', () => {
+      renderNavbar('/privacy')
+      const productLinks = screen.getAllByRole('link', { name: NAV_LABEL_REGEX.produto })
+      expect(productLinks.some(l => l.getAttribute('href') === '/#produto')).toBe(true)
+    })
+
     it('mobile overlay surfaces the same six anchor links plus a Demo CTA link', async () => {
       const user = userEvent.setup()
       renderNavbar()
@@ -101,6 +107,17 @@ describe('Navbar', () => {
       }
       const demoCtaLink = within(overlay).getByRole('link', { name: /schedule a demo/i })
       expect(demoCtaLink).toHaveAttribute('href', '/#agendar-demo')
+    })
+
+    it('mobile overlay routes section links back to the landing page from sub-routes', async () => {
+      const user = userEvent.setup()
+      renderNavbar('/privacy')
+      await user.click(screen.getByRole('button', { name: /open menu/i }))
+      const overlay = screen.getByRole('navigation', { name: /mobile navigation/i })
+      expect(within(overlay).getByRole('link', { name: NAV_LABEL_REGEX.produto })).toHaveAttribute(
+        'href',
+        '/#produto',
+      )
     })
   })
 

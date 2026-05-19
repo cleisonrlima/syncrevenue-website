@@ -105,6 +105,7 @@ export default function Hero() {
 
             <div className="mb-9 flex flex-wrap items-center gap-[14px]">
               <Button
+                type="button"
                 variant="solid-accent"
                 size="lg"
                 onClick={handleDemoCta}

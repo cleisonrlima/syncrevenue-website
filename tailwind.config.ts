@@ -32,6 +32,7 @@ const config: Config = {
         'accent-dim': 'var(--accent-dim)',
         'deep-bg': 'var(--deep-bg)',
         ink: 'var(--ink)',
+        navy: 'var(--navy)',
         line: 'var(--line)',
         'line-strong': 'var(--line-strong)',
         'slate-token': 'var(--slate-token)',

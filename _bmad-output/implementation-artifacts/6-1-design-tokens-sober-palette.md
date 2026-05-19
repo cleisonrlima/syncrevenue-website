@@ -1,6 +1,6 @@
 # Story 6.1: Design Tokens — Sober Palette
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -56,6 +56,11 @@ So that the site reads as serious B2B (Linear/Stripe register) rather than techy
   - [x] `npm run build` — 539 modules transformed, no token resolution errors, no Tailwind warnings; CSS bundle 27.03 kB (was ~26.x kB pre-story — additive growth only)
   - [x] `npm run check:contrast` — 36 manifest entries, 17 AA-normal passes, 24 waivered, 0 unwaivered failures
   - [ ] Manual `npm run dev` smoke deferred — no consumers of the new tokens land in this story (additive only). Visual smoke happens naturally inside stories 6.2–6.8 as each section adopts the new tokens.
+
+### Review Findings
+
+- [x] [Review][Patch] Restore native Button `type` behavior [src/components/ui/Button.tsx:32] — removed the default `type="button"` so the shared Button preserves native form semantics unless a caller passes `type`; explicit non-submit CTA buttons now pass `type="button"`.
+- [x] [Review][Patch] Add raw Tailwind alias for `--navy` [tailwind.config.ts:35] — added top-level `navy: var(--navy)` so every new sober-palette root variable has a matching Tailwind alias.
 
 ## Dev Notes
 
@@ -171,7 +176,7 @@ No conflicting in-flight branches detected — master is the working branch.
 
 ## Story Completion Status
 
-- Status: review
+- Status: done
 - Completion note: Story file rewritten 2026-05-17 with full developer context, spec-vs-code reconciliations resolved at create-time, contrast math validated, R-A3 waiver introduced. Per-section follow-up retirement of legacy tokens deferred to stories 6.2–6.8.
 
 ## Outstanding Questions for Dev
@@ -214,16 +219,17 @@ No conflicting in-flight branches detected — master is the working branch.
 | `src/index.css` | UPDATE | New sober-palette `:root` block placed after shadcn block |
 | `tailwind.config.ts` | UPDATE | Added 10 sober-palette aliases under `theme.extend.colors` |
 | `src/components/ui/Button.tsx` | UPDATE | Added `variant` + `size` props; `solid-accent` + sizes; default kept byte-identical |
-| `src/components/ui/Button.test.tsx` | NEW | 9 tests — variant × size matrix, disabled, focus-visible, no-gradient guard |
+| `src/components/ui/Button.test.tsx` | NEW | 10 tests — variant × size matrix, disabled, focus-visible, no-gradient guard, native type preservation |
 | `src/lib/brand-tokens.contrast.test.ts` | UPDATE | Added `accent` + `ink` tokens, R-A3 test, white-on-ink AAA test, R-A2 deprecation note, manifest pair-coverage extension |
 | `src/lib/brand-tokens.contrast.manifest.ts` | UPDATE (script) | Regenerated — 21 → 36 entries, 0 unwaivered failures |
 | `scripts/check-brand-contrast.mjs` | UPDATE | Extended `TOKENS` (+`accent`, +`ink`), `SURFACES` (+`ink`), `WAIVERS` (+R-A3 family, +R-NT1 entries for new pairs) |
 | `vault/Planning/Architecture-Key.md` | UPDATE | New "Sober Palette Refresh" section + R-A3 block under WCAG Exceptions |
 | `_bmad-output/implementation-artifacts/6-1-design-tokens-sober-palette.md` | UPDATE | Task checkboxes, Dev Agent Record, File List, Change Log, Status |
-| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.1 → `review` |
+| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.1 → `done` |
 
 ### Change Log
 
 | Date | Author | Summary |
 |---|---|---|
 | 2026-05-17 | Claude (Opus 4.7) | Story 6.1 implementation — sober palette tokens, `solid-accent` Button variant, R-A3 contrast waiver, Architecture-Key vault entry, full regression green. |
+| 2026-05-19 | Codex | Code review closure — restored native Button type behavior, added raw `navy` Tailwind alias, refreshed contrast manifest date, regression green; story marked done. |

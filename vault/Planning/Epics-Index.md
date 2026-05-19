@@ -93,8 +93,8 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 
 | Story | Title | Status |
 |---|---|---|
-| 6.1 | Design Tokens — Sober Palette | `[r]` review |
-| 6.2 | Navbar & Logo Refresh | `[r]` review |
+| 6.1 | Design Tokens — Sober Palette | `[x]` done |
+| 6.2 | Navbar & Logo Refresh | `[x]` done |
 | 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[x]` done |
 | 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[x]` done |
 | 6.5 | Benefits Grid + Trust Strip | `[x]` done |

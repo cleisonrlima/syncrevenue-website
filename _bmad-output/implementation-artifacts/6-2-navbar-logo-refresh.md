@@ -1,6 +1,6 @@
 # Story 6.2: Navbar & Logo Refresh
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -66,8 +66,16 @@ So that brand identity reads immediately, navigation surfaces are obvious, and t
   - [x] Breakpoint: spec calls for `< 900px` to hide desktop links; implementation uses `lg:` (`< 1024px`) to stay consistent with the existing Tailwind breakpoint vocabulary in this codebase. Difference is ergonomic (124px gap between spec and impl breakpoints), not functional. Documented exception
 
 - [x] Task 7: Tests
-  - [x] `Navbar.test.tsx` — 15 tests covering six-anchor desktop+mobile assertions, overlay-at-top vs. sticky transition + sub-route guard, solid-accent fingerprint, CTA fallback chain (`#agendar-demo` preferred / `#demo-scheduler` fallback), logo CLS attributes
-  - [ ] Playwright `tests/e2e/navbar.spec.ts` — deferred. AC does not mandate Playwright (Testing Requirements section, not AC). Vitest + jsdom cover the assertions. Will land in story 6.8 final e2e sweep alongside the other Epic 6 surfaces
+  - [x] `Navbar.test.tsx` — 17 tests covering six-anchor desktop+mobile assertions, sub-route section-link routing, overlay-at-top vs. sticky transition + sub-route guard, solid-accent fingerprint, CTA fallback chain (`#agendar-demo` preferred / `#demo-scheduler` fallback), logo CLS attributes
+  - [x] Playwright `tests/e2e/navbar.spec.ts` — added review-closure coverage for transparent-to-filled transition, logo CLS attributes, sub-route section-link routing, and mobile overlay link parity. Verified on Chromium + mobile Chromium; WebKit project blocked locally by missing host dependency `libavif16`.
+
+### Review Findings
+
+- [x] [Review][Patch] Route section links back to landing sections from sub-routes [src/components/layout/Navbar.tsx:149] — desktop and mobile section links now use `/#...` off the home route and hash-only links on `/`.
+- [x] [Review][Patch] Route the desktop Demo CTA to `/` before scrolling from sub-routes [src/components/layout/Navbar.tsx:116] — CTA now navigates to `/#agendar-demo` when invoked outside the landing page.
+- [x] [Review][Patch] Recalculate navbar scroll state on route changes [src/components/layout/Navbar.tsx:54] — scroll listener setup now re-runs on `location.pathname` changes.
+- [x] [Review][Patch] Align desktop/mobile breakpoint with the 900px story requirement [src/components/layout/Navbar.tsx:175] — nav visibility and resize-close media query now use `900px` instead of Tailwind `lg` (`1024px`).
+- [x] [Review][Patch] Add real-browser navbar coverage [tests/e2e/navbar.spec.ts:1] — covers route-safe links, logo sizing, overlay/fill transition, and mobile overlay CTA.
 
 ## Dev Notes
 
@@ -138,7 +146,7 @@ Section IDs required (introduced by stories 6.3–6.8): `#produto`, `#beneficios
 
 ## Story Completion Status
 
-- Status: review
+- Status: done
 - Completion note: Implemented 2026-05-17. Navbar overhauled to overlay-on-landing + sticky-on-scroll, six i18n anchor links, solid-accent Demo CTA with backwards-compatible scroll fallback. Logo asset committed to `public/`. 579/579 tests pass, build clean.
 
 ## Outstanding Questions for Dev
@@ -150,10 +158,11 @@ Section IDs required (introduced by stories 6.3–6.8): `#produto`, `#beneficios
 
 ### Debug Log
 
-- `npx vitest run src/components/layout/Navbar.test.tsx` — 15/15 green
+- `npx vitest run src/components/layout/Navbar.test.tsx` — 17/17 green (2026-05-19 review closure)
 - `npm run test:run` — 579/579 green (+7 vs. Story 6.1 baseline of 572; 0 regressions)
 - `npm run build` — 539 modules, clean
 - `npm run typecheck` — clean
+- `npx playwright test tests/e2e/navbar.spec.ts --project=chromium --project=mobile-chrome` — 5 passed / 3 skipped; WebKit blocked locally by missing host dependency `libavif16`
 
 ### Implementation Plan (decisions taken)
 
@@ -183,11 +192,13 @@ Section IDs required (introduced by stories 6.3–6.8): `#produto`, `#beneficios
 | `src/i18n/locales/pt-BR/translation.json` | UPDATE | Added `nav.links.*` + `nav.cta` |
 | `src/i18n/locales/es/translation.json` | UPDATE | Added `nav.links.*` + `nav.cta` |
 | `public/syncsirius-logo-trans.png` | NEW | Copied from design handoff (72 327 bytes) |
+| `tests/e2e/navbar.spec.ts` | NEW | Playwright coverage for route-safe links, logo dimensions, overlay/fill transition, mobile overlay CTA |
 | `_bmad-output/implementation-artifacts/6-2-navbar-logo-refresh.md` | UPDATE | Task boxes, Dev Agent Record, File List, Change Log, Status |
-| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.2 → `review` |
+| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.2 → `done` |
 
 ### Change Log
 
 | Date | Author | Summary |
 |---|---|---|
 | 2026-05-17 | Claude (Opus 4.7) | Story 6.2 — Navbar overlay-then-sticky + six anchor links + solid-accent Demo CTA + logo asset + 3-locale i18n. Soft deviations documented: `fixed`+class-toggle instead of position swap; LanguageSwitcher restyle deferred; `lg:` (1024px) instead of 900px breakpoint. |
+| 2026-05-19 | Codex | Code review closure — fixed sub-route link/CTA routing, 900px breakpoint, route-change scroll-state recalculation, added Playwright navbar spec, regression green; story marked done. |
