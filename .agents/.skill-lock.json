@@ -6,7 +6,7 @@
       "source": "local",
       "contentHash": "fa63880889d2206548e33489a0ac1aa849c4e6ab879ea769c2715521a8231c8a",
       "installedAt": "2026-05-14T10:43:08.612Z",
-      "updatedAt": "2026-05-15T00:36:03.251Z",
+      "updatedAt": "2026-05-19T01:19:02.436Z",
       "agents": [
         "cursor",
         "claude-code",
