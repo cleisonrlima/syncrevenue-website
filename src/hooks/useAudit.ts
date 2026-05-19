@@ -2,11 +2,17 @@ import { useRef, useState } from 'react'
 import type { TFunction } from 'i18next'
 import { z } from 'zod'
 import { AuditApiError, postAudit, type AuditPayload } from '@/lib/api'
-import { GDS_OPTIONS, ROLE_OPTIONS } from '@/hooks/useDemo'
+import { DEMO_GDS_OPTIONS, DEMO_GDS_LEGACY_VALUES, ROLE_OPTIONS } from '@/hooks/useDemo'
 
 export type AuditStatus = 'idle' | 'submitting' | 'success' | 'error'
 export type AuditLocale = AuditPayload['locale']
 export type AuditFormValues = AuditPayload
+
+// Story 6.13: visible audit GDS dropdown values mirror the canonical demo list.
+export const AUDIT_GDS_OPTIONS = DEMO_GDS_OPTIONS
+// Story 6.13: zod still accepts legacy 3-value records on the wire so pre-rename
+// submissions and admin lead types remain valid through the audit pipeline.
+const AUDIT_GDS_ACCEPTED = [...DEMO_GDS_OPTIONS, ...DEMO_GDS_LEGACY_VALUES] as const
 
 const LOCALE_OPTIONS = ['en', 'pt-BR', 'es'] as const
 const identityT = ((key: string) => key) as TFunction
@@ -29,7 +35,7 @@ export function createAuditSchema(t: TFunction) {
     role: z.enum(ROLE_OPTIONS, {
       errorMap: () => ({ message: t('forms.audit.roleError', { defaultValue: 'Role is required' }) }),
     }),
-    gds: z.enum(GDS_OPTIONS, {
+    gds: z.enum(AUDIT_GDS_ACCEPTED, {
       errorMap: () => ({ message: t('forms.audit.gdsError', { defaultValue: 'GDS is required' }) }),
     }),
     notes: z.string(),
@@ -82,4 +88,4 @@ export function useAudit() {
   }
 }
 
-export { GDS_OPTIONS, ROLE_OPTIONS }
+export { ROLE_OPTIONS }

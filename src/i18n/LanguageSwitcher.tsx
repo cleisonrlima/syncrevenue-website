@@ -35,9 +35,14 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
             // hamburger overlay); revert to compact sizing at lg+ where it sits in
             // the desktop navbar alongside the demo CTA.
             'min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0',
+            // Story 6.13 (AC 5): LanguageSwitcher renders on dark surfaces
+            // (Navbar ink, Footer navy). brand-electric-blue + brand-muted
+            // both failed Lighthouse color-contrast on dark backgrounds; swap
+            // to white-on-dark for AA-normal compliance without disturbing the
+            // active/inactive affordance.
             locale === code
-              ? 'text-brand-electric-blue font-semibold'
-              : 'text-brand-muted hover:text-white'
+              ? 'text-white font-semibold underline underline-offset-4'
+              : 'text-white/70 hover:text-white'
           )}
         >
           {label}

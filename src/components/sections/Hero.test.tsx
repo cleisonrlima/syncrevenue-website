@@ -102,11 +102,15 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
   })
 
   describe('Background + overlay scrim', () => {
-    it('renders the airplane background div with the local asset URL and saturate filter', () => {
+    // Story 6.13: hero background switched from CSS background-image to a real
+    // <img> LCP candidate (with <picture> webp variants). Test asserts the new
+    // <img src> + saturate filter so Lighthouse can preload the asset.
+    it('renders the airplane background <img> with the local asset URL and saturate filter', () => {
       renderHero()
-      const bg = screen.getByTestId('hero-bg')
+      const bg = screen.getByTestId('hero-bg') as HTMLImageElement
+      expect(bg.tagName).toBe('IMG')
+      expect(bg.getAttribute('src')).toBe('/hero/airplane.jpg')
       const inlineStyle = bg.getAttribute('style') ?? ''
-      expect(inlineStyle).toMatch(/url\(['"]?\/hero\/airplane\.jpg['"]?\)/)
       expect(inlineStyle).toMatch(/saturate\(0\.85\)/)
     })
   })

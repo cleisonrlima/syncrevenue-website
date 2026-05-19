@@ -79,7 +79,11 @@ export default function Privacy() {
                   {email && (
                     <a
                       href={`mailto:${email}`}
-                      className="mt-3 inline-block text-brand-electric-blue underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy"
+                      // Story 6.13 (AC 5): brand-electric-blue on brand-navy
+                      // fails Lighthouse color-contrast (~2.95:1). Switch to
+                      // accent-soft (#5B85E8) — ~5.85:1 on navy, AA normal-OK
+                      // — to preserve a brand-coloured link while passing AA.
+                      className="mt-3 inline-block text-[#5B85E8] underline underline-offset-4 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy"
                     >
                       {email}
                     </a>

@@ -164,10 +164,10 @@ export default function ContactForm() {
   const formError =
     status === 'error'
       ? error?.status === 429
-        ? t('forms.contact.errorRateLimit', {
+        ? t('contact.form.errors.rateLimit', {
             defaultValue: 'Too many contact requests. Please wait a minute and try again.',
           })
-        : t('forms.contact.errorGeneric', {
+        : t('contact.form.errors.generic', {
             defaultValue: 'Something went wrong. Please try again.',
           })
       : null
@@ -186,10 +186,10 @@ export default function ContactForm() {
         )}
       >
         <h3 className="text-[20px] font-bold text-white">
-          {t('forms.contact.successTitle', { defaultValue: 'Message sent!' })}
+          {t('contact.form.success.title', { defaultValue: 'Message sent!' })}
         </h3>
         <p className="mt-[10px] text-[14px] leading-[1.6] text-white/70">
-          {t('forms.contact.successBody', {
+          {t('contact.form.success.body', {
             defaultValue: 'We received your inquiry and will route it to the right team.',
           })}
         </p>
@@ -337,7 +337,7 @@ export default function ContactForm() {
               )}
               {!isSubmitting && <PaperPlaneIcon />}
               {isSubmitting
-                ? t('forms.contact.submitting', { defaultValue: 'Sending...' })
+                ? t('contact.form.submitting', { defaultValue: 'Sending...' })
                 : t('contact.form.submit', { defaultValue: 'Send message' })}
             </Button>
           }

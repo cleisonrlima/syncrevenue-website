@@ -6,23 +6,19 @@ import HeroProductPanel from './HeroProductPanel'
 import BenefitsGrid from './BenefitsGrid'
 
 /**
- * Hero — Epic 6 sober-palette rebuild (Story 6.3).
+ * Hero — Epic 6 sober-palette rebuild (Story 6.3); refined in Story 6.13 for LCP.
+ *
+ * Story 6.13 — replaced CSS background-image with a `<picture>` LCP candidate so
+ * the airplane asset can be preloaded, sized per breakpoint, and served as
+ * webp (with jpg fallback). Three asset variants live under `public/hero/`:
+ *   - airplane.webp (1920×1075 — desktop, ~11KB)
+ *   - airplane-mobile.webp (960×537 — mobile, ~4KB)
+ *   - airplane.jpg (1920×1075 — webp-unsupported fallback, ~27KB)
+ * The `<link rel="preload">` in `index.html` mirrors the same imagesrcset so
+ * the browser can start the LCP fetch before React boots.
  *
  * Layout source: Hero.html `.hero` / `.bg` / `.wrap` / `.top` / `h1` / `.sub` /
  * `.cta-row` / `.kpi-row` (lines 52–138, 522–582).
- *
- * Replaces the Story 1.5 gradient-bg + glow + gradient-text headline with:
- *   - Airplane photo background (license-clean local asset `public/hero/airplane.jpg`,
- *     copied from `1351_rev_1.jpg` in the repo root; swap when stakeholder picks a
- *     different shot — see story 6.3 dev notes).
- *   - Dual-gradient legibility scrim (95° horizontal + 180° vertical fade) per AC1.
- *   - Two-line H1 with accent span on line 2 (replaces gradient-text from UX-DR19).
- *   - Sub paragraph with `<strong>` slots via `<Trans>` (`SyncRevenue` + `before ticketing`).
- *   - Dual CTAs: primary solid-accent + tertiary text link with arrow.
- *   - KPI strip (refactored `StatRow` consuming `hero.kpis.*`).
- *
- * Right column (product panel) is intentionally empty — Story 6.4 fills it.
- * Grid is wired now so 6.4 only drops in the right `<aside>`.
  */
 
 const SUBHEAD_COMPONENTS = [
@@ -55,16 +51,26 @@ export default function Hero() {
       className="relative min-h-screen overflow-hidden text-white bg-[var(--ink)]"
       suppressHydrationWarning
     >
-      {/* Airplane background — Hero.html .bg */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/hero/airplane.jpg')",
-          filter: 'saturate(0.85)',
-        }}
-        data-testid="hero-bg"
-      />
+      {/* Airplane LCP image — Story 6.13. <picture> with webp + mobile-sized
+          variant; <img> participates in LCP candidacy and is preloaded by
+          index.html. fetchpriority="high" + decoding="async" land it asap. */}
+      <picture aria-hidden="true">
+        <source
+          type="image/webp"
+          media="(max-width: 768px)"
+          srcSet="/hero/airplane-mobile.webp"
+        />
+        <source type="image/webp" srcSet="/hero/airplane.webp" />
+        <img
+          src="/hero/airplane.jpg"
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+          style={{ filter: 'saturate(0.85)' }}
+          data-testid="hero-bg"
+        />
+      </picture>
       {/* Dual-gradient overlay scrim — Hero.html .bg::after */}
       <div
         aria-hidden="true"
@@ -153,6 +159,13 @@ export default function Hero() {
         </div>
 
         <div className="mt-20">
+          {/* Story 6.13 (AC 5) — bridge `<h1>` (line 88 above) → BenefitsGrid card
+              `<h3>` so the Lighthouse `heading-order` audit passes. Visually
+              hidden — the benefits block is purely decorative cards under the
+              hero so a visible heading would clash with the design intent. */}
+          <h2 className="sr-only">
+            {t('hero.benefitsHeading', { defaultValue: 'Why agencies pick SyncRevenue' })}
+          </h2>
           <BenefitsGrid />
         </div>
 

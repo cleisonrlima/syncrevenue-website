@@ -3,25 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Story 6.13 (AC 6): self-host Plus Jakarta Sans + preload the woff2.
+         Replaces the Google Fonts CDN round-trip and the post-paint font
+         swap that was the dominant desktop CLS contributor (0.184 on `/`). -->
     <link
       rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      as="font"
+      type="font/woff2"
+      href="/fonts/plus-jakarta-sans.woff2"
+      crossorigin
     />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-      />
-    </noscript>
     <title>SyncRevenue Commission Recovery | Sync Sirius</title>
     <meta
       name="description"
@@ -37,6 +28,19 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <link rel="canonical" href="https://syncsirius.com/" />
+    <!-- Story 6.13 (AC 7) — preload the hero LCP image. Browsers honour
+         imagesrcset + imagesizes so the mobile variant is fetched on small
+         viewports while desktop pulls the 1920px webp. fetchpriority=high
+         signals high-priority resource to the network stack. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/hero/airplane.webp"
+      imagesrcset="/hero/airplane-mobile.webp 960w, /hero/airplane.webp 1920w"
+      imagesizes="(max-width: 768px) 100vw, 100vw"
+      type="image/webp"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>

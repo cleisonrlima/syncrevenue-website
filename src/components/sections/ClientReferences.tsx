@@ -192,7 +192,7 @@ export default function ClientReferences() {
             href="#contato"
             className="group inline-flex items-center gap-2 rounded-[10px] border border-[var(--line-strong)] bg-transparent px-[22px] py-3 text-[14px] font-semibold text-white motion-safe:transition-colors motion-safe:duration-150 hover:bg-white/[0.04]"
           >
-            {t('references.cta', { defaultValue: 'Request References' })}
+            {t('references.requestCta', { defaultValue: 'Request References' })}
             <svg
               width="14"
               height="14"

@@ -105,7 +105,8 @@
         "2": "Contract Insurance",
         "3": "Referenced US Agencies"
       }
-    }
+    },
+    "benefitsHeading": "Why agencies pick SyncRevenue"
   },
   "syncrevenue": {
     "eyebrow": "Our Flagship Product",
@@ -238,7 +239,7 @@
     "headline": "Trusted by real",
     "headlineAccent": "agencies",
     "subtext": "Named references are shared with approval so security-minded agencies can verify real operating experience.",
-    "cta": "Request References",
+    "requestCta": "Request References",
     "items": [
       {
         "agencyName": "Atlas Travel Group",
@@ -321,78 +322,6 @@
     }
   },
   "forms": {
-    "demo": {
-      "title": "Request a Demo",
-      "name": "Full Name",
-      "namePlaceholder": "Jane Smith",
-      "nameError": "Full name is required",
-      "email": "Work Email",
-      "emailPlaceholder": "jane@agency.com",
-      "emailError": "Enter a valid email address",
-      "company": "Company",
-      "companyPlaceholder": "Travel Agency Name",
-      "companyError": "Company name is required",
-      "phone": "Phone (optional)",
-      "phonePlaceholder": "+1 305 555 0100",
-      "role": "Your Role",
-      "rolePlaceholder": "Select your role",
-      "roleError": "Please select your role",
-      "roleOptions": {
-        "Owner": "Owner",
-        "Executive": "Executive",
-        "Operations": "Operations",
-        "Finance": "Finance",
-        "Technology": "Technology",
-        "Other": "Other"
-      },
-      "gds": "Primary GDS",
-      "gdsPlaceholder": "Select your GDS",
-      "gdsError": "Please select your primary GDS",
-      "gdsOptions": {
-        "Amadeus": "Amadeus",
-        "Sabre": "Sabre",
-        "Galileo": "Galileo",
-        "Worldspan": "Worldspan",
-        "Other": "Other",
-        "None yet": "None yet"
-      },
-      "message": "Message (optional)",
-      "messagePlaceholder": "Tell us about your commission reconciliation challenges",
-      "submit": "Request Demo",
-      "submitting": "Sending...",
-      "successTitle": "Request received!",
-      "successBody": "Our team will reach out within 1 business day.",
-      "errorGeneric": "Something went wrong. Please try again."
-    },
-    "contact": {
-      "title": "Contact Us",
-      "eyebrow": "General Inquiries",
-      "heading": "Contact Sync Sirius",
-      "subtext": "Send your question to the right Sync Sirius service team.",
-      "name": "Full Name",
-      "nameError": "Full name is required",
-      "email": "Email Address",
-      "emailError": "Enter a valid email address",
-      "subject": "Subject / Service",
-      "subjectPlaceholder": "Select a service area",
-      "subjectError": "Please select a subject",
-      "subjectOptions": {
-        "SyncRevenue": "SyncRevenue",
-        "BI/Data Analytics": "BI/Data Analytics",
-        "OBTs": "OBTs",
-        "Custom Development": "Custom Development",
-        "Other": "Other"
-      },
-      "message": "Message",
-      "messagePlaceholder": "Tell us what you need help with",
-      "messageError": "Message is required",
-      "submit": "Send Message",
-      "submitting": "Sending...",
-      "successTitle": "Message sent!",
-      "successBody": "We received your inquiry and will route it to the right team.",
-      "errorRateLimit": "Too many contact requests. Please wait a minute and try again.",
-      "errorGeneric": "Something went wrong. Please try again."
-    },
     "audit": {
       "title": "Free Commission Audit",
       "name": "Full Name",
@@ -526,7 +455,20 @@
         },
         "message": { "label": "Message", "placeholder": "How can we help?" }
       },
-      "submit": "Send message"
+      "submit": "Send message",
+      "submitting": "Sending...",
+      "errors": {
+        "name": "Full name is required",
+        "email": "Enter a valid email address",
+        "subject": "Please select a subject",
+        "message": "Message is required",
+        "rateLimit": "Too many contact requests. Please wait a minute and try again.",
+        "generic": "Something went wrong. Please try again."
+      },
+      "success": {
+        "title": "Message sent!",
+        "body": "We received your inquiry and will route it to the right team."
+      }
     }
   },
   "seo": {

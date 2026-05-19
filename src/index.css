@@ -89,12 +89,37 @@
   }
 }
 
+/*
+ * Story 6.13 (AC 6): self-hosted Plus Jakarta Sans variable font.
+ *
+ * Previously the page loaded the font via the Google Fonts CSS at
+ * fonts.googleapis.com. Lighthouse attributed desktop CLS = 0.184 on `/` to
+ * the web-font swap — when the woff2 finally arrived from Google, the
+ * HeroProductPanel reflowed because the system fallback occupied different
+ * character widths. Pre-loading a cross-origin font URL is brittle because
+ * the woff2 hash rotates; self-hosting eliminates both the third-party
+ * round-trip and the hash drift. The font is preloaded in `index.html` with
+ * `<link rel="preload" as="font" type="font/woff2" crossorigin>` so it
+ * fetches in parallel with the JS chunk, eliminating the post-paint swap.
+ *
+ * The Google Fonts variable woff2 covers weights 200–800 in a single 27KB
+ * file — one @font-face entry suffices.
+ */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans.woff2') format('woff2');
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
   h1 {
     @apply text-[2rem] md:text-[2.25rem] lg:text-[3.25rem] font-extrabold leading-tight;

@@ -30,12 +30,12 @@ type ContactError = {
 
 export function createContactSchema(t: TFunction) {
   return z.object({
-    name: z.string().trim().min(1, t('forms.contact.nameError', { defaultValue: 'Full name is required' })),
-    email: z.string().trim().email(t('forms.contact.emailError', { defaultValue: 'Enter a valid email address' })),
+    name: z.string().trim().min(1, t('contact.form.errors.name', { defaultValue: 'Full name is required' })),
+    email: z.string().trim().email(t('contact.form.errors.email', { defaultValue: 'Enter a valid email address' })),
     subject: z.enum(CONTACT_SUBJECT_OPTIONS, {
-      errorMap: () => ({ message: t('forms.contact.subjectError', { defaultValue: 'Please select a subject' }) }),
+      errorMap: () => ({ message: t('contact.form.errors.subject', { defaultValue: 'Please select a subject' }) }),
     }),
-    message: z.string().trim().min(1, t('forms.contact.messageError', { defaultValue: 'Message is required' })),
+    message: z.string().trim().min(1, t('contact.form.errors.message', { defaultValue: 'Message is required' })),
     locale: z.enum(LOCALE_OPTIONS),
   })
 }

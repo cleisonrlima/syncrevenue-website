@@ -239,6 +239,16 @@ const REQUIRED_CONTACT_PATHS = [
   'contact.form.fields.message.label',
   'contact.form.fields.message.placeholder',
   'contact.form.submit',
+  // Story 6.13 — new error / success / submitting leaves under contact.form.*
+  'contact.form.submitting',
+  'contact.form.errors.name',
+  'contact.form.errors.email',
+  'contact.form.errors.subject',
+  'contact.form.errors.message',
+  'contact.form.errors.rateLimit',
+  'contact.form.errors.generic',
+  'contact.form.success.title',
+  'contact.form.success.body',
 ]
 
 const REQUIRED_FORMS_PATHS = ['forms.encryptedNote']

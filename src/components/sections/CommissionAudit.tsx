@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import {
   useAudit,
   createAuditSchema,
-  GDS_OPTIONS,
+  AUDIT_GDS_OPTIONS,
   ROLE_OPTIONS,
   type AuditFormValues,
 } from '@/hooks/useAudit'
@@ -267,7 +267,7 @@ const AuditForm = forwardRef<AuditFormHandle>(function AuditForm(_props, ref) {
               <option value="">{t('forms.audit.rolePlaceholder', { defaultValue: 'Select your role' })}</option>
               {ROLE_OPTIONS.map(option => (
                 <option key={option} value={option}>
-                  {t(`forms.demo.roleOptions.${option}`, { defaultValue: option })}
+                  {t(`demo.form.fields.role.options.${option}`, { defaultValue: option })}
                 </option>
               ))}
             </select>
@@ -286,9 +286,16 @@ const AuditForm = forwardRef<AuditFormHandle>(function AuditForm(_props, ref) {
               className={textInputClasses(Boolean(errors.gds))}
             >
               <option value="">{t('forms.audit.gdsPlaceholder', { defaultValue: 'Select your GDS' })}</option>
-              {GDS_OPTIONS.map(option => (
+              {/* Story 6.13 (AC 2 — option b): GDS list trimmed to the 4-value
+                  canonical set shared with DemoForm. Story 6.10's design-handoff
+                  intentionally collapsed Galileo + Worldspan + "None yet" into
+                  Travelport (Galileo/Worldspan) + Other. Audit funnel inherits
+                  that same combination for visual and behavioral consistency;
+                  zod still accepts the 3 legacy values on the wire for back-compat
+                  with pre-rename submissions. */}
+              {AUDIT_GDS_OPTIONS.map(option => (
                 <option key={option} value={option}>
-                  {t(`forms.demo.gdsOptions.${option}`, { defaultValue: option })}
+                  {t(`demo.form.fields.gds.options.${option}`, { defaultValue: option })}
                 </option>
               ))}
             </select>

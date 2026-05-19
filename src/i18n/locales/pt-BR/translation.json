@@ -105,7 +105,8 @@
         "2": "Seguro Contratual",
         "3": "Agências dos EUA Referenciadas"
       }
-    }
+    },
+    "benefitsHeading": "Por que agências escolhem o SyncRevenue"
   },
   "syncrevenue": {
     "eyebrow": "Nosso Produto Principal",
@@ -238,7 +239,7 @@
     "headline": "Confiança comprovada por",
     "headlineAccent": "agências reais",
     "subtext": "Referências nomeadas são compartilhadas com aprovação para que agências focadas em segurança possam verificar experiência operacional real.",
-    "cta": "Solicitar Referências",
+    "requestCta": "Solicitar Referências",
     "items": [
       {
         "agencyName": "Atlas Travel Group",
@@ -321,78 +322,6 @@
     }
   },
   "forms": {
-    "demo": {
-      "title": "Solicitar uma Demo",
-      "name": "Nome Completo",
-      "namePlaceholder": "Ana Silva",
-      "nameError": "Nome completo é obrigatório",
-      "email": "E-mail Corporativo",
-      "emailPlaceholder": "ana@agencia.com.br",
-      "emailError": "Insira um endereço de e-mail válido",
-      "company": "Empresa",
-      "companyPlaceholder": "Nome da Agência de Viagem",
-      "companyError": "Nome da empresa é obrigatório",
-      "phone": "Telefone (opcional)",
-      "phonePlaceholder": "+55 11 9 0000-0000",
-      "role": "Seu Cargo",
-      "rolePlaceholder": "Selecione seu cargo",
-      "roleError": "Por favor, selecione seu cargo",
-      "roleOptions": {
-        "Owner": "Proprietário",
-        "Executive": "Executivo",
-        "Operations": "Operações",
-        "Finance": "Financeiro",
-        "Technology": "Tecnologia",
-        "Other": "Outro"
-      },
-      "gds": "GDS Principal",
-      "gdsPlaceholder": "Selecione seu GDS",
-      "gdsError": "Por favor, selecione seu GDS principal",
-      "gdsOptions": {
-        "Amadeus": "Amadeus",
-        "Sabre": "Sabre",
-        "Galileo": "Galileo",
-        "Worldspan": "Worldspan",
-        "Other": "Outro",
-        "None yet": "Ainda nenhum"
-      },
-      "message": "Mensagem (opcional)",
-      "messagePlaceholder": "Conte-nos sobre seus desafios de reconciliação de comissões",
-      "submit": "Solicitar Demo",
-      "submitting": "Enviando...",
-      "successTitle": "Solicitação recebida!",
-      "successBody": "Nossa equipe entrará em contato em até 1 dia útil.",
-      "errorGeneric": "Algo deu errado. Por favor, tente novamente."
-    },
-    "contact": {
-      "title": "Entre em Contato",
-      "eyebrow": "Consultas Gerais",
-      "heading": "Contate a Sync Sirius",
-      "subtext": "Envie sua pergunta para a equipe de serviço certa da Sync Sirius.",
-      "name": "Nome Completo",
-      "nameError": "Nome completo é obrigatório",
-      "email": "Endereço de E-mail",
-      "emailError": "Insira um endereço de e-mail válido",
-      "subject": "Assunto / Serviço",
-      "subjectPlaceholder": "Selecione uma área de serviço",
-      "subjectError": "Selecione um assunto",
-      "subjectOptions": {
-        "SyncRevenue": "SyncRevenue",
-        "BI/Data Analytics": "BI/Analytics de Dados",
-        "OBTs": "OBTs",
-        "Custom Development": "Desenvolvimento Customizado",
-        "Other": "Outro"
-      },
-      "message": "Mensagem",
-      "messagePlaceholder": "Conte-nos como podemos ajudar",
-      "messageError": "Mensagem é obrigatória",
-      "submit": "Enviar Mensagem",
-      "submitting": "Enviando...",
-      "successTitle": "Mensagem enviada!",
-      "successBody": "Recebemos sua mensagem e vamos encaminhá-la para a equipe certa.",
-      "errorRateLimit": "Muitas mensagens de contato. Por favor, aguarde um minuto e tente novamente.",
-      "errorGeneric": "Algo deu errado. Por favor, tente novamente."
-    },
     "audit": {
       "title": "Auditoria gratuita de comissoes",
       "name": "Nome completo",
@@ -526,7 +455,20 @@
         },
         "message": { "label": "Mensagem", "placeholder": "Como podemos ajudar?" }
       },
-      "submit": "Enviar mensagem"
+      "submit": "Enviar mensagem",
+      "submitting": "Enviando...",
+      "errors": {
+        "name": "Nome completo é obrigatório",
+        "email": "Insira um endereço de e-mail válido",
+        "subject": "Selecione um assunto",
+        "message": "Mensagem é obrigatória",
+        "rateLimit": "Muitas mensagens de contato. Por favor, aguarde um minuto e tente novamente.",
+        "generic": "Algo deu errado. Por favor, tente novamente."
+      },
+      "success": {
+        "title": "Mensagem enviada!",
+        "body": "Recebemos sua mensagem e vamos encaminhá-la para a equipe certa."
+      }
     }
   },
   "seo": {
