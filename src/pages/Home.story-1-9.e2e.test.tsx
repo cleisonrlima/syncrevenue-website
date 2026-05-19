@@ -33,7 +33,7 @@ describe('Story 1.9 trust sequence', () => {
       name: 'Sync Sirius team specialists',
     }, lazySectionWait)
     const demoScheduler = await waitFor(() => {
-      const section = container.querySelector('#demo-scheduler')
+      const section = container.querySelector('#agendar-demo')
       expect(section).toBeInTheDocument()
       return section as HTMLElement
     }, lazySectionWait)

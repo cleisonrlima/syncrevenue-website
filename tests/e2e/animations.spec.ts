@@ -32,7 +32,7 @@ test.describe('@story-3.2 animations', () => {
 
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const demoSection = page.locator('#demo-scheduler')
+    const demoSection = page.locator('#agendar-demo')
     await demoSection.scrollIntoViewIfNeeded()
     const cta = demoSection.getByRole('button').first()
     await expect(cta).toBeVisible()

@@ -81,7 +81,7 @@ function validContactPayload(index: number) {
   return {
     name: `Rate Contact ${index}`,
     email: `rate-contact-${index}@example.com`,
-    subject: 'BI/Data Analytics',
+    subject: 'support',
     message: 'We need analytics help for agency revenue reporting.',
     locale: 'pt-BR',
   }

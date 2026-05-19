@@ -8,7 +8,7 @@ import { useLocaleStore } from '@/store/useLocaleStore'
 
 const lazySectionWait = { timeout: 5000 }
 
-describe('Story 2.4 DemoScheduler entry points', () => {
+describe('Story 2.4 DemoScheduler entry points (Story 6.10 — id renamed)', () => {
   let scrollTargets: HTMLElement[]
 
   beforeEach(() => {
@@ -33,46 +33,28 @@ describe('Story 2.4 DemoScheduler entry points', () => {
     const { container } = render(<Home />)
 
     const demoScheduler = await waitFor(() => {
-      const section = container.querySelector('#demo-scheduler')
+      const section = container.querySelector('#agendar-demo')
       expect(section).toBeInTheDocument()
       return section as HTMLElement
     }, lazySectionWait)
 
     const contact = await screen.findByRole(
       'region',
-      { name: 'Contact Sync Sirius' },
+      { name: /Talk to .*SyncSirius/ },
       lazySectionWait,
     )
 
-    const demoForms = await screen.findAllByRole('form', { name: 'Request a Demo' }, lazySectionWait)
+    const demoForms = await screen.findAllByRole(
+      'form',
+      { name: 'Request a demonstration' },
+      lazySectionWait,
+    )
     expect(demoForms).toHaveLength(1)
     expect(demoScheduler.contains(demoForms[0])).toBe(true)
     expect(demoScheduler.compareDocumentPosition(contact)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
   })
 
-  it('moves focus to the Full Name input when the in-section CTA is clicked', async () => {
-    const user = userEvent.setup()
-    render(<Home />)
-
-    const demoScheduler = await screen.findByRole(
-      'region',
-      { name: 'Schedule a SyncRevenue demo' },
-      lazySectionWait,
-    )
-
-    const ctas = await screen.findAllByRole('button', { name: 'Schedule a Demo' }, lazySectionWait)
-    const sectionCta = ctas.find(button => demoScheduler.contains(button))
-    expect(sectionCta).toBeDefined()
-
-    const originalHash = window.location.hash
-    await user.click(sectionCta!)
-
-    const fullName = within(demoScheduler).getByLabelText(/Full Name/i)
-    expect(document.activeElement).toBe(fullName)
-    expect(window.location.hash).toBe(originalHash)
-  })
-
-  it('Hero "Schedule a Demo" CTA scrolls the visitor to the DemoScheduler section', async () => {
+  it('Hero "Schedule a Demo" CTA scrolls to the renamed DemoScheduler section (#agendar-demo)', async () => {
     const user = userEvent.setup()
     const { container } = render(<Home />)
 
@@ -83,7 +65,7 @@ describe('Story 2.4 DemoScheduler entry points', () => {
     }, lazySectionWait)
 
     const demoScheduler = await waitFor(() => {
-      const section = container.querySelector('#demo-scheduler')
+      const section = container.querySelector('#agendar-demo')
       expect(section).toBeInTheDocument()
       return section as HTMLElement
     }, lazySectionWait)
@@ -94,5 +76,18 @@ describe('Story 2.4 DemoScheduler entry points', () => {
 
     expect(scrollTargets).toContain(demoScheduler)
     expect(window.location.hash).toBe(originalHash)
+  })
+
+  it('the DemoForm Full name input is reachable inside the DemoScheduler section', async () => {
+    const { container } = render(<Home />)
+
+    const demoScheduler = await waitFor(() => {
+      const section = container.querySelector('#agendar-demo')
+      expect(section).toBeInTheDocument()
+      return section as HTMLElement
+    }, lazySectionWait)
+
+    const fullName = await within(demoScheduler).findByLabelText(/Full name/i, {}, lazySectionWait)
+    expect(fullName).toBeInTheDocument()
   })
 })

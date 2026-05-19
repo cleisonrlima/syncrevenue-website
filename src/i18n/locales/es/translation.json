@@ -398,7 +398,7 @@
       "emailError": "Ingrese una dirección de correo válida",
       "subject": "Asunto / Servicio",
       "subjectPlaceholder": "Seleccione un área de servicio",
-      "subjectError": "Por favor seleccione un área de servicio",
+      "subjectError": "Seleccione un asunto",
       "subjectOptions": {
         "SyncRevenue": "SyncRevenue",
         "BI/Data Analytics": "BI y Análisis de Datos",
@@ -447,6 +447,7 @@
     "encryptedNote": "Conexión cifrada. Datos protegidos."
   },
   "demo": {
+    "sectionAriaLabel": "Agendar una demostración SyncRevenue",
     "eyebrow": "Agendar demostración",
     "heading": {
       "text": "Vea SyncRevenue funcionando",
@@ -473,11 +474,44 @@
         "email":   { "label": "Correo corporativo",  "placeholder": "maria@suagencia.com" },
         "company": { "label": "Agencia",             "placeholder": "Nombre de la agencia" },
         "phone":   { "label": "Teléfono",            "placeholder": "+52 55 0000 0000", "optional": "(opcional)" },
-        "role":    { "label": "Su cargo",            "placeholder": "Seleccione" },
-        "gds":     { "label": "GDS principal",       "placeholder": "Seleccione" },
-        "message": { "label": "Mensaje",             "placeholder": "Cuéntenos sobre sus desafíos de conciliación y comisiones" }
+        "role":    {
+          "label": "Su cargo",
+          "placeholder": "Seleccione",
+          "options": {
+            "Owner": "Propietario",
+            "Executive": "Ejecutivo",
+            "Operations": "Operaciones",
+            "Finance": "Finanzas",
+            "Technology": "Tecnología",
+            "Other": "Otro"
+          }
+        },
+        "gds":     {
+          "label": "GDS principal",
+          "placeholder": "Seleccione",
+          "options": {
+            "Amadeus": "Amadeus",
+            "Sabre": "Sabre",
+            "Travelport (Galileo/Worldspan)": "Travelport (Galileo/Worldspan)",
+            "Other": "Otro"
+          }
+        },
+        "message": { "label": "Mensaje",             "placeholder": "Cuéntenos sobre sus desafíos de conciliación y comisiones", "optional": "(opcional)" }
       },
-      "submit": "Agendar demostración"
+      "submit": "Agendar demostración",
+      "submitting": "Enviando...",
+      "errors": {
+        "name": "El nombre completo es obligatorio",
+        "email": "Ingrese una dirección de correo válida",
+        "company": "El nombre de la agencia es obligatorio",
+        "role": "Por favor seleccione su cargo",
+        "gds": "Por favor seleccione su GDS principal",
+        "generic": "Algo salió mal. Por favor, inténtelo de nuevo."
+      },
+      "success": {
+        "title": "¡Solicitud recibida!",
+        "body": "Nuestro equipo se pondrá en contacto en un plazo de 1 día hábil."
+      }
     }
   },
   "contact": {

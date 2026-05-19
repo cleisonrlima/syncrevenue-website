@@ -3,7 +3,14 @@ import defaultDb from '../db'
 
 export type LeadStatus = 'pending' | 'contacted' | 'qualified'
 export type Locale = 'en' | 'pt-BR' | 'es'
-export type Gds = 'Amadeus' | 'Sabre' | 'Galileo' | 'Worldspan' | 'Other' | 'None yet'
+export type Gds =
+  | 'Amadeus'
+  | 'Sabre'
+  | 'Travelport (Galileo/Worldspan)'
+  | 'Galileo'
+  | 'Worldspan'
+  | 'Other'
+  | 'None yet'
 
 export interface DemoRequestInput {
   name: string

@@ -15,9 +15,8 @@ import { cn } from '@/lib/utils'
  * target is absent). Story 6.2 deliberately ships the new IDs ahead of their
  * target sections to keep the navbar markup stable.
  *
- * The Demo CTA falls back to the existing `#demo-scheduler` ID (Story 2.4
- * convergence target) when `#agendar-demo` is not present, so existing
- * Story 2.4 contract is preserved.
+ * Story 6.10: the legacy `#demo-scheduler` fallback was removed once the
+ * DemoScheduler section was renamed to `#agendar-demo` (canonical target).
  */
 const NAV_LINKS = [
   { key: 'produto', href: '#produto' },
@@ -112,13 +111,10 @@ export default function Navbar() {
     }
   }, [isOpen])
 
-  // Demo CTA convergence (Story 2.4). Prefer the new `#agendar-demo` target
-  // (Story 6.2 AC6); fall back to legacy `#demo-scheduler` so the existing
-  // DemoScheduler section remains the destination until Story 6.8 reconciles
-  // the rename.
+  // Demo CTA convergence (Story 2.4). Targets `#agendar-demo` directly —
+  // the legacy `#demo-scheduler` id was retired in Story 6.10.
   const handleDemoCta = () => {
-    const target =
-      document.getElementById('agendar-demo') ?? document.getElementById('demo-scheduler')
+    const target = document.getElementById('agendar-demo')
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' })
     } else {

@@ -9,11 +9,11 @@ type ContactPayload = {
 }
 
 async function fillRequiredContactFields(page: Page) {
-  const contactForm = page.getByRole('form', { name: /Contact Us/i })
-  await contactForm.getByLabel(/Full Name/i).fill('Jane Smith')
-  await contactForm.getByLabel(/Email Address/i).fill('jane@example.com')
-  await contactForm.getByLabel(/Subject \/ Service/i).selectOption('BI/Data Analytics')
-  await contactForm.getByLabel(/^Message/i).fill('We need analytics support.')
+  const contactForm = page.getByRole('form', { name: /Send a message/i })
+  await contactForm.getByLabel(/^Full name/i).fill('Jane Smith')
+  await contactForm.getByLabel(/^Email/i).fill('jane@example.com')
+  await contactForm.getByLabel(/^Subject/i).selectOption('support')
+  await contactForm.getByLabel(/^Message/i).fill('We need support help.')
 }
 
 function captureContactRequest(page: Page) {
@@ -48,29 +48,20 @@ test.describe('@P1 Contact form', () => {
   }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const contactForm = page.getByRole('form', { name: /Contact Us/i })
+    await expect(page.locator('#contato')).toBeVisible()
+
+    const contactForm = page.getByRole('form', { name: /Send a message/i })
     await expect(contactForm).toBeVisible()
-    await expect(contactForm.getByLabel(/Full Name/i)).toBeVisible()
-    await expect(contactForm.getByLabel(/Email Address/i)).toBeVisible()
-    await expect(contactForm.getByLabel(/Subject \/ Service/i)).toBeVisible()
+    await expect(contactForm.getByLabel(/^Full name/i)).toBeVisible()
+    await expect(contactForm.getByLabel(/^Email/i)).toBeVisible()
+    await expect(contactForm.getByLabel(/^Subject/i)).toBeVisible()
     await expect(contactForm.getByLabel(/^Message/i)).toBeVisible()
 
-    const subject = contactForm.getByLabel(/Subject \/ Service/i)
-    await expect(subject.getByRole('option', { name: 'SyncRevenue' })).toBeVisible()
-    await expect(subject.getByRole('option', { name: 'BI/Data Analytics' })).toBeVisible()
-    await expect(subject.getByRole('option', { name: 'OBTs' })).toBeVisible()
-    await expect(subject.getByRole('option', { name: 'Custom Development' })).toBeVisible()
-    await expect(subject.getByRole('option', { name: 'Other' })).toBeVisible()
+    const subject = contactForm.getByLabel(/^Subject/i)
     const subjectOptionValues = await subject.locator('option').evaluateAll(options =>
       options.slice(1).map(option => (option as HTMLOptionElement).value)
     )
-    expect(subjectOptionValues).toEqual([
-      'SyncRevenue',
-      'BI/Data Analytics',
-      'OBTs',
-      'Custom Development',
-      'Other',
-    ])
+    expect(subjectOptionValues).toEqual(['commercial', 'support', 'partnerships', 'press', 'other'])
 
     let requestCount = 0
     await page.route('**/api/contact', async route => {
@@ -82,13 +73,13 @@ test.describe('@P1 Contact form', () => {
       })
     })
 
-    const emailField = contactForm.getByLabel(/Email Address/i)
+    const emailField = contactForm.getByLabel(/^Email/i)
     await emailField.fill('not-an-email')
     await emailField.blur()
     const emailError = page.getByText('Enter a valid email address')
     await expect(emailError).toBeVisible()
     await expect(emailField).toHaveAttribute('aria-describedby', 'contact-email-error')
-    await expect(contactForm.getByRole('button', { name: /Send Message/i })).toBeDisabled()
+    await expect(contactForm.getByRole('button', { name: /Send message/i })).toBeDisabled()
 
     await contactForm.evaluate(form => {
       if (form instanceof HTMLFormElement) form.requestSubmit()
@@ -99,18 +90,18 @@ test.describe('@P1 Contact form', () => {
     const contactRequest = captureContactRequest(page)
     await contactRequest.install()
 
-    await contactForm.getByLabel(/Full Name/i).fill('Jane Smith')
+    await contactForm.getByLabel(/^Full name/i).fill('Jane Smith')
     await emailField.fill('jane@example.com')
-    await subject.selectOption('BI/Data Analytics')
-    await contactForm.getByLabel(/^Message/i).fill('We need analytics support.')
-    await contactForm.getByRole('button', { name: /Send Message/i }).click()
+    await subject.selectOption('support')
+    await contactForm.getByLabel(/^Message/i).fill('We need support help.')
+    await contactForm.getByRole('button', { name: /Send message/i }).click()
 
     await expect(contactForm.getByRole('button', { name: /Sending/i })).toBeDisabled()
     expect(contactRequest.payload).toEqual({
       name: 'Jane Smith',
       email: 'jane@example.com',
-      subject: 'BI/Data Analytics',
-      message: 'We need analytics support.',
+      subject: 'support',
+      message: 'We need support help.',
       locale: 'en',
     })
 
@@ -123,7 +114,7 @@ test.describe('@P1 Contact form', () => {
     await expect(confirmation).toContainText(
       'We received your inquiry and will route it to the right team.'
     )
-    await expect(page.getByRole('form', { name: /Contact Us/i })).toHaveCount(0)
+    await expect(page.getByRole('form', { name: /Send a message/i })).toHaveCount(0)
   })
 
   test('supports keyboard tab order and confirmation focus', async ({ page }, testInfo) => {
@@ -134,17 +125,17 @@ test.describe('@P1 Contact form', () => {
 
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const contactForm = page.getByRole('form', { name: /Contact Us/i })
-    const name = contactForm.getByLabel(/Full Name/i)
-    const email = contactForm.getByLabel(/Email Address/i)
-    const subject = contactForm.getByLabel(/Subject \/ Service/i)
+    const contactForm = page.getByRole('form', { name: /Send a message/i })
+    const name = contactForm.getByLabel(/^Full name/i)
+    const email = contactForm.getByLabel(/^Email/i)
+    const subject = contactForm.getByLabel(/^Subject/i)
     const message = contactForm.getByLabel(/^Message/i)
-    const submit = contactForm.getByRole('button', { name: /Send Message/i })
+    const submit = contactForm.getByRole('button', { name: /Send message/i })
 
     await name.fill('Jane Smith')
     await email.fill('jane@example.com')
-    await subject.selectOption('BI/Data Analytics')
-    await message.fill('We need analytics support.')
+    await subject.selectOption('support')
+    await message.fill('We need support help.')
 
     await name.focus()
     await expect(name).toBeFocused()
@@ -177,15 +168,15 @@ test.describe('@P1 Contact form', () => {
     await page.goto('/', { waitUntil: 'networkidle' })
     await fillRequiredContactFields(page)
     await page
-      .getByRole('form', { name: /Contact Us/i })
-      .getByRole('button', { name: /Send Message/i })
+      .getByRole('form', { name: /Send a message/i })
+      .getByRole('button', { name: /Send message/i })
       .click()
 
     await expect(
       page.getByText('Too many contact requests. Please wait a minute and try again.')
     ).toBeVisible()
     await expect(page.getByRole('alert')).toHaveCount(0)
-    await expect(page.getByRole('form', { name: /Contact Us/i })).toBeVisible()
+    await expect(page.getByRole('form', { name: /Send a message/i })).toBeVisible()
   })
 
   test('submits the active pt-BR locale and renders localized confirmation', async ({ page }) => {
@@ -198,18 +189,18 @@ test.describe('@P1 Contact form', () => {
       .getByRole('button', { name: /pt-br/i })
       .click()
 
-    const contactForm = page.getByRole('form', { name: /Entre em Contato/i })
-    await contactForm.getByLabel(/Nome Completo/i).fill('Ana Silva')
-    await contactForm.getByLabel(/Endereço de E-mail/i).fill('ana@agencia.com.br')
-    await contactForm.getByLabel(/Assunto \/ Serviço/i).selectOption('SyncRevenue')
+    const contactForm = page.getByRole('form', { name: /Envie uma mensagem/i })
+    await contactForm.getByLabel(/^Nome completo/i).fill('Ana Silva')
+    await contactForm.getByLabel(/^E-mail/i).fill('ana@agencia.com.br')
+    await contactForm.getByLabel(/^Assunto/i).selectOption('commercial')
     await contactForm.getByLabel(/^Mensagem/i).fill('Preciso de ajuda com comissoes.')
-    await contactForm.getByRole('button', { name: /Enviar Mensagem/i }).click()
+    await contactForm.getByRole('button', { name: /Enviar mensagem/i }).click()
 
     await expect(contactForm.getByRole('button', { name: /Enviando/i })).toBeDisabled()
     expect(contactRequest.payload).toEqual({
       name: 'Ana Silva',
       email: 'ana@agencia.com.br',
-      subject: 'SyncRevenue',
+      subject: 'commercial',
       message: 'Preciso de ajuda com comissoes.',
       locale: 'pt-BR',
     })

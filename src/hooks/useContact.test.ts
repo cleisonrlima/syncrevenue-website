@@ -24,8 +24,8 @@ const postContactMock = vi.mocked(postContact)
 const validValues: ContactFormValues = {
   name: 'Jane Smith',
   email: 'jane@example.com',
-  subject: 'BI/Data Analytics',
-  message: 'We need analytics support.',
+  subject: 'support',
+  message: 'We need support help.',
   locale: 'en',
 }
 
@@ -35,13 +35,13 @@ beforeEach(() => {
 })
 
 describe('useContact', () => {
-  it('exports the fixed contact subject options', () => {
+  it('exports the contact subject routing enum (commercial/support/partnerships/press/other)', () => {
     expect(CONTACT_SUBJECT_OPTIONS).toEqual([
-      'SyncRevenue',
-      'BI/Data Analytics',
-      'OBTs',
-      'Custom Development',
-      'Other',
+      'commercial',
+      'support',
+      'partnerships',
+      'press',
+      'other',
     ])
   })
 
@@ -58,6 +58,7 @@ describe('useContact', () => {
 
   it('validates required fields and subject allowlist', () => {
     expect(isContactFormValid(validValues)).toBe(true)
+    expect(isContactFormValid({ ...validValues, subject: 'SyncRevenue' })).toBe(false)
     expect(isContactFormValid({ ...validValues, subject: 'Partnerships' })).toBe(false)
     expect(isContactFormValid({ ...validValues, message: '' })).toBe(false)
     expect(isContactFormValid({ ...validValues, locale: 'fr' as ContactFormValues['locale'] })).toBe(false)

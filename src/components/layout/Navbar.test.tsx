@@ -142,7 +142,7 @@ describe('Navbar', () => {
     })
   })
 
-  describe('Story 6.2 — primary CTA (Schedule a Demo)', () => {
+  describe('Story 6.2 / 6.10 — primary CTA (Schedule a Demo)', () => {
     let scrollTargets: HTMLElement[]
     let stubSection: HTMLElement
 
@@ -156,7 +156,7 @@ describe('Navbar', () => {
         },
       })
       stubSection = document.createElement('section')
-      stubSection.id = 'demo-scheduler'
+      stubSection.id = 'agendar-demo'
       document.body.appendChild(stubSection)
     })
 
@@ -173,7 +173,7 @@ describe('Navbar', () => {
       expect(cta.className).not.toMatch(/bg-gradient-/)
     })
 
-    it('falls back to the legacy #demo-scheduler section when #agendar-demo is absent', async () => {
+    it('scrolls to #agendar-demo when the CTA is clicked', async () => {
       const user = userEvent.setup()
       renderNavbar()
       const cta = screen.getByRole('button', { name: /schedule a demo/i })
@@ -181,19 +181,21 @@ describe('Navbar', () => {
       expect(scrollTargets).toContain(stubSection)
     })
 
-    it('prefers #agendar-demo when present (spec target)', async () => {
+    it('does not look for the retired #demo-scheduler id (Story 6.10 fallback removed)', async () => {
       const user = userEvent.setup()
-      const newTarget = document.createElement('section')
-      newTarget.id = 'agendar-demo'
-      document.body.appendChild(newTarget)
+      // Drop the new target so only the legacy one exists — CTA must NOT scroll there.
+      stubSection.remove()
+      const legacy = document.createElement('section')
+      legacy.id = 'demo-scheduler'
+      document.body.appendChild(legacy)
       try {
         renderNavbar()
         const cta = screen.getByRole('button', { name: /schedule a demo/i })
         await user.click(cta)
-        expect(scrollTargets).toContain(newTarget)
-        expect(scrollTargets).not.toContain(stubSection)
+        expect(scrollTargets).not.toContain(legacy)
       } finally {
-        newTarget.remove()
+        legacy.remove()
+        document.body.appendChild(stubSection)
       }
     })
   })

@@ -17,7 +17,7 @@ export default function Footer() {
 
           <nav aria-label="Footer navigation" className="flex flex-col gap-2">
             <a href="/#hero" className="text-sm hover:text-white transition-colors">{t('nav.home', { defaultValue: 'Home' })}</a>
-            <a href="/#contact" className="text-sm hover:text-white transition-colors">{t('nav.contact', { defaultValue: 'Contact' })}</a>
+            <a href="/#contato" className="text-sm hover:text-white transition-colors">{t('nav.contact', { defaultValue: 'Contact' })}</a>
             <Link to="/privacy" className="text-sm hover:text-white transition-colors">{t('nav.privacy', { defaultValue: 'Privacy Policy' })}</Link>
           </nav>
 

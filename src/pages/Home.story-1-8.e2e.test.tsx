@@ -83,7 +83,7 @@ describe('Story 1.8 team visitor flow', () => {
       name: 'Sync Sirius team specialists',
     })
     const demoScheduler = await waitFor(() => {
-      const section = document.querySelector('#demo-scheduler')
+      const section = document.querySelector('#agendar-demo')
       expect(section).toBeInTheDocument()
       return section as HTMLElement
     })

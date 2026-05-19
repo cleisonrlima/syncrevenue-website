@@ -14,8 +14,8 @@ const SECTION_IDS = [
   '#security',
   '#clientes',
   '#equipe',
-  '#demo-scheduler',
-  '#contact',
+  '#agendar-demo',
+  '#contato',
 ]
 
 const HORIZONTAL_SCROLL_EXEMPT = new Set(['#comparison'])
@@ -114,7 +114,7 @@ test.describe('@P0 Mobile UX 375px', () => {
 
   test('demo form submit button is full-width on mobile', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
-    await page.locator('#demo-scheduler').scrollIntoViewIfNeeded()
+    await page.locator('#agendar-demo').scrollIntoViewIfNeeded()
 
     const submit = page.locator('#demo-form button[type="submit"]').first()
     await expect(submit).toBeVisible()
@@ -137,9 +137,9 @@ test.describe('@P0 Mobile UX 375px', () => {
 
   test('contact form submit button is full-width on mobile', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
-    await page.locator('#contact').scrollIntoViewIfNeeded()
+    await page.locator('#contato').scrollIntoViewIfNeeded()
 
-    const submit = page.locator('#contact button[type="submit"]').first()
+    const submit = page.locator('#contato button[type="submit"]').first()
     await expect(submit).toBeVisible()
     const widths = await submit.evaluate((btn) => {
       const form = btn.closest('form') as HTMLElement | null
@@ -207,7 +207,7 @@ test.describe('@P1 Mobile UX form layout below 640px', () => {
       await page.setViewportSize({ width: viewportWidth, height: 800 })
       await page.goto('/', { waitUntil: 'networkidle' })
 
-      for (const sectionId of ['#demo-scheduler', '#contact']) {
+      for (const sectionId of ['#agendar-demo', '#contato']) {
         await page.locator(sectionId).scrollIntoViewIfNeeded()
         const fieldRects = await page.locator(`${sectionId} form input, ${sectionId} form select, ${sectionId} form textarea`).evaluateAll((nodes) =>
           (nodes as HTMLElement[])

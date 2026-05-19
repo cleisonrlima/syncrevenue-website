@@ -35,8 +35,7 @@ export default function Hero() {
 
   const handleDemoCta = () => {
     try {
-      const target =
-        document.getElementById('agendar-demo') ?? document.getElementById('demo-scheduler')
+      const target = document.getElementById('agendar-demo')
       if (target) {
         target.scrollIntoView({ behavior: 'smooth' })
       } else if (typeof window !== 'undefined' && window.top !== window) {

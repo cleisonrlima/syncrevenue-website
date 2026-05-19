@@ -398,7 +398,7 @@
       "emailError": "Insira um endereço de e-mail válido",
       "subject": "Assunto / Serviço",
       "subjectPlaceholder": "Selecione uma área de serviço",
-      "subjectError": "Por favor, selecione uma área de serviço",
+      "subjectError": "Selecione um assunto",
       "subjectOptions": {
         "SyncRevenue": "SyncRevenue",
         "BI/Data Analytics": "BI/Analytics de Dados",
@@ -447,6 +447,7 @@
     "encryptedNote": "Conexão criptografada. Dados protegidos."
   },
   "demo": {
+    "sectionAriaLabel": "Agendar uma demonstração SyncRevenue",
     "eyebrow": "Agendar demonstração",
     "heading": {
       "text": "Veja o SyncRevenue rodando",
@@ -473,11 +474,44 @@
         "email":   { "label": "E-mail corporativo", "placeholder": "maria@suaagencia.com" },
         "company": { "label": "Agência",            "placeholder": "Nome da agência" },
         "phone":   { "label": "Telefone",           "placeholder": "+55 11 98765 4321", "optional": "(opcional)" },
-        "role":    { "label": "Seu cargo",          "placeholder": "Selecione" },
-        "gds":     { "label": "GDS principal",      "placeholder": "Selecione" },
-        "message": { "label": "Mensagem",           "placeholder": "Conte sobre seus desafios de reconciliação e comissões" }
+        "role":    {
+          "label": "Seu cargo",
+          "placeholder": "Selecione",
+          "options": {
+            "Owner": "Proprietário",
+            "Executive": "Executivo",
+            "Operations": "Operações",
+            "Finance": "Financeiro",
+            "Technology": "Tecnologia",
+            "Other": "Outro"
+          }
+        },
+        "gds":     {
+          "label": "GDS principal",
+          "placeholder": "Selecione",
+          "options": {
+            "Amadeus": "Amadeus",
+            "Sabre": "Sabre",
+            "Travelport (Galileo/Worldspan)": "Travelport (Galileo/Worldspan)",
+            "Other": "Outro"
+          }
+        },
+        "message": { "label": "Mensagem",           "placeholder": "Conte sobre seus desafios de reconciliação e comissões", "optional": "(opcional)" }
       },
-      "submit": "Agendar demonstração"
+      "submit": "Agendar demonstração",
+      "submitting": "Enviando...",
+      "errors": {
+        "name": "Nome completo é obrigatório",
+        "email": "Insira um endereço de e-mail válido",
+        "company": "Nome da agência é obrigatório",
+        "role": "Por favor, selecione seu cargo",
+        "gds": "Por favor, selecione seu GDS principal",
+        "generic": "Algo deu errado. Por favor, tente novamente."
+      },
+      "success": {
+        "title": "Solicitação recebida!",
+        "body": "Nossa equipe entrará em contato em até 1 dia útil."
+      }
     }
   },
   "contact": {

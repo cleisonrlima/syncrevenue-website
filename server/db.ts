@@ -29,7 +29,7 @@ export function initSchema(database: Database.Database = db): void {
       company TEXT NOT NULL,
       phone TEXT,
       role TEXT NOT NULL,
-      gds TEXT NOT NULL CHECK (gds IN ('Amadeus','Sabre','Galileo','Worldspan','Other','None yet')),
+      gds TEXT NOT NULL CHECK (gds IN ('Amadeus','Sabre','Travelport (Galileo/Worldspan)','Galileo','Worldspan','Other','None yet')),
       message TEXT,
       locale TEXT NOT NULL CHECK (locale IN ('en','pt-BR','es')),
       status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','contacted','qualified')),
@@ -103,6 +103,37 @@ export function initSchema(database: Database.Database = db): void {
     if (!/duplicate column name: token_version/i.test(message)) {
       throw err
     }
+  }
+
+  // Story 6.10: extend demo_requests.gds CHECK to accept the merged
+  // "Travelport (Galileo/Worldspan)" label. SQLite can't ALTER a CHECK
+  // constraint in place, so rebuild the table when the live schema string
+  // doesn't yet contain the new value. Idempotent — runs once.
+  const liveDemoSchema = database
+    .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='demo_requests'")
+    .get() as { sql?: string } | undefined
+  if (liveDemoSchema?.sql && !liveDemoSchema.sql.includes('Travelport')) {
+    database.exec(`
+      BEGIN;
+      CREATE TABLE demo_requests_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        company TEXT NOT NULL,
+        phone TEXT,
+        role TEXT NOT NULL,
+        gds TEXT NOT NULL CHECK (gds IN ('Amadeus','Sabre','Travelport (Galileo/Worldspan)','Galileo','Worldspan','Other','None yet')),
+        message TEXT,
+        locale TEXT NOT NULL CHECK (locale IN ('en','pt-BR','es')),
+        status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','contacted','qualified')),
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      INSERT INTO demo_requests_new SELECT * FROM demo_requests;
+      DROP TABLE demo_requests;
+      ALTER TABLE demo_requests_new RENAME TO demo_requests;
+      COMMIT;
+    `)
   }
 }
 

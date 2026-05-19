@@ -241,4 +241,45 @@ describe('POST /api/demo', () => {
     expect(countDemoRequests().count).toBe(1)
     expect(sendNotificationMock).toHaveBeenCalledTimes(1)
   })
+
+  describe('Story 6.10 — GDS enum reconciliation', () => {
+    it('accepts the merged Travelport (Galileo/Worldspan) label', async () => {
+      const response = await request(app, {
+        method: 'POST',
+        path: '/api/demo',
+        body: { ...validPayload, gds: 'Travelport (Galileo/Worldspan)', email: 'travelport@example.com' },
+        remoteAddress: '127.0.2.10',
+      })
+      expect(response.status).toBe(201)
+      expect(countDemoRequests().count).toBe(1)
+    })
+
+    it.each(['Galileo', 'Worldspan', 'None yet'])(
+      'accepts legacy gds value "%s" for back-compat',
+      async legacy => {
+        const response = await request(app, {
+          method: 'POST',
+          path: '/api/demo',
+          body: { ...validPayload, gds: legacy, email: `${legacy.replace(/\W/g, '-').toLowerCase()}@example.com` },
+          remoteAddress: '127.0.2.11',
+        })
+        expect(response.status).toBe(201)
+      },
+    )
+
+    it('returns 400 for an unknown gds string', async () => {
+      const response = await request(app, {
+        method: 'POST',
+        path: '/api/demo',
+        body: { ...validPayload, gds: 'SomeNonsenseGDS', email: 'unknown@example.com' },
+        remoteAddress: '127.0.2.12',
+      })
+      expect(response.status).toBe(400)
+      expect(response.json()).toEqual({
+        success: false,
+        message: 'Invalid demo request',
+        field: 'gds',
+      })
+    })
+  })
 })

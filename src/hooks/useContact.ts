@@ -7,12 +7,17 @@ export type ContactStatus = 'idle' | 'submitting' | 'success' | 'error'
 export type ContactLocale = ContactPayload['locale']
 export type ContactFormValues = ContactPayload
 
+/**
+ * Story 6.11 — Subject routing enum reconciled to the design-handoff intents
+ * (commercial / support / partnerships / press / other). Replaces the prior
+ * service-shaped enum from Story 2.3. Server schema mirrors this list.
+ */
 export const CONTACT_SUBJECT_OPTIONS = [
-  'SyncRevenue',
-  'BI/Data Analytics',
-  'OBTs',
-  'Custom Development',
-  'Other',
+  'commercial',
+  'support',
+  'partnerships',
+  'press',
+  'other',
 ] as const
 const LOCALE_OPTIONS = ['en', 'pt-BR', 'es'] as const
 const identityT = ((key: string) => key) as TFunction
@@ -28,7 +33,7 @@ export function createContactSchema(t: TFunction) {
     name: z.string().trim().min(1, t('forms.contact.nameError', { defaultValue: 'Full name is required' })),
     email: z.string().trim().email(t('forms.contact.emailError', { defaultValue: 'Enter a valid email address' })),
     subject: z.enum(CONTACT_SUBJECT_OPTIONS, {
-      errorMap: () => ({ message: t('forms.contact.subjectError', { defaultValue: 'Please select a service area' }) }),
+      errorMap: () => ({ message: t('forms.contact.subjectError', { defaultValue: 'Please select a subject' }) }),
     }),
     message: z.string().trim().min(1, t('forms.contact.messageError', { defaultValue: 'Message is required' })),
     locale: z.enum(LOCALE_OPTIONS),

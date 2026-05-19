@@ -1,305 +1,200 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  CONTACT_SUBJECT_OPTIONS,
-  createContactSchema,
-  useContact,
-  type ContactFormValues,
-} from '@/hooks/useContact'
-import { useLocaleStore } from '@/store/useLocaleStore'
+import { type ReactNode } from 'react'
 import MotionSection from './MotionSection'
-import GradientButton from '@/components/ui/GradientButton'
-import SectionHeader from '@/components/ui/SectionHeader'
-import { cn } from '@/lib/utils'
+import ContactForm from './ContactForm'
 
-type FieldName = keyof Pick<ContactFormValues, 'name' | 'email' | 'subject' | 'message'>
-type FieldErrors = Partial<Record<FieldName, string>>
-const FIELD_NAMES: FieldName[] = ['name', 'email', 'subject', 'message']
+type ChannelKind = 'email' | 'phone' | 'address'
 
-const initialValues: ContactFormValues = {
-  name: '',
-  email: '',
-  subject: '',
-  message: '',
-  locale: 'en',
+type Channel = {
+  label: string
+  value: string
+  kind: ChannelKind
 }
 
-function textInputClasses(hasError: boolean) {
-  return cn(
-    'mt-2 w-full rounded-lg border bg-white px-4 py-3 text-base text-brand-navy shadow-sm',
-    'min-h-11 placeholder:text-brand-slate/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-electric-blue',
-    hasError ? 'border-destructive' : 'border-brand-slate/25'
+const ICON_BOX_CLASS =
+  'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[9px] text-[var(--accent-soft)] bg-[var(--accent-dim)]'
+
+const ChannelIcon = ({ kind }: { kind: ChannelKind }) => {
+  const stroke = {
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 2,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    width: 16,
+    height: 16,
+  }
+  if (kind === 'email') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" {...stroke}>
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+        <polyline points="22,6 12,13 2,6" />
+      </svg>
+    )
+  }
+  if (kind === 'phone') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" {...stroke}>
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" {...stroke}>
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
   )
+}
+
+const ClockIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    focusable="false"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    width={18}
+    height={18}
+  >
+    <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+    <polyline points="22,4 12,14.01 9,11.01" />
+  </svg>
+)
+
+function ChannelRow({ channel }: { channel: Channel }) {
+  const labelNode = (
+    <div>
+      <div className="text-[12px] font-semibold uppercase tracking-[0.04em] text-white/55">
+        {channel.label}
+      </div>
+      <div className="mt-[2px] text-[14px] leading-[1.5] text-[var(--accent-soft)]">
+        {channel.value}
+      </div>
+    </div>
+  )
+
+  const wrapClass =
+    'channel flex items-center gap-[14px] rounded-[10px] px-[12px] py-[10px] no-underline transition-colors duration-150 hover:bg-white/[0.025]'
+
+  const icon = (
+    <div className={ICON_BOX_CLASS}>
+      <ChannelIcon kind={channel.kind} />
+    </div>
+  )
+
+  let valueWrap: ReactNode = labelNode
+  let row: ReactNode
+
+  if (channel.kind === 'email') {
+    row = (
+      <a className={wrapClass} href={`mailto:${channel.value}`}>
+        {icon}
+        {valueWrap}
+      </a>
+    )
+  } else if (channel.kind === 'phone') {
+    const telHref = `tel:${channel.value.replace(/[^+\d]/g, '')}`
+    row = (
+      <a className={wrapClass} href={telHref}>
+        {icon}
+        {valueWrap}
+      </a>
+    )
+  } else {
+    valueWrap = (
+      <div>
+        <div className="text-[12px] font-semibold uppercase tracking-[0.04em] text-white/55">
+          {channel.label}
+        </div>
+        <span className="mt-[2px] block text-[14px] leading-[1.5] text-white/80">
+          {channel.value}
+        </span>
+      </div>
+    )
+    row = (
+      <div className={wrapClass}>
+        {icon}
+        {valueWrap}
+      </div>
+    )
+  }
+
+  return row
 }
 
 export default function Contact() {
   const { t } = useTranslation()
-  const locale = useLocaleStore(state => state.locale)
-  const { status, error, isSubmitting, submitContact } = useContact()
-  const [values, setValues] = useState<ContactFormValues>({ ...initialValues, locale })
-  const [errors, setErrors] = useState<FieldErrors>({})
-  const successRef = useRef<HTMLDivElement | null>(null)
-  const contactSchema = useMemo(() => createContactSchema(t), [t])
 
-  useEffect(() => {
-    setValues(current => ({ ...current, locale }))
-  }, [locale])
-
-  useEffect(() => {
-    if (status === 'success') {
-      successRef.current?.focus()
-    }
-  }, [status])
-
-  const validateAll = useCallback(
-    (nextValues: ContactFormValues): FieldErrors => {
-      const result = contactSchema.safeParse(nextValues)
-      if (result.success) {
-        return {}
-      }
-
-      return result.error.issues.reduce<FieldErrors>((nextErrors, issue) => {
-        const field = issue.path[0]
-        if (typeof field === 'string' && FIELD_NAMES.includes(field as FieldName)) {
-          nextErrors[field as FieldName] ??= issue.message
-        }
-        return nextErrors
-      }, {})
-    },
-    [contactSchema]
-  )
-
-  useEffect(() => {
-    setErrors(current => {
-      const visibleFields = FIELD_NAMES.filter(field => current[field])
-      if (visibleFields.length === 0) {
-        return current
-      }
-
-      const nextErrors = validateAll(values)
-      return visibleFields.reduce<FieldErrors>((updatedErrors, field) => {
-        updatedErrors[field] = nextErrors[field]
-        return updatedErrors
-      }, {})
-    })
-  }, [validateAll, values])
-
-  function validateField(name: FieldName, nextValues = values): string | undefined {
-    return validateAll(nextValues)[name]
-  }
-
-  function hasErrors(nextErrors: FieldErrors) {
-    return FIELD_NAMES.some(field => Boolean(nextErrors[field]))
-  }
-
-  function handleBlur(field: FieldName) {
-    setErrors(current => {
-      const nextError = validateField(field)
-      if (current[field] === nextError) {
-        return current
-      }
-      return {
-        ...current,
-        [field]: nextError,
-      }
-    })
-  }
-
-  function setField(name: keyof ContactFormValues, value: string) {
-    setValues(current => {
-      const nextValues = { ...current, [name]: value }
-
-      if (FIELD_NAMES.includes(name as FieldName)) {
-        const fieldName = name as FieldName
-        setErrors(currentErrors =>
-          currentErrors[fieldName] === undefined
-            ? currentErrors
-            : { ...currentErrors, [fieldName]: validateField(fieldName, nextValues) }
-        )
-      }
-
-      return nextValues
-    })
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const nextValues = { ...values, locale: useLocaleStore.getState().locale }
-    const nextErrors = validateAll(nextValues)
-    setErrors(nextErrors)
-
-    if (hasErrors(nextErrors)) {
-      return
-    }
-
-    await submitContact(nextValues)
-  }
-
-  const canSubmit = contactSchema.safeParse(values).success && !isSubmitting
-  const formError =
-    status === 'error'
-      ? error?.status === 429
-        ? t('forms.contact.errorRateLimit', { defaultValue: 'Too many contact requests. Please wait a minute and try again.' })
-        : t('forms.contact.errorGeneric', { defaultValue: 'Something went wrong. Please try again.' })
-      : null
+  const channels: Channel[] = [0, 1, 2].map(i => ({
+    label: t(`contact.channels.${i}.label`),
+    value: t(`contact.channels.${i}.value`),
+    kind: t(`contact.channels.${i}.kind`) as ChannelKind,
+  }))
 
   return (
-    <MotionSection id="contact" aria-labelledby="contact-heading" className="bg-brand-mist py-20">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow={t('forms.contact.eyebrow', { defaultValue: 'General Inquiries' })}
-          heading={t('forms.contact.heading', { defaultValue: 'Contact Sync Sirius' })}
-          subtext={t('forms.contact.subtext', { defaultValue: 'Send your question to the right Sync Sirius service team.' })}
-          headingId="contact-heading"
-          className="mb-10"
-        />
-
-        {status === 'success' ? (
-          <div
-            ref={successRef}
-            role="status"
-            aria-live="polite"
-            tabIndex={-1}
-            className="mx-auto max-w-2xl rounded-lg border border-brand-electric-blue/20 bg-white p-8 text-center shadow-sm"
-          >
-            <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.successTitle', { defaultValue: 'Message sent!' })}</h3>
-            <p className="mt-3 text-base leading-7 text-brand-slate">{t('forms.contact.successBody', { defaultValue: 'We received your inquiry and will route it to the right team.' })}</p>
-          </div>
-        ) : (
-          <div className="mx-auto max-w-2xl">
-            <form
-              aria-label={t('forms.contact.title', { defaultValue: 'Contact Us' })}
-              className="grid gap-5 rounded-lg border border-brand-slate/20 bg-white p-6 shadow-sm sm:p-8"
-              onSubmit={handleSubmit}
-              noValidate
-            >
-              <h3 className="text-2xl font-bold text-brand-navy">{t('forms.contact.title', { defaultValue: 'Contact Us' })}</h3>
-
-              <Field id="contact-name" label={t('forms.contact.name', { defaultValue: 'Full Name' })} required error={errors.name}>
-                <input
-                  id="contact-name"
-                  name="name"
-                  value={values.name}
-                  onChange={event => setField('name', event.target.value)}
-                  onBlur={() => handleBlur('name')}
-                  aria-required="true"
-                  aria-invalid={errors.name ? 'true' : undefined}
-                  aria-describedby={errors.name ? 'contact-name-error' : undefined}
-                  className={textInputClasses(Boolean(errors.name))}
-                  autoComplete="name"
-                  required
-                />
-              </Field>
-
-              <Field id="contact-email" label={t('forms.contact.email', { defaultValue: 'Email Address' })} required error={errors.email}>
-                <input
-                  id="contact-email"
-                  name="email"
-                  type="email"
-                  value={values.email}
-                  onChange={event => setField('email', event.target.value)}
-                  onBlur={() => handleBlur('email')}
-                  aria-required="true"
-                  aria-invalid={errors.email ? 'true' : undefined}
-                  aria-describedby={errors.email ? 'contact-email-error' : undefined}
-                  className={textInputClasses(Boolean(errors.email))}
-                  autoComplete="email"
-                  required
-                />
-              </Field>
-
-              <Field id="contact-subject" label={t('forms.contact.subject', { defaultValue: 'Subject / Service' })} required error={errors.subject}>
-                <select
-                  id="contact-subject"
-                  name="subject"
-                  value={values.subject}
-                  onChange={event => setField('subject', event.target.value)}
-                  onBlur={() => handleBlur('subject')}
-                  aria-required="true"
-                  aria-invalid={errors.subject ? 'true' : undefined}
-                  aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
-                  className={textInputClasses(Boolean(errors.subject))}
-                  required
-                >
-                  <option value="">{t('forms.contact.subjectPlaceholder', { defaultValue: 'Select a service area' })}</option>
-                  {CONTACT_SUBJECT_OPTIONS.map(option => (
-                    <option key={option} value={option}>
-                      {t(`forms.contact.subjectOptions.${option}`)}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-
-              <Field id="contact-message" label={t('forms.contact.message', { defaultValue: 'Message' })} required error={errors.message}>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  value={values.message}
-                  onChange={event => setField('message', event.target.value)}
-                  onBlur={() => handleBlur('message')}
-                  aria-required="true"
-                  aria-invalid={errors.message ? 'true' : undefined}
-                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
-                  className={cn(textInputClasses(Boolean(errors.message)), 'min-h-36 resize-y')}
-                  placeholder={t('forms.contact.messagePlaceholder', { defaultValue: 'Tell us what you need help with' })}
-                  required
-                />
-              </Field>
-
-              <input type="hidden" name="locale" value={values.locale} readOnly />
-
-              <GradientButton type="submit" size="lg" disabled={!canSubmit} className="w-full min-h-[44px] sm:w-auto sm:justify-self-start whitespace-nowrap">
-                {isSubmitting && (
-                  <span
-                    aria-hidden="true"
-                    className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white align-[-2px]"
-                  />
-                )}
-                {isSubmitting ? t('forms.contact.submitting', { defaultValue: 'Sending...' }) : t('forms.contact.submit', { defaultValue: 'Send Message' })}
-              </GradientButton>
-            </form>
-
-            {formError && (
-              <p className="mt-4 text-sm font-medium text-destructive" aria-live="polite">
-                {formError}
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-    </MotionSection>
-  )
-}
-
-function Field({
-  id,
-  label,
-  required,
-  error,
-  children,
-}: {
-  id: string
-  label: string
-  required?: boolean
-  error?: string
-  children: ReactNode
-}) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-semibold text-brand-navy">
-        {label}
-        {required && (
-          <span aria-hidden="true" className="ml-1 text-destructive">
-            *
+    <MotionSection
+      id="contato"
+      role="region"
+      aria-labelledby="contact-heading"
+      className="sec relative bg-[var(--bg)] text-white"
+    >
+      <div className="sec-inner mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <header className="sec-head mb-[40px] max-w-[720px]">
+          <span className="sec-eyebrow text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--accent-soft)]">
+            {t('contact.eyebrow', { defaultValue: 'Contact' })}
           </span>
-        )}
-      </label>
-      {children}
-      {error && (
-        <p id={`${id}-error`} className="mt-2 text-sm text-destructive">
-          {error}
-        </p>
-      )}
-    </div>
+          <h2
+            id="contact-heading"
+            className="sec-h mt-[10px] text-[clamp(28px,3.4vw,40px)] font-bold leading-[1.15] text-white"
+          >
+            {t('contact.heading.text', { defaultValue: 'Talk to' })}{' '}
+            <span className="accent text-[var(--accent-soft)]">
+              {t('contact.heading.accent', { defaultValue: 'SyncSirius' })}
+            </span>
+          </h2>
+          <p className="sec-sub mt-[14px] text-[15px] leading-[1.6] text-white/65">
+            {t('contact.subhead', {
+              defaultValue:
+                'For commercial questions, support, partnerships, or press — your message reaches the right team.',
+            })}
+          </p>
+        </header>
+
+        <div className="form-grid grid max-w-[1180px] grid-cols-1 items-start gap-[40px] min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
+          <aside className="form-info">
+            <div className="channels flex flex-col gap-[18px]">
+              {channels.map((channel, idx) => (
+                <ChannelRow key={idx} channel={channel} />
+              ))}
+            </div>
+
+            <div className="info-card mt-[24px] flex items-start gap-[14px] rounded-[12px] border border-[var(--line-strong)] bg-white/[0.025] p-[16px]">
+              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+                <ClockIcon />
+              </div>
+              <div>
+                <div className="info-card-t text-[13px] font-semibold text-white">
+                  {t('contact.infoCard.title', { defaultValue: 'Average response time' })}
+                </div>
+                <div className="info-card-s mt-[3px] text-[13px] text-white/60">
+                  {t('contact.infoCard.subtitle', {
+                    defaultValue: 'Under 4 hours on business days.',
+                  })}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div>
+            <ContactForm />
+          </div>
+        </div>
+      </div>
+
+    </MotionSection>
   )
 }

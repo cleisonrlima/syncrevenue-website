@@ -28,9 +28,9 @@ describe('Home', () => {
       name: 'Sync Sirius team specialists',
     }, { timeout: 3000 })
     await waitFor(() => {
-      expect(container.querySelector('#demo-scheduler')).toBeInTheDocument()
+      expect(container.querySelector('#agendar-demo')).toBeInTheDocument()
     }, { timeout: 3000 })
-    const demoScheduler = container.querySelector('#demo-scheduler') as HTMLElement
+    const demoScheduler = container.querySelector('#agendar-demo') as HTMLElement
 
     expect(syncRevenue).toHaveAttribute('id', 'syncrevenue')
     expect(services).toHaveAttribute('id', 'services')
@@ -38,7 +38,7 @@ describe('Home', () => {
     expect(security).toHaveAttribute('id', 'security')
     expect(clientReferences).toHaveAttribute('id', 'clientes')
     expect(team).toHaveAttribute('id', 'equipe')
-    expect(demoScheduler).toHaveAttribute('id', 'demo-scheduler')
+    expect(demoScheduler).toHaveAttribute('id', 'agendar-demo')
     expect(syncRevenue.compareDocumentPosition(services)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(services.compareDocumentPosition(comparison)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(comparison.compareDocumentPosition(security)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)

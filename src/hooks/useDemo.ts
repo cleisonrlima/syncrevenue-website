@@ -7,10 +7,28 @@ export type DemoStatus = 'idle' | 'submitting' | 'success' | 'error'
 export type DemoLocale = DemoPayload['locale']
 export type DemoFormValues = DemoPayload
 
+// Story 6.10: canonical demo GDS dropdown options (4-value list — Travelport
+// merges legacy Galileo + Worldspan per design-handoff chat line 273).
+export const DEMO_GDS_OPTIONS = [
+  'Amadeus',
+  'Sabre',
+  'Travelport (Galileo/Worldspan)',
+  'Other',
+] as const
+
+// Story 6.10: legacy GDS values still accepted on the wire for back-compat
+// with pre-rename production demo records. New submissions emit canonical.
+export const DEMO_GDS_LEGACY_VALUES = ['Galileo', 'Worldspan', 'None yet'] as const
+
+// Legacy union still consumed by CommissionAudit + admin lead types — kept
+// intact so non-demo callers don't pick up the merged Travelport label.
 export const GDS_OPTIONS = ['Amadeus', 'Sabre', 'Galileo', 'Worldspan', 'Other', 'None yet'] as const
+
 export const ROLE_OPTIONS = ['Owner', 'Executive', 'Operations', 'Finance', 'Technology', 'Other'] as const
 const LOCALE_OPTIONS = ['en', 'pt-BR', 'es'] as const
 const identityT = ((key: string) => key) as TFunction
+
+const DEMO_GDS_ACCEPTED = [...DEMO_GDS_OPTIONS, ...DEMO_GDS_LEGACY_VALUES] as const
 
 type DemoError = {
   message: string
@@ -20,15 +38,15 @@ type DemoError = {
 
 export function createDemoSchema(t: TFunction) {
   return z.object({
-    name: z.string().trim().min(1, t('forms.demo.nameError', { defaultValue: 'Full name is required' })),
-    email: z.string().trim().email(t('forms.demo.emailError', { defaultValue: 'Enter a valid email address' })),
-    company: z.string().trim().min(1, t('forms.demo.companyError', { defaultValue: 'Company name is required' })),
+    name: z.string().trim().min(1, t('demo.form.errors.name', { defaultValue: 'Full name is required' })),
+    email: z.string().trim().email(t('demo.form.errors.email', { defaultValue: 'Enter a valid email address' })),
+    company: z.string().trim().min(1, t('demo.form.errors.company', { defaultValue: 'Agency name is required' })),
     phone: z.string(),
     role: z.enum(ROLE_OPTIONS, {
-      errorMap: () => ({ message: t('forms.demo.roleError', { defaultValue: 'Please select your role' }) }),
+      errorMap: () => ({ message: t('demo.form.errors.role', { defaultValue: 'Please select your role' }) }),
     }),
-    gds: z.enum(GDS_OPTIONS, {
-      errorMap: () => ({ message: t('forms.demo.gdsError', { defaultValue: 'Please select your primary GDS' }) }),
+    gds: z.enum(DEMO_GDS_ACCEPTED, {
+      errorMap: () => ({ message: t('demo.form.errors.gds', { defaultValue: 'Please select your primary GDS' }) }),
     }),
     message: z.string(),
     locale: z.enum(LOCALE_OPTIONS),

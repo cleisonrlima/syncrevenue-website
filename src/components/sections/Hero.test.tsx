@@ -51,9 +51,9 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
     })
   })
 
-  describe('Primary CTA scroll fallback chain', () => {
+  describe('Primary CTA scrolls to #agendar-demo (Story 6.10 — fallback retired)', () => {
     let scrollTargets: HTMLElement[]
-    let demoSchedulerStub: HTMLElement
+    let demoStub: HTMLElement
 
     beforeEach(() => {
       scrollTargets = []
@@ -64,35 +64,39 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
           scrollTargets.push(this)
         },
       })
-      demoSchedulerStub = document.createElement('section')
-      demoSchedulerStub.id = 'demo-scheduler'
-      document.body.appendChild(demoSchedulerStub)
+      demoStub = document.createElement('section')
+      demoStub.id = 'agendar-demo'
+      document.body.appendChild(demoStub)
     })
 
     afterEach(() => {
-      demoSchedulerStub.remove()
+      demoStub.remove()
       vi.restoreAllMocks()
     })
 
-    it('falls back to #demo-scheduler when #agendar-demo is absent', async () => {
+    it('scrolls to #agendar-demo when present', async () => {
       const user = userEvent.setup()
       renderHero()
       await user.click(screen.getByTestId('hero-primary-cta'))
-      expect(scrollTargets).toContain(demoSchedulerStub)
+      expect(scrollTargets).toContain(demoStub)
     })
 
-    it('prefers #agendar-demo when present', async () => {
+    it('does not look for the retired #demo-scheduler id', async () => {
       const user = userEvent.setup()
-      const newTarget = document.createElement('section')
-      newTarget.id = 'agendar-demo'
-      document.body.appendChild(newTarget)
+      // Construct a sibling with the legacy id — must NOT be scrolled to.
+      const legacy = document.createElement('section')
+      legacy.id = 'demo-scheduler'
+      document.body.appendChild(legacy)
+      // Remove the new target so the only candidate is the legacy stub
+      demoStub.remove()
       try {
         renderHero()
         await user.click(screen.getByTestId('hero-primary-cta'))
-        expect(scrollTargets).toContain(newTarget)
-        expect(scrollTargets).not.toContain(demoSchedulerStub)
+        expect(scrollTargets).not.toContain(legacy)
       } finally {
-        newTarget.remove()
+        legacy.remove()
+        // Re-append demoStub so afterEach can remove it cleanly
+        document.body.appendChild(demoStub)
       }
     })
   })

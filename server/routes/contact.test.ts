@@ -20,7 +20,7 @@ let currentTempDir: string | undefined
 const validPayload = {
   name: 'Jane Smith',
   email: 'jane@example.com',
-  subject: 'BI/Data Analytics',
+  subject: 'support',
   message: 'We need analytics help for agency revenue reporting.',
   locale: 'pt-BR',
 }
@@ -89,18 +89,18 @@ describe('POST /api/contact', () => {
       {
         name: 'Jane Smith',
         email: 'jane@example.com',
-        subject: 'BI/Data Analytics',
+        subject: 'support',
         message: 'We need analytics help for agency revenue reporting.',
         locale: 'pt-BR',
       },
     ])
     expect(sendNotificationMock).toHaveBeenCalledTimes(1)
     expect(sendNotificationMock).toHaveBeenCalledWith(
-      'New Contact — BI/Data Analytics',
+      'New Contact — support',
       [
         'Name: Jane Smith',
         'Email: jane@example.com',
-        'Subject: BI/Data Analytics',
+        'Subject: support',
         'Message: We need analytics help for agency revenue reporting.',
         'Locale: pt-BR',
         `Timestamp: ${contactRows()[0].created_at}`,
@@ -119,7 +119,7 @@ describe('POST /api/contact', () => {
     const duplicate = await request(app, {
       method: 'POST',
       path: '/api/contact',
-      body: { ...validPayload, subject: 'Custom Development' },
+      body: { ...validPayload, subject: 'partnerships' },
       remoteAddress: '127.0.3.3',
     })
 

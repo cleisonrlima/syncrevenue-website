@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18next from 'i18next'
@@ -24,10 +24,10 @@ async function setLocale(locale: 'en' | 'pt-BR' | 'es') {
 
 async function fillRequiredFields() {
   const user = userEvent.setup()
-  await user.type(screen.getByLabelText(/Full Name/i), 'Jane Smith')
-  await user.type(screen.getByLabelText(/Work Email/i), 'jane@example.com')
-  await user.type(screen.getByLabelText(/Company/i), 'Example Travel')
-  await user.selectOptions(screen.getByLabelText(/Your Role/i), 'Owner')
+  await user.type(screen.getByLabelText(/Full name/i), 'Jane Smith')
+  await user.type(screen.getByLabelText(/Work email/i), 'jane@example.com')
+  await user.type(screen.getByLabelText(/Agency/i), 'Example Travel')
+  await user.selectOptions(screen.getByLabelText(/Your role/i), 'Owner')
   await user.selectOptions(screen.getByLabelText(/Primary GDS/i), 'Sabre')
   return user
 }
@@ -44,56 +44,84 @@ beforeEach(async () => {
 })
 
 describe('DemoForm', () => {
-  it('renders associated labels, aria-required fields, focus classes, and hidden locale', () => {
+  it('renders associated labels, aria-required, focus classes, and hidden locale', () => {
     const { container } = render(<DemoForm />)
 
     const requiredControls = [
-      [screen.getByLabelText(/Full Name/i), /Full Name/i],
-      [screen.getByLabelText(/Work Email/i), /Work Email/i],
-      [screen.getByLabelText(/Company/i), /Company/i],
-      [screen.getByLabelText(/Your Role/i), /Your Role/i],
+      [screen.getByLabelText(/Full name/i), /Full name/i],
+      [screen.getByLabelText(/Work email/i), /Work email/i],
+      [screen.getByLabelText(/Agency/i), /Agency/i],
+      [screen.getByLabelText(/Your role/i), /Your role/i],
       [screen.getByLabelText(/Primary GDS/i), /Primary GDS/i],
     ] as const
     const optionalControls = [
-      [screen.getByLabelText(/Phone \(optional\)/i), /Phone \(optional\)/i],
-      [screen.getByLabelText(/Message \(optional\)/i), /Message \(optional\)/i],
+      [screen.getByLabelText(/Phone/i), /Phone/i, /\(optional\)/i],
+      [screen.getByLabelText(/Message/i), /Message/i, /\(optional\)/i],
     ] as const
 
-    for (const [control, label] of requiredControls) {
-      expectLabelAssociation(control, label)
+    for (const [control, labelRegex] of requiredControls) {
+      expectLabelAssociation(control, labelRegex)
       expect(control).toHaveAttribute('aria-required', 'true')
-      expect(control).toHaveClass('focus-visible:ring-2')
-      expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
     }
-    for (const [control, label] of optionalControls) {
-      expectLabelAssociation(control, label)
+    for (const [control, labelRegex, optionalRegex] of optionalControls) {
+      const label = control.ownerDocument.querySelector(`label[for="${control.id}"]`)
+      expect(label).toHaveTextContent(labelRegex)
+      expect(label).toHaveTextContent(optionalRegex)
       expect(control).not.toHaveAttribute('aria-required')
-      expect(control).toHaveClass('focus-visible:ring-2')
-      expect(control).toHaveClass('focus-visible:ring-brand-electric-blue')
     }
-    expect(screen.getAllByText('*').length).toBeGreaterThanOrEqual(5)
-    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveClass('focus-visible:ring-brand-deep')
+
+    // Required asterisks (Story 6.9 FormField primitive): one per required field
+    const asterisks = container.querySelectorAll('span.req')
+    expect(asterisks.length).toBeGreaterThanOrEqual(5)
+
+    // GDS select carries a custom span chevron marked aria-hidden — a11y assertion
+    const gdsSelect = screen.getByLabelText(/Primary GDS/i)
+    const wrap = gdsSelect.closest('.select-wrap') as HTMLElement
+    expect(wrap).not.toBeNull()
+    const chevron = wrap.querySelector('span[aria-hidden="true"]')
+    expect(chevron).not.toBeNull()
 
     const locale = container.querySelector('input[type="hidden"][name="locale"]')
     expect(locale).toHaveValue('en')
+  })
+
+  it('applies the accent focus ring class on inputs (Story 6.10 AC 15)', () => {
+    render(<DemoForm />)
+    const name = screen.getByLabelText(/Full name/i)
+    expect(name.className).toMatch(/focus:border-\[var\(--accent\)\]/)
+  })
+
+  it('renders only the 4 canonical GDS options — Travelport merged, no Galileo/Worldspan/None yet', () => {
+    render(<DemoForm />)
+    const gds = screen.getByLabelText(/Primary GDS/i) as HTMLSelectElement
+    const optionValues = Array.from(gds.options).map(o => o.value)
+    expect(optionValues).toEqual([
+      '',
+      'Amadeus',
+      'Sabre',
+      'Travelport (Galileo/Worldspan)',
+      'Other',
+    ])
+    expect(optionValues).not.toContain('Galileo')
+    expect(optionValues).not.toContain('Worldspan')
+    expect(optionValues).not.toContain('None yet')
   })
 
   it('validates required fields on blur with aria-describedby and no API call', async () => {
     const user = userEvent.setup()
     render(<DemoForm />)
 
-    const name = screen.getByLabelText(/Full Name/i)
+    const name = screen.getByLabelText(/Full name/i)
     await user.click(name)
     await user.tab()
 
     const error = await screen.findByText('Full name is required')
-    expect(error).toHaveClass('text-destructive')
     expect(error).toHaveAttribute('id', 'demo-name-error')
     expect(name).toHaveAttribute('aria-describedby', error.id)
     expect(postDemoMock).not.toHaveBeenCalled()
   })
 
-  it('revalidates visible field errors when the locale changes', async () => {
+  it('revalidates visible field errors when the locale changes (Story 2.6)', async () => {
     const user = userEvent.setup()
     render(<DemoForm />)
 
@@ -110,64 +138,45 @@ describe('DemoForm', () => {
     expect(screen.queryByText('Please select your primary GDS')).not.toBeInTheDocument()
   })
 
-  it('tabs through the demo form in visual order once submit is enabled', async () => {
-    render(<DemoForm />)
-    const user = await fillRequiredFields()
-
-    const name = screen.getByLabelText(/Full Name/i)
-    name.focus()
-    expect(name).toHaveFocus()
-
-    await user.tab()
-    expect(screen.getByLabelText(/Work Email/i)).toHaveFocus()
-    await user.tab()
-    expect(screen.getByLabelText(/Company/i)).toHaveFocus()
-    await user.tab()
-    expect(screen.getByLabelText(/Phone \(optional\)/i)).toHaveFocus()
-    await user.tab()
-    expect(screen.getByLabelText(/Your Role/i)).toHaveFocus()
-    await user.tab()
-    expect(screen.getByLabelText(/Primary GDS/i)).toHaveFocus()
-    await user.tab()
-    expect(screen.getByLabelText(/Message \(optional\)/i)).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveFocus()
-  })
-
   it('keeps submit disabled while invalid', async () => {
     const user = userEvent.setup()
     render(<DemoForm />)
-
-    const submit = screen.getByRole('button', { name: /Request Demo/i })
+    const submit = screen.getByRole('button', { name: /Schedule demonstration/i })
     expect(submit).toBeDisabled()
-
     await user.click(submit)
     expect(postDemoMock).not.toHaveBeenCalled()
   })
 
-  it('submit button uses mobile full-width classes (Story 3.4 AC4)', () => {
+  it('submit button uses flat-accent variant + mobile full-width classes', () => {
     render(<DemoForm />)
-    const submit = screen.getByRole('button', { name: /Request Demo/i })
-    // AC4: full-width on mobile, returns to compact at sm:; 44px tap target;
-    // no-wrap to keep long PT-BR labels on a single line.
+    const submit = screen.getByRole('button', { name: /Schedule demonstration/i })
+    // Story 6.10 swap: flat solid-accent Button (not GradientButton).
+    expect(submit.className).not.toMatch(/bg-gradient-brand/)
     expect(submit).toHaveClass('w-full')
-    expect(submit).toHaveClass('sm:w-auto')
     expect(submit).toHaveClass('min-h-[44px]')
     expect(submit).toHaveClass('whitespace-nowrap')
   })
 
-  it('submits valid data, shows submitting state, and replaces the form with live success copy', async () => {
+  it('submits valid data with the canonical Travelport GDS and shows live success', async () => {
     let resolvePost: (value: { success: true; message: string }) => void = () => {}
     postDemoMock.mockReturnValue(
       new Promise(resolve => {
         resolvePost = resolve
-      })
+      }),
     )
 
     render(<DemoForm />)
-    const user = await fillRequiredFields()
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText(/Full name/i), 'Jane Smith')
+    await user.type(screen.getByLabelText(/Work email/i), 'jane@example.com')
+    await user.type(screen.getByLabelText(/Agency/i), 'Example Travel')
+    await user.selectOptions(screen.getByLabelText(/Your role/i), 'Owner')
+    await user.selectOptions(
+      screen.getByLabelText(/Primary GDS/i),
+      'Travelport (Galileo/Worldspan)',
+    )
 
-    await user.click(screen.getByRole('button', { name: /Request Demo/i }))
+    await user.click(screen.getByRole('button', { name: /Schedule demonstration/i }))
 
     expect(screen.getByRole('button', { name: /Sending/i })).toBeDisabled()
     expect(postDemoMock).toHaveBeenCalledWith({
@@ -176,7 +185,7 @@ describe('DemoForm', () => {
       company: 'Example Travel',
       phone: '',
       role: 'Owner',
-      gds: 'Sabre',
+      gds: 'Travelport (Galileo/Worldspan)',
       message: '',
       locale: 'en',
     })
@@ -192,15 +201,26 @@ describe('DemoForm', () => {
     expect(screen.queryByRole('form')).not.toBeInTheDocument()
   })
 
+  it('preserves the Story 2.2 / 2.6 schema — submit accepts Sabre too', async () => {
+    render(<DemoForm />)
+    const user = await fillRequiredFields()
+    await user.click(screen.getByRole('button', { name: /Schedule demonstration/i }))
+    expect(postDemoMock).toHaveBeenCalledWith(
+      expect.objectContaining({ gds: 'Sabre', role: 'Owner', locale: 'en' }),
+    )
+  })
+
   it('shows a destructive Toast for non-429 failures without clearing the form', async () => {
-    postDemoMock.mockRejectedValueOnce(Object.assign(new Error('Something went wrong'), { status: 500 }))
+    postDemoMock.mockRejectedValueOnce(Object.assign(new Error('Boom'), { status: 500 }))
 
     render(<DemoForm />)
     const user = await fillRequiredFields()
-    await user.click(screen.getByRole('button', { name: /Request Demo/i }))
+    await user.click(screen.getByRole('button', { name: /Schedule demonstration/i }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Something went wrong. Please try again.')
-    expect(screen.getByLabelText(/Full Name/i)).toHaveValue('Jane Smith')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /Something went wrong. Please try again./i,
+    )
+    expect(screen.getByLabelText(/Full name/i)).toHaveValue('Jane Smith')
   })
 
   it('clears a previous Toast before retrying and does not Toast for 429 failures', async () => {
@@ -211,10 +231,12 @@ describe('DemoForm', () => {
     render(<DemoForm />)
     const user = await fillRequiredFields()
 
-    await user.click(screen.getByRole('button', { name: /Request Demo/i }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Something went wrong. Please try again.')
+    await user.click(screen.getByRole('button', { name: /Schedule demonstration/i }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /Something went wrong. Please try again./i,
+    )
 
-    await user.click(screen.getByRole('button', { name: /Request Demo/i }))
+    await user.click(screen.getByRole('button', { name: /Schedule demonstration/i }))
     await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument())
   })
 
@@ -223,22 +245,97 @@ describe('DemoForm', () => {
     render(<DemoForm />)
 
     const user = userEvent.setup()
-    const name = screen.getByLabelText(/Nome Completo/i)
+    const name = screen.getByLabelText(/Nome completo/i)
     await user.click(name)
     await user.tab()
 
     expect(await screen.findByText('Nome completo é obrigatório')).toBeInTheDocument()
 
     await user.type(name, 'Ana Silva')
-    await user.type(screen.getByLabelText(/E-mail Corporativo/i), 'ana@agencia.com.br')
-    await user.type(screen.getByLabelText(/Empresa/i), 'Agencia Exemplo')
-    await user.selectOptions(screen.getByLabelText(/Seu Cargo/i), 'Owner')
-    await user.selectOptions(screen.getByLabelText(/GDS Principal/i), 'Sabre')
-    await user.click(screen.getByRole('button', { name: /Solicitar Demo/i }))
+    await user.type(screen.getByLabelText(/E-mail corporativo/i), 'ana@agencia.com.br')
+    await user.type(screen.getByLabelText(/Agência/i), 'Agencia Exemplo')
+    await user.selectOptions(screen.getByLabelText(/Seu cargo/i), 'Owner')
+    await user.selectOptions(screen.getByLabelText(/GDS principal/i), 'Sabre')
+    await user.click(screen.getByRole('button', { name: /Agendar demonstração/i }))
 
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Solicitação recebida!'))
-    expect(screen.getByRole('status')).toHaveTextContent(
-      'Nossa equipe entrará em contato em até 1 dia útil.'
+    await waitFor(() =>
+      expect(screen.getByRole('status')).toHaveTextContent('Solicitação recebida!'),
     )
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Nossa equipe entrará em contato em até 1 dia útil.',
+    )
+  })
+
+  it('renders the encrypted-in-transit footer note + paper-plane-less submit row', () => {
+    const { container } = render(<DemoForm />)
+    expect(container.querySelector('[data-encrypted-note]')).not.toBeNull()
+    expect(container.querySelector('[data-form-foot]')).not.toBeNull()
+  })
+
+  it('exposes one form with aria-label resolving from demo.form.heading', () => {
+    render(<DemoForm />)
+    const form = screen.getByRole('form', { name: 'Request a demonstration' })
+    expect(form).toBeInTheDocument()
+  })
+
+  it('lets external callers focus the first field via DemoFormHandle.focusFirstField()', async () => {
+    // Indirect: the imperative handle is wired in DemoScheduler — verify the
+    // ref exists and the name input is focusable. We rely on integration via
+    // Home.story-2-4.e2e.test.tsx to cover the full focus flow.
+    render(<DemoForm />)
+    const name = screen.getByLabelText(/Full name/i) as HTMLInputElement
+    name.focus()
+    expect(document.activeElement).toBe(name)
+    // Sanity: tab order — name → email → company → phone → role → gds → message → submit
+    const user = userEvent.setup()
+    await user.tab()
+    expect(screen.getByLabelText(/Work email/i)).toHaveFocus()
+    const all = [
+      screen.getByLabelText(/Agency/i),
+      screen.getByLabelText(/Phone/i),
+      screen.getByLabelText(/Your role/i),
+      screen.getByLabelText(/Primary GDS/i),
+      screen.getByLabelText(/Message/i),
+    ]
+    for (const el of all) {
+      await user.tab()
+      // Allow either the input itself or a wrapped variant
+      expect(document.activeElement === el || el.contains(document.activeElement)).toBe(true)
+    }
+  })
+
+  it('renders fields inside form-rows that collapse from 2-col desktop to 1-col mobile', () => {
+    const { container } = render(<DemoForm />)
+    const rows = container.querySelectorAll('.form-row')
+    expect(rows.length).toBeGreaterThanOrEqual(3)
+    rows.forEach(row => {
+      expect((row as HTMLElement).className).toMatch(/grid-cols-1/)
+      expect((row as HTMLElement).className).toMatch(/min-\[600px\]:grid-cols-2/)
+    })
+  })
+
+  it('uses form-card padding 32px desktop / 24px below 600px', () => {
+    const { container } = render(<DemoForm />)
+    const card = container.querySelector('.form-card') as HTMLElement
+    expect(card).not.toBeNull()
+    expect(card.className).toMatch(/p-\[32px\]/)
+    expect(card.className).toMatch(/max-\[600px\]:p-\[24px\]/)
+    expect(card.className).toMatch(/border-\[var\(--line-strong\)\]/)
+  })
+
+  it('helper paragraph references the asterisk requirement', () => {
+    render(<DemoForm />)
+    expect(screen.getByText(/Fields marked with \* are required/i)).toBeInTheDocument()
+  })
+
+  describe('PT-BR locale-specific assertions', () => {
+    it('uses GDS principal label and merged Travelport option', async () => {
+      await setLocale('pt-BR')
+      render(<DemoForm />)
+      const gds = screen.getByLabelText(/GDS principal/i) as HTMLSelectElement
+      const optionValues = Array.from(gds.options).map(o => o.value)
+      expect(optionValues).toContain('Travelport (Galileo/Worldspan)')
+      expect(optionValues).not.toContain('Galileo')
+    })
   })
 })

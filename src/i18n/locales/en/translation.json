@@ -398,7 +398,7 @@
       "emailError": "Enter a valid email address",
       "subject": "Subject / Service",
       "subjectPlaceholder": "Select a service area",
-      "subjectError": "Please select a service area",
+      "subjectError": "Please select a subject",
       "subjectOptions": {
         "SyncRevenue": "SyncRevenue",
         "BI/Data Analytics": "BI/Data Analytics",
@@ -447,6 +447,7 @@
     "encryptedNote": "Encrypted in transit. Your data is protected."
   },
   "demo": {
+    "sectionAriaLabel": "Schedule a SyncRevenue demo",
     "eyebrow": "Schedule a demo",
     "heading": {
       "text": "See SyncRevenue running",
@@ -473,11 +474,44 @@
         "email":   { "label": "Work email",     "placeholder": "maria@youragency.com" },
         "company": { "label": "Agency",         "placeholder": "Agency name" },
         "phone":   { "label": "Phone",          "placeholder": "+1 305 555 0100", "optional": "(optional)" },
-        "role":    { "label": "Your role",      "placeholder": "Select" },
-        "gds":     { "label": "Primary GDS",    "placeholder": "Select" },
-        "message": { "label": "Message",        "placeholder": "Tell us about your reconciliation and commission challenges" }
+        "role":    {
+          "label": "Your role",
+          "placeholder": "Select",
+          "options": {
+            "Owner": "Owner",
+            "Executive": "Executive",
+            "Operations": "Operations",
+            "Finance": "Finance",
+            "Technology": "Technology",
+            "Other": "Other"
+          }
+        },
+        "gds":     {
+          "label": "Primary GDS",
+          "placeholder": "Select",
+          "options": {
+            "Amadeus": "Amadeus",
+            "Sabre": "Sabre",
+            "Travelport (Galileo/Worldspan)": "Travelport (Galileo/Worldspan)",
+            "Other": "Other"
+          }
+        },
+        "message": { "label": "Message",        "placeholder": "Tell us about your reconciliation and commission challenges", "optional": "(optional)" }
       },
-      "submit": "Schedule demonstration"
+      "submit": "Schedule demonstration",
+      "submitting": "Sending...",
+      "errors": {
+        "name": "Full name is required",
+        "email": "Enter a valid email address",
+        "company": "Agency name is required",
+        "role": "Please select your role",
+        "gds": "Please select your primary GDS",
+        "generic": "Something went wrong. Please try again."
+      },
+      "success": {
+        "title": "Request received!",
+        "body": "Our team will reach out within 1 business day."
+      }
     }
   },
   "contact": {

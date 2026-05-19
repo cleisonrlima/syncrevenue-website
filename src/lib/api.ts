@@ -268,7 +268,14 @@ export async function getAdminMe(): Promise<AdminSessionData | null> {
 
 export type AdminLeadStatus = 'pending' | 'contacted' | 'qualified'
 export type AdminLeadLocale = 'en' | 'pt-BR' | 'es'
-export type AdminLeadGds = 'Amadeus' | 'Sabre' | 'Galileo' | 'Worldspan' | 'Other' | 'None yet'
+export type AdminLeadGds =
+  | 'Amadeus'
+  | 'Sabre'
+  | 'Travelport (Galileo/Worldspan)'
+  | 'Galileo'
+  | 'Worldspan'
+  | 'Other'
+  | 'None yet'
 
 export interface AdminLeadRow {
   id: number

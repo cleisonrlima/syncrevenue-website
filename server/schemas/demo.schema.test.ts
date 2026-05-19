@@ -27,6 +27,19 @@ describe('demoSchema', () => {
     expect(r.success).toBe(false)
   })
 
+  it('accepts the merged Travelport (Galileo/Worldspan) canonical label (Story 6.10)', () => {
+    const r = demoSchema.safeParse({ ...valid, gds: 'Travelport (Galileo/Worldspan)' })
+    expect(r.success).toBe(true)
+  })
+
+  it.each(['Galileo', 'Worldspan', 'None yet'])(
+    'accepts legacy gds value "%s" for back-compat (Story 6.10 AC 12)',
+    legacy => {
+      const r = demoSchema.safeParse({ ...valid, gds: legacy })
+      expect(r.success).toBe(true)
+    },
+  )
+
   it('rejects empty required fields', () => {
     expect(demoSchema.safeParse({ ...valid, name: '' }).success).toBe(false)
     expect(demoSchema.safeParse({ ...valid, company: '' }).success).toBe(false)
