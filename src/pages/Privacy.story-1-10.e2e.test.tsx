@@ -80,7 +80,8 @@ describe('Story 1.10 privacy policy visitor flow', () => {
     const pathBeforeLanguageChange = window.location.pathname
 
     const languageSwitcher = screen.getAllByRole('group', { name: 'Select language' })[0]
-    await user.click(within(languageSwitcher).getByRole('button', { name: 'PT-BR' }))
+    await user.click(within(languageSwitcher).getByRole('button', { name: 'EN' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'PT-BR' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Política de Privacidade' })).toBeInTheDocument()
     expect(screen.getByText(/24 meses a partir da data de envio/i)).toBeInTheDocument()
@@ -89,7 +90,8 @@ describe('Story 1.10 privacy policy visitor flow', () => {
     expect(window.scrollY).toBe(720)
     expect(scrollSpy).not.toHaveBeenCalled()
 
-    await user.click(within(languageSwitcher).getByRole('button', { name: 'ES' }))
+    await user.click(within(languageSwitcher).getByRole('button', { name: 'PT-BR' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'ES' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Política de Privacidad' })).toBeInTheDocument()
     expect(screen.getByText(/24 meses desde la fecha de envío/i)).toBeInTheDocument()

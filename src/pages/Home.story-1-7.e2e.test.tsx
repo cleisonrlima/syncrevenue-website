@@ -30,12 +30,16 @@ describe('Story 1.7 comparison visitor flow', () => {
   it('presents Comparison between Services and Security with generic alternatives only', async () => {
     renderHome()
 
-    const services = await screen.findByRole('region', {
-      name: 'Complete Revenue Intelligence Suite',
-    })
-    const comparison = await screen.findByRole('region', {
-      name: 'SyncRevenue comparison against manual and generic tools',
-    })
+    const services = await screen.findByRole(
+      'region',
+      { name: 'Complete Revenue Intelligence Suite' },
+      { timeout: 6000 },
+    )
+    const comparison = await screen.findByRole(
+      'region',
+      { name: 'SyncRevenue comparison against manual and generic tools' },
+      { timeout: 6000 },
+    )
     await waitFor(() => {
       expect(document.querySelector('#security')).toBeInTheDocument()
     })
@@ -84,7 +88,8 @@ describe('Story 1.7 comparison visitor flow', () => {
     expect(screen.getByText(/Does not model airline settlement workflows/)).toBeInTheDocument()
 
     const pathBeforeLocaleChange = window.location.pathname
-    await user.click(screen.getAllByRole('button', { name: 'PT-BR' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'EN' })[0])
+    await user.click(screen.getByRole('menuitemradio', { name: 'PT-BR' }))
 
     expect(window.location.pathname).toBe(pathBeforeLocaleChange)
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')

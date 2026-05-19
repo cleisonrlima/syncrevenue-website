@@ -30,9 +30,10 @@ export default function Security() {
       id="security"
       role="region"
       aria-labelledby="security-heading"
-      className="bg-gradient-dark-section text-white"
+      className="relative bg-gradient-dark-section text-white"
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <span id="seguranca" aria-hidden="true" className="absolute top-0" />
         <SectionHeader
           variant="dark"
           headingId="security-heading"

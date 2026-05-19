@@ -26,6 +26,9 @@ const baseInput: TeamMemberInput = {
   bio_en: 'bio en',
   bio_pt: 'bio pt',
   bio_es: 'bio es',
+  experience_en: '20+ years',
+  experience_pt: '20+ anos',
+  experience_es: '20+ años',
 }
 
 async function createIsolatedApp() {

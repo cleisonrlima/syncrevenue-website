@@ -1,6 +1,6 @@
 # Story 6.7: Team Section Visual Refresh
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -43,6 +43,12 @@ So that I can read who I'd be working with at a glance and click straight throug
 - [x] Task 2: LinkedIn icon-button inlined — no subcomponent extraction since this is the only consumer. 34×34 button (acceptable per AC). Inline SVG with `fill="currentColor"` so the hover swap to `#0A66C2` works cleanly via Tailwind state classes
 - [x] Task 3: A11y — `<article>` per card with `<h3>` name (proper hierarchy under section `<h2>`); status pill visible text "available" carries meaning, the dot is `aria-hidden`; LinkedIn link `aria-label="View {{name}} on LinkedIn"` (existing key, interpolation preserved); `target="_blank" rel="noopener noreferrer"`
 - [x] Task 4: Tests — `Team.test.tsx` updated for id rename (`team` → `equipe`); existing fallback/locale-switch/network-failure tests preserved. Updated cross-cutting `Sections.i18n.test.tsx` + `Home.story-1-8.e2e.test.tsx` headline copy regexes; updated `Home.test.tsx` id assertion; updated 4 Playwright specs (`locale-switch`, `animations`, `mobile-ux`, `team-section`) `#team` → `#equipe`
+
+### Review Findings
+
+- [x] [Review][Patch] Experience meta-tag omitted from team cards [src/components/sections/Team.tsx:180] — fixed by extending the team API/data model with localized `experience_*` fields, seeding/backfilling Maria/Lucas values, and rendering `.tm-foot-meta`.
+- [x] [Review][Patch] Design handoff class hooks missing from Team markup [src/components/sections/Team.tsx:98] — fixed by adding `.sec`, `.sec-head`, `.team`, `.tm`, `.tm-photo`, `.tm-status`, `.tm-body`, `.tm-name`, `.tm-role`, `.tm-bio`, `.tm-foot`, `.tm-foot-meta`, and `.icon-btn.linkedin` hooks alongside Tailwind classes.
+- [x] [Review][Patch] Story 6.7 tests do not cover required LinkedIn/security/status behavior [src/components/sections/Team.test.tsx:74] — fixed with assertions for LinkedIn `target`/`rel`/aria-label, status pill class/text, design hooks, and photo fallback.
 
 ## Dev Notes
 
@@ -105,8 +111,8 @@ So that I can read who I'd be working with at a glance and click straight throug
 
 ## Story Completion Status
 
-- Status: review
-- Completion note: Implemented 2026-05-17. Team section rebuilt to horizontal sober cards with photo + status pill + LinkedIn icon-button. Section id renamed → `equipe`. API-backed flow preserved. 599/599 tests green, build clean.
+- Status: done
+- Completion note: Implemented 2026-05-17. Team section rebuilt to horizontal sober cards with photo + status pill + LinkedIn icon-button. Section id renamed → `equipe`. Review patches added localized experience meta-tags through the team API/data model, design handoff class hooks, and focused behavioral tests. Focused review suite and typecheck green.
 
 ## Outstanding Questions for Dev
 
@@ -121,18 +127,22 @@ So that I can read who I'd be working with at a glance and click straight throug
 2. **Preserved API flow** from Story 4.4 — visual rebuild only.
 3. **No SectionShell extraction** — followed the decision from Story 6.6 task 2.
 4. **Status dot is static** — no pulsing keyframes (chat line 510 sober pass).
-5. **Footer experience meta-tag deferred** — DB doesn't carry the field; LinkedIn-button-only footer reads cleaner.
+5. **Footer experience meta-tag added during review** — `experience_en/pt/es` now live in the team data model/API and render via `.tm-foot-meta`.
 
 ### File List
 
 | File | Change | Note |
 |---|---|---|
-| `src/components/sections/Team.tsx` | UPDATE | Sober horizontal cards, status pill, LinkedIn icon-button, #equipe id |
-| `src/components/sections/Team.test.tsx` | UPDATE | id assertion → `equipe` |
-| `src/i18n/locales/{en,pt-BR,es}/translation.json` | UPDATE | `team.headlineAccent` + `team.statusLabel` |
+| `src/components/sections/Team.tsx` | UPDATE | Sober horizontal cards, status pill, LinkedIn icon-button, #equipe id, experience meta |
+| `src/components/sections/Team.test.tsx` | UPDATE | id assertion → `equipe`; review coverage for LinkedIn attrs, status, fallback, design hooks |
+| `server/db.ts`, `server/db.seed.ts` | UPDATE | `experience_en/pt/es` columns + seed/backfill values |
+| `server/dao/team.dao.ts`, `server/schemas/admin-team.schema.ts` | UPDATE | Team input/row/schema includes localized experience fields |
+| `src/lib/api.ts`, `src/lib/team-schema.ts`, `src/pages/admin/Team.tsx` | UPDATE | API types/parser, admin client schema, admin form fields for experience |
+| `src/i18n/locales/{en,pt-BR,es}/translation.json` | UPDATE | `team.headlineAccent` + `team.statusLabel`; admin team experience labels |
 | `src/components/sections/Sections.i18n.test.tsx` | UPDATE | Heading regex for new shape |
 | `src/pages/Home.test.tsx` | UPDATE | id `team` → `equipe` |
-| `src/pages/Home.story-1-8.e2e.test.tsx` | UPDATE | Heading regex |
+| `src/pages/Home.story-1-8.e2e.test.tsx` | UPDATE | Heading regex; team fixture experience fields |
+| `server/dao/team.dao.test.ts`, `server/routes/team.test.ts`, `server/routes/admin/team.test.ts`, `server/schemas/admin-team.schema.test.ts`, `src/lib/api.admin.test.ts`, `src/lib/team-schema.test.ts`, `src/pages/admin/Team.test.tsx` | UPDATE | Experience field contract coverage |
 | `tests/e2e/locale-switch.spec.ts` | UPDATE | `#team` → `#equipe` |
 | `tests/e2e/animations.spec.ts` | UPDATE | `#team` → `#equipe` |
 | `tests/e2e/team-section.spec.ts` | UPDATE | `#team` → `#equipe` |
@@ -145,3 +155,4 @@ So that I can read who I'd be working with at a glance and click straight throug
 | Date | Author | Summary |
 |---|---|---|
 | 2026-05-17 | Claude (Opus 4.7) | Story 6.7 — Team sober rebuild (horizontal 2-col cards, status pill, LinkedIn icon-button). #equipe id rename. API flow + Story 1.8 initials fallback preserved. |
+| 2026-05-19 | Codex (review patch) | Added localized experience meta-tag through team DB/API/admin form, restored design handoff class hooks, and expanded focused test coverage. |

@@ -25,6 +25,7 @@ type ClientReference = {
   agencyName: string
   location: string
   relationship: string
+  pill: string
   pillVariant?: 'default' | 'muted'
   testimonial?: string
   referenceDetail?: string
@@ -50,12 +51,14 @@ function normalizeClientReference(value: unknown): ClientReference | null {
   ) {
     return null
   }
+  const pill = isNonEmptyString(c.pill) ? c.pill : c.relationship
   const pillVariant: ClientReference['pillVariant'] =
     c.pillVariant === 'muted' ? 'muted' : 'default'
   return {
     agencyName: c.agencyName,
     location: c.location,
     relationship: c.relationship,
+    pill,
     pillVariant,
     ...body,
   }
@@ -136,7 +139,7 @@ export default function ClientReferences() {
                       (isMuted ? 'text-white/55' : 'text-white/70')
                     }
                   >
-                    {reference.relationship}
+                    {reference.pill}
                   </span>
 
                   <p

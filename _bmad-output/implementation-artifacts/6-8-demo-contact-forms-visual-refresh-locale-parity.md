@@ -1,6 +1,6 @@
 # Story 6.8: Demo + Contact Forms Visual Refresh + Locale Parity Sweep
 
-Status: review (PARTIAL — see Dev Agent Record deferrals)
+Status: done (PARTIAL — deferred scope materialized into follow-up stories 6.9–6.13)
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -149,8 +149,8 @@ So that filling out either form feels seamless, and the visual rhythm carries th
 
 ## Story Completion Status
 
-- Status: review (PARTIAL — see deferrals below)
-- Completion note: Implemented 2026-05-17 as a minimum-viable landing — DemoScheduler swapped to sober `var(--ink)` flat background. All other AC tasks (40/60 grid, info-side, channels block, form-card restyle, namespace restructure, Lighthouse) are explicitly deferred to a follow-up story (see "Deferred Work → Follow-up Story" section below). 599/599 tests green, build clean.
+- Status: done (PARTIAL — deferred scope materialized into follow-up stories 6.9–6.13)
+- Completion note: Implemented 2026-05-17 as a minimum-viable landing — DemoScheduler swapped to sober `var(--ink)` flat background. All other AC tasks (40/60 grid, info-side, channels block, form-card restyle, namespace restructure, Lighthouse) were explicitly deferred and later materialized into follow-up stories 6.9–6.13. Code review accepted the partial closure because those follow-up stories now carry the deferred acceptance scope.
 
 ## Outstanding Questions for Dev
 

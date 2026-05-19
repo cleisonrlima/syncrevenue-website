@@ -21,6 +21,9 @@ const baseInput: TeamMemberInput = {
   bio_en: 'bio en',
   bio_pt: 'bio pt',
   bio_es: 'bio es',
+  experience_en: '20+ years',
+  experience_pt: '20+ anos',
+  experience_es: '20+ años',
 }
 
 async function createIsolatedApp() {
@@ -81,6 +84,7 @@ describe('GET /api/team (public)', () => {
     expect(body.data).toHaveLength(1)
     expect(body.data[0].id).toBe(a.id)
     expect(body.data[0].active).toBe(1)
+    expect(body.data[0].experience_en).toBe('20+ years')
   })
 
   it('orders by order_index ASC, id ASC', async () => {

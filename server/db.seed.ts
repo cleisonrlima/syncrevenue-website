@@ -54,6 +54,9 @@ export const DEFAULT_TEAM_MEMBERS: ReadonlyArray<TeamMemberInput> = [
       'Orienta agências de viagens em operações de GDS, conciliação BSP/ARC, fluxos de débito (debit memos) e estratégia de recuperação de comissões nas Américas. Vinte anos dentro dos fluxos da Sabre, Amadeus e Galileo informam cada engajamento.',
     bio_es:
       'Guía a agencias de viajes en operaciones GDS, conciliación BSP/ARC, flujos de débitos (debit memos) y estrategia de recuperación de comisiones en las Américas. Veinte años dentro de los flujos de Sabre, Amadeus y Galileo informan cada engagement.',
+    experience_en: '20+ years in airline distribution',
+    experience_pt: '20+ anos em distribuição aérea',
+    experience_es: '20+ años en distribución aérea',
     photo_url: '/team/maria-silva.webp',
     linkedin: 'https://www.linkedin.com/in/maria-silva-syncsirius/',
     order_index: 0,
@@ -70,6 +73,9 @@ export const DEFAULT_TEAM_MEMBERS: ReadonlyArray<TeamMemberInput> = [
       'Projeta a camada de automação por trás do SyncRevenue, conectando dados de reservas, regras de comissão e sistemas de otimização de receita em fluxos operacionais confiáveis. Experiência em pipelines de liquidação BSP, integrações mid/back-office e engenharia de dados de viagens.',
     bio_es:
       'Diseña la capa de automatización detrás de SyncRevenue, conectando datos de reservas, reglas de comisión y sistemas de optimización de ingresos en flujos operativos confiables. Experiencia en pipelines de liquidación BSP, integraciones mid/back-office e ingeniería de datos de viajes.',
+    experience_en: '15+ years in travel data automation',
+    experience_pt: '15+ anos em automação de dados de viagens',
+    experience_es: '15+ años en automatización de datos de viajes',
     photo_url: '/team/lucas-oliveira.webp',
     linkedin: 'https://www.linkedin.com/in/lucas-oliveira-syncsirius/',
     order_index: 1,

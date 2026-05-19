@@ -41,12 +41,15 @@ describe('ClientReferences (Story 6.6 sober refresh)', () => {
     render(<ClientReferences />)
     const card = screen.getByTestId('quote-card-1')
     expect(within(card).getByText('Pacific Sun Voyages')).toBeInTheDocument()
+    expect(within(card).getByText('operational reference')).toBeInTheDocument()
     const body = screen.getByTestId('quote-body-1')
     expect(body.className).toContain('italic')
   })
 
   it('the other two cards use the default pill variant (no italic body)', () => {
     render(<ClientReferences />)
+    expect(screen.getByText('reference customer')).toBeInTheDocument()
+    expect(screen.getByText('multi-GDS integration')).toBeInTheDocument()
     expect(screen.getByTestId('quote-body-0').className).not.toContain('italic')
     expect(screen.getByTestId('quote-body-2').className).not.toContain('italic')
   })

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import { useReducedMotion } from 'motion/react'
 
@@ -8,21 +8,36 @@ import { useReducedMotion } from 'motion/react'
  * Source: Hero.html `.panel` / `.panel-head` / `.panel-mark` / `.ints` / `.int` /
  * `.ints-more` / `.ticker` (lines 141–220, 584–630).
  *
- * Partner wordmarks render as styled text rather than `<img>`. The official
- * Amadeus / Sabre / Travelport URLs documented in the design handoff were all
- * blocked (`naturalWidth=0` per the chat transcript verifier log lines 286–343),
- * and bundling unlicensed brand assets locally is the same trademark problem
- * via a different route. Text wordmarks keep the visual rhythm of the spec
- * (white tile, green live dot, centered mark, Travelport Galileo/Worldspan
- * subtitle) while sidestepping the trademark question entirely. Story 6.4 dev
- * notes explicitly authorize this fallback ("monogram fallback path captured
- * in Task 1").
+ * Partner wordmarks render from local static assets under `public/integrations/`.
+ * The image constraints match the verifier notes for the wide Sabre logo:
+ * max-height 22px, max-width 100%, object-fit contain.
  */
 
 const INTEGRATIONS = [
-  { key: 'amadeus', name: 'Amadeus', sub: null },
-  { key: 'sabre', name: 'Sabre', sub: null },
-  { key: 'travelport', name: 'Travelport', sub: 'Galileo · Worldspan' },
+  {
+    key: 'amadeus',
+    name: 'Amadeus',
+    src: '/integrations/amadeus.png',
+    width: 208,
+    height: 32,
+    sub: null,
+  },
+  {
+    key: 'sabre',
+    name: 'Sabre',
+    src: '/integrations/sabre.svg',
+    width: 2000,
+    height: 576,
+    sub: null,
+  },
+  {
+    key: 'travelport',
+    name: 'Travelport',
+    src: '/integrations/travelport.svg',
+    width: 195,
+    height: 24,
+    sub: 'Galileo · Worldspan',
+  },
 ] as const
 
 // Ticker cycle interval (ms). Matches Hero.html demo cadence.
@@ -42,6 +57,7 @@ export default function HeroProductPanel() {
 
   const [index, setIndex] = useState(0)
   const [fade, setFade] = useState<'in' | 'out'>('in')
+  const fadeTimeoutRef = useRef<number | null>(null)
 
   // Cycle the ticker every TICKER_INTERVAL_MS unless reduced-motion is set or
   // the entries array has fewer than 2 rows (nothing to cycle through).
@@ -51,13 +67,23 @@ export default function HeroProductPanel() {
 
     const id = window.setInterval(() => {
       setFade('out')
-      window.setTimeout(() => {
+      if (fadeTimeoutRef.current !== null) {
+        window.clearTimeout(fadeTimeoutRef.current)
+      }
+      fadeTimeoutRef.current = window.setTimeout(() => {
         setIndex(prev => (prev + 1) % tickerEntries.length)
         setFade('in')
+        fadeTimeoutRef.current = null
       }, TICKER_FADE_MS)
     }, TICKER_INTERVAL_MS)
 
-    return () => window.clearInterval(id)
+    return () => {
+      window.clearInterval(id)
+      if (fadeTimeoutRef.current !== null) {
+        window.clearTimeout(fadeTimeoutRef.current)
+        fadeTimeoutRef.current = null
+      }
+    }
   }, [reduceMotion, tickerEntries.length])
 
   const safeIndex = tickerEntries.length === 0 ? 0 : index % tickerEntries.length
@@ -65,6 +91,7 @@ export default function HeroProductPanel() {
 
   return (
     <aside
+      id="integracoes"
       data-testid="hero-product-panel"
       className="rounded-[14px] border border-[var(--line-strong)] bg-white/[0.03] px-7 pt-7 pb-[26px]"
     >
@@ -109,7 +136,7 @@ export default function HeroProductPanel() {
           {t('hero.panel.intsLabel', { defaultValue: '' })}
         </div>
         <div className="mt-3 grid grid-cols-3 gap-2" data-testid="hero-ints-row">
-          {INTEGRATIONS.map(({ key, name, sub }) => (
+          {INTEGRATIONS.map(({ key, name, src, width, height, sub }) => (
             <div
               key={key}
               data-testid={`hero-int-${key}`}
@@ -120,9 +147,14 @@ export default function HeroProductPanel() {
                 className="absolute right-2 top-2 inline-block h-1.5 w-1.5 rounded-full bg-[#5BC98C]"
                 data-testid={`hero-int-${key}-live`}
               />
-              <span className="text-[13px] font-semibold tracking-[-0.01em] text-[#0A0B2E]">
-                {name}
-              </span>
+              <img
+                src={src}
+                alt={name}
+                width={width}
+                height={height}
+                loading="eager"
+                className="max-h-[22px] max-w-full object-contain"
+              />
               {sub ? (
                 <span className="mt-1 text-[9.5px] text-[#5B6478]">{sub}</span>
               ) : null}

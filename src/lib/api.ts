@@ -417,6 +417,9 @@ export interface AdminTeamMemberRow {
   bio_en: string
   bio_pt: string
   bio_es: string
+  experience_en: string
+  experience_pt: string
+  experience_es: string
   linkedin: string | null
   photo_url: string | null
   order_index: number
@@ -431,6 +434,9 @@ export interface AdminTeamMemberInput {
   bio_en: string
   bio_pt: string
   bio_es: string
+  experience_en: string
+  experience_pt: string
+  experience_es: string
   linkedin: string | null
   photo_url: string | null
   order_index: number
@@ -449,6 +455,9 @@ export function parseAdminTeamMemberRow(value: unknown): AdminTeamMemberRow | nu
   if (typeof candidate.bio_en !== 'string') return null
   if (typeof candidate.bio_pt !== 'string') return null
   if (typeof candidate.bio_es !== 'string') return null
+  if (typeof candidate.experience_en !== 'string') return null
+  if (typeof candidate.experience_pt !== 'string') return null
+  if (typeof candidate.experience_es !== 'string') return null
   if (candidate.linkedin !== null && typeof candidate.linkedin !== 'string') return null
   if (candidate.photo_url !== null && typeof candidate.photo_url !== 'string') return null
   if (typeof candidate.order_index !== 'number') return null

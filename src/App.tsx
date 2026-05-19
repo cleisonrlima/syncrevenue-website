@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import Home from '@/pages/Home'
@@ -13,6 +13,9 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import ScrollRestoration from '@/components/ScrollRestoration'
 
 export default function App() {
+  const location = useLocation()
+  const isHomeRoute = location.pathname === '/'
+
   return (
     <>
       <ScrollRestoration />
@@ -23,7 +26,7 @@ export default function App() {
         Skip to main content
       </a>
       <Navbar />
-      <main id="main-content" className="pt-16 scroll-mt-16">
+      <main id="main-content" className={isHomeRoute ? 'scroll-mt-16' : 'pt-16 scroll-mt-16'}>
         <ErrorBoundary>
           <Routes>
             <Route path="/" element={<Home />} />

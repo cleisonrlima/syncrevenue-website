@@ -1,6 +1,6 @@
 # Story 6.6: ClientReferences Visual Refresh
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -38,12 +38,16 @@ So that I can verify operational experience with peer agencies and request direc
 
 ## Tasks / Subtasks
 
-- [x] Task 0: i18n keys — kept `references.*` namespace (NOT `clientReferences.*` as the spec suggested) because `ClientReferences.allowlist.test.tsx` walks `data.references.items` — a rename would break R-B1. Added `references.headlineAccent` (split for accent span) and `pillVariant` per item across en/pt-BR/es. Heading copy rewritten per spec ("Trusted by real / agencies", "Confiança comprovada por / agências reais", "Confianza demostrada por / agencias reales")
+- [x] Task 0: i18n keys — kept `references.*` namespace (NOT `clientReferences.*` as the spec suggested) because `ClientReferences.allowlist.test.tsx` walks `data.references.items` — a rename would break R-B1. Added `references.headlineAccent` (split for accent span), `pill`, and `pillVariant` per item across en/pt-BR/es. Heading copy rewritten per spec ("Trusted by real / agencies", "Confiança comprovada por / agências reais", "Confianza demostrada por / agencias reales")
 - [x] Task 1: `src/components/sections/ClientReferences.tsx` rewritten — sober deep-bg section (`#0A0B22`), centered head with horizontal-rule eyebrow + heading + accent span + subtext, 3-column quotes grid (1/2/3 collapse at 640/960), quote cards with decorative Georgia serif `"` glyph in the corner, status pill + body + footer (monogram + agency name + location with pin SVG), ghost CTA centered linking to `#contato`. Section id changed `client-references` → `clientes` to match Story 6.2 navbar deep-link target
 - [x] Task 2: SectionShell NOT extracted — Stories 6.7 and 6.8 will refactor in-place too. Extracting a generic `.sec/.sec-head/.sec-eyebrow` shell across three different visual patterns (deep references / team / forms split-layout) would force premature abstraction; each section has enough local variation (centered vs. left-aligned head, dark vs. mid-tone bg, etc.) that the shared surface is just a `<section>` + `<div class="wrap">` — not enough to factor out. Documented decision; future 6.7/6.8 follow the same in-place pattern
 - [x] Task 3: `ClientReferences.allowlist.test.tsx` (R-B1) unchanged — passes verbatim. No agency name additions, no agency name renames
-- [x] Task 4: A11y — Georgia serif `"` `aria-hidden`; location pin `aria-hidden`; pill is a `<span>` with the relationship text (carries meaning directly); ghost CTA is an `<a href="#contato">` (not `onClick`)
+- [x] Task 4: A11y — Georgia serif `"` `aria-hidden`; location pin `aria-hidden`; pill is a `<span>` with the explicit status label (carries meaning directly); ghost CTA is an `<a href="#contato">` (not `onClick`)
 - [x] Task 5: `ClientReferences.test.tsx` rewritten — 7 tests (region anchor, eyebrow/heading/accent, 3 cards no-gradient, muted pill+italic for Pacific Sun, default for the other two, ghost CTA href, allowlist agency names rendered). Updated cross-cutting tests for the headline copy + section id rename: `Sections.i18n.test.tsx`, `Home.test.tsx`, `Home.story-1-8.e2e.test.tsx`, `Home.story-1-9.e2e.test.tsx`, `tests/e2e/mobile-ux.spec.ts` (Playwright)
+
+### Review Findings
+
+- [x] [Review][Patch] Status pill copy does not match the story-specified labels [src/i18n/locales/pt-BR/translation.json:247] — fixed by adding explicit `pill` labels in all locales and rendering `reference.pill` with `relationship` retained as compatibility fallback.
 
 ## Dev Notes
 

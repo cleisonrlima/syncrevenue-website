@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-19  # Story 6.13 in-progress → review (i18n stragglers migrated; LH heading-order + a11y color-contrast + CLS fixed; mobile LCP improved ~1.1s but partial threshold revert documented — pre-fix 2500ms target deferred to Epic 5 SSG/prerender)
+last_updated: 2026-05-19  # Story 6.13 in-progress → review (i18n stragglers migrated; LH heading-order + a11y color-contrast + CLS fixed; mobile LCP improved ~1.1s but partial threshold revert documented — pre-fix 2500ms target deferred to Epic 5 SSG/prerender); Stories 6.7 + 6.8 review complete → done (team experience meta fixed; 6.8 deferrals materialized into 6.9-6.13)
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -126,12 +126,12 @@ development_status:
   epic-6: in-progress
   6-1-design-tokens-sober-palette: review
   6-2-navbar-logo-refresh: review
-  6-3-hero-left-background-copy-kpis: review
-  6-4-hero-right-product-panel-integrations-ticker: review
-  6-5-benefits-grid-trust-strip: review
-  6-6-clientreferences-visual-refresh: review
-  6-7-team-section-visual-refresh: review
-  6-8-demo-contact-forms-visual-refresh-locale-parity: review
+  6-3-hero-left-background-copy-kpis: done
+  6-4-hero-right-product-panel-integrations-ticker: done
+  6-5-benefits-grid-trust-strip: done
+  6-6-clientreferences-visual-refresh: done
+  6-7-team-section-visual-refresh: done
+  6-8-demo-contact-forms-visual-refresh-locale-parity: done
   # 6.9-6.12 added 2026-05-17 from Story 6.8 deferred-work materialization (per CLAUDE.md "Review Findings → New Story" rule)
   6-9-shared-form-primitives-i18n-namespace-restructure: review
   6-10-demoscheduler-grid-demoform-restyle-gds-enum: review

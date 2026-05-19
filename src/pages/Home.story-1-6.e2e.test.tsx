@@ -66,7 +66,8 @@ describe('Story 1.6 visitor flow', () => {
     ).toBeInTheDocument()
 
     const pathBeforeLocaleChange = window.location.pathname
-    await user.click(screen.getAllByRole('button', { name: 'PT-BR' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'EN' })[0])
+    await user.click(screen.getByRole('menuitemradio', { name: 'PT-BR' }))
 
     expect(window.location.pathname).toBe(pathBeforeLocaleChange)
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')

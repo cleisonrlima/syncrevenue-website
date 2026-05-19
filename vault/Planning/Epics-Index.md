@@ -95,12 +95,12 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 |---|---|---|
 | 6.1 | Design Tokens — Sober Palette | `[r]` review |
 | 6.2 | Navbar & Logo Refresh | `[r]` review |
-| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[r]` review |
-| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[r]` review |
-| 6.5 | Benefits Grid + Trust Strip | `[r]` review |
-| 6.6 | ClientReferences Visual Refresh | `[r]` review |
-| 6.7 | Team Section Visual Refresh | `[r]` review |
-| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[r]` review |
+| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[x]` done |
+| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[x]` done |
+| 6.5 | Benefits Grid + Trust Strip | `[x]` done |
+| 6.6 | ClientReferences Visual Refresh | `[x]` done |
+| 6.7 | Team Section Visual Refresh | `[x]` done |
+| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[x]` done |
 | 6.9 | Shared Form Primitives + i18n Namespace Restructure (6.8 deferral) | `[r]` review |
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | `[r]` review |
 | 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[r]` review |

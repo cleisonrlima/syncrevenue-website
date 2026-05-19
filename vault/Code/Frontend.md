@@ -22,13 +22,14 @@
 
 | Component | FR | Description |
 |---|---|---|
-| `src/components/sections/Hero.tsx` | FR1 | Value prop, dual CTAs, StatRow + TrustBar; motion-safe variants; `Hero.test.tsx` co-located |
-| `src/components/sections/StatRow.tsx` | FR1 | 4-stat row (commission accuracy, agencies, $ recovered, hours saved) — Hero child |
+| `src/components/sections/Hero.tsx` | FR1 | Epic 6 hero: airplane LCP picture, dual-gradient scrim, two-line headline, dual CTAs, KPI strip, HeroProductPanel, BenefitsGrid, TrustBar; `prefers-reduced-data` hides background media |
+| `src/components/sections/StatRow.tsx` | FR1 | Epic 6 KPI strip: 3 columns, top hairline, tabular numeric values, `hero.kpis.*` i18n keys — Hero child |
+| `src/components/sections/HeroProductPanel.tsx` | FR1 | Epic 6 right panel: product mark, official GDS wordmark tiles from `public/integrations/`, NDC/IBE chips, motion-safe ticker with timeout cleanup |
 | `src/components/sections/TrustBar.tsx` | FR1 | 5-logo trust strip — Hero child |
 | `src/components/sections/SyncRevenue.tsx` | FR2 | SectionHeader + GDS integration list (Amadeus/Sabre/Galileo/Worldspan) + 99.99% accuracy; light bg; `SyncRevenue.test.tsx` co-located |
 | `src/components/sections/Services.tsx` | FR3 | 4 service cards + contact hint; light bg; `Services.test.tsx` co-located |
 | `src/components/sections/Comparison.tsx` | FR4 | vs. alternatives |
-| `src/components/sections/Team.tsx` | FR5 | Team members. `TeamMember = { name, role, bio, photo, linkedinUrl }` (Story 3.1). `<img>` `alt` is composed `` `${name}, ${role}` ``; conditional `<a target="_blank" rel="noopener noreferrer">` with i18n-driven `aria-label` only when `linkedinUrl` non-empty; placeholder initials branch unchanged. Photos at `/public/team/*.webp` (320×320, lazy-loaded). |
+| `src/components/sections/Team.tsx` | FR5 | Team members. API-backed public `/api/team` data maps locale-specific role/bio/experience fields into sober `.tm` cards (Story 6.7 review). `<img>` `alt` is composed `` `${name}, ${role}` ``; conditional `.icon-btn.linkedin` `<a target="_blank" rel="noopener noreferrer">` with i18n-driven `aria-label` only when `linkedinUrl` non-empty; `.tm-foot-meta` renders the localized experience tag; placeholder initials branch unchanged. Photos at `/public/team/*.webp` (200×200 display, lazy-loaded). |
 | `src/components/sections/Contact.tsx` | FR6 | Contact form section |
 | `src/components/sections/Security.tsx` | FR23–FR25 | Security statement + client refs |
 | `src/components/sections/DemoScheduler.tsx` | FR9, FR15 | Dark-gradient bookend section — SectionHeader (variant=dark) + in-section "Schedule a Demo" GradientButton (lg, min-h-44px) that calls `DemoForm.focusFirstField()` and smooth-scrolls the form container; embeds the single `DemoForm` instance (no modal). Hero/Navbar CTAs scroll to `#demo-scheduler`. Tests: `DemoScheduler.test.tsx`, `Home.story-2-4.e2e.test.tsx` |
@@ -114,6 +115,7 @@
   - `locale-switch.spec.ts` — P1-1 / P1-2, locale switch happy path on `/` and `/privacy` without navigation; scroll preservation
   - `skip-link.spec.ts` — P1-5, skip-to-main is first tab stop
   - `team-section.spec.ts` — Story 3.1, 7 specs: Team region renders 2 cards, composed `"{name}, {role}"` alt, `width=320`/`height=320`/`loading=lazy`, no placeholder leak, no `linkedinUrl===""` anchor leak, mobile single-column grid, role text differs across en/pt-BR/es
+  - `hero.spec.ts` — Stories 6.3/6.4 review closure: hero airplane image + two-line H1, product panel above fold, bundled integration wordmark images, mobile no-overflow, hero axe serious/critical scan
 - Local bootstrap: `npm run test:e2e:install` once → `npm run test:e2e`
 - Auto-starts dev server via `webServer` config (or honors `PLAYWRIGHT_BASE_URL` for preview/prod URL)
 

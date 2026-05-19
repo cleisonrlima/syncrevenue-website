@@ -208,6 +208,7 @@ describe('Navbar', () => {
       expect(logo.getAttribute('width')).toBe('32')
       expect(logo.getAttribute('height')).toBe('32')
       expect(logo.getAttribute('loading')).toBe('eager')
+      expect(logo.closest('a')).toHaveAttribute('href', '#')
     })
   })
 })

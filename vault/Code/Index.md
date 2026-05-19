@@ -14,7 +14,7 @@
 **New since Epic 1 retrospective (Test Design Epic 1 gap closure, 2026-05-15):**
 - Test artifacts: `_bmad-output/test-artifacts/test-design/test-design-epic-1.md` (full risk + coverage plan)
 - New unit tests: `src/i18n/index.test.ts` deep-key parity (+2), `src/lib/brand-tokens.contrast.test.ts` R-A2 lock (+6), `src/components/sections/ClientReferences.allowlist.test.tsx` R-B1 (+4). Total: 22 files, **99/99 pass**.
-- Playwright real-browser e2e scaffold under `tests/e2e/` (smoke, axe a11y, mobile overlay, locale switch, skip link). Run `npm run test:e2e:install` then `npm run test:e2e`.
+- Playwright real-browser e2e scaffold under `tests/e2e/` (smoke, axe a11y, mobile overlay, locale switch, skip link, hero visual refresh). Run `npm run test:e2e:install` then `npm run test:e2e`.
 - Lighthouse CI configs: `lighthouserc.json` (desktop), `lighthouserc.mobile.json`. Run `npm run lhci` or `npm run lhci:mobile`.
 - GitHub Actions: `.github/workflows/quality.yml` — unit + Playwright + Lighthouse CI on PR/push to master.
 - Vault: `vault/Planning/client-references-allowlist.md` (R-B1 single source of truth).
@@ -103,7 +103,7 @@ syncrevenue-website/
     ├── components/sections/SyncRevenue.tsx — placeholder (Story 1.6)
     ├── components/sections/Services.tsx   — placeholder (Story 1.6)
     ├── components/sections/Comparison.tsx — placeholder (Story 1.7)
-    ├── components/sections/Team.tsx       — real photos + composed alt + optional LinkedIn (Story 1.8 → 3.1 ✓)
+    ├── components/sections/Team.tsx       — API-backed team cards + composed alt + optional LinkedIn + experience meta (Story 1.8 → 3.1 → 6.7 ✓)
     ├── components/sections/DemoScheduler.tsx — placeholder (Story 2.4)
     ├── components/sections/Contact.tsx    — placeholder (Story 2.3)
     ├── components/sections/Security.tsx   — placeholder (Story 1.9)
@@ -115,7 +115,7 @@ syncrevenue-website/
     ├── pages/admin/Login.tsx       — placeholder (Story 4.1)
     ├── pages/admin/Dashboard.tsx   — placeholder (Story 4.6)
     ├── pages/admin/Leads.tsx       — placeholder (Story 4.2)
-    └── pages/admin/Team.tsx        — placeholder (Story 4.4)
+    └── pages/admin/Team.tsx        — team CRUD including localized experience meta fields (Story 4.4 → 6.7 ✓)
 ```
 
 ---

@@ -37,6 +37,9 @@ function makeRow(overrides: Partial<AdminTeamMemberRow> = {}): AdminTeamMemberRo
     bio_en: 'en bio',
     bio_pt: 'pt bio',
     bio_es: 'es bio',
+    experience_en: '20+ years',
+    experience_pt: '20+ anos',
+    experience_es: '20+ años',
     linkedin: null,
     photo_url: null,
     order_index: 0,
@@ -53,6 +56,9 @@ async function fillRequiredFields(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByTestId('team-form-bio_en'), 'EN bio body')
   await user.type(screen.getByTestId('team-form-bio_pt'), 'PT bio body')
   await user.type(screen.getByTestId('team-form-bio_es'), 'ES bio body')
+  await user.type(screen.getByTestId('team-form-experience_en'), '20+ years')
+  await user.type(screen.getByTestId('team-form-experience_pt'), '20+ anos')
+  await user.type(screen.getByTestId('team-form-experience_es'), '20+ años')
 }
 
 beforeEach(() => {
@@ -122,6 +128,7 @@ describe('Team page', () => {
     const payload = (api.postAdminTeam as unknown as Mock).mock.calls[0][0]
     expect(payload.name).toBe('New Name')
     expect(payload.role_en).toBe('EN Role')
+    expect(payload.experience_en).toBe('20+ years')
     expect(payload.linkedin).toBeNull()
     expect(payload.photo_url).toBeNull()
     expect(payload.order_index).toBe(0)

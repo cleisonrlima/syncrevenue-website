@@ -12,6 +12,9 @@ const valid: AdminTeamFormValues = {
   bio_en: 'en',
   bio_pt: 'pt',
   bio_es: 'es',
+  experience_en: '20+ years',
+  experience_pt: '20+ anos',
+  experience_es: '20+ años',
   linkedin: '',
   photo_url: '',
   order_index: '0',
@@ -38,6 +41,9 @@ describe('createAdminTeamSchema', () => {
     'bio_en',
     'bio_pt',
     'bio_es',
+    'experience_en',
+    'experience_pt',
+    'experience_es',
   ] as const)('rejects empty %s with required error key', (field) => {
     const result = schema.safeParse({ ...valid, [field]: '' })
     expect(result.success).toBe(false)

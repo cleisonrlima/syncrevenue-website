@@ -13,6 +13,9 @@ export interface AdminTeamFormValues {
   bio_en: string
   bio_pt: string
   bio_es: string
+  experience_en: string
+  experience_pt: string
+  experience_es: string
   linkedin: string
   photo_url: string
   order_index: string
@@ -26,6 +29,9 @@ export const initialFormValues: AdminTeamFormValues = {
   bio_en: '',
   bio_pt: '',
   bio_es: '',
+  experience_en: '',
+  experience_pt: '',
+  experience_es: '',
   linkedin: '',
   photo_url: '',
   order_index: '0',
@@ -76,6 +82,9 @@ export function createAdminTeamSchema(t: TFunction) {
       bio_en: required(4000),
       bio_pt: required(4000),
       bio_es: required(4000),
+      experience_en: required(200),
+      experience_pt: required(200),
+      experience_es: required(200),
       linkedin: url,
       photo_url: url,
       order_index: orderIndex,
@@ -88,6 +97,9 @@ export function createAdminTeamSchema(t: TFunction) {
       bio_en: value.bio_en,
       bio_pt: value.bio_pt,
       bio_es: value.bio_es,
+      experience_en: value.experience_en,
+      experience_pt: value.experience_pt,
+      experience_es: value.experience_es,
       linkedin: value.linkedin && value.linkedin.length > 0 ? value.linkedin : null,
       photo_url: value.photo_url && value.photo_url.length > 0 ? value.photo_url : null,
       order_index: value.order_index,

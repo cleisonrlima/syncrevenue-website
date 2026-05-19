@@ -47,19 +47,19 @@ Epic 3 story 3.11 → **SYN-97** (not SYN-85; mirror block corrected 2026-05-16)
 
 ## Story-to-Issue mapping (Epic 6 — active)
 
-Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic SYN-202 in In Progress; stories 6.1–6.13 all in REVIEW.
+Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic SYN-202 in In Progress; stories 6.3/6.4/6.5/6.6/6.7/6.8 Done (Jira state verified 2026-05-19), 6.1/6.2/6.9–6.13 all in REVIEW.
 
 | Story | Title | Jira Key | sprint-status | Sub-tasks |
 |-------|-------|----------|---------------|-----------|
 | Epic 6 | Visual Design Refresh — Claude Design Handoff | SYN-202 | in-progress | — |
 | 6.1 | Design Tokens — Sober Palette | SYN-203 | review | SYN-211..215 (5, all Done) |
 | 6.2 | Navbar & Logo Refresh | SYN-204 | review | SYN-216..223 (8, all Done) |
-| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | SYN-205 | review | SYN-224..230 (7, all Done) |
-| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | SYN-206 | review | SYN-231..237 (7, all Done) |
-| 6.5 | Benefits Grid + Trust Strip | SYN-207 | review | SYN-238..243 (6, all Done) |
-| 6.6 | ClientReferences Visual Refresh | SYN-208 | review | SYN-244..249 (6, all Done) |
-| 6.7 | Team Section Visual Refresh | SYN-209 | review | SYN-250..254 (5, all Done) |
-| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | SYN-210 | review | SYN-255..263 (9; only SYN-256 + SYN-262 Done — rest deferred → 6.9/6.10/6.11/6.12 per comment on SYN-210) |
+| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | SYN-205 | done (Jira synced 2026-05-19) | SYN-224..230 (7, all Done) |
+| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | SYN-206 | done (Jira synced 2026-05-19) | SYN-231..237 (7, all Done) |
+| 6.5 | Benefits Grid + Trust Strip | SYN-207 | done (Jira verified 2026-05-19) | SYN-238..243 (6, all Done) |
+| 6.6 | ClientReferences Visual Refresh | SYN-208 | done (Jira verified 2026-05-19) | SYN-244..249 (6, all Done) |
+| 6.7 | Team Section Visual Refresh | SYN-209 | done (Jira verified 2026-05-19) | SYN-250..254 (5, all Done) |
+| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | SYN-210 | done (Jira verified 2026-05-19; partial closure documented — deferrals materialised → 6.9/6.10/6.11/6.12) | SYN-255..263 (9; only SYN-256 + SYN-262 Done — rest deferred → 6.9/6.10/6.11/6.12 per comment on SYN-210) |
 | 6.9 | Shared Form Primitives + i18n Namespace Restructure | SYN-328 | review | SYN-332..343 (12, all Done) |
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum | SYN-329 | review | SYN-344..356 (13, all Done — synced 2026-05-19) |
 | 6.11 | Contact Grid + ContactForm Restyle | SYN-330 | review | SYN-357..366 (10, all Done — synced 2026-05-19) |

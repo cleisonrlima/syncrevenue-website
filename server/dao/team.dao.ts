@@ -9,6 +9,9 @@ export interface TeamMemberInput {
   bio_en: string
   bio_pt: string
   bio_es: string
+  experience_en: string
+  experience_pt: string
+  experience_es: string
   linkedin?: string | null
   photo_url?: string | null
   order_index?: number
@@ -24,6 +27,9 @@ export interface TeamMemberRow {
   bio_en: string
   bio_pt: string
   bio_es: string
+  experience_en: string
+  experience_pt: string
+  experience_es: string
   linkedin: string | null
   photo_url: string | null
   order_index: number
@@ -46,6 +52,9 @@ const ALLOWED_PATCH_KEYS: ReadonlyArray<keyof TeamMemberInput> = [
   'bio_en',
   'bio_pt',
   'bio_es',
+  'experience_en',
+  'experience_pt',
+  'experience_es',
   'linkedin',
   'photo_url',
   'order_index',
@@ -55,9 +64,9 @@ const ALLOWED_PATCH_KEYS: ReadonlyArray<keyof TeamMemberInput> = [
 export function createTeamDao(database: Database = defaultDb): TeamDao {
   const insertStmt = database.prepare(`
     INSERT INTO team_members
-      (name, role_en, role_pt, role_es, bio_en, bio_pt, bio_es, linkedin, photo_url, order_index, active)
+      (name, role_en, role_pt, role_es, bio_en, bio_pt, bio_es, experience_en, experience_pt, experience_es, linkedin, photo_url, order_index, active)
     VALUES
-      (@name, @role_en, @role_pt, @role_es, @bio_en, @bio_pt, @bio_es, @linkedin, @photo_url, @order_index, @active)
+      (@name, @role_en, @role_pt, @role_es, @bio_en, @bio_pt, @bio_es, @experience_en, @experience_pt, @experience_es, @linkedin, @photo_url, @order_index, @active)
   `)
   const getByIdStmt = database.prepare(`SELECT * FROM team_members WHERE id = ?`)
   const setActiveStmt = database.prepare(`UPDATE team_members SET active = @active WHERE id = @id`)
@@ -82,6 +91,9 @@ export function createTeamDao(database: Database = defaultDb): TeamDao {
         bio_en: input.bio_en,
         bio_pt: input.bio_pt,
         bio_es: input.bio_es,
+        experience_en: input.experience_en,
+        experience_pt: input.experience_pt,
+        experience_es: input.experience_es,
         linkedin: input.linkedin ?? null,
         photo_url: input.photo_url ?? null,
         order_index: input.order_index ?? 0,

@@ -6,6 +6,12 @@
   .section-intro-emphasis {
     @apply [&>p:first-of-type]:text-brand-deep;
   }
+
+  @media (prefers-reduced-data: reduce) {
+    .hero-bg-media {
+      display: none;
+    }
+  }
 }
 
 @layer base {

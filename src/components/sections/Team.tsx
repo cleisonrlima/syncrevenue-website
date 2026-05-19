@@ -27,6 +27,7 @@ type DisplayMember = {
   name: string
   role: string
   bio: string
+  experience: string
   photo: string
   linkedinUrl: string
 }
@@ -34,21 +35,22 @@ type DisplayMember = {
 function pickLocaleFields(row: PublicTeamMemberRow, locale: string) {
   switch (locale) {
     case 'pt-BR':
-      return { role: row.role_pt, bio: row.bio_pt }
+      return { role: row.role_pt, bio: row.bio_pt, experience: row.experience_pt }
     case 'es':
-      return { role: row.role_es, bio: row.bio_es }
+      return { role: row.role_es, bio: row.bio_es, experience: row.experience_es }
     default:
-      return { role: row.role_en, bio: row.bio_en }
+      return { role: row.role_en, bio: row.bio_en, experience: row.experience_en }
   }
 }
 
 function toDisplayMember(row: PublicTeamMemberRow, locale: string): DisplayMember {
-  const { role, bio } = pickLocaleFields(row, locale)
+  const { role, bio, experience } = pickLocaleFields(row, locale)
   return {
     id: row.id,
     name: row.name,
     role,
     bio,
+    experience,
     photo: row.photo_url ?? '',
     linkedinUrl: row.linkedin ?? '',
   }
@@ -99,29 +101,29 @@ export default function Team() {
       id="equipe"
       role="region"
       aria-label={t('team.ariaLabel', { defaultValue: 'Sync Sirius team specialists' })}
-      className="bg-[var(--ink)] text-white scroll-mt-24"
+      className="sec bg-[var(--ink)] text-white scroll-mt-24"
     >
-      <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
-        <div className="mx-auto mb-14 max-w-[760px] text-center">
-          <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.12em] text-white/50">
+      <div className="sec-inner mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
+        <header className="sec-head mx-auto mb-14 max-w-[760px] text-center">
+          <div className="sec-eyebrow inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.12em] text-white/50">
             <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
             {t('team.eyebrow', { defaultValue: 'Our Team' })}
           </div>
-          <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight text-white scroll-mt-24">
+          <h2 className="sec-h mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight text-white scroll-mt-24">
             {t('team.headline', { defaultValue: 'Specialists in' })}{' '}
-            <span className="text-[var(--accent-soft)]" data-testid="team-headline-accent">
+            <span className="accent text-[var(--accent-soft)]" data-testid="team-headline-accent">
               {t('team.headlineAccent', { defaultValue: 'airline distribution' })}
             </span>
           </h2>
-          <p className="mt-5 mx-auto max-w-[62ch] text-[15px] leading-[1.65] text-white/[0.65]">
+          <p className="sec-sub mt-5 mx-auto max-w-[62ch] text-[15px] leading-[1.65] text-white/[0.65]">
             {t('team.subtext', { defaultValue: '' })}
           </p>
-        </div>
+        </header>
 
         {members.length > 0 && (
           <div
             data-team-grid="true"
-            className="grid grid-cols-1 min-[760px]:grid-cols-2 gap-6 max-w-[1080px] mx-auto"
+            className="team grid grid-cols-1 min-[760px]:grid-cols-2 gap-6 max-w-[1080px] mx-auto"
           >
             {members.map(member => {
               const headingId = `team-member-${member.id}`
@@ -130,9 +132,9 @@ export default function Team() {
                   key={member.id}
                   aria-labelledby={headingId}
                   data-testid={`team-card-${member.id}`}
-                  className="grid grid-cols-1 min-[560px]:grid-cols-[200px_1fr] overflow-hidden rounded-[14px] border border-[var(--line)] bg-white/[0.03] motion-safe:transition-colors motion-safe:duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.045]"
+                  className="tm grid grid-cols-1 min-[560px]:grid-cols-[200px_1fr] overflow-hidden rounded-[14px] border border-[var(--line)] bg-white/[0.03] motion-safe:transition-colors motion-safe:duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.045]"
                 >
-                  <div className="relative aspect-square min-h-[200px] overflow-hidden bg-[#0A0B22]">
+                  <div className="tm-photo relative aspect-square min-h-[200px] overflow-hidden bg-[#0A0B22]">
                     {isUsablePhoto(member.photo) ? (
                       <img
                         src={member.photo}
@@ -147,37 +149,33 @@ export default function Team() {
                       <div
                         aria-hidden="true"
                         data-team-photo-placeholder="true"
-                        className="flex h-full w-full items-center justify-center bg-[var(--accent)] text-[60px] font-bold text-white"
+                        className="tm-photo-fallback flex h-full w-full items-center justify-center bg-[var(--accent)] text-[60px] font-bold text-white"
                       >
                         {getInitials(member.name)}
                       </div>
                     )}
                     <span
                       data-testid={`team-status-${member.id}`}
-                      className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-[rgba(8,8,28,0.75)] px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-white"
+                      className="tm-status absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-[rgba(8,8,28,0.75)] px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-white before:inline-block before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#5BC98C] before:content-['']"
                     >
-                      <span
-                        aria-hidden="true"
-                        className="inline-block h-1.5 w-1.5 rounded-full bg-[#5BC98C]"
-                      />
                       {t('team.statusLabel', { defaultValue: 'available' })}
                     </span>
                   </div>
 
-                  <div className="flex flex-col px-7 pt-6 pb-[22px]">
+                  <div className="tm-body flex flex-col px-7 pt-6 pb-[22px]">
                     <h3
                       id={headingId}
-                      className="text-[20px] font-bold tracking-[-0.02em] text-white"
+                      className="tm-name text-[20px] font-bold tracking-[-0.02em] text-white"
                     >
                       {member.name}
                     </h3>
-                    <p className="mt-1 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-white/55">
+                    <p className="tm-role mt-1 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-white/55">
                       {member.role}
                     </p>
-                    <p className="mt-3 flex-1 text-[13.5px] leading-[1.65] text-white/70">
+                    <p className="tm-bio mt-3 flex-1 text-[13.5px] leading-[1.65] text-white/70">
                       {member.bio}
                     </p>
-                    <div className="mt-4 flex items-center gap-2.5 border-t border-[var(--line)] pt-3.5">
+                    <div className="tm-foot mt-4 flex items-center gap-2.5 border-t border-[var(--line)] pt-3.5">
                       {isNonEmptyString(member.linkedinUrl) && (
                         <a
                           href={member.linkedinUrl}
@@ -188,7 +186,7 @@ export default function Team() {
                             name: member.name,
                             defaultValue: 'View {{name}} on LinkedIn',
                           })}
-                          className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--line-strong)] text-white/75 motion-safe:transition-colors motion-safe:duration-150 hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white"
+                          className="icon-btn linkedin inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--line-strong)] text-white/75 motion-safe:transition-colors motion-safe:duration-150 hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white"
                         >
                           <svg
                             width="16"
@@ -201,6 +199,9 @@ export default function Team() {
                           </svg>
                         </a>
                       )}
+                      <span className="tm-foot-meta ml-auto text-[11px] text-white/40">
+                        {member.experience}
+                      </span>
                     </div>
                   </div>
                 </article>

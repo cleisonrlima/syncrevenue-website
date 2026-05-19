@@ -31,9 +31,10 @@ export default function SyncRevenue() {
       aria-label={t('syncrevenue.headline', {
         defaultValue: 'Automated Commission Reconciliation',
       })}
-      className="bg-white"
+      className="relative bg-white"
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <span id="produto" aria-hidden="true" className="absolute top-0" />
         <SectionHeader
           variant="light"
           eyebrow={t('syncrevenue.eyebrow', { defaultValue: 'Our Flagship Product' })}

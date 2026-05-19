@@ -1,6 +1,6 @@
 # Story 6.3: Hero Left — Airplane Background, Copy, KPI Strip
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -73,7 +73,13 @@ So that the value proposition reads immediately, the imagery anchors the travel-
 - [x] Task 6: Tests
   - [x] `Hero.test.tsx` rewritten — 11 tests: two-line H1 + accent span, `<Trans>` strong slots, CTA primary/secondary contract, scroll fallback chain (`#agendar-demo` → `#demo-scheduler`), airplane bg with saturate filter, KPI strip 3-column structure + tabular-nums + hairline, TrustBar preservation, right-column placeholder for 6.4
   - [x] Fixed pre-existing `Privacy.test.tsx` + `Privacy.story-1-10.e2e.test.tsx` helpers that searched for the old H1 copy ("Commission Management Built") — updated to new "More commission per ticket" pattern
-  - [ ] Playwright `tests/e2e/hero.spec.ts` — deferred to story 6.8 e2e sweep alongside other Epic 6 surfaces. Vitest + jsdom covers the assertions today
+  - [x] Playwright `tests/e2e/hero.spec.ts` — added during review fix pass. Covers airplane image load, two-line H1, mobile no-overflow, and hero axe serious/critical scan.
+
+### Review Findings
+
+- [x] [Review][Patch] Add the `prefers-reduced-data` fallback required by AC2 — AC2 and the Performance requirement call for a solid `var(--ink)` fallback for reduced-data users, but the hero image still loads as the visual background with no `prefers-reduced-data` handling. [src/components/sections/Hero.tsx:57] — fixed 2026-05-19 (`.hero-bg-media` hidden under `prefers-reduced-data: reduce`; section falls back to `var(--ink)`)
+- [x] [Review][Patch] Restore the manually patched `scrollIntoView` prototype in Hero tests — the test overwrites `HTMLElement.prototype.scrollIntoView` via `Object.defineProperty`, but `vi.restoreAllMocks()` does not restore manual descriptor changes, so later tests can inherit the fake implementation. [src/components/sections/Hero.test.tsx:60] — fixed 2026-05-19 (descriptor captured and restored/deleted in `afterEach`)
+- [x] [Review][Patch] Add the required Playwright hero coverage — Story 6.3 Testing Requirements call for `tests/e2e/hero.spec.ts` to verify the background image, two-line H1, and axe result; the story currently defers this coverage and only has jsdom assertions. [tests/e2e/hero.spec.ts] — fixed 2026-05-19
 
 ## Dev Notes
 
@@ -140,7 +146,7 @@ So that the value proposition reads immediately, the imagery anchors the travel-
 
 ## Story Completion Status
 
-- Status: review
+- Status: done
 - Completion note: Implemented 2026-05-17. Airplane background + overlay scrim landed; H1 reshaped to two-line accent; sub paragraph routed through `<Trans>`; dual CTA wired (primary solid-accent + tertiary text link with arrow); StatRow refactored into KPI strip consuming `hero.kpis.*`. Right column wired as placeholder for story 6.4. 584/584 tests green, build clean.
 
 ## Outstanding Questions for Dev
@@ -186,13 +192,16 @@ So that the value proposition reads immediately, the imagery anchors the travel-
 | `src/i18n/locales/pt-BR/translation.json` | UPDATE | Same shape changes; new PT-BR copy from `Hero.html` |
 | `src/i18n/locales/es/translation.json` | UPDATE | Same shape changes; new ES copy |
 | `public/hero/airplane.jpg` | NEW | Copied from `1351_rev_1.jpg` (135 KB, 2501×1401) |
+| `src/index.css` | UPDATE | Added `prefers-reduced-data` fallback for hero background media |
+| `tests/e2e/hero.spec.ts` | NEW | Playwright hero image, H1, mobile no-overflow, and axe coverage |
 | `src/pages/Privacy.test.tsx` | UPDATE | Fixed helper to match new H1 copy |
 | `src/pages/Privacy.story-1-10.e2e.test.tsx` | UPDATE | Fixed helper to match new H1 copy |
 | `_bmad-output/implementation-artifacts/6-3-hero-left-background-copy-kpis.md` | UPDATE | Task boxes, Dev Agent Record, File List, Change Log, Status |
-| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.3 → `review` |
+| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.3 → `done` |
 
 ### Change Log
 
 | Date | Author | Summary |
 |---|---|---|
 | 2026-05-17 | Claude (Opus 4.7) | Story 6.3 — Hero sober rebuild. Airplane background + dual-gradient scrim, two-line H1 with accent span, `<Trans>` subhead, dual CTA (solid-accent + tertiary arrow link), KPI strip via refactored StatRow. Three-locale i18n reshape. Right column wired as placeholder for Story 6.4. |
+| 2026-05-19 | Codex | Review fixes — added reduced-data fallback, restored test prototype cleanup, added focused Playwright hero coverage, and marked review findings resolved. |

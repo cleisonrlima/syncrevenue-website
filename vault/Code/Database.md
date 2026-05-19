@@ -46,6 +46,9 @@
 | `bio_en` | TEXT NOT NULL | |
 | `bio_pt` | TEXT NOT NULL | |
 | `bio_es` | TEXT NOT NULL | |
+| `experience_en` | TEXT NOT NULL | DEFAULT ''; public team footer meta |
+| `experience_pt` | TEXT NOT NULL | DEFAULT ''; public team footer meta |
+| `experience_es` | TEXT NOT NULL | DEFAULT ''; public team footer meta |
 | `linkedin` | TEXT | optional |
 | `photo_url` | TEXT | optional |
 | `order_index` | INTEGER NOT NULL | DEFAULT 0; display order |

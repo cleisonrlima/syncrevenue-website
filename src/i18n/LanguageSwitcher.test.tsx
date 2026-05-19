@@ -18,23 +18,33 @@ describe('LanguageSwitcher', () => {
     vi.clearAllMocks()
   })
 
-  it('renders three locale buttons', () => {
+  it('renders the active locale trigger and opens locale options', async () => {
+    const user = userEvent.setup()
     render(<LanguageSwitcher />)
-    expect(screen.getByRole('button', { name: 'EN' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'PT-BR' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'ES' })).toBeInTheDocument()
+    const trigger = screen.getByRole('button', { name: 'EN' })
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+    await user.click(trigger)
+
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('menuitemradio', { name: 'EN' })).toHaveAttribute('aria-checked', 'true')
+    expect(screen.getByRole('menuitemradio', { name: 'PT-BR' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitemradio', { name: 'ES' })).toBeInTheDocument()
   })
 
-  it('active locale button has aria-current="true"', () => {
+  it('active locale option has aria-checked="true"', async () => {
+    const user = userEvent.setup()
     render(<LanguageSwitcher />)
-    expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute('aria-current', 'true')
-    expect(screen.getByRole('button', { name: 'PT-BR' })).not.toHaveAttribute('aria-current')
+    await user.click(screen.getByRole('button', { name: 'EN' }))
+    expect(screen.getByRole('menuitemradio', { name: 'EN' })).toHaveAttribute('aria-checked', 'true')
+    expect(screen.getByRole('menuitemradio', { name: 'PT-BR' })).toHaveAttribute('aria-checked', 'false')
   })
 
   it('clicking PT-BR executes locale flow in order', async () => {
     const user = userEvent.setup()
     render(<LanguageSwitcher />)
-    await user.click(screen.getByRole('button', { name: 'PT-BR' }))
+    await user.click(screen.getByRole('button', { name: 'EN' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'PT-BR' }))
     expect(i18next.changeLanguage).toHaveBeenCalledWith('pt-BR')
     expect(useLocaleStore.getState().locale).toBe('pt-BR')
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')

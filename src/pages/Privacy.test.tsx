@@ -87,7 +87,8 @@ describe('Privacy page', () => {
     expect(window.location.pathname).toBe('/privacy')
 
     const languageSwitcher = screen.getAllByRole('group', { name: 'Select language' })[0]
-    await user.click(within(languageSwitcher).getByRole('button', { name: 'PT-BR' }))
+    await user.click(within(languageSwitcher).getByRole('button', { name: 'EN' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'PT-BR' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Política de Privacidade' })).toBeInTheDocument()
     expect(window.location.pathname).toBe('/privacy')

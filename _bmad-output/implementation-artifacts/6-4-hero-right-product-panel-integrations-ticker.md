@@ -1,6 +1,6 @@
 # Story 6.4: Hero Right — Product Panel, Integration Tiles, Live Ticker
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 
@@ -43,10 +43,10 @@ So that I immediately understand what the product is, that it speaks the GDS pro
   - [x] `ticker.entries` is a 6-row array of `{pnr, value}` per locale. Ticker label uses `<Trans>` interpolation of `{{pnr}}` plus a `<b>` slot
   - [x] Note on depth: `hero.panel.ticker.entries.0.pnr` is technically a 5-level path but `entries` is read whole via `returnObjects` so the Architecture-Key dot-depth rule (≤ 3 for `t()` lookup paths) is satisfied — only `hero.panel.ticker.entries` is `t()`-fetched
 
-- [x] Task 1: Partner logos — fallback to text wordmarks (AC: 5)
-  - [x] Per dev notes + verifier log, all three official partner-logo URLs (Amadeus / Sabre / Travelport) returned `naturalWidth=0` (blocked). Bundling unlicensed brand assets locally is the same trademark problem via a different route
-  - [x] Authorized fallback path (dev notes: "monogram fallback if needed"): render the wordmarks as styled text — `text-[13px] font-semibold tracking-[-0.01em] text-[#0A0B2E]` on a white tile, green `.live` dot top-right, Travelport sub `Galileo · Worldspan` in `text-[9.5px] text-[#5B6478]`. Keeps the visual rhythm of the spec while sidestepping the trademark question entirely
-  - [x] `public/integrations/` directory NOT created (no assets to host). If marketing later procures licensed wordmarks, the swap is `<span>{name}</span>` → `<img src="/integrations/{key}.svg" alt={name} width={…} height={…}/>` inside `HeroProductPanel.tsx` — a 5-line change
+- [x] Task 1: Partner logos — bundled official wordmarks (AC: 5)
+  - [x] Downloaded local copies from the official URLs documented in the handoff chat: `public/integrations/amadeus.png`, `public/integrations/sabre.svg`, `public/integrations/travelport.svg`
+  - [x] `HeroProductPanel.tsx` renders each tile with an eager `<img>` using explicit `width`/`height`, `max-height:22px`, `max-width:100%`, and `object-fit:contain`
+  - [x] Travelport still renders the required `Galileo · Worldspan` subtitle below the official wordmark
 
 - [x] Task 2: Build `HeroProductPanel.tsx` (AC: 1–7)
   - [x] New file `src/components/sections/HeroProductPanel.tsx` — panel head with `--accent` 44×44 mark and inline dollar-sign SVG, eyebrow tag + product name, line paragraph with `<Trans>` strong slot, integrations label + 3-tile row + "also supported" chip line, ticker
@@ -63,7 +63,7 @@ So that I immediately understand what the product is, that it speaks the GDS pro
   - [x] Grid collapse from Story 6.3 (`lg:grid-cols-[…]`) already stacks the panel below the copy at < 1024px
 
 - [x] Task 5: Accessibility
-  - [x] Partner wordmarks are accessible text (real `<span>` content) — screen readers announce "Amadeus / Sabre / Travelport" directly. Live dots `aria-hidden="true"`
+  - [x] Partner wordmarks render as local `<img>` assets with descriptive `alt` text: "Amadeus", "Sabre", "Travelport". Live dots `aria-hidden="true"`
   - [x] Ticker container `aria-live="polite"` — new PNR entries are announced
   - [x] Panel mark + integration live dots all `aria-hidden="true"` (decorative)
   - [ ] Visually-hidden "+$ positive adjustment" prefix — DEFERRED. The ticker value is the screen-reader-readable text already (e.g., "+ $8,420" reads naturally). Adding a separate visually-hidden span would duplicate; skipped to keep DOM lean. If a11y audit pushes back, the addition is a 3-line change
@@ -71,7 +71,14 @@ So that I immediately understand what the product is, that it speaks the GDS pro
 - [x] Task 6: Tests
   - [x] `HeroProductPanel.test.tsx` — 8 tests: panel head + mark + name, `<Trans>` strong slot, 3 tiles + 3 live dots, Travelport sub, `whitespace-nowrap` chips, ticker initial entry + aria-live, fake-timer cycle, reduced-motion bypass
   - [x] `Hero.test.tsx` updated — "right column placeholder" assertion replaced with "mounts HeroProductPanel inside the right column" assertion
-  - [ ] Playwright `tests/e2e/hero.spec.ts` — deferred to story 6.8 e2e sweep
+  - [x] Playwright `tests/e2e/hero.spec.ts` — added during review fix pass. Covers product panel above fold and bundled integration wordmark image loads.
+
+### Review Findings
+
+- [x] [Review][Decision] Decide whether to implement official bundled wordmarks or formally amend AC4/AC5 to allow the text-wordmark fallback — the accepted code renders text `<span>` labels and creates no `public/integrations/*` assets, while AC4/AC5, File Structure Requirements, and Testing Requirements still require official local wordmark images with sizing constraints. [src/components/sections/HeroProductPanel.tsx:111] — resolved 2026-05-19: implement official bundled wordmarks
+- [x] [Review][Patch] Clear the ticker fade timeout during cleanup — the effect clears only the interval, so the nested 200ms timeout can still call `setIndex`/`setFade` after unmount, after reduced-motion changes, or after entry-count changes. [src/components/sections/HeroProductPanel.tsx:54] — fixed 2026-05-19
+- [x] [Review][Patch] Add an unmount-during-fade timer test for the ticker — current fake-timer tests advance through the interval and fade, but never unmount after the interval fires and before the nested timeout runs, so the cleanup gap is not covered. [src/components/sections/HeroProductPanel.test.tsx:77] — fixed 2026-05-19
+- [x] [Review][Patch] Add the required Playwright panel coverage — Story 6.4 Testing Requirements call for `tests/e2e/hero.spec.ts` to verify the panel is visible above the fold and integration tiles render; the story currently defers this coverage and only has jsdom assertions. [tests/e2e/hero.spec.ts] — fixed 2026-05-19
 
 ## Dev Notes
 
@@ -141,12 +148,12 @@ So that I immediately understand what the product is, that it speaks the GDS pro
 
 ## Story Completion Status
 
-- Status: review
-- Completion note: Implemented 2026-05-17. HeroProductPanel shipped with text wordmarks (trademark-safe fallback per dev notes), 3 integration tiles with green live dots + Travelport Galileo/Worldspan subtitle, motion-safe ticker cycle (8s interval, 200ms fade, reduced-motion respect). Mounted into Hero right column. 591/591 tests green, build clean.
+- Status: done
+- Completion note: Implemented 2026-05-17; review fixes applied 2026-05-19. HeroProductPanel ships with bundled official wordmarks, 3 integration tiles with green live dots + Travelport Galileo/Worldspan subtitle, motion-safe ticker cycle (8s interval, 200ms fade, reduced-motion respect), and cleanup for pending fade timers. Mounted into Hero right column. Unit, typecheck, and focused Playwright coverage green for available browsers.
 
 ## Outstanding Questions for Dev
 
-1. ~~Trademark usage policy~~ — Resolved: took the authorized fallback (text wordmarks) per dev-notes "monogram fallback if needed". Marketing can later swap to licensed `<img>` assets via a 5-line edit.
+1. ~~Trademark usage policy~~ — Resolved in review: implement official bundled wordmarks from the source URLs documented in the handoff.
 2. ~~Ticker copy approval~~ — Placeholder fabricated demo data (`+ $8,420 / PNR-44128`...) shipped. Marketing can edit `hero.panel.ticker.entries` per locale without touching the component.
 3. ~~Mobile tile-row collapse~~ — Resolved: kept 3-column at all widths (matches `Hero.html`). If mobile audit pushes back, switch to `grid-cols-1 sm:grid-cols-3` — 1-line change.
 
@@ -160,13 +167,14 @@ So that I immediately understand what the product is, that it speaks the GDS pro
 
 ### Implementation Plan (decisions taken)
 
-1. **Text wordmarks instead of `<img>` partner logos.** Official URLs are externally blocked; bundling unlicensed assets locally has the same trademark problem. Dev notes authorize the fallback. Marketing-driven licensed swap = `<span>{name}</span>` → `<img …/>` inside the same JSX.
-2. **No `public/integrations/` directory created** — nothing to host. If licensed assets arrive later, the directory + the `<img>` swap can land together in a follow-up story.
+1. **Official wordmark assets bundled locally.** Review decision chose strict AC5 compliance. The three official assets now live under `public/integrations/` and render via eager `<img>` tags with explicit intrinsic dimensions.
+2. **Logo sizing follows verifier constraint.** Tile images use `max-height:22px; max-width:100%; object-fit:contain`, preserving Sabre's wide 2000×576 aspect ratio without clipping.
 3. **Ticker entries live in i18n via `returnObjects: true`** instead of a separate config module. Marketing can edit PNR/value text per locale without component changes.
 4. **Lucide-react not added** — package.json doesn't ship it. Inline dollar SVG (24 lines) is cheaper than a new dep.
 5. **`useReducedMotion` from `motion/react`** — already in stack (Story 3.2 / MotionSection). Reused as the spec mandates.
 6. **Reduced-motion bypass disables both the cycle AND the opacity transition.** Just disabling the cycle would leave a fade-out-fade-in animation on every render trigger; disabling both gives a fully static panel.
-7. **Visually-hidden "+$ positive adjustment" prefix deferred.** Ticker value reads naturally ("+ $8,420") via aria-live. If audit pushes back, easy 3-line addition.
+7. **Ticker cleanup fixed in review.** The pending fade timeout is cleared on cleanup to avoid post-unmount state updates.
+8. **Visually-hidden "+$ positive adjustment" prefix deferred.** Ticker value reads naturally ("+ $8,420") via aria-live. If audit pushes back, easy 3-line addition.
 
 ### File List
 
@@ -179,11 +187,16 @@ So that I immediately understand what the product is, that it speaks the GDS pro
 | `src/i18n/locales/en/translation.json` | UPDATE | Added `hero.panel.*` namespace |
 | `src/i18n/locales/pt-BR/translation.json` | UPDATE | Added `hero.panel.*` namespace (PT-BR primary copy) |
 | `src/i18n/locales/es/translation.json` | UPDATE | Added `hero.panel.*` namespace |
+| `public/integrations/amadeus.png` | NEW | Official Amadeus wordmark |
+| `public/integrations/sabre.svg` | NEW | Official Sabre wordmark |
+| `public/integrations/travelport.svg` | NEW | Official Travelport wordmark |
+| `tests/e2e/hero.spec.ts` | NEW | Playwright hero/panel image, mobile, and axe coverage |
 | `_bmad-output/implementation-artifacts/6-4-hero-right-product-panel-integrations-ticker.md` | UPDATE | Task boxes, Dev Agent Record, File List, Change Log, Status |
-| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.4 → `review` |
+| `_bmad-output/implementation-artifacts/sprint-status.yaml` | UPDATE | Story 6.4 → `done` |
 
 ### Change Log
 
 | Date | Author | Summary |
 |---|---|---|
 | 2026-05-17 | Claude (Opus 4.7) | Story 6.4 — HeroProductPanel + integration tiles (text wordmarks) + motion-safe ticker. Partner logos use the dev-notes-authorized text-wordmark fallback (trademark-clean). |
+| 2026-05-19 | Codex | Review fixes — replaced text-wordmark fallback with bundled official wordmark images, added ticker timeout cleanup + test, and added focused Playwright hero/panel coverage. |

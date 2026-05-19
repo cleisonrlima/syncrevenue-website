@@ -13,6 +13,9 @@ const validBase = {
   bio_en: 'bio en',
   bio_pt: 'bio pt',
   bio_es: 'bio es',
+  experience_en: '20+ years',
+  experience_pt: '20+ anos',
+  experience_es: '20+ años',
   order_index: 0,
 }
 
@@ -69,6 +72,9 @@ describe('adminTeamCreateSchema', () => {
     'bio_en',
     'bio_pt',
     'bio_es',
+    'experience_en',
+    'experience_pt',
+    'experience_es',
   ] as const)('rejects whitespace-only %s', (field) => {
     const result = adminTeamCreateSchema.safeParse({ ...validBase, [field]: '   ' })
     expect(result.success).toBe(false)

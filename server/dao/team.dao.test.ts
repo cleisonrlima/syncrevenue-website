@@ -12,6 +12,9 @@ const base = {
   bio_en: 'en bio',
   bio_pt: 'pt bio',
   bio_es: 'es bio',
+  experience_en: '20+ years',
+  experience_pt: '20+ anos',
+  experience_es: '20+ años',
 }
 
 describe('teamDao', () => {
@@ -46,9 +49,10 @@ describe('teamDao', () => {
 
   it('update patches whitelisted fields', () => {
     const r = dao.create(base)
-    const updated = dao.update(r.id, { name: 'New', bio_en: 'x' })
+    const updated = dao.update(r.id, { name: 'New', bio_en: 'x', experience_en: '25+ years' })
     expect(updated?.name).toBe('New')
     expect(updated?.bio_en).toBe('x')
+    expect(updated?.experience_en).toBe('25+ years')
   })
 
   it('setActive toggles', () => {

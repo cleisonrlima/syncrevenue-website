@@ -27,6 +27,9 @@ const teamFixture: PublicTeamMemberRow[] = [
     bio_en: 'Guides travel agencies through GDS operations, BSP/ARC reconciliation and commission recovery strategy across the Americas.',
     bio_pt: 'Orienta agências em operações GDS, reconciliação BSP/ARC e estratégia de recuperação de comissões.',
     bio_es: 'Guía a agencias en operaciones GDS, conciliación BSP/ARC y estrategia de recuperación de comisiones.',
+    experience_en: '20+ years in airline distribution',
+    experience_pt: '20+ anos em distribuição aérea',
+    experience_es: '20+ años en distribución aérea',
     linkedin: null,
     photo_url: '/team/maria.webp',
     order_index: 0,
@@ -41,6 +44,9 @@ const teamFixture: PublicTeamMemberRow[] = [
     bio_en: 'Builds travel data integration and revenue optimization systems.',
     bio_pt: 'Constrói integrações de dados e rotinas operacionais confiáveis para receita.',
     bio_es: 'Construye integraciones de datos y rutinas operativas confiables para ingresos.',
+    experience_en: '15+ years in travel data automation',
+    experience_pt: '15+ anos em automação de dados de viagens',
+    experience_es: '15+ años en automatización de datos de viajes',
     linkedin: null,
     photo_url: '/team/lucas.webp',
     order_index: 1,
@@ -114,7 +120,8 @@ describe('Story 1.8 team visitor flow', () => {
     expect(within(team).getByText(/commission recovery strategy across the Americas/)).toBeInTheDocument()
 
     const pathBeforeLocaleChange = window.location.pathname
-    await user.click(screen.getAllByRole('button', { name: 'PT-BR' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'EN' })[0])
+    await user.click(screen.getByRole('menuitemradio', { name: 'PT-BR' }))
 
     expect(window.location.pathname).toBe(pathBeforeLocaleChange)
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')

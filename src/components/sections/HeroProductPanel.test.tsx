@@ -20,6 +20,7 @@ describe('HeroProductPanel (Story 6.4)', () => {
 
   afterEach(() => {
     vi.useRealTimers()
+    vi.restoreAllMocks()
   })
 
   it('renders the panel head with mark, tag, and product name', () => {
@@ -57,6 +58,27 @@ describe('HeroProductPanel (Story 6.4)', () => {
     expect(travelport.textContent).toMatch(/Galileo · Worldspan/)
   })
 
+  it('renders bundled official wordmark images for all integration tiles', () => {
+    render(<HeroProductPanel />)
+
+    const expected = [
+      ['hero-int-amadeus', 'Amadeus', '/integrations/amadeus.png'],
+      ['hero-int-sabre', 'Sabre', '/integrations/sabre.svg'],
+      ['hero-int-travelport', 'Travelport', '/integrations/travelport.svg'],
+    ] as const
+
+    for (const [testId, alt, src] of expected) {
+      const tile = screen.getByTestId(testId)
+      const img = tile.querySelector('img')
+      expect(img).toBeInTheDocument()
+      expect(img).toHaveAttribute('alt', alt)
+      expect(img).toHaveAttribute('src', src)
+      expect(img).toHaveAttribute('loading', 'eager')
+      expect(img?.className).toContain('max-h-[22px]')
+      expect(img?.className).toContain('object-contain')
+    }
+  })
+
   it('renders the "also supported" chips with whitespace-nowrap (NDC + Custom IBE)', () => {
     render(<HeroProductPanel />)
     const panel = screen.getByTestId('hero-product-panel')
@@ -88,6 +110,24 @@ describe('HeroProductPanel (Story 6.4)', () => {
       })
 
       expect(screen.getByTestId('hero-ticker-label').textContent).toMatch(/PNR-92710/)
+    })
+
+    it('clears the pending fade timeout when unmounted mid-transition', () => {
+      vi.useFakeTimers()
+      const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout')
+      const { unmount } = render(<HeroProductPanel />)
+
+      act(() => {
+        vi.advanceTimersByTime(8000)
+      })
+
+      unmount()
+
+      expect(clearTimeoutSpy).toHaveBeenCalled()
+
+      act(() => {
+        vi.advanceTimersByTime(200)
+      })
     })
 
     it('does not cycle when prefers-reduced-motion is set', () => {

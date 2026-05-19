@@ -54,7 +54,7 @@ export default function Hero() {
       {/* Airplane LCP image — Story 6.13. <picture> with webp + mobile-sized
           variant; <img> participates in LCP candidacy and is preloaded by
           index.html. fetchpriority="high" + decoding="async" land it asap. */}
-      <picture aria-hidden="true">
+      <picture aria-hidden="true" className="hero-bg-media">
         <source
           type="image/webp"
           media="(max-width: 768px)"

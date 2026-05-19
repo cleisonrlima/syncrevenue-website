@@ -13,11 +13,11 @@
 | `src/pages/admin/Login.tsx` | `/admin/login` | i18n login form, accessible error via `role="alert"` |
 | `src/pages/admin/Dashboard.tsx` | `/admin/dashboard` | Minimal landing + logout button (4.6 moves to nav shell) |
 | `src/pages/admin/Leads.tsx` | `/admin/leads` | Leads dashboard (Story 4.2–4.3) — locale + status filters, Skeleton loading, empty/filtered-empty/error states, AbortController per request, status badges (amber/blue/green), message preview + expand, **inline per-row status `<select>` with optimistic update + revert + per-row `role="alert"` error (Story 4.3)**. Admin import boundary: no imports from `components/sections/*` |
-| `src/pages/admin/Team.tsx` | `/admin/team` | Team CRUD list + inline create/edit form (Story 4.4) — uses `getAdminTeam` / `postAdminTeam` / `putAdminTeam`; per-field blur validation via `src/lib/team-schema.ts`; 401 → `clearSession()`; 400 `field` → inline error on offending input |
+| `src/pages/admin/Team.tsx` | `/admin/team` | Team CRUD list + inline create/edit form (Story 4.4) — uses `getAdminTeam` / `postAdminTeam` / `putAdminTeam`; per-field blur validation via `src/lib/team-schema.ts`; includes localized `experience_*` footer meta fields from Story 6.7 review; 401 → `clearSession()`; 400 `field` → inline error on offending input |
 | `src/hooks/useAdmin.ts` | — | `login`/`logout`/`bootstrap`, status-code→i18n-key error mapping |
 | `src/store/useAdminStore.ts` | — | Zustand render-cache: `isAuthenticated`, `adminId`, `email`, `bootstrapped` — NO persist |
 | `src/lib/api.ts` | — | `postAdminLogin`, `postAdminLogout`, `getAdminMe`, `getAdminLeads`, `patchAdminLeadStatus` (Story 4.3), `getAdminTeam`/`postAdminTeam`/`putAdminTeam`/`getPublicTeam` (Story 4.4), `AdminApiError`, `PublicTeamError` (Story 4.4 — public-surface failures never trip `clearSession`), `parseAdminLeadRow`, `parseAdminTeamMemberRow`, types `AdminLeadRow`/`AdminLeadStatus`/`AdminLeadLocale`/`AdminTeamMemberRow`/`AdminTeamMemberInput`/`PublicTeamMemberRow` |
-| `src/lib/team-schema.ts` | — | Client-side i18n-aware Zod mirror of `adminTeamCreateSchema`; `createAdminTeamSchema(t)` returns the schema; `AdminTeamFormValues` form-state type; `initialFormValues` defaults |
+| `src/lib/team-schema.ts` | — | Client-side i18n-aware Zod mirror of `adminTeamCreateSchema`; `createAdminTeamSchema(t)` returns the schema; `AdminTeamFormValues` form-state type; `initialFormValues` defaults; requires role/bio/experience triplets |
 
 ## Backend
 

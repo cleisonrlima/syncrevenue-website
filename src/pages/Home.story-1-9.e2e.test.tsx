@@ -94,7 +94,8 @@ describe('Story 1.9 trust sequence', () => {
     expect(await screen.findByRole('heading', { name: 'Your Data is Protected' }, lazySectionWait)).toBeInTheDocument()
 
     const languageSwitcher = screen.getAllByRole('group', { name: 'Select language' })[0]
-    await user.click(within(languageSwitcher).getByRole('button', { name: 'ES' }))
+    await user.click(within(languageSwitcher).getByRole('button', { name: 'EN' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'ES' }))
 
     expect(await screen.findByRole('heading', { name: 'Sus Datos Están Protegidos' }, lazySectionWait)).toBeInTheDocument()
     expect(screen.getByText(/Las credenciales GDS nunca tocan el sitio web/)).toBeInTheDocument()

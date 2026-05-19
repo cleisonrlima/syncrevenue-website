@@ -245,6 +245,7 @@
         "agencyName": "Atlas Travel Group",
         "location": "Miami, FL",
         "relationship": "Cliente de referência SyncRevenue",
+        "pill": "cliente referência",
         "pillVariant": "default",
         "testimonial": "O SyncRevenue deu à nossa equipe financeira uma trilha de conciliação de comissões mais clara em relatórios BSP e ARC, recuperando receita que antes escapava da revisão manual."
       },
@@ -252,6 +253,7 @@
         "agencyName": "Pacific Sun Voyages",
         "location": "San Diego, CA",
         "relationship": "Referência operacional",
+        "pill": "referência operacional",
         "pillVariant": "muted",
         "referenceDetail": "Disponível para chamadas de referência de segurança e implementação com agências de médio porte após aprovação mútua."
       },
@@ -259,6 +261,7 @@
         "agencyName": "Northstar Travel Partners",
         "location": "Minneapolis, MN",
         "relationship": "Referência de integração multi-GDS",
+        "pill": "integração multi-GDS",
         "pillVariant": "default",
         "testimonial": "A visibilidade multi-GDS entre Amadeus, Sabre e Galileo tornou as disputas de debit memos mais rápidas de resolver e reduziu o retrabalho do nosso back office."
       }
@@ -594,6 +597,9 @@
           "bio_en": "Bio (EN)",
           "bio_pt": "Bio (PT-BR)",
           "bio_es": "Bio (ES)",
+          "experience_en": "Tag de experiência (EN)",
+          "experience_pt": "Tag de experiência (PT-BR)",
+          "experience_es": "Tag de experiência (ES)",
           "linkedin": "URL do LinkedIn",
           "photo_url": "URL da foto",
           "order_index": "Ordem de exibição"

@@ -57,6 +57,9 @@ export function initSchema(database: Database.Database = db): void {
       bio_en TEXT NOT NULL,
       bio_pt TEXT NOT NULL,
       bio_es TEXT NOT NULL,
+      experience_en TEXT NOT NULL DEFAULT '',
+      experience_pt TEXT NOT NULL DEFAULT '',
+      experience_es TEXT NOT NULL DEFAULT '',
       linkedin TEXT,
       photo_url TEXT,
       order_index INTEGER NOT NULL DEFAULT 0,
@@ -104,6 +107,47 @@ export function initSchema(database: Database.Database = db): void {
       throw err
     }
   }
+
+  const teamExperienceColumns = [
+    'experience_en',
+    'experience_pt',
+    'experience_es',
+  ] as const
+  for (const column of teamExperienceColumns) {
+    try {
+      database.exec(`ALTER TABLE team_members ADD COLUMN ${column} TEXT NOT NULL DEFAULT ''`)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (!/duplicate column name/i.test(message)) {
+        throw err
+      }
+    }
+  }
+
+  database
+    .prepare(
+      `
+        UPDATE team_members
+        SET
+          experience_en = CASE WHEN experience_en = '' THEN '20+ years in airline distribution' ELSE experience_en END,
+          experience_pt = CASE WHEN experience_pt = '' THEN '20+ anos em distribuição aérea' ELSE experience_pt END,
+          experience_es = CASE WHEN experience_es = '' THEN '20+ años en distribución aérea' ELSE experience_es END
+        WHERE name = 'Maria Silva'
+      `
+    )
+    .run()
+  database
+    .prepare(
+      `
+        UPDATE team_members
+        SET
+          experience_en = CASE WHEN experience_en = '' THEN '15+ years in travel data automation' ELSE experience_en END,
+          experience_pt = CASE WHEN experience_pt = '' THEN '15+ anos em automação de dados de viagens' ELSE experience_pt END,
+          experience_es = CASE WHEN experience_es = '' THEN '15+ años en automatización de datos de viajes' ELSE experience_es END
+        WHERE name = 'Lucas Oliveira'
+      `
+    )
+    .run()
 
   // Story 6.10: extend demo_requests.gds CHECK to accept the merged
   // "Travelport (Galileo/Worldspan)" label. SQLite can't ALTER a CHECK

@@ -54,9 +54,14 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
   describe('Primary CTA scrolls to #agendar-demo (Story 6.10 — fallback retired)', () => {
     let scrollTargets: HTMLElement[]
     let demoStub: HTMLElement
+    let scrollIntoViewDescriptor: PropertyDescriptor | undefined
 
     beforeEach(() => {
       scrollTargets = []
+      scrollIntoViewDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        'scrollIntoView'
+      )
       Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
         configurable: true,
         writable: true,
@@ -72,6 +77,11 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
     afterEach(() => {
       demoStub.remove()
       vi.restoreAllMocks()
+      if (scrollIntoViewDescriptor) {
+        Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', scrollIntoViewDescriptor)
+      } else {
+        Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView')
+      }
     })
 
     it('scrolls to #agendar-demo when present', async () => {

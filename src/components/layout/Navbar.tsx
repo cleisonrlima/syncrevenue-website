@@ -160,7 +160,7 @@ export default function Navbar() {
       data-testid="navbar-root"
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-3" aria-label="SyncSirius — home">
+        <a href="#" className="flex items-center gap-3" aria-label="SyncSirius — home">
           <img
             src="/syncsirius-logo-trans.png"
             alt="SyncSirius"

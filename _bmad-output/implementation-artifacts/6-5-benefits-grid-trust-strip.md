@@ -1,6 +1,6 @@
 # Story 6.5: Benefits Grid + Trust Strip
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff)
 

@@ -41,6 +41,9 @@ function rowToFormValues(row: AdminTeamMemberRow): AdminTeamFormValues {
     bio_en: row.bio_en,
     bio_pt: row.bio_pt,
     bio_es: row.bio_es,
+    experience_en: row.experience_en,
+    experience_pt: row.experience_pt,
+    experience_es: row.experience_es,
     linkedin: row.linkedin ?? '',
     photo_url: row.photo_url ?? '',
     order_index: String(row.order_index),
@@ -233,6 +236,9 @@ function TeamMemberForm({
         {renderInput('role_en', { required: true })}
         {renderInput('role_pt', { required: true })}
         {renderInput('role_es', { required: true })}
+        {renderInput('experience_en', { required: true })}
+        {renderInput('experience_pt', { required: true })}
+        {renderInput('experience_es', { required: true })}
         {renderInput('linkedin', { placeholderKey: 'admin.team.form.placeholders.linkedin' })}
         {renderInput('photo_url', { placeholderKey: 'admin.team.form.placeholders.photo_url' })}
       </div>
