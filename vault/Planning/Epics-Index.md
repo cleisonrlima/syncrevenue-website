@@ -86,6 +86,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 5.3 | Environment Variable Hardening | `[ ]` |
 | 5.4 | SQLite Backup Automation | `[ ]` |
 | 5.5 | Uptime Monitoring & Health Check | `[ ]` |
+| 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope) | `[ ]` |
 
 ## Epic 6 — Visual Design Refresh — Claude Design Handoff (Phase 5)
 
@@ -105,4 +106,4 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | `[x]` done |
 | 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[x]` done |
 | 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | `[x]` done |
-| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[~]` in-progress — review found mobile `/` LCP still above 2500 ms |
+| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[r]` review — AC 7 mobile LCP residual gap rescoped to Story 5.6 (Epic 5) |

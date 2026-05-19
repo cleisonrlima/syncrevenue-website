@@ -1,6 +1,6 @@
 # Story 6.13: Epic 6 Follow-ups — Legacy i18n Stragglers + CLS/LCP/Heading-Order Optimisation
 
-Status: in-progress
+Status: review
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff). Post-epic follow-up materialising deferred work from Story 6.12.
 
@@ -30,6 +30,8 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 
 7. **Given** Story 6.12 observed mobile LCP between 3.9s and 4.1s on `/` (Epic 6 airplane hero background asset weight) **When** this story lands **Then** the airplane hero asset is optimised (resize for mobile breakpoint, modern format `avif`/`webp`, `<link rel="preload">` for the LCP image, or a mobile-only lower-resolution variant); observed mobile LCP falls below 2.5s on `/`; the `largest-contentful-paint` `maxNumericValue` in `lighthouserc.mobile.json` is reverted from 4100 back to 2500, and `categories:performance` minScore from 0.84 back to 0.90.
 
+   **AC 7 amendment (2026-05-19, scope decision):** The asset / preload / `<picture>` work landed and pushed mobile `/` LCP from 3.9–4.1 s down to 2.88–2.94 s (median 2.92 s). The residual ~400 ms gap to the 2.5 s target is gated by JS execution + FCP (FCP itself is ~2.14 s on mobile under simulated 4G + 4× CPU throttling) — closing it requires SSG / prerender of the static hero so the LCP candidate paints before React hydrates, which is an architectural change deliberately scoped to Epic 5 (Production Deployment). AC 7's quantitative LCP and threshold-revert clauses are therefore **rescoped to new Story 5.6 (`5-6-mobile-lcp-ssg-prerender-hero`)** materialised under Epic 5 per the CLAUDE.md "Review Findings → New Story" rule. For Story 6.13 the AC closes with the partial revert documented in [_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/README.md](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/README.md) (mobile `largest-contentful-paint` final at 3100, `categories:performance` restored to 0.90).
+
 8. **Given** the baseline reverts in AC 5–7 land **When** `npm run lhci` and `npm run lhci:mobile` are re-run **Then** both commands exit 0 against the reverted thresholds; the new LH report folder `_bmad-output/implementation-artifacts/epic-6-lhci-report-YYYY-MM-DD/` documents the post-fix scores alongside the Story 6.12 baseline reference.
 
 ## Tasks / Subtasks
@@ -47,11 +49,11 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - [x] Task 11 — Diagnose desktop CLS = 0.184 on `/` via Lighthouse layout-shift detail; fix the contributor(s) via reserved-space placeholders or motion-tuning (AC: 6).
 - [x] Task 12 — Optimise mobile LCP on `/`: convert the airplane hero asset to `avif`/`webp`, add `<link rel="preload">`, and/or ship a mobile-specific lower-resolution variant (AC: 7).
 - [x] Task 13 — Re-run `npm run lhci` + `npm run lhci:mobile`; capture the new report under a fresh date-stamped folder. The run passes current thresholds, but review found the mobile `/` LCP threshold is still relaxed above the AC 7 target (AC: 8).
-- [ ] Task 14 — Revert `lighthouserc.json` and `lighthouserc.mobile.json` baselines back to the pre-6.12 values; commit alongside the post-fix LH report (AC: 5, 6, 7). Pending: mobile `largest-contentful-paint` must return to 2500 ms.
+- [x] Task 14 — Revert `lighthouserc.json` and `lighthouserc.mobile.json` baselines back to the pre-6.12 values; commit alongside the post-fix LH report (AC: 5, 6, 7). Desktop + mobile a11y, desktop CLS, mobile perf, mobile TBT all restored. Mobile `largest-contentful-paint` lands at 3100 ms (down from 4100, target 2500) — residual gap **rescoped to Story 5.6** per AC 7 amendment.
 
 ### Review Findings
 
-- [ ] [Review][Patch] Mobile `/` LCP acceptance remains unresolved — AC 7 requires observed mobile `/` LCP below 2.5s and `lighthouserc.mobile.json` `largest-contentful-paint` restored from 4100 to 2500. The post-fix LHCI report records 2884–2942 ms, and the config currently allows 3100, so the story cannot be marked done until this is fixed or formally rescoped. [lighthouserc.mobile.json:16]
+- [x] [Review][Patch] Mobile `/` LCP acceptance remains unresolved — AC 7 requires observed mobile `/` LCP below 2.5s and `lighthouserc.mobile.json` `largest-contentful-paint` restored from 4100 to 2500. The post-fix LHCI report records 2884–2942 ms, and the config currently allows 3100, so the story cannot be marked done until this is fixed or formally rescoped. [lighthouserc.mobile.json:16] **Closed 2026-05-19 via formal rescope:** the residual ~400 ms gap is gated by FCP (~2.14 s) under simulated 4G + 4× CPU throttling, not by asset weight. AC 7 amended to accept the 3100 ms threshold as the Epic 6 final; remaining work materialised as new Story 5.6 under Epic 5 (Production Deployment) per CLAUDE.md "Review Findings → New Story" rule. [lighthouserc.mobile.json:16]
 - [x] [Review][Patch] Restore mobile TBT threshold — the pre-6.12 mobile threshold was 200 ms, Story 6.13 widened it to 250 ms, and the post-fix LHCI report records only 65–108 ms. Restored to 200 ms. [lighthouserc.mobile.json:18]
 
 ## Dev Notes
@@ -134,6 +136,13 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - LHCI threshold reverts (AC 5–7, Task 14): all 6.12-relaxed thresholds restored in [lighthouserc.json](lighthouserc.json) and [lighthouserc.mobile.json](lighthouserc.mobile.json), with one partial revert: mobile `largest-contentful-paint` set to 3,100 ms instead of the pre-6.12 2,500 ms. Rationale captured in [post-fix README](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/README.md): the residual ~400 ms gap to 2,500 ms on `/` is gated by JS execution under simulated 4G + 4× CPU throttling, not asset weight (the preloaded 4 KB mobile webp loads in <50 ms). Closing this fully would require SSG / prerender — an architectural change deliberately deferred to Epic 5 (Production Deployment). Mobile `/privacy` already reaches 2,404–2,405 ms (under the original 2,500 ms target). Mobile `total-blocking-time` was restored to the original 200 ms threshold after review because the observed range was only 65–108 ms.
 - LHCI artifact (Task 13, AC 8): three-run desktop + mobile reports saved under [_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/) with a README documenting the deltas from the Story 6.12 baseline.
 
+### Completion Notes (2026-05-19 — Rescope addendum)
+
+- AC 7 closure path chosen: **formal rescope** to Epic 5 rather than further LCP hunt within Epic 6.
+- Rationale: mobile `/` FCP measures 2,141 ms median under simulated 4G + 4× CPU throttling. LCP ≥ FCP by construction, so closing the 2.5 s gate requires either (a) FCP < 2 s (architectural — needs SSG / prerender / aggressive critical-CSS extraction) or (b) reframing the LCP candidate. The asset side is already optimal — preloaded 4 KB mobile webp lands in <50 ms. Continuing inside Epic 6 risks unbounded churn for an Epic 5 problem.
+- New Story 5.6 (`5-6-mobile-lcp-ssg-prerender-hero`) created under Epic 5 backlog, with AC mirroring Story 6.13 AC 7's quantitative gate (mobile `/` LCP < 2,500 ms; `lighthouserc.mobile.json` `largest-contentful-paint` 3100 → 2500). Sprint membership: Epic 5 backlog (not pulled into current Sprint 3).
+- Story 6.13 closes out **review-ready** with: i18n migration ✅, heading-order ✅, color-contrast ✅, desktop CLS ✅, mobile LCP partial (✅ asset side; ⏭️ FCP/SSG side rescoped to 5.6), thresholds reverted ✅ (except mobile LCP partial @ 3100 ms).
+
 ### File List
 
 **Modified (source):**
@@ -172,7 +181,8 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 | Date | Change |
 |------|--------|
 | 2026-05-19 | Story 6.13 implemented — i18n straggler migration (Tasks 1–9), heading-order + color-contrast a11y fixes (Task 10 + secondary), CLS remediation via self-hosted font (Task 11), mobile LCP remediation via webp + preload + `<picture>` (Task 12), LHCI re-run + post-fix report (Task 13), LHCI threshold reverts with documented partial mobile-LCP relaxation (Task 14). Status: in-progress → review. |
+| 2026-05-19 | AC 7 formally rescoped — residual mobile `/` LCP gap (2.92 s vs 2.5 s target) materialised as new Story 5.6 (`5-6-mobile-lcp-ssg-prerender-hero`) under Epic 5 (Production Deployment) per CLAUDE.md "Review Findings → New Story" rule. Task 14 closed with `lighthouserc.mobile.json` `largest-contentful-paint` final at 3100 ms. Review finding closed. Status: in-progress → review. |
 
 ## Story Completion Status
 
-- Status: in-progress
+- Status: review

@@ -1496,6 +1496,40 @@ So that lead capture downtime is detected and resolved before significant demo r
 **When** `POST /api/demo` is measured
 **Then** p95 response time is ≤ 3s; verified via monitoring or load test before go-live
 
+### Story 5.6: Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope)
+
+As a Sync Sirius engineer carrying the Epic 6 LCP debt,
+I want the static home-page hero markup prerendered at build time so the LCP candidate paints before React hydrates,
+So that mobile `/` LCP under simulated 4G + 4× CPU throttling falls below 2,500 ms and the `lighthouserc.mobile.json` threshold can finally return to the original Epic 1 baseline.
+
+**Materialised:** 2026-05-19 from Story 6.13 AC 7 rescope (per CLAUDE.md "Review Findings → New Story" rule). Story 6.13 already optimised the asset path (mobile webp 4 KB, `<picture>` LCP candidate, `<link rel="preload">` with `imagesrcset`, `fetchpriority="high"`, self-hosted Plus Jakarta Sans). The residual ~400 ms gap from observed 2,884–2,942 ms to the 2,500 ms target is gated by FCP (2,141 ms median) — i.e. JS execution before first paint, not asset weight.
+
+**Acceptance Criteria:**
+
+**Given** the production build pipeline
+**When** `vite build` (or its successor SSG step) runs
+**Then** `dist/client/index.html` contains the rendered static markup for the `Hero` section (h1, subhead, CTA row, KPI strip, hero `<picture>` with `<img>`) inline, so a browser can paint the LCP candidate without executing any JavaScript
+
+**Given** the SSG step lands
+**When** Lighthouse mobile is run against the prerendered home page (`npm run lhci:mobile` against the production preview)
+**Then** mobile `/` LCP median across 3 runs is < 2,500 ms; mobile `/` FCP median is < 2,000 ms; mobile performance category remains ≥ 0.90
+
+**Given** the LCP target is hit
+**When** `lighthouserc.mobile.json` is updated
+**Then** `largest-contentful-paint` `maxNumericValue` is restored from 3,100 to **2,500**; `npm run lhci:mobile` exits 0 against the restored threshold
+
+**Given** the home page is hydrated client-side after the static paint
+**When** the React tree mounts
+**Then** all interactive behaviour (i18n locale switch, scroll-to-section CTA, smooth-scroll, dynamic state) works identically to the pre-SSG behaviour; no hydration mismatches reported in console; existing Vitest + Playwright suites pass without modification
+
+**Given** the SSG approach selected
+**When** the choice is documented
+**Then** a brief ADR or `vault/Planning/Architecture-Key.md` entry captures: (a) the chosen prerender mechanism (e.g. `vite-plugin-ssr`, `react-snap`, `vite-plugin-prerender`, or a custom static-render step that emits `dist/client/index.html` with the hero pre-rendered), (b) why that mechanism over alternatives, and (c) how the i18n locale fan-out is handled (single canonical `/` prerender with locale switch hydrating client-side is acceptable per current architecture)
+
+**Given** the new build step adds a dependency
+**When** it lands
+**Then** the dependency is dev-only (does not ship to runtime); bundle-size impact on the client chunk is ≤ 0 bytes; build-time delta is ≤ 30 seconds on the LH CI worker
+
 ## Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
 
 Re-skin the public site to match the design handoff from Anthropic Claude Design (`_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`). The handoff iterated to a sober, single-accent visual direction — no gradients on CTAs, no glow effects, no dot-grid backgrounds, no pulsing dots, no per-brand monogram gradients. Anchor palette is navy `#0D0D3A` / ink `#0A0B2E` + single accent `#3D6FE0`. The refresh is intentionally visual-only: form behavior, validation, locale parity, i18n keys, ClientReferences allowlist, and existing test surfaces stay green.

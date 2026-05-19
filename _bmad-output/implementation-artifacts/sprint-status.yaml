@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-19  # Stories 6.11 + 6.12 review complete → done; Story 6.13 review found unresolved mobile / LCP AC (2884–2942 ms vs 2500 ms target) and stays in-progress; mobile TBT threshold restored 250 → 200; Epic 6 remains in-progress
+last_updated: 2026-05-19  # Story 6.13 AC 7 formally rescoped — mobile / LCP residual gap (FCP-gated under 4G + 4× CPU) materialised as new Story 5.6 (SSG/prerender hero) under Epic 5 backlog per CLAUDE.md "Review Findings → New Story"; 6.13 → review; Epic 6 ready to close after review
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -118,6 +118,8 @@ development_status:
   5-3-environment-variable-hardening: backlog
   5-4-sqlite-backup-automation: backlog
   5-5-uptime-monitoring-health-check: backlog
+  # 5.6 added 2026-05-19 from Story 6.13 AC 7 rescope (per CLAUDE.md "Review Findings → New Story")
+  5-6-mobile-lcp-ssg-prerender-hero: backlog
   epic-5-retrospective: optional
 
   # Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
@@ -138,5 +140,5 @@ development_status:
   6-11-contact-grid-contactform-restyle: done
   6-12-lighthouse-axe-legacy-cleanup: done
   # 6.13 added 2026-05-19 from Story 6.12 deferred-work materialisation (per CLAUDE.md "Review Findings → New Story")
-  6-13-epic-6-followups-stragglers-cls-lcp-heading-order: in-progress
+  6-13-epic-6-followups-stragglers-cls-lcp-heading-order: review
   epic-6-retrospective: optional
