@@ -74,7 +74,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 4.4 | Team Member Management — Create & Edit | `[r]` review |
 | 4.5 | Team Member Display Order & Active Toggle | `[ ]` |
 | 4.6 | Admin Dashboard & Navigation Shell | `[ ]` |
-| 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[r]` review |
+| 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[x]` done |
 | 4.8 | JWT Revocation via Token Versioning (Story 4.1 review follow-up) | `[x]` done |
 
 ## Epic 5 — Production Deployment (Phase 4)
@@ -93,11 +93,15 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 
 | Story | Title | Status |
 |---|---|---|
-| 6.1 | Design Tokens — Sober Palette | `[ ]` |
-| 6.2 | Navbar & Logo Refresh | `[ ]` |
-| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[ ]` |
-| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[ ]` |
-| 6.5 | Benefits Grid + Trust Strip | `[ ]` |
-| 6.6 | ClientReferences Visual Refresh | `[ ]` |
-| 6.7 | Team Section Visual Refresh | `[ ]` |
-| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[ ]` |
+| 6.1 | Design Tokens — Sober Palette | `[r]` review |
+| 6.2 | Navbar & Logo Refresh | `[r]` review |
+| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[r]` review |
+| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[r]` review |
+| 6.5 | Benefits Grid + Trust Strip | `[r]` review |
+| 6.6 | ClientReferences Visual Refresh | `[r]` review |
+| 6.7 | Team Section Visual Refresh | `[r]` review |
+| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[r]` review |
+| 6.9 | Shared Form Primitives + i18n Namespace Restructure (6.8 deferral) | `[r]` review |
+| 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | `[ ]` ready-for-dev |
+| 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[ ]` ready-for-dev |
+| 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | `[ ]` ready-for-dev |

@@ -30,7 +30,7 @@
 
 ---
 
-## Project Status (2026-05-16)
+## Project Status (2026-05-17)
 
 - Planning complete (PRD, Architecture, UX, Epics all green)
 - **Epic 1 — DONE (11/11 stories) + retrospective complete** (Jira: SYN-1 closed; all stories Done in SYN Sprint 1)
@@ -70,7 +70,7 @@
   - 24-month retention deletion automation — Epic 5 candidate.
   - WCAG R-A2 waiver: Electric Blue `#0075F0` is large-text only on light bg — locked in `src/lib/brand-tokens.contrast.test.ts` and `vault/Planning/Architecture-Key.md`
 - **GitHub synced** — https://github.com/xillinha/syncrevenue-website (private repo)
-- **Epic 6 (Visual Design Refresh) scaffolded 2026-05-17** — 8 backlog stories (6.1–6.8) from the Anthropic Claude Design handoff (`_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`). Sober single-accent palette `#3D6FE0`, airplane hero background + right product panel with Amadeus/Sabre/Travelport tiles + live ticker, 6-card benefits grid, glass quote cards for ClientReferences, horizontal team cards with LinkedIn icon-button, 40/60 form layout for Demo + Contact. UX-DR2/DR3 deliberately superseded after Story 6.1 lands; all existing functional surfaces (form validation, locale parity, ClientReferences allowlist) preserved.
+- **Epic 6 (Visual Design Refresh) in-progress 2026-05-17** — Stories 6.1–6.8 dev complete and in review (sober palette tokens, navbar refresh, hero left + right, benefits grid + trust strip, ClientReferences glass quotes, team horizontal cards + LinkedIn, demo/contact form visual refresh). Story 6.8 deferred-work materialized as four follow-up stories (added 2026-05-17 per "Review Findings → New Story" rule): 6.9 shared form primitives + i18n namespace (review), 6.10 DemoScheduler grid + DemoForm restyle + GDS enum (ready-for-dev), 6.11 contact grid + ContactForm restyle (ready-for-dev), 6.12 Lighthouse + axe + legacy cleanup (ready-for-dev). Sober single-accent palette `#3D6FE0`; UX-DR2/DR3 deliberately superseded; all existing functional surfaces (form validation, locale parity, ClientReferences allowlist) preserved. Source: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`.
 
 ---
 
