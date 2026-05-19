@@ -1,6 +1,6 @@
 # Story 6.13: Epic 6 Follow-ups — Legacy i18n Stragglers + CLS/LCP/Heading-Order Optimisation
 
-Status: review
+Status: done
 
 Epic: 6 — Visual Design Refresh (Claude Design Handoff). Post-epic follow-up materialising deferred work from Story 6.12.
 
@@ -55,6 +55,11 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 
 - [x] [Review][Patch] Mobile `/` LCP acceptance remains unresolved — AC 7 requires observed mobile `/` LCP below 2.5s and `lighthouserc.mobile.json` `largest-contentful-paint` restored from 4100 to 2500. The post-fix LHCI report records 2884–2942 ms, and the config currently allows 3100, so the story cannot be marked done until this is fixed or formally rescoped. [lighthouserc.mobile.json:16] **Closed 2026-05-19 via formal rescope:** the residual ~400 ms gap is gated by FCP (~2.14 s) under simulated 4G + 4× CPU throttling, not by asset weight. AC 7 amended to accept the 3100 ms threshold as the Epic 6 final; remaining work materialised as new Story 5.6 under Epic 5 (Production Deployment) per CLAUDE.md "Review Findings → New Story" rule. [lighthouserc.mobile.json:16]
 - [x] [Review][Patch] Restore mobile TBT threshold — the pre-6.12 mobile threshold was 200 ms, Story 6.13 widened it to 250 ms, and the post-fix LHCI report records only 65–108 ms. Restored to 200 ms. [lighthouserc.mobile.json:18]
+- [x] [Review][Patch] Hero image preload can fetch a different asset than the rendered `<picture>` — `index.html` uses width-descriptor `imagesrcset`, while `Hero.tsx` uses media-specific `<source>` elements. High-DPR mobile can preload `airplane.webp` but render `airplane-mobile.webp`, causing duplicate fetches and worsening LCP. **Closed 2026-05-19:** split the preload into media-scoped mobile and desktop links so preload selection matches the rendered `<picture>` sources. [index.html:35]
+- [x] [Review][Patch] Hero/demo hash navigation can miss lazy-mounted targets — `Home.tsx` lazy-loads `DemoScheduler` behind `Suspense fallback={null}`, while `Hero.tsx` falls back to `/#agendar-demo` when the target is absent and `ScrollRestoration` does not retry hash scrolling after the lazy section mounts. **Closed 2026-05-19:** `ScrollRestoration` now retries hash target lookup after route/hash changes so lazy-mounted sections scroll once available. [src/components/ScrollRestoration.tsx:8]
+- [x] [Review][Patch] Story 5.6 documents the wrong default prerender locale — the story recommends canonical/default `pt-BR`, but `src/i18n/index.ts` currently has `fallbackLng: 'en'`; following that note would risk SSG hydration drift. **Closed 2026-05-19:** Story 5.6 now documents the current `en` fallback and requires per-route synchronous i18n initialisation if locale prerendering is introduced. [_bmad-output/implementation-artifacts/5-6-mobile-lcp-ssg-prerender-hero.md:83]
+- [x] [Review][Patch] Stale Story 6.13 constraints still require the pre-rescope mobile LCP target — AC 7 is formally rescoped to Story 5.6, but Technical Requirements / File Structure / Testing Requirements still say Story 6.13 must restore mobile LCP to 2500 ms. **Closed 2026-05-19:** Story 6.13 requirements now name 3,100 ms as the Epic 6 final threshold and reserve the 2,500 ms gate for Story 5.6. [_bmad-output/implementation-artifacts/6-13-epic-6-followups-stragglers-cls-lcp-heading-order.md:73]
+- [x] [Review][Defer] Hero preload is global to every SPA route, including `/privacy`, because `index.html` is shared across routes. Route-scoped preload emission belongs with the Story 5.6 SSG/prerender work that will generate route-aware HTML. [index.html:35] — deferred, route-aware HTML generation is outside Story 6.13.
 
 ## Dev Notes
 
@@ -70,7 +75,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - **State machine:** N/A.
 - **API contracts:** N/A — only client-side i18n and asset optimisation.
 - **Security:** N/A.
-- **Performance:** Restore the pre-6.12 LHCI thresholds; CLS < 0.10 on desktop `/`, LCP < 2500 ms on mobile `/`, a11y = 1.00 on both URLs both form factors.
+- **Performance:** Restore the pre-6.12 LHCI thresholds except the AC 7 mobile `/` LCP threshold, which is formally rescoped to Story 5.6; CLS < 0.10 on desktop `/`, mobile `/` LCP <= 3100 ms for the Epic 6 final gate, a11y = 1.00 on both URLs both form factors.
 
 ## Architecture Compliance
 
@@ -91,7 +96,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 | `src/components/sections/Sections.i18n.test.tsx` | UPDATE | Extend REQUIRED_CONTACT_PATHS with new `errors.*` / `success.*` / `submitting` leaves |
 | `src/components/sections/Hero*.tsx` (or equivalent) | UPDATE | Heading hierarchy fix + airplane hero asset optimisation |
 | `lighthouserc.json` | UPDATE | Revert a11y minScore 0.95 → 1.0, CLS 0.20 → 0.10 |
-| `lighthouserc.mobile.json` | UPDATE | Revert a11y 0.95 → 1.0, perf 0.84 → 0.90, LCP 4100 → 2500 |
+| `lighthouserc.mobile.json` | UPDATE | Revert a11y 0.95 → 1.0 and perf 0.84 → 0.90; partially restore LCP 4100 → 3100, with the original 2500 gate moved to Story 5.6 |
 | `_bmad-output/implementation-artifacts/epic-6-lhci-report-YYYY-MM-DD/` | NEW | Post-fix LH reports |
 
 ## Testing Requirements
@@ -99,7 +104,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - Full vitest regression run after every subtree deletion to catch hidden consumers.
 - `Sections.i18n.test.tsx` parity for the extended `contact.form.errors.*` / `success.*` / `submitting` keys across en/pt-BR/es.
 - Playwright `tests/e2e/a11y-axe.spec.ts` continues to pass with zero serious/critical violations.
-- `npm run lhci` and `npm run lhci:mobile` both pass against the reverted thresholds.
+- `npm run lhci` and `npm run lhci:mobile` both pass against the restored Epic 6 thresholds; Story 5.6 owns the remaining mobile `/` LCP 3100 → 2500 restoration.
 
 ## Previous Story Intelligence
 
@@ -132,7 +137,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - Heading-order (AC 5): sr-only `<h2>` added in [Hero.tsx](src/components/sections/Hero.tsx) above the `BenefitsGrid` to bridge the `<h1>` → BenefitsGrid card `<h3>` skip. New i18n key `hero.benefitsHeading` added in all three locales. Lighthouse `heading-order` audit now passes.
 - Color-contrast (AC 5, secondary): the residual a11y gap below 1.0 was driven by `text-brand-electric-blue` (~2.95:1 on navy) and `text-brand-muted` (~4.05:1 on navy) — both failing AA-normal on the dark Navbar / Footer surfaces. Fixed in [LanguageSwitcher.tsx](src/i18n/LanguageSwitcher.tsx) (active: `text-white font-semibold underline`, inactive: `text-white/70 hover:text-white`) and [Privacy.tsx](src/pages/Privacy.tsx) email link (`text-[#5B85E8]` — accent-soft, ~5.85:1 on navy). Lighthouse a11y category now reports 1.00 on `/` and `/privacy` for both form factors.
 - CLS (AC 6): Lighthouse `layout-shifts` audit attributed the desktop 0.184 shift to "Web font loaded" — the Plus Jakarta Sans woff2 swap reflowed the HeroProductPanel right column. Fix: self-host the variable woff2 file under [public/fonts/plus-jakarta-sans.woff2](public/fonts/plus-jakarta-sans.woff2) (27 KB, covers weights 200–800) and preload it from [index.html](index.html). Removed the Google Fonts preconnect/preload/stylesheet trio. Observed desktop CLS = 0.000 across three runs. Secondary improvement: [Home.tsx](src/pages/Home.tsx) keeps `Hero` eager (LCP candidate paints on first render) and re-lazies the below-the-fold sections with `null` Suspense fallback so skeleton→real height transitions no longer accrue CLS.
-- Mobile LCP (AC 7): airplane hero re-encoded with Pillow into [public/hero/airplane.webp](public/hero/airplane.webp) (1920×1075, 11 KB), [public/hero/airplane-mobile.webp](public/hero/airplane-mobile.webp) (960×537, 4 KB), and a re-optimised [public/hero/airplane.jpg](public/hero/airplane.jpg) fallback (1920×1075, 27 KB — down from 138 KB). Hero swapped from a CSS `background-image` to a `<picture>` element with media-conditional webp sources and a real `<img>` LCP candidate (`fetchpriority="high"`, `decoding="async"`). `index.html` preloads the same mobile/desktop variants via `imagesrcset`. Mobile `/` LCP improved from the 6.12 baseline of 3,913–4,060 ms to 2,884–2,942 ms.
+- Mobile LCP (AC 7): airplane hero re-encoded with Pillow into [public/hero/airplane.webp](public/hero/airplane.webp) (1920×1075, 11 KB), [public/hero/airplane-mobile.webp](public/hero/airplane-mobile.webp) (960×537, 4 KB), and a re-optimised [public/hero/airplane.jpg](public/hero/airplane.jpg) fallback (1920×1075, 27 KB — down from 138 KB). Hero swapped from a CSS `background-image` to a `<picture>` element with media-conditional webp sources and a real `<img>` LCP candidate (`fetchpriority="high"`, `decoding="async"`). `index.html` preloads the same mobile/desktop variants via media-scoped preload links. Mobile `/` LCP improved from the 6.12 baseline of 3,913–4,060 ms to 2,884–2,942 ms.
 - LHCI threshold reverts (AC 5–7, Task 14): all 6.12-relaxed thresholds restored in [lighthouserc.json](lighthouserc.json) and [lighthouserc.mobile.json](lighthouserc.mobile.json), with one partial revert: mobile `largest-contentful-paint` set to 3,100 ms instead of the pre-6.12 2,500 ms. Rationale captured in [post-fix README](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/README.md): the residual ~400 ms gap to 2,500 ms on `/` is gated by JS execution under simulated 4G + 4× CPU throttling, not asset weight (the preloaded 4 KB mobile webp loads in <50 ms). Closing this fully would require SSG / prerender — an architectural change deliberately deferred to Epic 5 (Production Deployment). Mobile `/privacy` already reaches 2,404–2,405 ms (under the original 2,500 ms target). Mobile `total-blocking-time` was restored to the original 200 ms threshold after review because the observed range was only 65–108 ms.
 - LHCI artifact (Task 13, AC 8): three-run desktop + mobile reports saved under [_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/](_bmad-output/implementation-artifacts/epic-6-lhci-report-2026-05-19-post-fix/) with a README documenting the deltas from the Story 6.12 baseline.
 
@@ -141,7 +146,7 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 - AC 7 closure path chosen: **formal rescope** to Epic 5 rather than further LCP hunt within Epic 6.
 - Rationale: mobile `/` FCP measures 2,141 ms median under simulated 4G + 4× CPU throttling. LCP ≥ FCP by construction, so closing the 2.5 s gate requires either (a) FCP < 2 s (architectural — needs SSG / prerender / aggressive critical-CSS extraction) or (b) reframing the LCP candidate. The asset side is already optimal — preloaded 4 KB mobile webp lands in <50 ms. Continuing inside Epic 6 risks unbounded churn for an Epic 5 problem.
 - New Story 5.6 (`5-6-mobile-lcp-ssg-prerender-hero`) created under Epic 5 backlog, with AC mirroring Story 6.13 AC 7's quantitative gate (mobile `/` LCP < 2,500 ms; `lighthouserc.mobile.json` `largest-contentful-paint` 3100 → 2500). Sprint membership: Epic 5 backlog (not pulled into current Sprint 3).
-- Story 6.13 closes out **review-ready** with: i18n migration ✅, heading-order ✅, color-contrast ✅, desktop CLS ✅, mobile LCP partial (✅ asset side; ⏭️ FCP/SSG side rescoped to 5.6), thresholds reverted ✅ (except mobile LCP partial @ 3100 ms).
+- Story 6.13 closes out **done** with: i18n migration, heading-order, color-contrast, desktop CLS, mobile LCP asset-side remediation, hash-scroll/preload review patches, and Story 5.6 ownership for the remaining FCP/SSG-side LCP gap.
 
 ### File List
 
@@ -182,7 +187,8 @@ So that Epic 6 closes with the original LHCI thresholds intact and no transition
 |------|--------|
 | 2026-05-19 | Story 6.13 implemented — i18n straggler migration (Tasks 1–9), heading-order + color-contrast a11y fixes (Task 10 + secondary), CLS remediation via self-hosted font (Task 11), mobile LCP remediation via webp + preload + `<picture>` (Task 12), LHCI re-run + post-fix report (Task 13), LHCI threshold reverts with documented partial mobile-LCP relaxation (Task 14). Status: in-progress → review. |
 | 2026-05-19 | AC 7 formally rescoped — residual mobile `/` LCP gap (2.92 s vs 2.5 s target) materialised as new Story 5.6 (`5-6-mobile-lcp-ssg-prerender-hero`) under Epic 5 (Production Deployment) per CLAUDE.md "Review Findings → New Story" rule. Task 14 closed with `lighthouserc.mobile.json` `largest-contentful-paint` final at 3100 ms. Review finding closed. Status: in-progress → review. |
+| 2026-05-19 | Code review closure — media-scoped hero preloads, lazy hash-scroll retry, Story 5.6 locale guidance correction, stale AC 7 constraints cleanup, and post-fix LHCI README alignment. Targeted Vitest + typecheck pass. Status: review → done. |
 
 ## Story Completion Status
 
-- Status: review
+- Status: done

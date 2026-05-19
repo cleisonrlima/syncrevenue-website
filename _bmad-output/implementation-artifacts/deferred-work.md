@@ -52,3 +52,7 @@ NEW defers surfaced by the now-runnable `npm run lhci:mobile`:
 
 - Login endpoint has no auth-specific throttling or lockout. Deferred because Story 4.1 notes explicitly call admin login rate limiting out of scope and direct review findings to follow-up work. [server/routes/admin/auth.ts:31]
 - Existing JWTs are not revoked after password reseed or account removal. Deferred because the current schema has no disabled/token-version/password-changed field; handle as a future admin security hardening story. [server/middleware/auth.ts:37]
+
+## Deferred from: code review of 6-13-epic-6-followups-stragglers-cls-lcp-heading-order (2026-05-19)
+
+- Hero preload is global to every SPA route, including `/privacy`, because `index.html` is shared across routes. Route-scoped preload emission belongs with the Story 5.6 SSG/prerender work that will generate route-aware HTML. [index.html:35]

@@ -21,7 +21,7 @@ So that mobile `/` LCP under simulated 4G + 4× CPU throttling falls below 2,500
 Story 6.13 fully optimised the asset path:
 
 - mobile webp variant — 4 KB (loads in <50 ms on simulated 4G)
-- `<link rel="preload">` with `imagesrcset` so the network fetch starts before React boots
+- Media-scoped `<link rel="preload">` entries for the mobile and desktop hero variants so the network fetch starts before React boots
 - `<picture>` element with `fetchpriority="high"`, `decoding="async"`
 - self-hosted Plus Jakarta Sans variable font preload (CLS went 0.184 → 0.000)
 - Hero re-imported eagerly in `src/pages/Home.tsx`, all below-fold sections re-lazied
@@ -80,7 +80,7 @@ LCP ≥ FCP by construction. The residual 416 ms gap is gated by JS execution be
 - The asset side (mobile webp, preload, `<picture>`, fetchpriority, self-hosted font) is already optimal — do NOT redo it. Story 6.13 already shaved ~1,100 ms from the baseline.
 - The current bottleneck is the React hydration order: `dist/client/index.html` ships as an empty `<div id="root">`. The browser parses HTML → fetches `/src/main.tsx` → parses + executes React → mounts `Home` → renders `Hero` → THEN the `<picture>` element exists and the `<img>` becomes the LCP candidate. SSG short-circuits this by emitting the rendered HTML at build time.
 - Hydration mismatch is the biggest risk — server-rendered HTML must match the client-side first render exactly. Watch for: timestamp-dependent renders (none currently in `Hero`), random IDs (none), conditional rendering based on `window` (the `handleDemoCta` callback reads `window.top !== window` but only on click — safe at first render).
-- The i18n init in `src/main.tsx` reads `i18next` async — for the prerender step, the canonical PT-BR translation strings must be present in the static HTML so the LCP candidate paints the visible h1 text. If the prerender renders without i18n initialised, the `<h1>` paints empty and the LCP candidate becomes a later element. Mitigation: ensure i18next is initialised synchronously during the prerender step with the default `pt-BR` locale.
+- The i18n init in `src/main.tsx` reads `i18next` async and `src/i18n/index.ts` currently uses `fallbackLng: 'en'` — for the prerender step, the default `en` translation strings must be present in the static HTML so the LCP candidate paints the visible h1 text without hydration drift. If locale-specific prerender routes are added, initialise i18next synchronously per route before rendering. If the prerender renders without i18n initialised, the `<h1>` paints empty and the LCP candidate becomes a later element.
 - The `useDocumentMeta` hook in `Home.tsx` is React-only (`useEffect`); the prerender step does not need to execute it — SEO meta tags can be emitted directly into the static HTML via the prerender step's hook system, OR the existing `useDocumentMeta` post-hydration overwrite is acceptable (search engines run JS).
 - `vite-plugin-ssg` (formerly `vite-ssg`) is the most-Vite-native option and supports per-locale prerender out of the box. `react-snap` runs Puppeteer post-build and works on any SPA but adds a Chromium dep. Both are dev-only.
 
@@ -126,7 +126,7 @@ LCP ≥ FCP by construction. The residual 416 ms gap is gated by JS execution be
 ## Outstanding Questions for Dev
 
 1. Which prerender mechanism — `vite-plugin-ssg`, `react-snap`, `vite-plugin-prerender-spa-plugin`, `vike`, or a custom puppeteer step? Recommendation: `vite-plugin-ssg` for tightest Vite integration; fall back to `react-snap` if SSG plugin compatibility issues with current Vite + React 18 config.
-2. Per-locale prerender or single canonical `/` prerender with client-side locale hydration? Recommendation: single canonical `/` prerender in `pt-BR` (default locale per current i18n config) — locale switch hydrates client-side after first paint. Per-locale prerender adds build complexity for marginal SEO benefit (the SEO meta + hreflang tags already cover this via `useDocumentMeta` post-hydration).
+2. Per-locale prerender or single canonical `/` prerender with client-side locale hydration? Recommendation: single canonical `/` prerender in `en` (default fallback per current i18n config) — locale switch hydrates client-side after first paint. Per-locale prerender adds build complexity for marginal SEO benefit (the SEO meta + hreflang tags already cover this via `useDocumentMeta` post-hydration).
 3. Does the SSG mechanism interfere with the existing `_bmad-output/implementation-artifacts/epic-6-lhci-report-*/` artifact convention? If LHCI artifacts move into a different folder under SSG, adjust the `story-5-6-lhci-report-*` naming.
 
 ## Story Completion Status

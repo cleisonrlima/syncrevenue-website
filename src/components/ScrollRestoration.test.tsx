@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import ScrollRestoration from './ScrollRestoration'
 
 function Nav({ to }: { to: string }) {
@@ -13,15 +14,43 @@ function Nav({ to }: { to: string }) {
   )
 }
 
+function DelayedHashTarget() {
+  const [showTarget, setShowTarget] = useState(false)
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setShowTarget(true), 250)
+    return () => window.clearTimeout(timeoutId)
+  }, [])
+
+  return showTarget ? <div id="agendar-demo">demo</div> : null
+}
+
 describe('ScrollRestoration', () => {
   let scrollToSpy: ReturnType<typeof vi.spyOn>
+  let scrollIntoViewMock: ReturnType<typeof vi.fn>
+  let originalScrollIntoView: typeof Element.prototype.scrollIntoView | undefined
 
   beforeEach(() => {
     scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    originalScrollIntoView = Element.prototype.scrollIntoView
+    scrollIntoViewMock = vi.fn()
+    Object.defineProperty(Element.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoViewMock,
+    })
   })
 
   afterEach(() => {
     scrollToSpy.mockRestore()
+    if (originalScrollIntoView) {
+      Object.defineProperty(Element.prototype, 'scrollIntoView', {
+        configurable: true,
+        value: originalScrollIntoView,
+      })
+    } else {
+      delete (Element.prototype as Partial<Element>).scrollIntoView
+    }
+    vi.useRealTimers()
   })
 
   it('renders null (no DOM)', () => {
@@ -60,13 +89,13 @@ describe('ScrollRestoration', () => {
     expect(scrollToSpy).not.toHaveBeenCalled()
   })
 
-  it('does not scroll when target location has a hash', async () => {
+  it('scrolls to an existing target when the target location has a hash', async () => {
     const user = userEvent.setup()
     render(
       <MemoryRouter initialEntries={['/']}>
         <ScrollRestoration />
         <Routes>
-          <Route path="/" element={<Nav to="/#hero" />} />
+          <Route path="/" element={<><Nav to="/#hero" /><div id="hero">hero</div></>} />
         </Routes>
       </MemoryRouter>,
     )
@@ -75,5 +104,28 @@ describe('ScrollRestoration', () => {
     await user.click(document.querySelector('button')!)
 
     expect(scrollToSpy).not.toHaveBeenCalled()
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+  })
+
+  it('retries hash scrolling until a lazy-mounted target exists', async () => {
+    vi.useFakeTimers()
+
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/', hash: '#agendar-demo' }]}>
+        <ScrollRestoration />
+        <DelayedHashTarget />
+      </MemoryRouter>,
+    )
+
+    expect(scrollIntoViewMock).not.toHaveBeenCalled()
+
+    await act(async () => {
+      vi.advanceTimersByTime(250)
+    })
+    await act(async () => {
+      vi.advanceTimersByTime(100)
+    })
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 })

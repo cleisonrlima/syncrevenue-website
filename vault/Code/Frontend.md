@@ -9,7 +9,7 @@
 
 | File | Route | Description |
 |---|---|---|
-| `src/pages/Home.tsx` | `/` | Public landing page — 7 lazy sections (Hero→SyncRevenue→Comparison→Security→ClientReferences→DemoScheduler→Contact) |
+| `src/pages/Home.tsx` | `/` | Public landing page — Hero eager for LCP; below-fold sections lazy-loaded with null Suspense fallback (Story 6.13) |
 | `src/pages/Privacy.tsx` | `/privacy` | Privacy policy — all content from `privacy.*` i18n keys |
 | `src/pages/admin/Login.tsx` | `/admin/login` | Admin login (stub) |
 | `src/pages/admin/Dashboard.tsx` | `/admin/dashboard` | Admin dashboard (stub) |
@@ -22,7 +22,7 @@
 
 | Component | FR | Description |
 |---|---|---|
-| `src/components/sections/Hero.tsx` | FR1 | Epic 6 hero: airplane LCP picture, dual-gradient scrim, two-line headline, dual CTAs, KPI strip, HeroProductPanel, BenefitsGrid, TrustBar; `prefers-reduced-data` hides background media |
+| `src/components/sections/Hero.tsx` | FR1 | Epic 6 hero: airplane LCP picture, media-scoped preloads in `index.html`, dual-gradient scrim, two-line headline, dual CTAs, KPI strip, HeroProductPanel, BenefitsGrid, TrustBar; `prefers-reduced-data` hides background media |
 | `src/components/sections/StatRow.tsx` | FR1 | Epic 6 KPI strip: 3 columns, top hairline, tabular numeric values, `hero.kpis.*` i18n keys — Hero child |
 | `src/components/sections/HeroProductPanel.tsx` | FR1 | Epic 6 right panel: product mark, official GDS wordmark tiles from `public/integrations/`, NDC/IBE chips, motion-safe ticker with timeout cleanup |
 | `src/components/sections/TrustBar.tsx` | FR1 | 5-logo trust strip — Hero child |
@@ -68,6 +68,7 @@
 
 - Sections lazy-loaded via `React.lazy` + `Suspense` + `ErrorBoundary` (`src/components/ErrorBoundary.tsx`) — chunk failure shows fallback, not white screen
 - Nav links to in-page sections: `<a href="/#section-id">` (NOT React Router `<Link>`) — smooth scroll via CSS `scroll-behavior: smooth`
+- Hash scrolling: `src/components/ScrollRestoration.tsx` retries hash target lookup for lazy-mounted sections like `#agendar-demo`; keep target IDs stable and test direct hash entry plus CTA flows.
 - Nav links to routes: `<Link to="/route">` (React Router)
 - Skip link: first DOM element in App.tsx; `sr-only focus:not-sr-only`; targets `<main id="main-content">`
 - `<main id="main-content" className="pt-16">` — `pt-16` offsets 64px fixed Navbar

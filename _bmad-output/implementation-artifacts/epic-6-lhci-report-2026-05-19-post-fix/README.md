@@ -27,7 +27,7 @@ Three runs per URL per form factor; raw `lhr-*.json` + `lhr-*.html` are split un
 
 ## Threshold reverts (per Story 6.13 AC 5, AC 6, AC 7)
 
-The Story 6.12 baselines were rebaselined to capture three deferred-quality items. Desktop a11y/CLS and mobile a11y/performance are restored; mobile `/` LCP still has a review finding because it remains above the original 2500 ms target.
+The Story 6.12 baselines were rebaselined to capture three deferred-quality items. Desktop a11y/CLS and mobile a11y/performance are restored; mobile `/` LCP is accepted at the Story 6.13 final 3100 ms threshold after formal rescope, with the original 2500 ms target tracked by Story 5.6.
 
 | Config                     | Assertion                  | 6.12 baseline | 6.13 final | Notes |
 |----------------------------|----------------------------|---------------|------------|-------|
@@ -48,7 +48,7 @@ The Story 6.12 baselines were rebaselined to capture three deferred-quality item
 
 3. **CLS (AC 6):** desktop CLS root cause was the web-font swap in `HeroProductPanel` — Lighthouse trace attributed the 0.184 shift to `Web font loaded` for Plus Jakarta Sans (woff2). Fix: self-host the variable woff2 under `public/fonts/plus-jakarta-sans.woff2` + preload it from `index.html`. The Google Fonts CDN round-trip and dependent woff2 fetch are removed; the font is available before first paint. Single 27 KB woff2 covers weights 200–800. As a secondary improvement, the [src/pages/Home.tsx](../../../src/pages/Home.tsx) section graph keeps `Hero` eagerly imported (LCP candidate paints on first render) and re-lazies the below-the-fold sections with `null` Suspense fallback — no skeleton, no skeleton→real shift.
 
-4. **Mobile LCP (AC 7):** airplane hero re-encoded with Pillow into `airplane.webp` (1920×1075, 11 KB), `airplane-mobile.webp` (960×537, 4 KB), and a re-optimised `airplane.jpg` fallback (1920×1075, 27 KB). Hero swapped from CSS `background-image` to a `<picture>` element with media-conditional webp sources and a real `<img>` LCP candidate (`fetchpriority="high"`, `decoding="async"`). `index.html` preloads the same mobile/desktop variants via `imagesrcset` so the network fetch begins before React boots.
+4. **Mobile LCP (AC 7):** airplane hero re-encoded with Pillow into `airplane.webp` (1920×1075, 11 KB), `airplane-mobile.webp` (960×537, 4 KB), and a re-optimised `airplane.jpg` fallback (1920×1075, 27 KB). Hero swapped from CSS `background-image` to a `<picture>` element with media-conditional webp sources and a real `<img>` LCP candidate (`fetchpriority="high"`, `decoding="async"`). `index.html` preloads the same mobile/desktop variants via media-scoped preload links so the network fetch begins before React boots without high-DPR mobile fetching the desktop asset.
 
 ## Reproducing
 

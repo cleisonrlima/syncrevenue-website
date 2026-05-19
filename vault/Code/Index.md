@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 in-progress: Stories 6.9 and 6.10 now done after review closure; shared form primitives, demo grid/form restyle, GDS enum reconciliation, hardened DB migration, and demo/a11y Playwright coverage are current.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 in-progress with Story 6.13 done after review closure; i18n stragglers, LHCI a11y/CLS/TBT fixes, media-scoped hero preloads, hash-scroll retry, and Story 5.6 LCP rescope are current.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
@@ -110,7 +110,7 @@ syncrevenue-website/
     ├── components/sections/ClientReferences.tsx — placeholder (Story 1.9)
     ├── components/sections/DemoForm.tsx   — placeholder (Story 2.2)
     ├── components/sections/SectionSkeleton.tsx — Suspense fallback (Story 1.2 ✓)
-    ├── pages/Home.tsx              — 7 lazy sections via React.lazy + Suspense + ErrorBoundary + SectionSkeleton (Story 1.4 ✓)
+    ├── pages/Home.tsx              — Hero eager; below-fold sections lazy via React.lazy + Suspense fallback null + ErrorBoundary (Story 6.13 ✓)
     ├── pages/Privacy.tsx           — i18n-driven privacy page, all privacy.* keys (Story 1.4 ✓)
     ├── pages/admin/Login.tsx       — placeholder (Story 4.1)
     ├── pages/admin/Dashboard.tsx   — placeholder (Story 4.6)

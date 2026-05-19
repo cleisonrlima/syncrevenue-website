@@ -106,4 +106,4 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 | 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | `[x]` done |
 | 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[x]` done |
 | 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | `[x]` done |
-| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[r]` review — AC 7 mobile LCP residual gap rescoped to Story 5.6 (Epic 5) |
+| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[x]` done — AC 7 mobile LCP residual gap rescoped to Story 5.6 (Epic 5) |

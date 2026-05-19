@@ -28,16 +28,23 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <link rel="canonical" href="https://syncsirius.com/" />
-    <!-- Story 6.13 (AC 7) — preload the hero LCP image. Browsers honour
-         imagesrcset + imagesizes so the mobile variant is fetched on small
-         viewports while desktop pulls the 1920px webp. fetchpriority=high
-         signals high-priority resource to the network stack. -->
+    <!-- Story 6.13 (AC 7) — preload the same hero LCP image variant that
+         the rendered <picture> selects for each media query. Split preloads
+         avoid high-DPR mobile fetching the desktop asset before rendering the
+         mobile source. fetchpriority=high signals high priority. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/hero/airplane-mobile.webp"
+      media="(max-width: 768px)"
+      type="image/webp"
+      fetchpriority="high"
+    />
     <link
       rel="preload"
       as="image"
       href="/hero/airplane.webp"
-      imagesrcset="/hero/airplane-mobile.webp 960w, /hero/airplane.webp 1920w"
-      imagesizes="(max-width: 768px) 100vw, 100vw"
+      media="(min-width: 769px)"
       type="image/webp"
       fetchpriority="high"
     />
