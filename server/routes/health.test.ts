@@ -88,31 +88,33 @@ describe('GET /api/health', () => {
       createHealthDao: vi.fn(),
     }))
 
-    const { createApp: createAppWithMockedDao } = await import('../index')
-    const appWithMockedDao = createAppWithMockedDao()
+    try {
+      const { createApp: createAppWithMockedDao } = await import('../index')
+      const appWithMockedDao = createAppWithMockedDao()
 
-    const before = Date.now()
+      const before = Date.now()
 
-    const response = await request(appWithMockedDao, {
-      method: 'GET',
-      path: '/api/health',
-    })
+      const response = await request(appWithMockedDao, {
+        method: 'GET',
+        path: '/api/health',
+      })
 
-    const after = Date.now()
+      const after = Date.now()
 
-    expect(response.status).toBe(503)
+      expect(response.status).toBe(503)
 
-    const body = response.json<{ success: boolean; status: string; timestamp: string }>()
-    expect(body.success).toBe(false)
-    expect(body.status).toBe('db_unavailable')
+      const body = response.json<{ success: boolean; status: string; timestamp: string }>()
+      expect(body.success).toBe(false)
+      expect(body.status).toBe('db_unavailable')
 
-    // Verify timestamp is a valid ISO 8601 string
-    const ts = new Date(body.timestamp).getTime()
-    expect(Number.isNaN(ts)).toBe(false)
-    expect(ts).toBeGreaterThanOrEqual(before)
-    expect(ts).toBeLessThanOrEqual(after + 100)
-
-    vi.doUnmock('../dao/health.dao')
+      // Verify timestamp is a valid ISO 8601 string
+      const ts = new Date(body.timestamp).getTime()
+      expect(Number.isNaN(ts)).toBe(false)
+      expect(ts).toBeGreaterThanOrEqual(before)
+      expect(ts).toBeLessThanOrEqual(after + 100)
+    } finally {
+      vi.doUnmock('../dao/health.dao')
+    }
   })
 
   it('completes well under 200ms for a healthy DB (synchronous SELECT 1)', async () => {
