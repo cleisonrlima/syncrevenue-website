@@ -170,10 +170,13 @@ server {
 
 ### Level 2 — Application (defence in depth)
 
-`server/index.ts` includes a middleware (active only when `NODE_ENV=production`) that checks the `X-Forwarded-Proto` header and issues a 301 redirect if the value is `http`:
+`server/index.ts` includes a middleware (active only when `NODE_ENV=production`) that checks the `X-Forwarded-Proto` header and issues a 301 redirect if the value is `http`. The same production block also enables Express's `trust proxy` setting so the rest of the stack sees correct request metadata (see [Trust Proxy & X-Forwarded-* Trust Chain](#trust-proxy--x-forwarded--trust-chain) below):
 
 ```typescript
 if (process.env.NODE_ENV === 'production') {
+  // Trust the first hop in the X-Forwarded-For chain (Nginx/Caddy on the same host).
+  app.set('trust proxy', 1)
+
   app.use((req, res, next) => {
     if (req.headers['x-forwarded-proto'] === 'http') {
       return res.redirect(301, `https://${req.headers.host}${req.url}`)
@@ -184,6 +187,19 @@ if (process.env.NODE_ENV === 'production') {
 ```
 
 This middleware is a fallback. If the reverse proxy is properly configured to redirect HTTP to HTTPS at the network level (Level 1), this middleware will never trigger. It exists to protect against misconfigured proxy setups that might let plain HTTP through.
+
+### Trust Proxy & X-Forwarded-* Trust Chain
+
+In production, `server/index.ts` calls `app.set('trust proxy', 1)`. This tells Express to trust the **first hop** in the `X-Forwarded-*` header chain — i.e. the single Nginx/Caddy reverse proxy that terminates TLS on the same host. Without this setting, Express ignores the proxy-supplied headers when resolving `req.protocol`, `req.secure`, and `req.ip`, which leads to two concrete issues:
+
+1. **Incorrect protocol/IP resolution.** `req.protocol` would always report `http`, `req.secure` would always be `false`, and `req.ip` would resolve to the proxy's loopback address (`127.0.0.1`) instead of the real client IP.
+2. **Broken per-client rate limiting.** `express-rate-limit` (configured in `server/middleware/rateLimit.ts`) uses `req.ip` as the default keying function. Without `trust proxy`, every request appears to originate from `127.0.0.1`, so all clients share a single rate-limit bucket. With `trust proxy 1`, the limiter keys per real client IP — which is what AC 3 of Story 5.9 verifies and what the existing rate-limit regression tests cover.
+
+**Operational notes:**
+
+- The value `1` is correct for a **single-hop** reverse proxy (Nginx or Caddy on the same host). If a CDN or additional load balancer is later placed in front of Nginx, the value must increase to account for the extra hop, or be replaced with an explicit CIDR/IP list. See [Express behind proxies](https://expressjs.com/en/guide/behind-proxies.html) for the full option set.
+- The Nginx config in **Level 1** above already sets `proxy_set_header X-Forwarded-Proto $scheme` and `Host $host`. The `X-Forwarded-For` header is added automatically by Nginx and consumed by Express via the `trust proxy` setting. Adding `proxy_set_header X-Real-IP $remote_addr` is **optional** — Express uses `X-Forwarded-For` by default and does not need `X-Real-IP`.
+- In dev/test (`NODE_ENV !== 'production'`), `trust proxy` is **not** enabled — there is no reverse proxy in front of Express locally, and trusting forged headers would be a security regression. The test suite in `server/index.test.ts` asserts both the production and dev/test states.
 
 ---
 
@@ -321,6 +337,63 @@ Caddy renews certificates automatically in the background — no action required
 ```bash
 sudo journalctl -u caddy -f
 ```
+
+---
+
+## 9. Post-Deploy Header Verification
+
+Lighthouse CI (LHCI), configured in `lighthouserc.json` / `lighthouserc.mobile.json`, audits the production bundle by serving `dist/client/` through `vite preview`. Vite preview is a static-file server intended for build verification — it does **not** run the Express production server in `server/index.ts`, and therefore does **not** apply the security and caching headers that real production traffic receives. The Helmet-derived headers (`Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, etc.) and the long-lived asset cache header (`Cache-Control: public, max-age=31536000, immutable`) are set by Express middleware and are absent from LHCI runs by design. A passing LHCI report is therefore **not** evidence that production headers are correctly applied.
+
+After every first production deploy (and after any change to `server/index.ts`, `helmet` configuration, or the reverse-proxy config), manually verify the headers using `curl -I` against the live domain. All commands below assume the production domain is `https://syncsirius.com`; substitute the actual domain if different.
+
+### HSTS — Strict-Transport-Security
+
+```bash
+curl -sSI https://syncsirius.com/api/health | grep -i strict-transport-security
+```
+
+Expected response line (case-insensitive header name, exact directive payload):
+
+```
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+```
+
+If this header is missing, traffic over plain HTTP after the first visit is not protected by HSTS — the redirect at the proxy is the only safeguard. Confirm `helmet()` is invoked in `server/index.ts` and that the reverse proxy is **not** stripping response headers.
+
+### Cache-Control on Hashed Assets
+
+Pick any hashed asset from the deployed bundle (the filename pattern is `assets/<name>-<hash>.{js,css,woff2}`) and verify it carries the one-year immutable cache directive:
+
+```bash
+ASSET=$(curl -sS https://syncsirius.com/ | grep -oE 'assets/[^"]+\.(js|css)' | head -n1)
+curl -sSI "https://syncsirius.com/${ASSET}" | grep -i cache-control
+```
+
+Expected response line:
+
+```
+cache-control: public, max-age=31536000, immutable
+```
+
+If the header reads `no-cache`, `max-age=0`, or is missing entirely, repeat visitors will refetch the entire JS/CSS bundle on every navigation, regressing TTFB and wasting CDN/bandwidth budget. Confirm the `express.static()` call in `server/index.ts` is configured with `immutable: true, maxAge: '1y'` (or equivalent) and that no upstream cache (Nginx `expires`, Caddy `header Cache-Control`) is overriding it.
+
+### X-Content-Type-Options
+
+```bash
+curl -sSI https://syncsirius.com/api/health | grep -i x-content-type-options
+```
+
+Expected:
+
+```
+x-content-type-options: nosniff
+```
+
+If absent, the browser may MIME-sniff responses and execute non-script payloads as scripts. Confirm `helmet()` is active.
+
+### Why LHCI Cannot Cover This
+
+LHCI runs Lighthouse against `vite preview` so the audit reflects the **client bundle** (HTML, JS, CSS, asset hashes, font preloads, image formats) without depending on a running Express process, database, or production environment variables. This is the right tradeoff for performance and accessibility audits — it isolates the bundle from server-side variance — but it means LHCI **cannot** assert on response headers set by Express. The post-deploy `curl` checks above are the only automated-ish verification of those headers, and they must be re-run on every deploy that touches `server/index.ts`, `helmet` options, the reverse-proxy config, or the static-file caching directives.
 
 ---
 

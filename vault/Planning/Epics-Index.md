@@ -88,9 +88,9 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 5.5 | Uptime Monitoring & Health Check | `[x]` done |
 | 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope) | `[x]` done — LCP median 2,259ms (↓83% from 2,916ms baseline); lighthouserc.mobile.json reverted to 2,500ms threshold |
 | 5.7 | PM2 Cluster Mode & Multi-Core Production Optimization (Story 5.1 review finding) | `[x]` done — opt-in stance; ADR in Architecture-Key.md; ecosystem.config.js cluster directives commented with SQLite-WAL warning |
-| 5.8 | Prerender Script Type Coverage (Story 5.6 review finding) | `[ ]` ready-for-dev |
-| 5.9 | Express Trust Proxy Configuration (Story 5.2 review finding) | `[ ]` ready-for-dev |
-| 5.10 | CI Quality Gate — Build Artifact & Backup Coverage (TEA finding G1/G3/G8) | `[ ]` backlog |
+| 5.8 | Prerender Script Type Coverage (Story 5.6 review finding) | `[x]` done — `tsconfig.scripts.json` added; `npm run typecheck` now chains both configs and covers `scripts/prerender.tsx`; AC2 smoke-test passed; TS2454 auto-resolved by `@types/node` `process.exit: never` |
+| 5.9 | Express Trust Proxy Configuration (Story 5.2 review finding) | `[x]` done — `app.set('trust proxy', 1)` enabled in production before HTTP→HTTPS redirect; req.protocol/req.secure/req.ip now resolve via X-Forwarded-* behind reverse proxy; per-client express-rate-limit keying restored; runbook section 4 expanded |
+| 5.10 | CI Quality Gate — Build Artifact & Backup Coverage (TEA finding G1/G3/G8) | `[x]` done — `npm run test:backup` wired into `unit` job; new `build-smoke` job runs `npm run build && npm run test:build`; `scripts/test-build-output.mjs` asserts prerendered `<h1>` + `<picture>` inside `#root` against `dist/client/index.html`; runbook section 9 documents post-deploy header `curl` checks (HSTS, Cache-Control, X-Content-Type-Options) + LHCI vs Express caveat |
 | 5.11 | Health DAO Unit Tests (TEA finding G2) | `[ ]` backlog |
 
 **Epic 5 TEA:** `[x]` done — see `_bmad-output/test-artifacts/test-design/test-design-epic-5.md`. Gate decision: CONDITIONAL PASS. 2 new stories added (5.10, 5.11). Highest risk: G1 (backup tests not in CI, score 9) → Story 5.10.
