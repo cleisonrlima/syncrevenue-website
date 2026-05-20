@@ -1,6 +1,6 @@
 # Story 4.4: Team Member Management — Create & Edit
 
-Status: review
+Status: done
 
 <!-- Created 2026-05-17 by /bmad-create-story. Parent Jira: SYN-31 (per `.cursor/rules/jira-config.mdc` Epic 4 mapping; verify on /jira-assistant sync). Sprint: SYN Sprint 3 (336). -->
 
@@ -373,4 +373,5 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]` — 2026-05-17.
 
 | Date | Author | Change |
 |---|---|---|
+| 2026-05-20 | Codex | Code review closed with no accepted Story 4.4-specific patch findings; status → done. Jira parent SYN-31 transitioned to Done. |
 | 2026-05-17 | Claude Opus 4.7 (1M context) | Story 4.4 implemented end-to-end: `admin-team.schema.ts` (Zod create/update/params) + smoke test, POST/PUT handlers on `server/routes/admin/team.ts` with field-keyed 400s + 404-on-vacuous-update, new public `server/routes/team.ts` mounted at `/api/team`, isolated-DB route tests for admin + public, `seedTeamMembers` + CLI logging in `server/db.seed.ts`, admin/public team types + helpers + `PublicTeamError` in `src/lib/api.ts`, client i18n Zod mirror `src/lib/team-schema.ts`, full admin `Team.tsx` page with shared in-file `TeamMemberForm` + per-row Edit + optimistic local state, `Team.tsx` public section now consumes `getPublicTeam` with locale-specific role/bio, `admin.team` i18n × EN/PT-BR/ES, new admin team E2E spec, regression mocks added to `Sections.i18n.test.tsx` + `Home.story-1-8.e2e.test.tsx`. typecheck 0; full suite 74 files / 560 tests pass (+5 files / +86 tests vs Story 4.3 baseline); build clean; secret scan passed. Status → review. |

@@ -4,6 +4,7 @@ import {
   adminTeamCreateSchema,
   adminTeamUpdateSchema,
   adminTeamParamsSchema,
+  adminTeamActiveSchema,
 } from '../../schemas/admin-team.schema'
 
 const router = Router()
@@ -53,6 +54,36 @@ router.put('/:id', (req, res) => {
   }
 
   const updated = teamDao.update(paramsParsed.data.id, bodyParsed.data)
+  if (!updated) {
+    res.status(404).json({ success: false, message: 'Team member not found' })
+    return
+  }
+
+  res.json({ success: true, data: updated })
+})
+
+router.patch('/:id/active', (req, res) => {
+  const paramsParsed = adminTeamParamsSchema.safeParse({ id: req.params.id })
+  if (!paramsParsed.success) {
+    res.status(400).json({
+      success: false,
+      message: 'Invalid team member id',
+      field: 'id',
+    })
+    return
+  }
+
+  const bodyParsed = adminTeamActiveSchema.safeParse(req.body ?? {})
+  if (!bodyParsed.success) {
+    res.status(400).json({
+      success: false,
+      message: 'Validation failed',
+      field: 'active',
+    })
+    return
+  }
+
+  const updated = teamDao.setActive(paramsParsed.data.id, bodyParsed.data.active)
   if (!updated) {
     res.status(404).json({ success: false, message: 'Team member not found' })
     return

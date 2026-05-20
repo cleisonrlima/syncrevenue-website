@@ -2,10 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   AdminApiError,
   PublicTeamError,
+  getAdminDashboardStats,
   getAdminMe,
   getAdminTeam,
   getPublicTeam,
   patchAdminLeadStatus,
+  patchAdminTeamActive,
   postAdminLogin,
   postAdminLogout,
   postAdminTeam,
@@ -405,6 +407,169 @@ describe('putAdminTeam', () => {
   it('throws AdminApiError(0) on network failure', async () => {
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
     await expect(putAdminTeam(1, validInput)).rejects.toMatchObject({ status: 0 })
+  })
+})
+
+describe('patchAdminTeamActive', () => {
+  it('sends PATCH to /api/admin/team/:id/active with the correct body', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: { ...validRow, active: 0 } }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await patchAdminTeamActive(42, 0)
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(url).toBe('/api/admin/team/42/active')
+    expect(init.method).toBe('PATCH')
+    expect(init.credentials).toBe('include')
+    expect((init.headers as Record<string, string>)['content-type']).toBe('application/json')
+    expect(init.body).toBe(JSON.stringify({ active: 0 }))
+  })
+
+  it('resolves with parsed AdminTeamMemberRow on 200', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: { ...validRow, active: 0 } }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(patchAdminTeamActive(1, 0)).resolves.toMatchObject({ id: 1, active: 0 })
+  })
+
+  it('throws AdminApiError(401) on 401', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(patchAdminTeamActive(1, 0)).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 401,
+    })
+  })
+
+  it('throws AdminApiError(400, ..., "active") on 400 with field: active', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({ success: false, message: 'Validation failed', field: 'active' }),
+        { status: 400, headers: { 'content-type': 'application/json' } }
+      )
+    )
+    await expect(patchAdminTeamActive(1, 0)).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 400,
+      field: 'active',
+    })
+  })
+
+  it('throws AdminApiError(404) on 404', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Team member not found' }), {
+        status: 404,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(patchAdminTeamActive(1, 0)).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 404,
+    })
+  })
+
+  it('throws AdminApiError(status, "Invalid team response") when 200 body fails parse', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: { id: 'oops' } }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(patchAdminTeamActive(1, 0)).rejects.toMatchObject({
+      name: 'AdminApiError',
+      message: 'Invalid team response',
+    })
+  })
+
+  it('throws AdminApiError(0, "Network error") on fetch rejection', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+    await expect(patchAdminTeamActive(1, 0)).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 0,
+      message: 'Network error',
+    })
+  })
+})
+
+describe('getAdminDashboardStats', () => {
+  const validStats = {
+    totalLeads: 4,
+    pendingLeads: 2,
+    leadsThisWeek: 3,
+    leadsByLocale: { en: 1, 'pt-BR': 2, es: 1 },
+  }
+
+  it('sends GET /api/admin/dashboard/stats with credentials: include', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: validStats }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+
+    await getAdminDashboardStats()
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(url).toBe('/api/admin/dashboard/stats')
+    expect(init.method).toBe('GET')
+    expect(init.credentials).toBe('include')
+  })
+
+  it('returns parsed stats on 200', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: true, data: validStats }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getAdminDashboardStats()).resolves.toEqual(validStats)
+  })
+
+  it('throws AdminApiError(401) on 401', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'content-type': 'application/json' },
+      })
+    )
+    await expect(getAdminDashboardStats()).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 401,
+    })
+  })
+
+  it('throws AdminApiError(0, "Network error") on fetch rejection', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('network'))
+    await expect(getAdminDashboardStats()).rejects.toMatchObject({
+      name: 'AdminApiError',
+      status: 0,
+      message: 'Network error',
+    })
+  })
+
+  it('throws "Invalid dashboard stats response" when leadsByLocale.es is missing', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          success: true,
+          data: { ...validStats, leadsByLocale: { en: 1, 'pt-BR': 2 } },
+        }),
+        { status: 200, headers: { 'content-type': 'application/json' } }
+      )
+    )
+    await expect(getAdminDashboardStats()).rejects.toMatchObject({
+      name: 'AdminApiError',
+      message: 'Invalid dashboard stats response',
+    })
   })
 })
 

@@ -55,6 +55,11 @@ export const adminTeamParamsSchema = z.object({
   id: z.coerce.number().int().positive(),
 })
 
+export const adminTeamActiveSchema = z.object({
+  active: z.union([z.literal(0), z.literal(1)]),
+})
+
 export type AdminTeamCreateInput = z.infer<typeof adminTeamCreateSchema>
 export type AdminTeamUpdateInput = z.infer<typeof adminTeamUpdateSchema>
 export type AdminTeamParams = z.infer<typeof adminTeamParamsSchema>
+export type AdminTeamActiveInput = z.infer<typeof adminTeamActiveSchema>

@@ -512,7 +512,29 @@
       }
     },
     "dashboard": {
-      "title": "Painel Administrativo"
+      "title": "Painel Administrativo",
+      "stats": {
+        "total": "Total de leads",
+        "pending": "Leads pendentes",
+        "thisWeek": "Novos nesta semana",
+        "byLocale": "Leads por idioma",
+        "locale": {
+          "en": "Inglês",
+          "pt-BR": "Português (BR)",
+          "es": "Espanhol"
+        }
+      },
+      "errors": {
+        "load": "Falha ao carregar as métricas do painel.",
+        "retry": "Tentar novamente"
+      }
+    },
+    "nav": {
+      "label": "Navegação do administrador",
+      "brand": "Sync Sirius Admin",
+      "dashboard": "Painel",
+      "leads": "Leads",
+      "team": "Equipe"
     },
     "logout": "Sair",
     "leads": {
@@ -574,12 +596,22 @@
         "name": "Nome",
         "role": "Cargo",
         "active": "Ativo",
+        "toggle": "Status",
         "order": "Ordem",
         "actions": "Ações"
       },
       "active": {
         "yes": "Ativo",
         "no": "Inativo"
+      },
+      "activeToggle": {
+        "label": "Alternar status ativo de {{name}}",
+        "activate": "Ativar",
+        "deactivate": "Desativar",
+        "errors": {
+          "notFound": "Este membro da equipe não existe mais. Atualize para ver a lista atual.",
+          "generic": "Não foi possível atualizar o status. Tente novamente."
+        }
       },
       "actions": {
         "edit": "Editar"

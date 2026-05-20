@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import {
   AdminApiError,
   getAdminTeam,
+  patchAdminTeamActive,
   postAdminTeam,
   putAdminTeam,
   type AdminTeamMemberRow,
@@ -27,6 +28,9 @@ import {
 
 type Mode = { kind: 'list' } | { kind: 'create' } | { kind: 'edit'; id: number }
 type FieldErrors = Partial<Record<keyof AdminTeamFormValues, string>>
+type ActiveErrorKey =
+  | 'admin.team.activeToggle.errors.notFound'
+  | 'admin.team.activeToggle.errors.generic'
 
 const INPUT_CLASS =
   'mt-2 w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white'
@@ -285,6 +289,10 @@ export default function Team() {
   const [mode, setMode] = useState<Mode>({ kind: 'list' })
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [pendingActiveIds, setPendingActiveIds] = useState<ReadonlySet<number>>(() => new Set())
+  const [activeErrorKeys, setActiveErrorKeys] = useState<ReadonlyMap<number, ActiveErrorKey>>(
+    () => new Map()
+  )
 
   useEffect(() => {
     const controller = new AbortController()
@@ -386,6 +394,56 @@ export default function Team() {
     [t, handleApiError]
   )
 
+  const markActivePending = useCallback((id: number, isPending: boolean) => {
+    setPendingActiveIds((prev) => {
+      const next = new Set(prev)
+      if (isPending) next.add(id)
+      else next.delete(id)
+      return next
+    })
+  }, [])
+
+  const setActiveError = useCallback((id: number, key: ActiveErrorKey | null) => {
+    setActiveErrorKeys((prev) => {
+      const next = new Map(prev)
+      if (key === null) next.delete(id)
+      else next.set(id, key)
+      return next
+    })
+  }, [])
+
+  const handleToggleActive = useCallback(
+    async (row: AdminTeamMemberRow) => {
+      const previousActive = row.active
+      const nextActive: 0 | 1 = previousActive === 1 ? 0 : 1
+      setRows((prev) =>
+        prev ? prev.map((r) => (r.id === row.id ? { ...r, active: nextActive } : r)) : prev
+      )
+      markActivePending(row.id, true)
+      setActiveError(row.id, null)
+      try {
+        const updated = await patchAdminTeamActive(row.id, nextActive)
+        setRows((prev) => (prev ? prev.map((r) => (r.id === row.id ? updated : r)) : prev))
+      } catch (err) {
+        setRows((prev) =>
+          prev ? prev.map((r) => (r.id === row.id ? { ...r, active: previousActive } : r)) : prev
+        )
+        if (err instanceof AdminApiError && err.status === 401) {
+          handleApiError(err)
+          return
+        }
+        const key: ActiveErrorKey =
+          err instanceof AdminApiError && err.status === 404
+            ? 'admin.team.activeToggle.errors.notFound'
+            : 'admin.team.activeToggle.errors.generic'
+        setActiveError(row.id, key)
+      } finally {
+        markActivePending(row.id, false)
+      }
+    },
+    [handleApiError, markActivePending, setActiveError]
+  )
+
   const handleEdit = useCallback(
     (id: number) =>
       async (values: AdminTeamFormValues): Promise<FieldErrors | null> => {
@@ -410,40 +468,73 @@ export default function Team() {
 
   const tableBody = useMemo(() => {
     if (!rows) return null
-    return rows.map((row) => (
-      <tr
-        key={row.id}
-        data-testid={`team-row-${row.id}`}
-        className="border-t border-white/10"
-      >
-        <td className="px-3 py-2 align-top">{row.name}</td>
-        <td className="px-3 py-2 align-top">{row.role_en}</td>
-        <td className="px-3 py-2 align-top">
-          <span
-            data-testid={`team-active-${row.id}`}
-            className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
-              row.active === 1
-                ? 'bg-green-100 text-green-800'
-                : 'bg-white/10 text-white/60'
-            }`}
-          >
-            {t(row.active === 1 ? 'admin.team.active.yes' : 'admin.team.active.no')}
-          </span>
-        </td>
-        <td className="px-3 py-2 align-top">{row.order_index}</td>
-        <td className="px-3 py-2 align-top">
-          <Button
-            type="button"
-            onClick={() => handleEditClick(row.id)}
-            data-testid={`team-edit-${row.id}`}
-            className="bg-white/10 text-white hover:bg-white/20"
-          >
-            {t('admin.team.actions.edit')}
-          </Button>
-        </td>
-      </tr>
-    ))
-  }, [rows, t, handleEditClick])
+    return rows.map((row) => {
+      const isPending = pendingActiveIds.has(row.id)
+      const errorKey = activeErrorKeys.get(row.id) ?? null
+      const rowClass =
+        row.active === 0
+          ? 'border-t border-white/10 opacity-60'
+          : 'border-t border-white/10'
+      return (
+        <tr key={row.id} data-testid={`team-row-${row.id}`} className={rowClass}>
+          <td className="px-3 py-2 align-top">{row.name}</td>
+          <td className="px-3 py-2 align-top">{row.role_en}</td>
+          <td className="px-3 py-2 align-top">
+            <span
+              data-testid={`team-active-${row.id}`}
+              className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
+                row.active === 1
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-white/10 text-white/60'
+              }`}
+            >
+              {t(row.active === 1 ? 'admin.team.active.yes' : 'admin.team.active.no')}
+            </span>
+          </td>
+          <td className="px-3 py-2 align-top">
+            <button
+              type="button"
+              onClick={() => void handleToggleActive(row)}
+              disabled={isPending}
+              aria-pressed={row.active === 1}
+              aria-label={t('admin.team.activeToggle.label', {
+                name: row.name,
+                defaultValue: 'Toggle active status for {{name}}',
+              })}
+              data-testid={`team-active-toggle-${row.id}`}
+              className="rounded-md border border-white/20 bg-white/10 px-2 py-1 text-xs text-white hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {t(
+                row.active === 1
+                  ? 'admin.team.activeToggle.deactivate'
+                  : 'admin.team.activeToggle.activate'
+              )}
+            </button>
+            {errorKey ? (
+              <p
+                role="alert"
+                data-testid={`team-active-error-${row.id}`}
+                className="mt-1 text-xs text-red-200"
+              >
+                {t(errorKey)}
+              </p>
+            ) : null}
+          </td>
+          <td className="px-3 py-2 align-top">{row.order_index}</td>
+          <td className="px-3 py-2 align-top">
+            <Button
+              type="button"
+              onClick={() => handleEditClick(row.id)}
+              data-testid={`team-edit-${row.id}`}
+              className="bg-white/10 text-white hover:bg-white/20"
+            >
+              {t('admin.team.actions.edit')}
+            </Button>
+          </td>
+        </tr>
+      )
+    })
+  }, [rows, t, handleEditClick, handleToggleActive, pendingActiveIds, activeErrorKeys])
 
   const editingRow =
     mode.kind === 'edit' && rows ? rows.find((row) => row.id === mode.id) : undefined
@@ -541,6 +632,9 @@ export default function Team() {
                     </th>
                     <th scope="col" className="px-3 py-2">
                       {t('admin.team.columns.active')}
+                    </th>
+                    <th scope="col" className="px-3 py-2">
+                      {t('admin.team.columns.toggle', { defaultValue: 'Status' })}
                     </th>
                     <th scope="col" className="px-3 py-2">
                       {t('admin.team.columns.order')}

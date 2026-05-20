@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import db from '../../server/db'
 import { seedAdminUser } from '../../server/db.seed'
+import { adminLoginAttemptsDao } from '../../server/dao/admin-login-attempts.dao'
 import { teamDao } from '../../server/dao/team.dao'
 
 const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-team-e2e@example.com'
@@ -56,6 +57,7 @@ test.describe('Admin Team @P1', () => {
   test.describe.configure({ mode: 'serial' })
 
   test.beforeAll(() => {
+    adminLoginAttemptsDao.reset(TEST_EMAIL)
     seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })
 
@@ -66,7 +68,6 @@ test.describe('Admin Team @P1', () => {
 
   test.afterAll(() => {
     purgeSeedTeam()
-    db.close()
   })
 
   async function login(page: import('@playwright/test').Page) {
@@ -94,6 +95,11 @@ test.describe('Admin Team @P1', () => {
     await page.getByTestId('team-form-bio_en').fill('EN bio created')
     await page.getByTestId('team-form-bio_pt').fill('PT bio criado')
     await page.getByTestId('team-form-bio_es').fill('ES bio creado')
+    await page.getByTestId('team-form-experience_en').fill('20+ years')
+    await page.getByTestId('team-form-experience_pt').fill('20+ anos')
+    await page.getByTestId('team-form-experience_es').fill('20+ años')
+    await page.getByTestId('team-form-linkedin').fill('https://www.linkedin.com/in/e2e-created')
+    await page.getByTestId('team-form-photo_url').fill('https://example.com/e2e-created.jpg')
     await page.getByTestId('team-form-submit').click()
 
     await expect(page.getByTestId('admin-team-table')).toContainText(created)
@@ -120,8 +126,69 @@ test.describe('Admin Team @P1', () => {
     await expect(team).toContainText(SEED_NAMES[0])
     await expect(team).toContainText('Lead EN')
 
-    // switch locale to pt-BR via the existing language switcher (PT-BR button)
-    await page.getByRole('button', { name: 'PT-BR' }).first().click()
+    // switch locale to pt-BR via the existing language switcher menu
+    await page.getByRole('button', { name: 'EN' }).first().click()
+    await page.getByRole('menuitemradio', { name: 'PT-BR' }).click()
     await expect(team).toContainText('PT bio: orienta operações')
+  })
+
+  test('admin can toggle a member inactive; public Team section excludes them', async ({ page }) => {
+    await login(page)
+    await page.goto('/admin/team')
+
+    const table = page.getByTestId('admin-team-table')
+    await expect(table).toBeVisible()
+    await expect(table).toContainText(SEED_NAMES[0])
+    await expect(table).toContainText(SEED_NAMES[1])
+
+    const targetRow = page.locator('tr', { hasText: SEED_NAMES[1] })
+    const toggle = targetRow.getByRole('button', { name: new RegExp(`toggle active status for ${SEED_NAMES[1]}`, 'i') })
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+    const patchResponse = page.waitForResponse((res) =>
+      res.url().includes('/api/admin/team/') &&
+      res.url().endsWith('/active') &&
+      res.request().method() === 'PATCH'
+    )
+    await toggle.click()
+    expect((await patchResponse).ok()).toBe(true)
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+
+    await page.goto('/')
+    const team = page.getByRole('region', { name: /sync sirius team specialists|especialistas/i })
+    await expect(team).toBeVisible()
+    await expect(team).toContainText(SEED_NAMES[0])
+    await expect(team).not.toContainText(SEED_NAMES[1])
+  })
+
+  test('admin can re-activate a previously deactivated member; public Team shows them again', async ({ page }) => {
+    await login(page)
+    await page.goto('/admin/team')
+
+    const targetRow = page.locator('tr', { hasText: SEED_NAMES[1] })
+    const toggle = targetRow.getByRole('button', { name: new RegExp(`toggle active status for ${SEED_NAMES[1]}`, 'i') })
+    // deactivate first
+    const deactivateResponse = page.waitForResponse((res) =>
+      res.url().includes('/api/admin/team/') &&
+      res.url().endsWith('/active') &&
+      res.request().method() === 'PATCH'
+    )
+    await toggle.click()
+    expect((await deactivateResponse).ok()).toBe(true)
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    // re-activate
+    const activateResponse = page.waitForResponse((res) =>
+      res.url().includes('/api/admin/team/') &&
+      res.url().endsWith('/active') &&
+      res.request().method() === 'PATCH'
+    )
+    await toggle.click()
+    expect((await activateResponse).ok()).toBe(true)
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+
+    await page.goto('/')
+    const team = page.getByRole('region', { name: /sync sirius team specialists|especialistas/i })
+    await expect(team).toBeVisible()
+    await expect(team).toContainText(SEED_NAMES[0])
+    await expect(team).toContainText(SEED_NAMES[1])
   })
 })

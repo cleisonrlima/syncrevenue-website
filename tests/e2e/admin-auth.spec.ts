@@ -53,7 +53,7 @@ test.describe('Admin Auth @P1', () => {
     await page.reload()
     await expect(page).toHaveURL(/\/admin\/dashboard$/)
 
-    await page.getByTestId('admin-logout').click()
+    await page.getByTestId('admin-nav-logout').click()
     await page.waitForURL(/\/admin\/login$/)
 
     // Re-visit /admin after logout → bounce to /admin/login

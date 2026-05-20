@@ -3,6 +3,7 @@ import {
   adminTeamCreateSchema,
   adminTeamUpdateSchema,
   adminTeamParamsSchema,
+  adminTeamActiveSchema,
 } from './admin-team.schema'
 
 const validBase = {
@@ -180,5 +181,59 @@ describe('adminTeamParamsSchema', () => {
   it('rejects zero id', () => {
     const result = adminTeamParamsSchema.safeParse({ id: '0' })
     expect(result.success).toBe(false)
+  })
+})
+
+describe('adminTeamActiveSchema', () => {
+  it('accepts { active: 0 }', () => {
+    const result = adminTeamActiveSchema.safeParse({ active: 0 })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.active).toBe(0)
+  })
+
+  it('accepts { active: 1 }', () => {
+    const result = adminTeamActiveSchema.safeParse({ active: 1 })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.active).toBe(1)
+  })
+
+  it('rejects { active: false } (no boolean coercion)', () => {
+    const result = adminTeamActiveSchema.safeParse({ active: false })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].path).toEqual(['active'])
+    }
+  })
+
+  it('rejects { active: 2 }', () => {
+    const result = adminTeamActiveSchema.safeParse({ active: 2 })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].path).toEqual(['active'])
+    }
+  })
+
+  it("rejects { active: '0' } (no string coercion)", () => {
+    const result = adminTeamActiveSchema.safeParse({ active: '0' })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].path).toEqual(['active'])
+    }
+  })
+
+  it('rejects empty body {}', () => {
+    const result = adminTeamActiveSchema.safeParse({})
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].path).toEqual(['active'])
+    }
+  })
+
+  it('rejects { active: null }', () => {
+    const result = adminTeamActiveSchema.safeParse({ active: null })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].path).toEqual(['active'])
+    }
   })
 })

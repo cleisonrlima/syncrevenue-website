@@ -586,6 +586,110 @@ export async function putAdminTeam(
   return parsed
 }
 
+export async function patchAdminTeamActive(
+  id: number,
+  active: 0 | 1
+): Promise<AdminTeamMemberRow> {
+  let response: Response
+  try {
+    response = await fetch(`/api/admin/team/${id}/active`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ active }),
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+    field?: string
+  }
+
+  if (!response.ok || body.success !== true) {
+    throw new AdminApiError(
+      response.status,
+      body.message || 'Failed to update team member',
+      body.field
+    )
+  }
+
+  const parsed = parseAdminTeamMemberRow(body.data)
+  if (!parsed) {
+    throw new AdminApiError(response.status, 'Invalid team response')
+  }
+  return parsed
+}
+
+export interface AdminDashboardStats {
+  totalLeads: number
+  pendingLeads: number
+  leadsThisWeek: number
+  leadsByLocale: { en: number; 'pt-BR': number; es: number }
+}
+
+export function parseAdminDashboardStats(value: unknown): AdminDashboardStats | null {
+  if (!value || typeof value !== 'object') return null
+  const candidate = value as Record<string, unknown>
+  if (typeof candidate.totalLeads !== 'number') return null
+  if (typeof candidate.pendingLeads !== 'number') return null
+  if (typeof candidate.leadsThisWeek !== 'number') return null
+  const byLocale = candidate.leadsByLocale
+  if (!byLocale || typeof byLocale !== 'object') return null
+  const bl = byLocale as Record<string, unknown>
+  if (typeof bl.en !== 'number') return null
+  if (typeof bl['pt-BR'] !== 'number') return null
+  if (typeof bl.es !== 'number') return null
+  return {
+    totalLeads: candidate.totalLeads,
+    pendingLeads: candidate.pendingLeads,
+    leadsThisWeek: candidate.leadsThisWeek,
+    leadsByLocale: {
+      en: bl.en,
+      'pt-BR': bl['pt-BR'],
+      es: bl.es,
+    },
+  }
+}
+
+export interface AdminDashboardRequestOptions {
+  signal?: AbortSignal
+}
+
+export async function getAdminDashboardStats(
+  options: AdminDashboardRequestOptions = {}
+): Promise<AdminDashboardStats> {
+  let response: Response
+  try {
+    response = await fetch('/api/admin/dashboard/stats', {
+      method: 'GET',
+      credentials: 'include',
+      signal: options.signal,
+    })
+  } catch {
+    throw new AdminApiError(0, 'Network error')
+  }
+
+  const body = (await response.json().catch(() => ({}))) as {
+    success?: boolean
+    data?: unknown
+    message?: string
+  }
+
+  if (!response.ok || body.success !== true) {
+    throw new AdminApiError(response.status, body.message || 'Failed to load dashboard stats')
+  }
+
+  const parsed = parseAdminDashboardStats(body.data)
+  if (!parsed) {
+    throw new AdminApiError(response.status, 'Invalid dashboard stats response')
+  }
+  return parsed
+}
+
 export async function getPublicTeam(): Promise<PublicTeamMemberRow[]> {
   let response: Response
   try {

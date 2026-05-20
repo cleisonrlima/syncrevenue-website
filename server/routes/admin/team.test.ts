@@ -17,6 +17,7 @@ let app: Express
 let currentDb: Database.Database | undefined
 let currentTempDir: string | undefined
 let teamDao: typeof import('../../dao/team.dao').teamDao
+let adminDao: typeof import('../../dao/admin.dao').adminDao
 
 const baseInput: TeamMemberInput = {
   name: 'Maria Silva',
@@ -50,6 +51,7 @@ async function createIsolatedApp() {
     password_hash: bcrypt.hashSync(PLAINTEXT, 12),
   })
   teamDao = teamDaoModule.teamDao
+  adminDao = adminDaoModule.adminDao
   app = createApp()
 }
 
@@ -100,6 +102,15 @@ async function authedPost(pathStr: string, token: string, body: Record<string, u
 async function authedPut(pathStr: string, token: string, body: Record<string, unknown>) {
   return request(app, {
     method: 'PUT',
+    path: pathStr,
+    headers: { cookie: `${AUTH_COOKIE_NAME}=${token}` },
+    body,
+  })
+}
+
+async function authedPatch(pathStr: string, token: string, body: Record<string, unknown>) {
+  return request(app, {
+    method: 'PATCH',
     path: pathStr,
     headers: { cookie: `${AUTH_COOKIE_NAME}=${token}` },
     body,
@@ -314,5 +325,117 @@ describe('PUT /api/admin/team/:id', () => {
     expect(r.status).toBe(200)
     expect(r.json<RowBody>().data.active).toBe(1)
     expect(teamDao.getById(seeded.id)?.active).toBe(1)
+  })
+})
+
+describe('PATCH /api/admin/team/:id/active', () => {
+  beforeEach(async () => {
+    await createIsolatedApp()
+  })
+  afterEach(() => {
+    teardown()
+  })
+
+  it('401 when no cookie present; DB untouched', async () => {
+    const seeded = teamDao.create(baseInput)
+    const r = await request(app, {
+      method: 'PATCH',
+      path: `/api/admin/team/${seeded.id}/active`,
+      body: { active: 0 },
+    })
+    expect(r.status).toBe(401)
+    expect(teamDao.getById(seeded.id)?.active).toBe(1)
+  })
+
+  it('401 when JWT tokenVersion mismatches (Story 4.8 invariant)', async () => {
+    const token = await loginAndGetCookie()
+    const seeded = teamDao.create(baseInput)
+    adminDao.incrementTokenVersion(ADMIN_EMAIL)
+    const r = await authedPatch(`/api/admin/team/${seeded.id}/active`, token, { active: 0 })
+    expect(r.status).toBe(401)
+    expect(teamDao.getById(seeded.id)?.active).toBe(1)
+  })
+
+  it('400 with field: id when :id is non-numeric', async () => {
+    const token = await loginAndGetCookie()
+    const r = await authedPatch('/api/admin/team/abc/active', token, { active: 0 })
+    expect(r.status).toBe(400)
+    expect(r.json<ErrBody>().field).toBe('id')
+  })
+
+  it('400 with field: active when body is { active: 2 }', async () => {
+    const token = await loginAndGetCookie()
+    const seeded = teamDao.create(baseInput)
+    const r = await authedPatch(`/api/admin/team/${seeded.id}/active`, token, {
+      active: 2,
+    } as unknown as Record<string, unknown>)
+    expect(r.status).toBe(400)
+    expect(r.json<ErrBody>().field).toBe('active')
+  })
+
+  it('400 with field: active when body is missing active', async () => {
+    const token = await loginAndGetCookie()
+    const seeded = teamDao.create(baseInput)
+    const r = await authedPatch(`/api/admin/team/${seeded.id}/active`, token, {})
+    expect(r.status).toBe(400)
+    expect(r.json<ErrBody>().field).toBe('active')
+  })
+
+  it('404 when the row id does not exist', async () => {
+    const token = await loginAndGetCookie()
+    const r = await authedPatch('/api/admin/team/999999/active', token, { active: 0 })
+    expect(r.status).toBe(404)
+    expect(r.json<ErrBody>().message).toBe('Team member not found')
+  })
+
+  it('200 happy path with { active: 0 } updates row + DB; other columns untouched', async () => {
+    const token = await loginAndGetCookie()
+    const seeded = teamDao.create({ ...baseInput, order_index: 3 })
+    const r = await authedPatch(`/api/admin/team/${seeded.id}/active`, token, { active: 0 })
+    expect(r.status).toBe(200)
+    const body = r.json<RowBody>()
+    expect(body.success).toBe(true)
+    expect(body.data.id).toBe(seeded.id)
+    expect(body.data.active).toBe(0)
+    expect(body.data.name).toBe(seeded.name)
+    expect(body.data.role_en).toBe(seeded.role_en)
+    expect(body.data.order_index).toBe(3)
+    const persisted = teamDao.getById(seeded.id)
+    expect(persisted?.active).toBe(0)
+    expect(persisted?.name).toBe(seeded.name)
+    expect(persisted?.order_index).toBe(3)
+  })
+
+  it('200 happy path with { active: 1 } re-activates a previously deactivated row', async () => {
+    const token = await loginAndGetCookie()
+    const seeded = teamDao.create({ ...baseInput, active: 0 })
+    expect(teamDao.getById(seeded.id)?.active).toBe(0)
+    const r = await authedPatch(`/api/admin/team/${seeded.id}/active`, token, { active: 1 })
+    expect(r.status).toBe(200)
+    expect(r.json<RowBody>().data.active).toBe(1)
+    expect(teamDao.getById(seeded.id)?.active).toBe(1)
+  })
+
+  it('public GET /api/team returns only active=1 rows after PATCH flips one off', async () => {
+    const token = await loginAndGetCookie()
+    const stayActive = teamDao.create({ ...baseInput, name: 'Active One' })
+    const willToggle = teamDao.create({ ...baseInput, name: 'Toggle Off' })
+
+    const publicBefore = await request(app, { path: '/api/team' })
+    expect(publicBefore.status).toBe(200)
+    const beforeBody = publicBefore.json<{ success: true; data: TeamMemberRow[] }>()
+    const idsBefore = beforeBody.data.map((r) => r.id).sort()
+    expect(idsBefore).toEqual([stayActive.id, willToggle.id].sort())
+
+    const patch = await authedPatch(`/api/admin/team/${willToggle.id}/active`, token, {
+      active: 0,
+    })
+    expect(patch.status).toBe(200)
+
+    const publicAfter = await request(app, { path: '/api/team' })
+    expect(publicAfter.status).toBe(200)
+    const afterBody = publicAfter.json<{ success: true; data: TeamMemberRow[] }>()
+    const idsAfter = afterBody.data.map((r) => r.id)
+    expect(idsAfter).toEqual([stayActive.id])
   })
 })

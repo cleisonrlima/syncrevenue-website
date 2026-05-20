@@ -14,6 +14,7 @@ vi.mock('@/lib/api', async () => {
     getAdminTeam: vi.fn(),
     postAdminTeam: vi.fn(),
     putAdminTeam: vi.fn(),
+    patchAdminTeamActive: vi.fn(),
   }
 })
 
@@ -65,6 +66,7 @@ beforeEach(() => {
   ;(api.getAdminTeam as unknown as Mock).mockReset()
   ;(api.postAdminTeam as unknown as Mock).mockReset()
   ;(api.putAdminTeam as unknown as Mock).mockReset()
+  ;(api.patchAdminTeamActive as unknown as Mock).mockReset()
   useAdminStore.setState({
     isAuthenticated: true,
     adminId: 1,
@@ -201,5 +203,156 @@ describe('Team page', () => {
     await user.click(screen.getByTestId('admin-team-retry'))
     await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
     expect((api.getAdminTeam as unknown as Mock).mock.calls.length).toBe(2)
+  })
+})
+
+describe('Team page — active toggle (Story 4.5)', () => {
+  it('toggle button reflects aria-pressed and label based on row state', async () => {
+    const rows: AdminTeamMemberRow[] = [
+      makeRow({ id: 1, name: 'Alpha', active: 1 }),
+      makeRow({ id: 2, name: 'Beta', active: 0 }),
+    ]
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue(rows)
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+
+    const activeToggle = screen.getByTestId('team-active-toggle-1')
+    expect(activeToggle).toHaveAttribute('aria-pressed', 'true')
+    expect(activeToggle).toHaveTextContent('Deactivate')
+
+    const inactiveToggle = screen.getByTestId('team-active-toggle-2')
+    expect(inactiveToggle).toHaveAttribute('aria-pressed', 'false')
+    expect(inactiveToggle).toHaveTextContent('Activate')
+  })
+
+  it('inactive rows render with opacity-60 class', async () => {
+    const rows: AdminTeamMemberRow[] = [
+      makeRow({ id: 1, name: 'Alpha', active: 1 }),
+      makeRow({ id: 2, name: 'Beta', active: 0 }),
+    ]
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue(rows)
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    expect(screen.getByTestId('team-row-1')).not.toHaveClass('opacity-60')
+    expect(screen.getByTestId('team-row-2')).toHaveClass('opacity-60')
+  })
+
+  it('clicking the toggle on an active row calls patchAdminTeamActive(id, 0)', async () => {
+    const row = makeRow({ id: 1, name: 'Alpha', active: 1 })
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue([row])
+    ;(api.patchAdminTeamActive as unknown as Mock).mockResolvedValue({ ...row, active: 0 })
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-1'))
+    await waitFor(() => expect(api.patchAdminTeamActive).toHaveBeenCalledWith(1, 0))
+  })
+
+  it('clicking the toggle on an inactive row calls patchAdminTeamActive(id, 1)', async () => {
+    const row = makeRow({ id: 2, name: 'Beta', active: 0 })
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue([row])
+    ;(api.patchAdminTeamActive as unknown as Mock).mockResolvedValue({ ...row, active: 1 })
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-2'))
+    await waitFor(() => expect(api.patchAdminTeamActive).toHaveBeenCalledWith(2, 1))
+  })
+
+  it('shows disabled toggle while pending and no alert visible', async () => {
+    const row = makeRow({ id: 1, name: 'Alpha', active: 1 })
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue([row])
+    let resolveIt: (v: AdminTeamMemberRow) => void = () => {}
+    ;(api.patchAdminTeamActive as unknown as Mock).mockReturnValue(
+      new Promise<AdminTeamMemberRow>((r) => {
+        resolveIt = r
+      })
+    )
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-1'))
+    await waitFor(() =>
+      expect(screen.getByTestId('team-active-toggle-1')).toBeDisabled()
+    )
+    expect(screen.queryByTestId('team-active-error-1')).not.toBeInTheDocument()
+    await act(async () => {
+      resolveIt({ ...row, active: 0 })
+    })
+    await waitFor(() => expect(screen.getByTestId('team-active-toggle-1')).not.toBeDisabled())
+  })
+
+  it('on success the badge and toggle reflect the server-returned state', async () => {
+    const row = makeRow({ id: 1, name: 'Alpha', active: 1 })
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue([row])
+    ;(api.patchAdminTeamActive as unknown as Mock).mockResolvedValue({ ...row, active: 0 })
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-1'))
+    await waitFor(() =>
+      expect(screen.getByTestId('team-active-toggle-1')).toHaveAttribute('aria-pressed', 'false')
+    )
+    expect(screen.getByTestId('team-active-toggle-1')).toHaveTextContent('Activate')
+    expect(screen.getByTestId('team-active-1')).toHaveTextContent('Inactive')
+  })
+
+  it('on 404 error the row reverts and a scoped role="alert" appears', async () => {
+    const rows: AdminTeamMemberRow[] = [
+      makeRow({ id: 1, name: 'Alpha', active: 1 }),
+      makeRow({ id: 2, name: 'Beta', active: 1 }),
+    ]
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue(rows)
+    ;(api.patchAdminTeamActive as unknown as Mock).mockRejectedValue(
+      new AdminApiError(404, 'Team member not found')
+    )
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-1'))
+    await waitFor(() =>
+      expect(screen.getByTestId('team-active-error-1')).toBeInTheDocument()
+    )
+    expect(screen.getByTestId('team-active-error-1')).toHaveTextContent(
+      'This team member no longer exists. Refresh to see the latest list.'
+    )
+    // row 1 reverted to active
+    expect(screen.getByTestId('team-active-toggle-1')).toHaveAttribute('aria-pressed', 'true')
+    // row 2 unaffected
+    expect(screen.queryByTestId('team-active-error-2')).not.toBeInTheDocument()
+  })
+
+  it('on 401 error clearSession is invoked', async () => {
+    const clearSession = vi.fn()
+    useAdminStore.setState({ clearSession })
+    const row = makeRow({ id: 1, name: 'Alpha', active: 1 })
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue([row])
+    ;(api.patchAdminTeamActive as unknown as Mock).mockRejectedValue(
+      new AdminApiError(401, 'Unauthorized')
+    )
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-1'))
+    await waitFor(() => expect(clearSession).toHaveBeenCalled())
+  })
+
+  it('on 500 error the row reverts and the generic error message appears', async () => {
+    const row = makeRow({ id: 1, name: 'Alpha', active: 1 })
+    ;(api.getAdminTeam as unknown as Mock).mockResolvedValue([row])
+    ;(api.patchAdminTeamActive as unknown as Mock).mockRejectedValue(
+      new AdminApiError(500, 'boom')
+    )
+    const user = userEvent.setup()
+    renderTeam()
+    await waitFor(() => expect(screen.getByTestId('admin-team-table')).toBeInTheDocument())
+    await user.click(screen.getByTestId('team-active-toggle-1'))
+    await waitFor(() =>
+      expect(screen.getByTestId('team-active-error-1')).toBeInTheDocument()
+    )
+    expect(screen.getByTestId('team-active-error-1')).toHaveTextContent(
+      "Couldn't update status. Try again."
+    )
+    expect(screen.getByTestId('team-active-toggle-1')).toHaveAttribute('aria-pressed', 'true')
   })
 })

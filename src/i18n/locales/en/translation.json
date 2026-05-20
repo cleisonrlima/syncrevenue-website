@@ -512,7 +512,29 @@
       }
     },
     "dashboard": {
-      "title": "Admin Dashboard"
+      "title": "Admin Dashboard",
+      "stats": {
+        "total": "Total leads",
+        "pending": "Pending leads",
+        "thisWeek": "New this week",
+        "byLocale": "Leads by language",
+        "locale": {
+          "en": "English",
+          "pt-BR": "Portuguese (BR)",
+          "es": "Spanish"
+        }
+      },
+      "errors": {
+        "load": "Failed to load dashboard stats.",
+        "retry": "Retry"
+      }
+    },
+    "nav": {
+      "label": "Admin navigation",
+      "brand": "Sync Sirius Admin",
+      "dashboard": "Dashboard",
+      "leads": "Leads",
+      "team": "Team"
     },
     "logout": "Log out",
     "leads": {
@@ -574,12 +596,22 @@
         "name": "Name",
         "role": "Role",
         "active": "Active",
+        "toggle": "Status",
         "order": "Order",
         "actions": "Actions"
       },
       "active": {
         "yes": "Active",
         "no": "Inactive"
+      },
+      "activeToggle": {
+        "label": "Toggle active status for {{name}}",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "errors": {
+          "notFound": "This team member no longer exists. Refresh to see the latest list.",
+          "generic": "Couldn't update status. Try again."
+        }
       },
       "actions": {
         "edit": "Edit"

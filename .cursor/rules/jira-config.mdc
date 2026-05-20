@@ -37,13 +37,34 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 | 4.1 Admin auth | SYN-28 | done |
 | 4.2 Leads dashboard | SYN-29 | done |
 | 4.3 Lead status | SYN-30 | done (Jira synced 2026-05-18) |
-| 4.4 Team CRUD | SYN-31 | review (sub-tasks SYN-264..277 all Done; parent REVIEW — synced 2026-05-18) |
-| 4.5 Team order/active | SYN-32 | backlog |
-| 4.6 Admin shell | SYN-33 | backlog |
+| 4.4 Team CRUD | SYN-31 | Done — synced 2026-05-20 after code review (sub-tasks SYN-264..277 all Done) |
+| 4.5 Team order/active | SYN-32 | Done — synced 2026-05-20 after code review |
+| 4.6 Admin shell | SYN-33 | Done — synced 2026-05-20 after code review |
 | 4.7 Login throttling | SYN-165 | done |
 | 4.8 JWT revocation | SYN-166 | done |
 
 Epic 3 story 3.11 → **SYN-97** (not SYN-85; mirror block corrected 2026-05-16).
+
+## Story-to-Issue mapping (Epic 5 — active)
+
+Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Core stories 5.1–5.6 done; TEA + retrospective done; follow-ups 5.7–5.11 queued.
+
+| Story | Title | Jira Key | sprint-status | Sub-tasks |
+|-------|-------|----------|---------------|-----------|
+| Epic 5 | Production Deployment (Phase 4) | SYN-5 | in-progress | — |
+| 5.1 | Production Build & PM2 Process Management | SYN-34 | done | SYN-429..434 (6, all Done) |
+| 5.2 | Domain Configuration & SSL/TLS | SYN-35 | done | SYN-435..442 (8, all Done) |
+| 5.3 | Environment Variable Hardening | SYN-36 | done | SYN-443,444,446,448 (4, all Done) |
+| 5.4 | SQLite Backup Automation | SYN-37 | done | SYN-445,447,449,450,452 (5, all Done) |
+| 5.5 | Uptime Monitoring & Health Check | SYN-38 | done | SYN-451,453,454 (3, all Done) |
+| 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero | SYN-393 | done | SYN-394..403 (10, all Done) |
+| 5.7 | PM2 Cluster Mode & Multi-Core Optimization | SYN-428 | ready-for-dev | SYN-455..459 (5, To Do) |
+| 5.8 | TypeScript Type Coverage for scripts/prerender.tsx | SYN-424 | ready-for-dev | SYN-460..464 (5, To Do) |
+| 5.9 | Express Trust Proxy Configuration | SYN-425 | ready-for-dev | SYN-465..469 (5, To Do) |
+| 5.10 | CI Quality Gate — Build Artifact & Backup Coverage | SYN-426 | backlog | SYN-470..474 (5, To Do) |
+| 5.11 | Health DAO Unit Tests | SYN-427 | backlog | SYN-475,476 (2, To Do) |
+
+**Sub-task total: 68** (48 Done across 5.1–5.6 + 20 To Do across 5.7–5.11). Jira synced 2026-05-20.
 
 ## Story-to-Issue mapping (Epic 6 — active)
 
