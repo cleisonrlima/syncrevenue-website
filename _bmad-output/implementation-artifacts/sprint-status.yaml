@@ -117,7 +117,7 @@ development_status:
   5-2-domain-configuration-ssl-tls: backlog
   5-3-environment-variable-hardening: done
   5-4-sqlite-backup-automation: backlog
-  5-5-uptime-monitoring-health-check: backlog
+  5-5-uptime-monitoring-health-check: done
   # 5.6 added 2026-05-19 from Story 6.13 AC 7 rescope (per CLAUDE.md "Review Findings → New Story")
   5-6-mobile-lcp-ssg-prerender-hero: backlog
   # 5.7 added 2026-05-19 from Story 5.1 code review (cluster mode architectural decision; non-trivial)
