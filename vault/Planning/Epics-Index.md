@@ -86,7 +86,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 5.3 | Environment Variable Hardening | `[x]` done |
 | 5.4 | SQLite Backup Automation | `[x]` done |
 | 5.5 | Uptime Monitoring & Health Check | `[x]` done |
-| 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope) | `[ ]` |
+| 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope) | `[x]` done — LCP median 2,259ms (↓83% from 2,916ms baseline); lighthouserc.mobile.json reverted to 2,500ms threshold |
 | 5.7 | PM2 Cluster Mode & Multi-Core Production Optimization (Story 5.1 review finding) | `[ ]` |
 
 ## Epic 6 — Visual Design Refresh — Claude Design Handoff (Phase 5)

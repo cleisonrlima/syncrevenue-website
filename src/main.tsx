@@ -21,10 +21,21 @@ i18next.on('languageChanged', (lng) => {
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Root element (#root) not found in DOM')
 
-ReactDOM.createRoot(rootElement).render(
+// Story 5.6 — SSG prerender: if the root already contains server-rendered markup
+// (injected by scripts/prerender.tsx at build time), use hydrateRoot so React
+// adopts the pre-rendered DOM instead of replacing it. This preserves the LCP
+// paint that occurred before JS execution. Falls back to createRoot for dev
+// server and any non-prerendered build.
+const app = (
   <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
   </React.StrictMode>
 )
+
+if (rootElement.innerHTML.trim().length > 0) {
+  ReactDOM.hydrateRoot(rootElement, app)
+} else {
+  ReactDOM.createRoot(rootElement).render(app)
+}

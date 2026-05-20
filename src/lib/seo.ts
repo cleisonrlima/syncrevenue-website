@@ -17,13 +17,15 @@ function normalizeOrigin(origin: string) {
 }
 
 function resolveSiteUrl() {
-  const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.trim()
+  // import.meta.env is undefined in SSR/Node.js contexts (e.g. prerender script);
+  // use optional chaining so the module can be imported server-side without throwing.
+  const configuredSiteUrl = import.meta.env?.VITE_SITE_URL?.trim()
 
   if (configuredSiteUrl) {
     return normalizeOrigin(configuredSiteUrl)
   }
 
-  if (import.meta.env.DEV && !warnedAboutSiteUrlFallback) {
+  if (import.meta.env?.DEV && !warnedAboutSiteUrlFallback) {
     console.warn('VITE_SITE_URL is not set; falling back to https://syncsirius.com for SEO URLs.')
     warnedAboutSiteUrlFallback = true
   }

@@ -290,6 +290,44 @@ Wrap all animated classes in `motion-safe:` Tailwind variant. Verified against `
 
 `i18next.changeLanguage(locale) → useLocaleStore.setState({ locale }) → localStorage.setItem('i18nextLng', locale)`. Wrap the `setItem` call in `try/catch` for private-browsing / quota errors (R-I2).
 
+### SSG / Prerender — Home-page Hero (Story 5.6)
+
+**Chosen mechanism:** Custom Node.js prerender script `scripts/prerender.tsx`, executed by `tsx` after `vite build`, using `react-dom/server` `renderToString` + `StaticRouter`.
+
+**Why this over alternatives:**
+- `vite-plugin-ssg` — only at v0.1.0 on npm (far from the v0.23+ needed for React 18 support). Rejected.
+- `react-snap` — requires Puppeteer/Chromium as a dev dep; heavy (~300MB Chromium download per CI runner). Rejected.
+- `vite-plugin-prerender-spa-plugin` — requires eject from Vite defaults, adds complexity. Rejected.
+- Custom `tsx` script — zero new runtime deps; runs synchronously at build time; full control over i18n init; transparent to the Express SSR-free server topology. **Selected.**
+
+**i18n locale fan-out:** Single canonical `/` prerendered in `en` (default fallback). The client-side locale switch via `react-i18next` handles PT-BR / ES after hydration. Per-locale prerender (`/pt-BR/`, `/es/`) was considered but rejected — adds build complexity for marginal SEO benefit (canonical `useDocumentMeta` + `?lng=` hreflang already cover SEO; the additional prerender routes would require Express routing changes).
+
+**Hydration strategy:** `main.tsx` switched from `ReactDOM.createRoot` to `ReactDOM.hydrateRoot` when `rootElement.innerHTML.trim().length > 0` (pre-rendered markup present); falls back to `createRoot` for dev server and clean `index.html` builds.
+
+**`import.meta.env` SSR-safety fix:** `src/lib/seo.ts` `resolveSiteUrl()` uses `import.meta.env?.VITE_SITE_URL` (optional chaining) so the module can be imported in the Node.js prerender context where `import.meta.env` is `undefined`.
+
+**Excluded routes:** `/admin/*` (auth-required, dynamic), `/privacy` (already minimal, no LCP candidate), `/404` (error page). Only `/` is prerendered.
+
+**Bundle impact:** Zero. `tsx` is already a dev dependency; no new dependencies added. The prerender script is not shipped to the browser.
+
+**Build-time delta:** ~3-4 seconds for the `renderToString` + file write step (within the ≤ 30s constraint).
+
+**Measured LCP improvement (Story 5.6 — 2026-05-20):**
+
+| Metric | Before SSG | After SSG | Target | Status |
+|---|---|---|---|---|
+| LCP (median 3 runs, LHCI 4G+4×CPU) | ~2,916 ms | **2,259 ms** | < 2,500 ms | ✅ |
+| FCP (median 3 runs) | ~2,141 ms | **1,659 ms** | < 2,000 ms | ✅ |
+| CLS | 0.000 | 0.000 | < 0.10 | ✅ |
+| TBT | 96 ms | 72 ms | < 200 ms | ✅ |
+| Performance score | ~84% | **97-98%** | ≥ 90% | ✅ |
+
+LHCI reports: `_bmad-output/implementation-artifacts/story-5-6-lhci-report-2026-05-20/`
+
+**SSR warnings at build time (expected, benign):**
+- `useLayoutEffect does nothing on the server` — from `useDocumentMeta` (SEO.tsx); runs correctly after hydration client-side.
+- React `fetchPriority` prop casing — React 18 server renderer emits `fetchpriority` (lowercase, correct HTML); the JSX prop name `fetchPriority` triggers a cosmetic warning. Browser handles both correctly.
+
 ### SEO canonical / hreflang self-reference (Story 3.11)
 
 Per Google's `Localized versions` guidance: every language variant's `<link rel="canonical">` and `<meta property="og:url">` must match its own `<link rel="alternate" hreflang="<locale>">` URL exactly — **including the default locale**.
