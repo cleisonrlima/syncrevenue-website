@@ -1,7 +1,7 @@
 # Story 5.9 — Express Trust Proxy Configuration
 
 **Epic:** 5 — Production Deployment (Phase 4)
-**Status:** ready-for-dev
+**Status:** done
 **Depends on:** Story 5.2 (Domain Configuration & SSL/TLS)
 **Origin:** Story 5.2 cross-model review finding R4 (2026-05-20)
 
@@ -52,11 +52,11 @@ Any future middleware that branches on `req.secure` or uses `req.ip` for rate li
 
 ## Tasks / Subtasks
 
-- [ ] AC 1: Add `app.set('trust proxy', 1)` inside `if (process.env.NODE_ENV === 'production')` block in `server/index.ts`, before the redirect middleware
-- [ ] AC 2: Write test verifying `req.protocol === 'https'` in production mode with `X-Forwarded-Proto: https`
-- [ ] AC 2: Write test verifying redirect middleware still fires when `X-Forwarded-Proto: http` in production (trust proxy should not break redirect)
-- [ ] AC 3: Verify all existing rate-limit tests pass; confirm `req.ip` correctness is documented
-- [ ] AC 4: Update `docs/deployment-runbook.md` to document trust proxy config and its effect on rate limiting and IP resolution
+- [x] AC 1: Add `app.set('trust proxy', 1)` inside `if (process.env.NODE_ENV === 'production')` block in `server/index.ts`, before the redirect middleware
+- [x] AC 2: Write test verifying `req.protocol === 'https'` in production mode with `X-Forwarded-Proto: https`
+- [x] AC 2: Write test verifying redirect middleware still fires when `X-Forwarded-Proto: http` in production (trust proxy should not break redirect)
+- [x] AC 3: Verify all existing rate-limit tests pass; confirm `req.ip` correctness is documented
+- [x] AC 4: Update `docs/deployment-runbook.md` to document trust proxy config and its effect on rate limiting and IP resolution
 
 ---
 

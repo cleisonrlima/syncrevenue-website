@@ -315,6 +315,79 @@ describe('Story 5.2 — HTTP→HTTPS redirect middleware', () => {
       expect(hsts).toContain('includeSubDomains')
       expect(hsts).toContain('preload')
     })
+
+    // -------------------------------------------------------------------
+    // Story 5.9 — Express Trust Proxy Configuration
+    // -------------------------------------------------------------------
+
+    it('AC 1: enables trust proxy with value 1 in production', () => {
+      // express stores numeric trust-proxy setting under `trust proxy` and a
+      // resolved function under `trust proxy fn`. Setting the value to `1`
+      // tells express to trust the first hop in the X-Forwarded-For chain.
+      expect(prodApp.get('trust proxy')).toBe(1)
+    })
+
+    it('AC 2: req.protocol === "https" when X-Forwarded-Proto is https (with trust proxy)', async () => {
+      // Build an isolated express app that mirrors the production bootstrap
+      // block in `createApp` (trust proxy + redirect middleware) and mount a
+      // probe route. The probe observes req.protocol/req.secure/req.ip after
+      // express resolves X-Forwarded-* with `trust proxy 1`.
+      //
+      // We use an isolated app (instead of mutating `prodApp`) because the
+      // production `createApp` also installs an SPA fallback route that
+      // captures any non-`/api` path. AC 1 above already verifies the actual
+      // `prodApp.get('trust proxy')` value to prove the production createApp
+      // path enables the setting.
+      const expressModule = await import('express')
+      const probeApp = expressModule.default()
+      probeApp.set('trust proxy', 1)
+      probeApp.use((req, res, next) => {
+        if (req.headers['x-forwarded-proto'] === 'http') {
+          return res.redirect(301, `https://${req.headers.host}${req.url}`)
+        }
+        next()
+      })
+      probeApp.get('/__probe', (req, res) => {
+        res.status(200).json({
+          protocol: req.protocol,
+          secure: req.secure,
+          ip: req.ip,
+        })
+      })
+
+      const r = await request(probeApp, {
+        path: '/__probe',
+        headers: {
+          'x-forwarded-proto': 'https',
+          'x-forwarded-for': '203.0.113.7',
+        },
+      })
+      expect(r.status).toBe(200)
+      const body = r.json<{ protocol: string; secure: boolean; ip: string }>()
+      expect(body.protocol).toBe('https')
+      expect(body.secure).toBe(true)
+      // With trust proxy 1, req.ip should resolve from X-Forwarded-For[0]
+      // rather than the socket remoteAddress (127.0.0.1 in the test harness).
+      expect(body.ip).toBe('203.0.113.7')
+    })
+
+    it('AC 2: redirect still fires when X-Forwarded-Proto is http (trust proxy does not break redirect)', async () => {
+      const r = await request(prodApp, {
+        path: '/api/health',
+        headers: {
+          'x-forwarded-proto': 'http',
+          host: 'syncsirius.com',
+        },
+      })
+      expect(r.status).toBe(301)
+      expect(r.headers['location']).toBe('https://syncsirius.com/api/health')
+    })
+  })
+
+  it('AC 1: trust proxy is NOT enabled in test/dev environment', () => {
+    // The module-level `app` is created with NODE_ENV=test. Express default
+    // when `trust proxy` is unset is `false`.
+    expect(app.get('trust proxy')).toBe(false)
   })
 
   it('does NOT set Strict-Transport-Security header in test/dev environment', async () => {

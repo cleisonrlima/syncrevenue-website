@@ -45,6 +45,14 @@ export function createApp(): Express {
   // forwards to Express via X-Forwarded-Proto. Acts as defence-in-depth;
   // the primary redirect should also be configured at the proxy level.
   if (process.env.NODE_ENV === 'production') {
+    // AC 1 (Story 5.9): Trust the first hop in the X-Forwarded-For chain
+    // (Nginx/Caddy reverse proxy terminating TLS on the same host). Required
+    // so req.protocol, req.secure, and req.ip reflect the real client values
+    // instead of the proxy loopback. Without this, express-rate-limit keys
+    // every request to the proxy IP and shares a single bucket across all
+    // clients.
+    app.set('trust proxy', 1)
+
     app.use((req, res, next) => {
       if (req.headers['x-forwarded-proto'] === 'http') {
         return res.redirect(301, `https://${req.headers.host}${req.url}`)
