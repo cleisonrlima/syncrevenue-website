@@ -42,10 +42,10 @@ export function validateEnv(): void {
     process.exit(1)
   }
 
-  const jwtSecret = process.env.JWT_SECRET!
+  const jwtSecret = process.env.JWT_SECRET!.trim()
   if (jwtSecret.length < JWT_SECRET_MIN_LENGTH) {
     console.error(
-      `[startup] JWT_SECRET length is insufficient (${jwtSecret.length} chars). ` +
+      `[startup] JWT_SECRET length is insufficient (${jwtSecret.length} chars after trimming whitespace). ` +
         `Minimum required: ${JWT_SECRET_MIN_LENGTH} characters.`
     )
     console.error('[startup] Generate a secure value with: openssl rand -hex 32')

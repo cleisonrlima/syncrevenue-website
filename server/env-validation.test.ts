@@ -122,6 +122,15 @@ describe('validateEnv', () => {
     expect(exitSpy).toHaveBeenCalledWith(1)
   })
 
+  it('calls process.exit(1) when JWT_SECRET is padded with whitespace to reach 32 chars but has fewer real chars', () => {
+    setAllValidVars()
+    // "abc" + 29 spaces = 32 chars total, but only 3 chars of real entropy after trimming
+    process.env.JWT_SECRET = 'abc' + ' '.repeat(29)
+
+    expect(() => validateEnv()).toThrow('process.exit called with code 1')
+    expect(exitSpy).toHaveBeenCalledWith(1)
+  })
+
   it('covers every entry in REQUIRED_ENV_VARS — each missing var triggers an exit', () => {
     for (const key of REQUIRED_ENV_VARS) {
       setAllValidVars()
