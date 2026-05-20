@@ -87,7 +87,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 5.4 | SQLite Backup Automation | `[x]` done |
 | 5.5 | Uptime Monitoring & Health Check | `[x]` done |
 | 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope) | `[x]` done — LCP median 2,259ms (↓83% from 2,916ms baseline); lighthouserc.mobile.json reverted to 2,500ms threshold |
-| 5.7 | PM2 Cluster Mode & Multi-Core Production Optimization (Story 5.1 review finding) | `[ ]` ready-for-dev |
+| 5.7 | PM2 Cluster Mode & Multi-Core Production Optimization (Story 5.1 review finding) | `[x]` done — opt-in stance; ADR in Architecture-Key.md; ecosystem.config.js cluster directives commented with SQLite-WAL warning |
 | 5.8 | Prerender Script Type Coverage (Story 5.6 review finding) | `[ ]` ready-for-dev |
 | 5.9 | Express Trust Proxy Configuration (Story 5.2 review finding) | `[ ]` ready-for-dev |
 | 5.10 | CI Quality Gate — Build Artifact & Backup Coverage (TEA finding G1/G3/G8) | `[ ]` backlog |

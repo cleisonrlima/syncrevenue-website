@@ -39,7 +39,37 @@ module.exports = {
         NODE_ENV: 'production',
       },
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-      // exec_mode defaults to 'fork' (single process). Switch to exec_mode: 'cluster', instances: 'max' for multi-core CPUs.
+      // --------------------------------------------------------------
+      // PM2 cluster mode — OPT-IN (Story 5.7)
+      // --------------------------------------------------------------
+      // Default execution mode is 'fork' (single Node.js process). On a
+      // multi-core VPS, uncomment the two fields below to spawn one worker
+      // per CPU core (Node.js `cluster` module; all workers share the same
+      // TCP port via the kernel-level round-robin scheduler).
+      //
+      //   exec_mode: 'cluster',
+      //   instances: 'max',
+      //
+      // SQLite WRITE-SAFETY WARNING (DO NOT SKIP):
+      // -----------------------------------------
+      // This app uses `better-sqlite3` against a single SQLite file
+      // (`server/db.ts` opens WAL mode via `PRAGMA journal_mode=WAL`).
+      // WAL allows concurrent readers + a single concurrent writer per
+      // database connection, but DOES NOT serialize writes across multiple
+      // worker processes — concurrent writers from separate processes can
+      // emit `SQLITE_BUSY` under sustained write load.
+      //
+      // Before enabling cluster mode, verify ONE of the following:
+      //   1. Write volume stays low (< ~1 write/sec sustained — e.g. only
+      //      admin actions + form submissions). Marketing-site default.
+      //   2. A retry/backoff wrapper exists around every write path, OR
+      //   3. The DB has been migrated off SQLite (e.g. PostgreSQL).
+      //
+      // For the JWT-cookie session model used by this app there is no
+      // server-side session store, so cluster mode is otherwise stateless-safe.
+      //
+      // See ADR: `vault/Planning/Architecture-Key.md` → "Cluster Mode Decision".
+      // --------------------------------------------------------------
     },
   ],
 }

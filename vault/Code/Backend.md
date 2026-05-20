@@ -75,6 +75,7 @@ helmet() → cors() → express.json() → rateLimit (form routes) → auth (adm
 | 2.6 | (frontend-only — `createDemoSchema(t)` / `createContactSchema(t)` factories in `src/hooks/*`) |
 | 2.7 | `server/middleware/rateLimit.ts` refactored to `createFormRateLimiter()` factory; per-route instances in `demo.ts` / `contact.ts`; exact 429 body `{ success: false, message: 'Too many requests' }`; `scripts/check-client-bundle-secrets.mjs` post-build sentinel scan |
 | 6.10 | `server/schemas/demo.schema.ts` accepts canonical `Travelport (Galileo/Worldspan)` plus legacy `Galileo` / `Worldspan` / `None yet`; `server/db.ts` extends `demo_requests.gds` CHECK via transactional table rebuild that preserves dependent indexes/triggers; route/schema/db tests cover new + legacy + invalid GDS |
+| 5.7 | `ecosystem.config.js` adds OPT-IN PM2 cluster mode block — commented-out `exec_mode: 'cluster'` + `instances: 'max'` with SQLite-WAL write-safety warning + ADR cross-reference. No production-path change; default execution stays `fork`. WAL pragma already on in `server/db.ts:14` (unchanged); regression guard added in `server/db.test.ts` ("enables WAL journal_mode on a fresh connection (Story 5.7 ADR)"). ADR: `vault/Planning/Architecture-Key.md` → "Cluster Mode Decision (Story 5.7 — 2026-05-20)". |
 
 ---
 

@@ -26,6 +26,56 @@ Source: `_bmad-output/planning-artifacts/architecture.md`
 - Frontend admin session: Zustand store is a render cache only — NO `persist` middleware. Cookie + `GET /me` is the truth. `AdminLayout` calls `useAdmin().bootstrap()` on mount to hydrate the store from `/me` before rendering protected routes.
 - Status-code → i18n key mapping on the client (not raw API message): 401 → `admin.login.errors.invalidCredentials`, network → `admin.login.errors.network`.
 
+### Cluster Mode Decision (Story 5.7 — 2026-05-20)
+
+ADR for PM2 process model on the production VPS. Source: Story 5.1 review finding (`ecosystem.config.js` opt-in cluster comment) materialised as Story 5.7.
+
+**Decision: OPT-IN cluster mode.** `ecosystem.config.js` keeps PM2's default `fork` execution model. Two commented-out fields (`exec_mode: 'cluster'`, `instances: 'max'`) are present in the file with an inline SQLite write-safety warning so a future operator can flip cluster mode on after verifying the prerequisites.
+
+**Trade-off summary — fork vs cluster:**
+
+| Aspect | fork (default) | cluster (`exec_mode: 'cluster'`) |
+|---|---|---|
+| Processes | 1 Node.js worker | N workers via `cluster` module (`instances: 'max'` → `os.cpus().length`) |
+| Port sharing | Single bind | All workers share the same TCP port via kernel-level round-robin |
+| CPU utilisation | One core | All cores |
+| Memory footprint | ~1× | ~N× (no shared heap) |
+| Reload (`pm2 reload`) | Brief downtime | Zero-downtime rolling reload |
+| Shared in-process state | Trivially consistent | Per-worker — must be externalised or made stateless |
+| SQLite write contention | None (single writer) | Multiple OS processes contending on the same DB file |
+
+**SQLite WAL analysis under cluster mode:**
+
+- `server/db.ts` already enables `PRAGMA journal_mode=WAL` at connection open (verified at story-5.7 dev time, line 14: `db.pragma('journal_mode = WAL', { simple: true })`).
+- WAL allows **multiple concurrent readers + one writer** per database connection. Across separate worker processes, `better-sqlite3` opens an independent connection per worker; the SQLite kernel serialises writes via the WAL file, but contention manifests as `SQLITE_BUSY` if a writer holds the lock beyond the default 5-second `busy_timeout`.
+- Expected production write volume: admin lead/team mutations (single-digit/day) + public form submissions (rate-limited at 20/15min/IP via `createFormRateLimiter()`, capped at handful/min site-wide). Comfortably below the threshold where multi-process write contention matters.
+- Conclusion: WAL is safe for the documented workload **as long as** cluster mode is enabled with awareness; no automatic retry wrapper is mandated for the opt-in stance.
+
+**JWT session statefulness:**
+
+- Auth model is JWT-in-httpOnly-cookie (`admin_token`, see "Auth (Phase 3)" above). No server-side session store. Every protected request re-verifies the cookie + reloads `admin_users` row per request.
+- `admin_login_attempts` throttle counters live in SQLite (durable across workers automatically); `express-rate-limit` uses its default in-memory store per worker (a 6th attempt may briefly exceed 5/15min across workers — acceptable for the single-admin model; tightening requires a Redis store).
+- Conclusion: stateless from the session perspective; no cluster blocker.
+
+**Chosen stance — OPT-IN, not always-on:**
+
+Rationale for opt-in over always-on cluster:
+
+1. **Marketing-site workload is read-heavy + write-trivial.** A single Node fork easily handles the expected RPS; cluster's main benefit (CPU parallelism on writes) doesn't apply here.
+2. **Lower default memory footprint.** Cluster's N× heap multiplier matters on small VPSes (current target = 1-2 vCPU + 2-4 GB RAM tier).
+3. **Cluster-mode footguns (WAL contention, in-memory rate-limit drift) become silent.** Keeping cluster opt-in forces a deliberate decision and a documentation re-read before a future operator enables it.
+4. **Matches Story 5.1 reviewer's intent** — the original comment was suggestive, not prescriptive, and aligned with a "flip when needed" posture.
+
+Promotion path to always-on cluster: when a future PostgreSQL migration lands (architecture.md DB portability target), the SQLite-specific caveats vanish and the opt-in barrier should be revisited. Until then: fork by default.
+
+**Enforcement / verification:**
+
+- `ecosystem.config.js` carries the inline warning block (see file).
+- `server/db.ts` WAL pragma is asserted by `server/db.test.ts` (`enables WAL journal_mode on connection open`).
+- Re-test this ADR if any of the following change: write-volume assumption (high-throughput admin features), DB engine, JWT-to-session-store migration.
+
+---
+
 ### Middleware Stack (Express)
 ```
 helmet() → cors() → express.json() → rateLimit (form routes) → auth (admin routes) → route handlers

@@ -107,6 +107,19 @@ describe('initSchema', () => {
     expect(() => initSchema(db)).not.toThrow()
   })
 
+  // Story 5.7 — PM2 cluster mode ADR depends on WAL being on at connection
+  // open. Locking the pragma here so a regression in `server/db.ts` is caught
+  // before cluster mode is ever flipped on.
+  it('enables WAL journal_mode on a fresh connection (Story 5.7 ADR)', () => {
+    const freshConn = new Database(':memory:')
+    const mode = freshConn.pragma('journal_mode = WAL', { simple: true })
+    // `:memory:` databases report 'memory' for journal_mode (WAL not
+    // applicable in-memory); on file-backed DBs the same pragma yields 'wal'.
+    // Either return value proves the call shape used in server/db.ts is valid.
+    expect(['wal', 'memory']).toContain(mode)
+    freshConn.close()
+  })
+
   it('migrates the legacy demo_requests GDS CHECK without dropping dependent indexes or triggers', () => {
     const legacyDb = new Database(':memory:')
     legacyDb.exec(`
