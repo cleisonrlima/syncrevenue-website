@@ -60,7 +60,12 @@ echo "[backup] Created: $BACKUP_FILE"
 # ── Retention: remove backups older than 30 days (AC 2) ─────────────────────
 # -mtime +30 matches files whose mtime is strictly more than 30 days ago,
 # preserving at least the last 30 daily backups.
+#
+# Note: find -delete can exit non-zero on permission errors for individual files.
+# Run in a subshell with `|| true` so a stale-file permission error does not
+# propagate set -e and trigger a false cron failure alert for an otherwise
+# successful backup.
 
-find "$BACKUP_DIR" -name "sync_sirius_*.db" -mtime +30 -delete
+find "$BACKUP_DIR" -name "sync_sirius_*.db" -mtime +30 -delete || true
 
 echo "[backup] Retention pass complete (removed files older than 30 days)"

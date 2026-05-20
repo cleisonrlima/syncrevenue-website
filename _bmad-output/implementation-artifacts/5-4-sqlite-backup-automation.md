@@ -9,6 +9,7 @@
 **Epic:** 5 — Production Deployment (Phase 4)
 **Depends on:** Story 5.1 (Production Build + PM2 Process Management)
 **Status:** done
+**Review Status:** done
 
 ---
 
@@ -99,8 +100,57 @@ _(none)_
 
 ---
 
+---
+
+## Review Findings
+
+**Reviewer:** Cross-model adversarial reviewer (Claude Sonnet 4.6)
+**Date:** 2026-05-20
+**Outcome:** Approved with one inline patch
+
+### AC Validation
+
+| AC | Status | Evidence |
+|----|--------|---------|
+| AC 1 — timestamped backup to dir outside `dist/` | Implemented | `scripts/backup.sh` L31-35: BACKUP_DIR defaults to `../backups`; timestamp via `date +%Y-%m-%d_%H-%M-%S` |
+| AC 2 — delete >30 days, retain ≥30 | Implemented | `find "$BACKUP_DIR" -name "sync_sirius_*.db" -mtime +30 -delete`. `-mtime +30` = strictly older than 30 days (31+), so 30-day files are retained — semantics correct |
+| AC 3 — backup dir outside web root | Implemented | Default `../backups` is a sibling of project root; web root is `dist/client/`. No HTTP exposure. |
+| AC 4 — failure → stderr only; PM2 unaffected | Implemented | Script run by cron, not PM2. All errors write to stderr and exit 1. `cp` failure trapped explicitly. |
+
+### Findings
+
+**MEDIUM (patched inline):**
+
+**M1 — `set -euo pipefail` + `find -delete` false-positive failure signal**
+- Location: `scripts/backup.sh` line 64 (pre-patch)
+- `find -delete` exits non-zero when it encounters a file it cannot delete (e.g., permission denied on a stale backup owned by a different user). With `set -e` active, this aborts the script after the backup itself has already succeeded, causing cron to report a failure and trigger MAILTO alerts incorrectly.
+- Fix applied: appended `|| true` to the `find` line. The backup is already written at this point; a retention-pass partial failure is non-critical and must not mask a successful backup.
+- Files changed: `scripts/backup.sh`
+
+**LOW (no action):**
+
+**L1 — Cron example uses relative `bash scripts/backup.sh` after `cd`**
+- `BASH_SOURCE[0]` resolves correctly to an absolute path even when the script is invoked with a relative path argument (`basename` + `pwd` chain on line 27). Verified by test. No fix needed.
+
+**L2 — No test for `mkdir -p` failure path**
+- Covered by `set -e` + explicit error message. Not in AC scope. No fix needed.
+
+### Test Quality
+
+- Test 1 (happy path): real assertion on file count, size, and stdout content. Solid.
+- Test 2 (retention): `touch -d "31 days ago"` verified working on this Linux host. Asserts old files gone, new file present. Solid.
+- Test 3 (error path): asserts exit code 1 and `[backup] ERROR:` on stderr. Solid.
+- All tests use `try/finally` for cleanup — no temp-dir leaks on failure.
+
+### Git vs Story Discrepancies
+
+- `vault/00-Home.md`, `vault/Code/Index.md`, `vault/Planning/Epics-Index.md` changed in the implementation commit but absent from story File List. These are vault protocol updates, not source code — excluded from review per skill rules. No finding.
+
+---
+
 ## Change Log
 
 | Date | Change |
 |------|--------|
 | 2026-05-20 | Story created and implemented — backup script, retention, cron docs, Node test harness |
+| 2026-05-20 | Cross-model review: patched `find -delete \|\| true` (M1); all ACs verified; status → done |
