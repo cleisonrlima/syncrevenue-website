@@ -7,6 +7,7 @@ import path from 'path'
 import fs from 'fs'
 import db from './db'
 import { requireAdmin } from './middleware/auth'
+import { validateEnv } from './env-validation'
 import demoRouter from './routes/demo'
 import contactRouter from './routes/contact'
 import auditRouter from './routes/audit'
@@ -101,6 +102,10 @@ export function createApp(): Express {
 }
 
 if (require.main === module) {
+  // Validate required env vars before starting. Exits on missing or weak secrets.
+  // Skipped automatically in test environment (NODE_ENV=test never reaches this block).
+  validateEnv()
+
   const app = createApp()
   const port = process.env.PORT || 3001
   const server = app.listen(port, () => {
