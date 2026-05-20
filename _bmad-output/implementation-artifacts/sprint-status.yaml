@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-20  # Story 5.2 review closed → done (HSTS preload caveat + test try/finally + story file tasks checked; Story 5.9 created for trust proxy). Prior: Story 5.2 done (domain config, HSTS, CORS verification, deployment runbook). Prior: Story 5.6 review closed → done (npx→direct binary patch applied; Story 5.8 created for prerender type coverage). Prior: Story 5.6 done (SSG prerender — LCP 2,259ms median, lighthouserc.mobile.json restored to 2,500ms). Prior: Story 5.5 review closed → done (health check + uptime monitoring). Prior: Story 5.3 done; Story 5.1 review closed → done; Story 5.7 created; Stories 4.5 + 4.6 dev complete → review; 6.13 review closed
+last_updated: 2026-05-20  # Epic 5 post-sprint TEA pass complete → epic-5-tea: done; Stories 5.10 + 5.11 added (backlog). Prior: Story 5.2 review closed → done (HSTS preload caveat + test try/finally + story file tasks checked; Story 5.9 created for trust proxy). Prior: Story 5.2 done (domain config, HSTS, CORS verification, deployment runbook). Prior: Story 5.6 review closed → done (npx→direct binary patch applied; Story 5.8 created for prerender type coverage). Prior: Story 5.6 done (SSG prerender — LCP 2,259ms median, lighthouserc.mobile.json restored to 2,500ms). Prior: Story 5.5 review closed → done (health check + uptime monitoring). Prior: Story 5.3 done; Story 5.1 review closed → done; Story 5.7 created; Stories 4.5 + 4.6 dev complete → review; 6.13 review closed
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -126,6 +126,11 @@ development_status:
   5-8-prerender-script-type-coverage: ready-for-dev
   # 5.9 added 2026-05-20 from Story 5.2 cross-model review (trust proxy missing — req.protocol/req.secure/req.ip incorrect behind reverse proxy; non-trivial)
   5-9-express-trust-proxy-configuration: ready-for-dev
+  # 5.10 added 2026-05-20 from Epic 5 TEA pass (G1 score 9: backup tests not in CI; G3 score 6: no prerender build-output assertion; G8 score 4: LHCI vite-preview vs Express gap)
+  5-10-ci-quality-gate-build-artifact-coverage: backlog
+  # 5.11 added 2026-05-20 from Epic 5 TEA pass (G2 score 4: health.dao.ts has no unit test file — only DAO without dedicated tests)
+  5-11-health-dao-unit-tests: backlog
+  epic-5-tea: done  # TEA report: _bmad-output/test-artifacts/test-design/test-design-epic-5.md; gate: CONDITIONAL PASS; 2 new stories (5.10, 5.11)
   epic-5-retrospective: optional
 
   # Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
