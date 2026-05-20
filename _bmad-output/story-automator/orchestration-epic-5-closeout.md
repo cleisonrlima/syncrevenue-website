@@ -65,6 +65,102 @@ This file tracks Jira-sync deferrals during the Epic 5 follow-up wave (Stories 5
     - transition_all_to_done:
         - parent
         - all 2 subtasks
+
+- agent: claude-orchestrator-5-9
+  story: 5.9
+  step: jira-assistant
+  blocked: [jira-parent-create, jira-subtasks-create, jira-parent-transition-done, jira-subtasks-transition-done]
+  reason: "Atlassian MCP not authenticated; OAuth requires interactive browser session, user AFK. Per CLAUDE.md Deferred-Action Handoff rule, next Claude agent with authenticated MCP will resolve."
+  recordedAt: 2026-05-20T16:15:00Z
+  context:
+    parent_story_summary: "Story 5.9: Express Trust Proxy Configuration"
+    parent_epic_key: SYN-5
+    sprint_id: 336
+    sprint_name: "SYN Sprint 3"
+    cloudId: "6f5be304-192c-4e50-90bc-3211593db433"
+    projectKey: SYN
+    file_commit_sha: dd1f964
+    pushed: true
+  intended_actions:
+    - create_parent:
+        issueType: Story
+        summary: "Story 5.9: Express Trust Proxy Configuration"
+        parent_epic: SYN-5
+        sprint: 336
+        description_summary: "Closes Story 5.2 cross-model review finding R4. Adds app.set('trust proxy', 1) inside the NODE_ENV=production block in server/index.ts before the HTTP→HTTPS redirect middleware. Restores accurate req.protocol / req.secure / req.ip behind Nginx/Caddy. Per-client rate limiting via express-rate-limit now uses real client IP from X-Forwarded-For[0] instead of the proxy loopback. 4 new tests in server/index.test.ts cover the prod/dev branch and X-Forwarded-Proto behavior. docs/deployment-runbook.md section 4 updated. Commit dd1f964."
+    - create_subtasks_1_to_1_with_story_file:
+        - "AC 1: app.set('trust proxy', 1) inside production block, before redirect"
+        - "AC 2: req.protocol === 'https' test under X-Forwarded-Proto: https"
+        - "AC 2: redirect still fires for X-Forwarded-Proto: http"
+        - "AC 3: rate-limit regression check + req.ip documentation"
+        - "AC 4: runbook section 4 trust-proxy documentation"
+    - transition_all_to_done:
+        - parent
+        - all 5 subtasks
+
+- agent: claude-orchestrator-5-8
+  story: 5.8
+  step: jira-assistant
+  blocked: [jira-parent-create, jira-subtasks-create, jira-parent-transition-done, jira-subtasks-transition-done]
+  reason: "Atlassian MCP not authenticated; OAuth requires interactive browser session, user AFK."
+  recordedAt: 2026-05-20T16:15:00Z
+  context:
+    parent_story_summary: "Story 5.8: TypeScript Type Coverage for scripts/prerender.tsx"
+    parent_epic_key: SYN-5
+    sprint_id: 336
+    sprint_name: "SYN Sprint 3"
+    cloudId: "6f5be304-192c-4e50-90bc-3211593db433"
+    projectKey: SYN
+    file_commit_sha: 3a27fa0
+    pushed: true
+  intended_actions:
+    - create_parent:
+        issueType: Story
+        summary: "Story 5.8: TypeScript Type Coverage for scripts/prerender.tsx"
+        parent_epic: SYN-5
+        sprint: 336
+        description_summary: "Closes Story 5.6 cross-model review (deferred non-trivial). Adds tsconfig.scripts.json with include: [scripts]. Inherits base config module/moduleResolution because prerender.tsx imports @/App which transitively pulls the React client tree needing DOM lib + bundler resolution. Layers @types/node + vite/client + noEmit on top. package.json typecheck script chains both configs. AC 5 (TS2454 on indexHtml) did not surface — @types/node narrows process.exit() to never. Verified by injecting deliberate type error → exit 2, reverted. Commit 3a27fa0."
+    - create_subtasks_1_to_1_with_story_file:
+        - "Task 1 — Create tsconfig.scripts.json (AC: 1)"
+        - "Task 2 — Fix TS2454 if surfaces (AC: 5) — did not surface"
+        - "Task 3 — Chain tsconfig.scripts.json into npm run typecheck (AC: 3)"
+        - "Task 4 — Confirm CI unit job covers scripts/ via npm run typecheck (AC: 2, 4)"
+        - "Task 5 — Full Vitest + npm run build smoke (AC: implied)"
+    - transition_all_to_done:
+        - parent
+        - all 5 subtasks
+
+- agent: claude-orchestrator-5-10
+  story: 5.10
+  step: jira-assistant
+  blocked: [jira-parent-create, jira-subtasks-create, jira-parent-transition-done, jira-subtasks-transition-done]
+  reason: "Atlassian MCP not authenticated; OAuth requires interactive browser session, user AFK."
+  recordedAt: 2026-05-20T16:15:00Z
+  context:
+    parent_story_summary: "Story 5.10: CI Quality Gate — Build Artifact & Backup Coverage"
+    parent_epic_key: SYN-5
+    sprint_id: 336
+    sprint_name: "SYN Sprint 3"
+    cloudId: "6f5be304-192c-4e50-90bc-3211593db433"
+    projectKey: SYN
+    file_commit_sha: c761aab
+    pushed: true
+  intended_actions:
+    - create_parent:
+        issueType: Story
+        summary: "Story 5.10: CI Quality Gate — Build Artifact & Backup Coverage"
+        parent_epic: SYN-5
+        sprint: 336
+        description_summary: "Closes Epic 5 TEA findings G1 (score 9: backup tests not in CI) and G3 (score 6: no prerender build-output assertion); G8 (LHCI vs Express headers) documented in runbook. Wires npm run test:backup into existing unit job and adds dedicated build-smoke job running npm run build && npm run test:build. New scripts/test-build-output.mjs uses Node built-ins only — asserts dist/client/index.html exists, prerendered <h1> 'More commission per ticket' inside #root, <picture> present. AC literal 'h1 before script-type-module' is structurally impossible against Vite output (entry script in head, hero in body) — load-bearing-equivalent invariant asserted instead with rationale documented in script and Dev Agent Record. Commit c761aab."
+    - create_subtasks_1_to_1_with_story_file:
+        - "Task 1 — Backup tests in CI unit job (AC: 1)"
+        - "Task 2 — Create scripts/test-build-output.mjs (AC: 2)"
+        - "Task 3 — Add test:build npm script + wire into CI (AC: 2)"
+        - "Task 4 — Runbook G8 post-deploy header verification (AC: 3)"
+        - "Task 5 — Verify all tests pass (AC: 4)"
+    - transition_all_to_done:
+        - parent
+        - all 5 subtasks
 ```
 
 ## Resolution Protocol (next Claude agent with authenticated MCP)
