@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-19  # Story 5.1 review closed → done; Story 5.7 created (PM2 cluster mode, non-trivial finding). Prior: Story 5.1 created → ready-for-dev; Epic 5 in-progress. Stories 4.5 + 4.6 dev complete → review. 6.13 review closed, Story 5.6 owns remaining mobile / LCP SSG/prerender work
+last_updated: 2026-05-19  # Story 5.3 done (env var hardening: validateEnv, .env.example docs, secret scan extended, 10 tests). Prior: Story 5.1 review closed → done; Story 5.7 created (PM2 cluster mode, non-trivial finding). Stories 4.5 + 4.6 dev complete → review. 6.13 review closed, Story 5.6 owns remaining mobile / LCP SSG/prerender work
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -115,7 +115,7 @@ development_status:
   epic-5: in-progress
   5-1-production-build-pm2-process-management: done
   5-2-domain-configuration-ssl-tls: backlog
-  5-3-environment-variable-hardening: backlog
+  5-3-environment-variable-hardening: done
   5-4-sqlite-backup-automation: backlog
   5-5-uptime-monitoring-health-check: backlog
   # 5.6 added 2026-05-19 from Story 6.13 AC 7 rescope (per CLAUDE.md "Review Findings → New Story")

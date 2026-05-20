@@ -83,7 +83,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 |---|---|---|
 | 5.1 | Production Build & PM2 Process Management | `[x]` done |
 | 5.2 | Domain Configuration & SSL/TLS | `[ ]` |
-| 5.3 | Environment Variable Hardening | `[ ]` |
+| 5.3 | Environment Variable Hardening | `[x]` done |
 | 5.4 | SQLite Backup Automation | `[ ]` |
 | 5.5 | Uptime Monitoring & Health Check | `[ ]` |
 | 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero (Story 6.13 AC 7 rescope) | `[ ]` |
