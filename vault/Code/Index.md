@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 in-progress with Story 6.13 done after review closure; i18n stragglers, LHCI a11y/CLS/TBT fixes, media-scoped hero preloads, hash-scroll retry, and Story 5.6 LCP rescope are current.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 in-progress with Story 6.13 done after review closure. **Story 5.4 (SQLite Backup Automation) done 2026-05-20** — `scripts/backup.sh`, `scripts/backup.test.mjs`, `docs/backup-cron-setup.md` added; `db:backup` + `test:backup` npm scripts added; `backups/` added to `.gitignore`.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
