@@ -95,6 +95,8 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 **Epic 5 TEA:** `[x]` done — see `_bmad-output/test-artifacts/test-design/test-design-epic-5.md`. Gate decision: CONDITIONAL PASS. 2 new stories added (5.10, 5.11). Highest risk: G1 (backup tests not in CI, score 9) → Story 5.10.
 
+**Epic 5 Retrospective:** `[x]` done — see `_bmad-output/implementation-artifacts/epic-5-retro-2026-05-20.md`. 6 core stories done. 5 follow-up stories (5.7–5.11) queued. Key action items: C1 (test try/finally discipline), C2 (story file housekeeping), C4 (24-month retention job), C5 (ClientReferences content swap), C6 (execute 5.7–5.11).
+
 ## Epic 6 — Visual Design Refresh — Claude Design Handoff (Phase 5)
 
 Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Sober palette anchored on single accent `#3D6FE0`; no gradients/glows/dot-grids. Visual-only — preserves all existing FR behavior; UX-DR2/DR3 deliberately superseded (divergence documented in `Planning/Architecture-Key.md` after Story 6.1 lands).
