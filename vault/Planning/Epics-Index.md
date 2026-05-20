@@ -72,8 +72,8 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | 4.2 | Leads Dashboard — View & Filter | `[x]` |
 | 4.3 | Lead Status Management | `[x]` |
 | 4.4 | Team Member Management — Create & Edit | `[r]` review |
-| 4.5 | Team Member Display Order & Active Toggle | `[ ]` |
-| 4.6 | Admin Dashboard & Navigation Shell | `[ ]` |
+| 4.5 | Team Member Display Order & Active Toggle | `[r]` |
+| 4.6 | Admin Dashboard & Navigation Shell | `[r]` |
 | 4.7 | Admin Login Throttling & Account Lockout (Story 4.1 review follow-up) | `[x]` done |
 | 4.8 | JWT Revocation via Token Versioning (Story 4.1 review follow-up) | `[x]` done |
 
@@ -81,7 +81,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 | Story | Title | Status |
 |---|---|---|
-| 5.1 | Production Build & PM2 Process Management | `[ ]` |
+| 5.1 | Production Build & PM2 Process Management | `[r]` review |
 | 5.2 | Domain Configuration & SSL/TLS | `[ ]` |
 | 5.3 | Environment Variable Hardening | `[ ]` |
 | 5.4 | SQLite Backup Automation | `[ ]` |
