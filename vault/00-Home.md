@@ -33,6 +33,7 @@
 ## Project Status (2026-05-20)
 
 - Planning complete (PRD, Architecture, UX, Epics all green)
+- **Story 5.2 (Domain Configuration & SSL/TLS) done 2026-05-20:** HTTP→HTTPS redirect middleware added to `server/index.ts` (X-Forwarded-Proto check, `NODE_ENV=production` guard); Helmet HSTS explicitly configured (`maxAge=31536000 / includeSubDomains / preload` in prod, disabled in dev/test); 10 new unit tests covering redirect (prod fires, dev skips), HSTS header presence + maxAge, CORS `Access-Control-Allow-Origin` exact match (not `*`) for both GET and OPTIONS preflight. `docs/deployment-runbook.md` created: SSL/TLS setup (Certbot + Nginx, Caddy auto-TLS), HTTP→HTTPS at proxy and application level, env-var checklist, database persistence guidance (DB_PATH must be outside `dist/`), first-deploy checklist, zero-downtime PM2 reload. 757 tests pass. **Epic 5 primary stories 5.1–5.6 all done** — remaining: 5.7 (PM2 cluster mode), 5.8 (prerender type coverage), and 5.2 infra steps (DNS/cert issuance on VPS — operator action).
 - **Epic 1 — DONE (11/11 stories) + retrospective complete** (Jira: SYN-1 closed; all stories Done in SYN Sprint 1)
   - 1.1 Project Initialization & Dev Environment
   - 1.2 Design System Foundation (brand tokens, GradientButton, SectionHeader, SectionSkeleton)

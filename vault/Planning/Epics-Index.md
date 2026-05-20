@@ -82,7 +82,7 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 | Story | Title | Status |
 |---|---|---|
 | 5.1 | Production Build & PM2 Process Management | `[x]` done |
-| 5.2 | Domain Configuration & SSL/TLS | `[ ]` |
+| 5.2 | Domain Configuration & SSL/TLS | `[x]` done |
 | 5.3 | Environment Variable Hardening | `[x]` done |
 | 5.4 | SQLite Backup Automation | `[x]` done |
 | 5.5 | Uptime Monitoring & Health Check | `[x]` done |
