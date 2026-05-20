@@ -151,7 +151,7 @@ LCP ≥ FCP by construction. The residual 416 ms gap is gated by JS execution be
 
 4. **Full App render (not just Hero):** Renders the full `App` component tree via `StaticRouter` at location `/`. This ensures React's `hydrateRoot` finds a matching tree and can adopt the pre-rendered DOM without mismatch. Lazy-loaded sections (`SyncRevenue`, `CommissionAudit`, etc.) render as null (Suspense fallback) in SSR — correct behavior since they're below the fold.
 
-5. **Build script wiring:** `package.json` `build` script extended to append `&& npx tsx --tsconfig tsconfig.json scripts/prerender.tsx`. Runs synchronously after `vite build` and `generate-seo-assets.mjs`.
+5. **Build script wiring:** `package.json` `build` script extended to append `&& node_modules/.bin/tsx --tsconfig tsconfig.json scripts/prerender.tsx`. Runs synchronously after `vite build` and `generate-seo-assets.mjs`. (Note: originally wired as `npx tsx`; review patch changed to direct binary path to guarantee pinned version and eliminate registry round-trip.)
 
 **Files changed:**
 - `scripts/prerender.tsx` — NEW: custom prerender script
@@ -173,6 +173,41 @@ LCP ≥ FCP by construction. The residual 416 ms gap is gated by JS execution be
 LHCI reports: `_bmad-output/implementation-artifacts/story-5-6-lhci-report-2026-05-20/`
 
 **Tasks completed:** Tasks 1–10 all done. Task 5 (smoke test) confirmed no hydration mismatch warnings in prerendered output; the `suppressHydrationWarning` on Hero `<section>` is present and the `fetchPriority` attribute difference is a cosmetic build-time warning from React 18 server renderer, not a runtime hydration failure. Task 7 LHCI run confirmed all targets met. Task 8 threshold reverted. Task 9 all 747 Vitest tests pass.
+
+## Review Findings
+
+**Reviewer:** Cross-model adversarial review (2026-05-20)
+
+### AC Validation
+
+All 7 Acceptance Criteria verified implemented:
+
+- **AC 1** (prerendered markup in dist/client/index.html): Confirmed — `scripts/prerender.tsx` patches `<div id="root">` after `vite build`. Build output confirms `<h1>`, `<picture>`, CTA row, and KPI strip all present.
+- **AC 2** (LCP < 2,500 ms, FCP < 2,000 ms, perf ≥ 0.90): LHCI 3-run results recorded in Dev Agent Record — all targets met.
+- **AC 3** (lighthouserc.mobile.json restored to 2,500): Confirmed — `largest-contentful-paint maxNumericValue` is 2500.
+- **AC 4** (no hydration mismatch, existing suites pass): 747 Vitest tests pass; `suppressHydrationWarning` on Hero `<section>` absorbs the cosmetic `fetchPriority` SSR/client attribute name difference; locale switch, scroll-to-CTA, and ErrorBoundary all function correctly.
+- **AC 5** (ADR in Architecture-Key.md): Entry at `vault/Planning/Architecture-Key.md` §SSG / Prerender documents mechanism, rationale, locale fan-out, and excluded routes.
+- **AC 6** (dev-only dependency, zero client bundle impact): No new runtime dependency added; `tsx` was already a devDependency; client bundle size unchanged.
+- **AC 7** (Story 6.13 AC 7 amendment updated): Confirmed — `6-13-epic-6-followups-stragglers-cls-lcp-heading-order.md` line 35 records resolution with LHCI report reference.
+
+### Issues Found
+
+**MEDIUM (auto-patched):**
+
+- **[Patched] Build script used `npx tsx` instead of `node_modules/.bin/tsx`** (`package.json` line 8). `npx` performs a registry-check round-trip before resolving to the locally installed binary, adding latency and introducing a theoretical version-drift risk if npm cache is cold. Changed to `node_modules/.bin/tsx` to guarantee the pinned `tsx@4.22.0` from `devDependencies` is always used. Build and tests re-verified: all 747 tests pass, `tsc --noEmit` clean, `npm run build` exits 0.
+
+**MEDIUM (deferred to Story 5.8):**
+
+- **`scripts/prerender.tsx` excluded from TypeScript type-checking**: `tsconfig.json` `include` array covers `src`, `server`, `vite.config.ts`, `tailwind.config.ts` — `scripts/` is absent. `npm run typecheck` (which CI runs) silently skips `prerender.tsx`. Type regressions in the prerender script are invisible to CI. Correctly adding `scripts/` to type-checking requires a dedicated `tsconfig.scripts.json` (because `prerender.tsx` needs Node.js module resolution and `__dirname` shim, not the Vite client-side `"module": "ESNext"` + `"moduleResolution": "bundler"` settings). Deferred to **Story 5.8** per CLAUDE.md non-trivial rule. See `_bmad-output/implementation-artifacts/5-8-prerender-script-type-coverage.md`.
+
+**LOW (accepted):**
+
+- **`ctaPresent` / `kpiPresent` sanity checks do not fail the build** (`prerender.tsx` lines 128–130, 132–136): Only `heroPresent` and `picturePresent` gate `process.exit(1)`. Missing CTA or KPI text would log a warning but not stop the build. This is intentional defensive design (i18n key renames would be caught in Vitest tests first). Accepted as-is.
+- **Soft `process.exit(0)` on no-replacement** (`prerender.tsx` lines 113–119): If the `<div id="root"></div>` pattern is not found (e.g., Vite template changed), the build succeeds without prerendering. A warning IS logged, making it visible in build output. Accepted — the idempotency use-case (double-run) outweighs the marginal benefit of a hard failure here.
+
+### Verdict
+
+**APPROVED — no CRITICAL issues.** One MEDIUM finding auto-patched (npx → direct binary). One MEDIUM deferred to Story 5.8 (script type coverage). Two LOW findings accepted. Story status: done.
 
 ## Story Completion Status
 
