@@ -156,8 +156,9 @@ server {
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
 
-    # Forward the protocol so Express can detect it
+    # Forward proxy metadata so Express can resolve req.protocol and req.ip
     proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header Host $host;
 
     location / {
@@ -198,7 +199,7 @@ In production, `server/index.ts` calls `app.set('trust proxy', 1)`. This tells E
 **Operational notes:**
 
 - The value `1` is correct for a **single-hop** reverse proxy (Nginx or Caddy on the same host). If a CDN or additional load balancer is later placed in front of Nginx, the value must increase to account for the extra hop, or be replaced with an explicit CIDR/IP list. See [Express behind proxies](https://expressjs.com/en/guide/behind-proxies.html) for the full option set.
-- The Nginx config in **Level 1** above already sets `proxy_set_header X-Forwarded-Proto $scheme` and `Host $host`. The `X-Forwarded-For` header is added automatically by Nginx and consumed by Express via the `trust proxy` setting. Adding `proxy_set_header X-Real-IP $remote_addr` is **optional** — Express uses `X-Forwarded-For` by default and does not need `X-Real-IP`.
+- The Nginx config in **Level 1** above explicitly sets `proxy_set_header X-Forwarded-For $remote_addr`. Do not omit this header: Express consumes it via the `trust proxy` setting to resolve `req.ip` to the real client IP. Adding `proxy_set_header X-Real-IP $remote_addr` is **optional** — Express uses `X-Forwarded-For` by default and does not need `X-Real-IP`.
 - In dev/test (`NODE_ENV !== 'production'`), `trust proxy` is **not** enabled — there is no reverse proxy in front of Express locally, and trusting forged headers would be a security regression. The test suite in `server/index.test.ts` asserts both the production and dev/test states.
 
 ---
@@ -256,7 +257,7 @@ Work through this list top-to-bottom on the very first deployment:
 - [ ] `DB_PATH` verified to be **outside** `dist/` (see [Database Persistence](#database-persistence))
 - [ ] Persistent DB directory created and writable (`/var/lib/syncrevenue/` or equivalent)
 - [ ] SSL certificate obtained (Certbot or Caddy)
-- [ ] Nginx or Caddy configured to redirect HTTP→HTTPS and forward `X-Forwarded-Proto`
+- [ ] Nginx or Caddy configured to redirect HTTP→HTTPS and forward `X-Forwarded-Proto` plus `X-Forwarded-For`
 - [ ] Firewall allows ports 80 and 443; port 3001 is **not** exposed externally
 - [ ] Build produced: `npm ci && npm run build`
 - [ ] App started: `pm2 start ecosystem.config.js --env production`
@@ -342,7 +343,7 @@ sudo journalctl -u caddy -f
 
 ## 9. Post-Deploy Header Verification
 
-Lighthouse CI (LHCI), configured in `lighthouserc.json` / `lighthouserc.mobile.json`, audits the production bundle by serving `dist/client/` through `vite preview`. Vite preview is a static-file server intended for build verification — it does **not** run the Express production server in `server/index.ts`, and therefore does **not** apply the security and caching headers that real production traffic receives. The Helmet-derived headers (`Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, etc.) and the long-lived asset cache header (`Cache-Control: public, max-age=31536000, immutable`) are set by Express middleware and are absent from LHCI runs by design. A passing LHCI report is therefore **not** evidence that production headers are correctly applied.
+Lighthouse CI (LHCI), configured in `lighthouserc.json` / `lighthouserc.mobile.json`, audits the production bundle by serving `dist/client/` through `vite preview`. Vite preview is a static-file server intended for build verification — it does **not** run the Express production server in `server/index.ts`, and therefore does **not** apply the security and caching headers that real production traffic receives. The Helmet-derived headers (`Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, etc.) and the long-lived asset cache header (`Cache-Control: max-age=31536000, immutable`) are set by Express middleware and are absent from LHCI runs by design. A passing LHCI report is therefore **not** evidence that production headers are correctly applied.
 
 After every first production deploy (and after any change to `server/index.ts`, `helmet` configuration, or the reverse-proxy config), manually verify the headers using `curl -I` against the live domain. All commands below assume the production domain is `https://syncsirius.com`; substitute the actual domain if different.
 
@@ -372,10 +373,10 @@ curl -sSI "https://syncsirius.com/${ASSET}" | grep -i cache-control
 Expected response line:
 
 ```
-cache-control: public, max-age=31536000, immutable
+cache-control: max-age=31536000, immutable
 ```
 
-If the header reads `no-cache`, `max-age=0`, or is missing entirely, repeat visitors will refetch the entire JS/CSS bundle on every navigation, regressing TTFB and wasting CDN/bandwidth budget. Confirm the `express.static()` call in `server/index.ts` is configured with `immutable: true, maxAge: '1y'` (or equivalent) and that no upstream cache (Nginx `expires`, Caddy `header Cache-Control`) is overriding it.
+If the header reads `no-cache`, `max-age=0`, or is missing entirely, repeat visitors will refetch the entire JS/CSS bundle on every navigation, regressing TTFB and wasting CDN/bandwidth budget. Confirm `staticCacheHeaders()` in `server/index.ts` is setting the immutable asset header and that no upstream cache (Nginx `expires`, Caddy `header Cache-Control`) is overriding it.
 
 ### X-Content-Type-Options
 

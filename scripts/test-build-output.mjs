@@ -65,38 +65,20 @@ console.log(`[test:build]   File size: ${html.length.toLocaleString()} bytes`);
 
 // ── Assertion 2: <h1> with prerendered heading text ────────────────────────
 
-console.log('[test:build] Asserting prerendered <h1> heading is present...');
+console.log('[test:build] Asserting prerendered heading text is present...');
 try {
-  assert.ok(
-    /<h1[\s>]/.test(html),
-    `dist/client/index.html does not contain any <h1> tag — prerender step likely failed.`
-  );
   assert.ok(
     html.includes(EXPECTED_HEADING_TEXT),
     `dist/client/index.html does not contain expected hero heading text "${EXPECTED_HEADING_TEXT}". ` +
       `The prerender step did not run, ran against a stale build, or Hero.tsx copy changed without updating this test.`
   );
-  console.log(`[test:build]   PASS — <h1> with "${EXPECTED_HEADING_TEXT}" found`);
+  console.log(`[test:build]   PASS — "${EXPECTED_HEADING_TEXT}" found`);
 } catch (err) {
   console.error('[test:build] ERROR:', err.message);
   process.exit(1);
 }
 
-// ── Assertion 3: <picture> element present ─────────────────────────────────
-
-console.log('[test:build] Asserting <picture> element is present...');
-try {
-  assert.ok(
-    /<picture[\s>]/.test(html),
-    `dist/client/index.html does not contain a <picture> element — hero background image markup is missing.`
-  );
-  console.log('[test:build]   PASS — <picture> found');
-} catch (err) {
-  console.error('[test:build] ERROR:', err.message);
-  process.exit(1);
-}
-
-// ── Assertion 4: <h1> appears INSIDE <div id="root"> ───────────────────────
+// ── Assertions 3-4: hero markup appears INSIDE <div id="root"> ─────────────
 //
 // This is the LCP-critical invariant. The prerender step injects the hero markup
 // inside the root div. If <h1> sits outside #root (or #root is empty), the page
@@ -123,9 +105,8 @@ try {
   // we walk the tag stream from rootOpenEnd, tracking <div ...> opens and </div>
   // closes until depth returns to zero.
   let depth = 1;
-  let cursor = rootOpenEnd;
   const tagRe = /<\/?div\b[^>]*>/g;
-  tagRe.lastIndex = cursor;
+  tagRe.lastIndex = rootOpenEnd;
   let rootCloseIndex = -1;
   let tagMatch;
   while ((tagMatch = tagRe.exec(html)) !== null) {
@@ -144,18 +125,29 @@ try {
     'Could not find matching </div> for <div id="root"> — HTML is malformed or the root was left unclosed.'
   );
 
-  const h1Index = html.search(/<h1[\s>]/);
-  assert.notEqual(h1Index, -1, 'No <h1> tag found in dist/client/index.html.');
-
+  const rootHtml = html.slice(rootOpenEnd, rootCloseIndex);
+  const rootedH1 = rootHtml.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/);
+  assert.ok(rootedH1, 'No <h1> tag found inside <div id="root">.');
   assert.ok(
-    h1Index > rootOpenEnd && h1Index < rootCloseIndex,
-    `<h1> at byte offset ${h1Index} is NOT inside <div id="root"> (root span: ${rootOpenStart}..${rootCloseIndex}). ` +
+    /<picture[\s>]/.test(rootHtml),
+    'No <picture> tag found inside <div id="root"> — hero background image markup is missing from prerendered output.'
+  );
+  assert.ok(
+    rootedH1[0].includes(EXPECTED_HEADING_TEXT),
+    `The <h1> inside <div id="root"> does not contain expected text "${EXPECTED_HEADING_TEXT}". ` +
+      `This means the expected copy may only appear elsewhere in the document, not in the prerendered LCP heading.`
+  );
+
+  const rootedH1Index = rootOpenEnd + (rootedH1.index ?? rootHtml.indexOf(rootedH1[0]));
+  assert.ok(
+    rootedH1Index > rootOpenEnd && rootedH1Index < rootCloseIndex,
+    `<h1> at byte offset ${rootedH1Index} is NOT inside <div id="root"> (root span: ${rootOpenStart}..${rootCloseIndex}). ` +
       `This breaks the LCP-critical prerender invariant: hero content must be inside the hydration root BEFORE hydration runs. ` +
       `Verify scripts/prerender.tsx ran and successfully injected markup into <div id="root"></div> (it bails out with a warning if the placeholder pattern does not match).`
   );
 
   console.log(
-    `[test:build]   PASS — <h1> at offset ${h1Index} is inside #root (${rootOpenStart}..${rootCloseIndex})`
+    `[test:build]   PASS — <h1> at offset ${rootedH1Index} and <picture> are inside #root (${rootOpenStart}..${rootCloseIndex})`
   );
 } catch (err) {
   console.error('[test:build] ERROR:', err.message);

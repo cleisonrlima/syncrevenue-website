@@ -58,13 +58,15 @@ Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Core stories
 | 5.4 | SQLite Backup Automation | SYN-37 | done | SYN-445,447,449,450,452 (5, all Done) |
 | 5.5 | Uptime Monitoring & Health Check | SYN-38 | done | SYN-451,453,454 (3, all Done) |
 | 5.6 | Mobile Hero LCP — SSG / Prerender Static Hero | SYN-393 | done | SYN-394..403 (10, all Done) |
-| 5.7 | PM2 Cluster Mode & Multi-Core Optimization | SYN-428 | ready-for-dev | SYN-455..459 (5, To Do) |
-| 5.8 | TypeScript Type Coverage for scripts/prerender.tsx | SYN-424 | ready-for-dev | SYN-460..464 (5, To Do) |
-| 5.9 | Express Trust Proxy Configuration | SYN-425 | ready-for-dev | SYN-465..469 (5, To Do) |
-| 5.10 | CI Quality Gate — Build Artifact & Backup Coverage | SYN-426 | backlog | SYN-470..474 (5, To Do) |
-| 5.11 | Health DAO Unit Tests | SYN-427 | backlog | SYN-475,476 (2, To Do) |
+| 5.7 | PM2 Cluster Mode & Multi-Core Optimization | SYN-428 | done | SYN-455..459 (5, all Done) |
+| 5.8 | TypeScript Type Coverage for scripts/prerender.tsx | SYN-424 | done | SYN-460..464 (5, all Done) |
+| 5.9 | Express Trust Proxy Configuration | SYN-425 | done | SYN-465..469 (5, all Done) |
+| 5.10 | CI Quality Gate — Build Artifact & Backup Coverage | SYN-426 | done | SYN-470..474 (5, all Done) |
+| 5.11 | Health DAO Unit Tests | SYN-427 | done | SYN-475,476 (2, all Done) |
+| 5.12 | Stabilize Pre-Existing Vitest Flakes (TEA v2 NG2 score 6) | SYN-477 | ready-for-dev (To Do) | SYN-479..483 (5, all To Do — created 2026-05-20) |
+| 5.13 | Vitest Include Glob for scripts/ Test Files (TEA v2 NG1 score 4) | SYN-478 | ready-for-dev (To Do) | SYN-484..487 (4, all To Do — created 2026-05-20) |
 
-**Sub-task total: 68** (48 Done across 5.1–5.6 + 20 To Do across 5.7–5.11). Jira synced 2026-05-20.
+**Sub-task total: 77** (68 Done across 5.1–5.11 + 9 To Do across 5.12–5.13). Jira synced 2026-05-20: 5.7–5.11 + 22 sub-tasks → Done; 5.12+5.13 parents + 9 sub-tasks created.
 
 ## Story-to-Issue mapping (Epic 6 — active)
 
@@ -73,8 +75,8 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Vi
 | Story | Title | Jira Key | sprint-status | Sub-tasks |
 |-------|-------|----------|---------------|-----------|
 | Epic 6 | Visual Design Refresh — Claude Design Handoff | SYN-202 | in-progress | — |
-| 6.1 | Design Tokens — Sober Palette | SYN-203 | review | SYN-211..215 (5, all Done) |
-| 6.2 | Navbar & Logo Refresh | SYN-204 | review | SYN-216..223 (8, all Done) |
+| 6.1 | Design Tokens — Sober Palette | SYN-203 | done | SYN-211..215 (5, all Done) |
+| 6.2 | Navbar & Logo Refresh | SYN-204 | done | SYN-216..223 (8, all Done) |
 | 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | SYN-205 | done (Jira synced 2026-05-19) | SYN-224..230 (7, all Done) |
 | 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | SYN-206 | done (Jira synced 2026-05-19) | SYN-231..237 (7, all Done) |
 | 6.5 | Benefits Grid + Trust Strip | SYN-207 | done (Jira verified 2026-05-19) | SYN-238..243 (6, all Done) |

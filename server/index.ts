@@ -54,7 +54,8 @@ export function createApp(): Express {
     app.set('trust proxy', 1)
 
     app.use((req, res, next) => {
-      if (req.headers['x-forwarded-proto'] === 'http') {
+      const forwardedProto = req.get('x-forwarded-proto')?.split(',')[0]?.trim().toLowerCase()
+      if (forwardedProto === 'http') {
         return res.redirect(301, `https://${req.headers.host}${req.url}`)
       }
       next()

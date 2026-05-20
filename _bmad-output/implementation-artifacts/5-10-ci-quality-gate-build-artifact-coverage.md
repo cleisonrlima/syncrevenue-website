@@ -42,7 +42,7 @@ Three related CI coverage gaps were identified in the Epic 5 TEA pass:
   1. Asserts `dist/client/index.html` exists.
   2. Reads the file and asserts it contains the prerendered `<h1>` heading text (e.g., `More commission per ticket`).
   3. Asserts it contains a `<picture>` element.
-  4. Asserts the `<h1>` appears **before** the first `<script type="module">` tag in the file (confirming it is pre-rendered, not hydrated).
+  4. Asserts the prerendered hero `<h1>` and `<picture>` appear inside `<div id="root">`. This accepted amendment replaces the original byte-order check against the first `<script type="module">` because Vite emits the module script in `<head>` while prerendered app markup belongs in `<body>`; the load-bearing invariant is rooted pre-hydration markup, not literal file order.
 - A new npm script `"test:build": "node scripts/test-build-output.mjs"` is added to `package.json`.
 - This script is added to the `lighthouse` job in `quality.yml` (after the build step, before LHCI runs), OR to a dedicated `build-smoke` job that runs after `unit`.
 - Verified: remove the `scripts/prerender.tsx` call from the `build` script, run `npm run build && npm run test:build`, confirm non-zero exit; restore and confirm zero exit.
@@ -86,6 +86,17 @@ Three related CI coverage gaps were identified in the Epic 5 TEA pass:
   - [x] Note LHCI limitation (vite preview vs Express server)
 
 - [x] Task 5 — Verify all tests pass (AC: 4)
+
+---
+
+### Review Findings
+
+- [x] [Review][Patch] Build-output smoke test does not prove expected heading text is inside the prerendered rooted `<h1>` [`scripts/test-build-output.mjs:70`] — fixed: smoke test now extracts the rooted `<h1>` and asserts it contains the expected heading text.
+- [x] [Review][Patch] Runbook expected `Cache-Control` header does not match the server implementation [`docs/deployment-runbook.md:375`] — fixed: runbook now matches `staticCacheHeaders()` output and points operators at that helper.
+- [x] [Review][Patch] Rerun: build-output smoke test checked `<picture>` globally instead of inside `#root` [`scripts/test-build-output.mjs:83`] — fixed: `<picture>` is now asserted inside the rooted prerender output.
+- [x] [Review][Patch] Rerun: build-output smoke test could false-fail on an earlier non-root `<h1>` [`scripts/test-build-output.mjs:142`] — fixed: index calculation now uses the rooted `<h1>`.
+- [x] [Review][Patch] Rerun: runbook prose still said `Cache-Control: public, max-age=31536000, immutable` [`docs/deployment-runbook.md:346`] — fixed.
+- [x] [Review][Patch] Rerun: Story 5.10 AC 2 still required literal `<h1>` before first module script despite Vite's `<head>` script placement — fixed: AC 2 now formally defines the rooted prerender invariant implemented by `scripts/test-build-output.mjs`.
 
 ---
 

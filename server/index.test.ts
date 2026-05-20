@@ -291,6 +291,18 @@ describe('Story 5.2 — HTTP→HTTPS redirect middleware', () => {
       expect(r.headers['location']).toBe('https://syncsirius.com/api/health')
     })
 
+    it('redirects 301 when the first X-Forwarded-Proto value is http', async () => {
+      const r = await request(prodApp, {
+        path: '/api/health',
+        headers: {
+          'x-forwarded-proto': 'http, https',
+          host: 'syncsirius.com',
+        },
+      })
+      expect(r.status).toBe(301)
+      expect(r.headers['location']).toBe('https://syncsirius.com/api/health')
+    })
+
     it('does NOT redirect when X-Forwarded-Proto is https (already secure)', async () => {
       const r = await request(prodApp, {
         path: '/api/health',
@@ -371,16 +383,34 @@ describe('Story 5.2 — HTTP→HTTPS redirect middleware', () => {
       expect(body.ip).toBe('203.0.113.7')
     })
 
-    it('AC 2: redirect still fires when X-Forwarded-Proto is http (trust proxy does not break redirect)', async () => {
-      const r = await request(prodApp, {
-        path: '/api/health',
+    it('AC 2: req.protocol === "http" before redirect when X-Forwarded-Proto is http', async () => {
+      const expressModule = await import('express')
+      const probeApp = expressModule.default()
+      let observedProtocol: string | undefined
+
+      probeApp.set('trust proxy', 1)
+      probeApp.use((req, res, next) => {
+        observedProtocol = req.protocol
+        const forwardedProto = req.get('x-forwarded-proto')?.split(',')[0]?.trim().toLowerCase()
+        if (forwardedProto === 'http') {
+          return res.redirect(301, `https://${req.headers.host}${req.url}`)
+        }
+        next()
+      })
+      probeApp.get('/__probe', (_req, res) => {
+        res.status(200).json({ ok: true })
+      })
+
+      const r = await request(probeApp, {
+        path: '/__probe',
         headers: {
           'x-forwarded-proto': 'http',
           host: 'syncsirius.com',
         },
       })
       expect(r.status).toBe(301)
-      expect(r.headers['location']).toBe('https://syncsirius.com/api/health')
+      expect(r.headers['location']).toBe('https://syncsirius.com/__probe')
+      expect(observedProtocol).toBe('http')
     })
   })
 

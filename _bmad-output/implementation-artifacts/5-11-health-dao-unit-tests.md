@@ -3,7 +3,7 @@
 **Epic:** 5 — Production Deployment (Phase 4)
 **Status:** done
 **Origin:** Epic 5 Post-Sprint TEA pass (2026-05-20) — finding G2 (risk score 4)
-**Jira sync:** Deferred — OAuth unavailable at creation time. Must be synced post-implementation (see Deferred Actions in orchestration state doc).
+**Jira sync:** SYN-427 + sub-tasks SYN-475..476 → Done (synced 2026-05-20).
 
 ---
 
@@ -77,6 +77,12 @@ The gap is low-severity (route tests provide indirect coverage) but violates the
 - [x] Task 2 — Verify all tests pass (AC: 4)
   - [x] `npm run test:run` — new file 3/3 green; concurrent admin/team timeouts proven to be environmental (Story 5.10 running vitest in parallel on the same workspace) — isolated re-run of the failing test passed in 8s with zero modifications
   - [x] `tsc --noEmit` — zero errors
+
+---
+
+### Review Findings
+
+- [x] [Review][Patch] Rerun: health DAO test used `:memory:` instead of the AC-required temp-dir database [`server/dao/health.dao.test.ts:10`] — fixed: test now creates a file-backed temp database and removes the temp directory in cleanup.
 
 ---
 

@@ -1,6 +1,9 @@
 // @vitest-environment node
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import Database from 'better-sqlite3'
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
 import { initSchema } from './db'
 
 function freshDb() {
@@ -110,14 +113,26 @@ describe('initSchema', () => {
   // Story 5.7 — PM2 cluster mode ADR depends on WAL being on at connection
   // open. Locking the pragma here so a regression in `server/db.ts` is caught
   // before cluster mode is ever flipped on.
-  it('enables WAL journal_mode on a fresh connection (Story 5.7 ADR)', () => {
-    const freshConn = new Database(':memory:')
-    const mode = freshConn.pragma('journal_mode = WAL', { simple: true })
-    // `:memory:` databases report 'memory' for journal_mode (WAL not
-    // applicable in-memory); on file-backed DBs the same pragma yields 'wal'.
-    // Either return value proves the call shape used in server/db.ts is valid.
-    expect(['wal', 'memory']).toContain(mode)
-    freshConn.close()
+  it('enables WAL journal_mode on the module-level file-backed connection (Story 5.7 ADR)', async () => {
+    const savedDbPath = process.env.DB_PATH
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'syncrev-wal-'))
+    const tempDbPath = path.join(tempDir, 'wal.db')
+
+    try {
+      process.env.DB_PATH = tempDbPath
+      vi.resetModules()
+      const { default: walDb } = await import('./db')
+      expect(walDb.pragma('journal_mode', { simple: true })).toBe('wal')
+      walDb.close()
+    } finally {
+      if (savedDbPath === undefined) {
+        delete process.env.DB_PATH
+      } else {
+        process.env.DB_PATH = savedDbPath
+      }
+      vi.resetModules()
+      fs.rmSync(tempDir, { recursive: true, force: true })
+    }
   })
 
   it('migrates the legacy demo_requests GDS CHECK without dropping dependent indexes or triggers', () => {

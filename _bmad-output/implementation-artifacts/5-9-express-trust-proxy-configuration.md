@@ -60,6 +60,15 @@ Any future middleware that branches on `req.secure` or uses `req.ip` for rate li
 
 ---
 
+### Review Findings
+
+- [x] [Review][Patch] Nginx runbook omits `X-Forwarded-For` while relying on it for real client IPs [`docs/deployment-runbook.md:160`] — fixed: Nginx sample now sets `X-Forwarded-For $remote_addr` and trust-proxy notes no longer claim Nginx adds it automatically.
+- [x] [Review][Patch] HTTP trust-proxy test asserts redirect but not `req.protocol === "http"` before redirect [`server/index.test.ts:374`] — fixed: test now captures `req.protocol` in a probe middleware before redirect.
+- [x] [Review][Patch] Rerun: production redirect checked raw `X-Forwarded-Proto` without normalizing proxy-chain values [`server/index.ts:56`] — fixed: redirect now normalizes the first forwarded-proto token and regression test covers `http, https`.
+- [x] [Review][Patch] Rerun: first-deploy checklist mentioned `X-Forwarded-Proto` but not `X-Forwarded-For` [`docs/deployment-runbook.md:260`] — fixed.
+
+---
+
 ## Implementation Notes
 
 ### Correct Placement

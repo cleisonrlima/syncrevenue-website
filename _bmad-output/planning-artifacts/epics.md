@@ -1530,6 +1530,62 @@ So that mobile `/` LCP under simulated 4G + 4× CPU throttling falls below 2,500
 **When** it lands
 **Then** the dependency is dev-only (does not ship to runtime); bundle-size impact on the client chunk is ≤ 0 bytes; build-time delta is ≤ 30 seconds on the LH CI worker
 
+### Story 5.12: Stabilize Pre-Existing Vitest Flakes
+
+As the engineer responsible for the Vitest suite,
+I want the pre-existing flakes in `server/routes/admin/auth.test.ts` (Story 4.7 throttling tests) and `src/pages/Home*.test.tsx` (RTL `waitFor` timeouts) to be eliminated,
+So that full `npm run test:run` invocations exit 0 deterministically and no future story dev record needs an "in isolation, this passes" caveat.
+
+**Materialised:** 2026-05-20 from Epic 5 TEA v2 re-pass — finding NG2 (risk score 6). Every Epic 5 story dev record from 5.7 onward documents the same flake pattern. The Epic 5 retro Action Item C1 added a *process* fix (`try/finally` cleanup discipline) but the *existing* flaky tests need a code-level remediation story.
+
+**Acceptance Criteria:**
+
+**Given** the `server/routes/admin/auth.test.ts` throttling/lockout suite
+**When** the tests run under fake timers (`vi.useFakeTimers()` + `vi.advanceTimersByTime()`)
+**Then** every test asserting time-based throttling completes in < 100ms and remains semantically equivalent to its current AC coverage from Story 4.7
+
+**Given** the `src/pages/Home*.test.tsx` files
+**When** `waitFor(() => ..., { timeout: N })` is replaced with `findBy*` queries (or with an explicit test-level timeout + inline reason where I/O is unavoidable)
+**Then** the previously-asserted elements are still asserted and the tests no longer race a polling interval
+
+**Given** the test changes land
+**When** `npm run test:run` is invoked
+**Then** the suite exits 0 across three consecutive runs and no "passes in isolation" caveat appears in future story dev records
+
+**Given** the touched files
+**When** future maintainers read them
+**Then** each touched file gains an inline reference to Story 5.12 and to `_bmad-output/test-artifacts/test-design/test-design-epic-5-v2.md`
+
+**Given** the scope is test-stability only
+**When** `git diff --stat` is inspected
+**Then** zero production code outside `*.test.*` files is modified; `npx tsc --noEmit && npx tsc --noEmit --project tsconfig.scripts.json` exits 0
+
+### Story 5.13: Vitest Include Glob for scripts/ Test Files
+
+As the engineer responsible for the Vitest discovery configuration,
+I want `vite.config.ts`'s `test.include` array to also discover `scripts/**/*.test.mjs` files,
+So that the six Vitest tests in `scripts/generate-seo-assets.test.mjs` (authored in Story 3.3 review) actually execute on every `npm run test:run` and any SEO-asset regression is caught in CI.
+
+**Materialised:** 2026-05-20 from Epic 5 TEA v2 re-pass — finding NG1 (risk score 4). `scripts/generate-seo-assets.test.mjs` imports `describe, expect, it` from `'vitest'` but `vite.config.ts:27` constrains discovery to `src/**`, `server/**`, and `eslint-rules/**` — `scripts/**/*.test.mjs` is silently excluded.
+
+**Acceptance Criteria:**
+
+**Given** `vite.config.ts:27` `test.include`
+**When** the array is extended (recommended pattern: `'scripts/generate-*.test.mjs'` — narrow enough to avoid matching `backup.test.mjs` and `test-build-output.mjs` which are intentionally standalone Node harnesses, broad enough to future-proof for additional `generate-*` tests)
+**Then** `npm run test:run` discovers `scripts/generate-seo-assets.test.mjs` and reports six new tests
+
+**Given** the six tests in `scripts/generate-seo-assets.test.mjs`
+**When** they execute under Vitest for the first time
+**Then** all six pass (covering `resolveSiteUrl`, `canonicalUrl`, `renderSitemap` with hreflang matrix, `renderRobots`)
+
+**Given** the include glob is extended
+**When** the discovery runs
+**Then** neither `scripts/backup.test.mjs` nor `scripts/test-build-output.mjs` is picked up by Vitest (they are intentional standalone Node harnesses invoked via dedicated `npm run test:backup` / `npm run test:build` scripts)
+
+**Given** the test discovery delta lands
+**When** `npm run test:run` is re-invoked
+**Then** the total test count increases by exactly +6 (modulo concurrent test changes) and no previously-passing test fails; `npx tsc --noEmit` exits 0
+
 ## Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)
 
 Re-skin the public site to match the design handoff from Anthropic Claude Design (`_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`). The handoff iterated to a sober, single-accent visual direction — no gradients on CTAs, no glow effects, no dot-grid backgrounds, no pulsing dots, no per-brand monogram gradients. Anchor palette is navy `#0D0D3A` / ink `#0A0B2E` + single accent `#3D6FE0`. The refresh is intentionally visual-only: form behavior, validation, locale parity, i18n keys, ClientReferences allowlist, and existing test surfaces stay green.

@@ -48,6 +48,10 @@ so that the Express server can utilize all available CPU cores and maximize thro
   - [x] `npm run test:run` — story-touched suites (server/db.test.ts, server/index.test.ts) pass 45/45; pre-existing flaky admin-auth and home-e2e suites unaffected by this change (see Epic 5 retro C1)
   - [x] `tsc --noEmit` — zero errors
 
+### Review Findings
+
+- [x] [Review][Patch] WAL regression test does not exercise the production DB initialization path [`server/db.test.ts:113`] — fixed: test now imports `server/db.ts` against a temp file-backed DB and asserts `journal_mode = wal`.
+
 ## Dev Notes
 
 ### Background
