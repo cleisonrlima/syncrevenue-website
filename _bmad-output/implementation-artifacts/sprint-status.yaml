@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-20  # Story 5.2 done (domain config, HSTS, CORS verification, deployment runbook). Prior: Story 5.6 review closed → done (npx→direct binary patch applied; Story 5.8 created for prerender type coverage). Prior: Story 5.6 done (SSG prerender — LCP 2,259ms median, lighthouserc.mobile.json restored to 2,500ms). Prior: Story 5.5 review closed → done (health check + uptime monitoring). Prior: Story 5.3 done; Story 5.1 review closed → done; Story 5.7 created; Stories 4.5 + 4.6 dev complete → review; 6.13 review closed
+last_updated: 2026-05-20  # Story 5.2 review closed → done (HSTS preload caveat + test try/finally + story file tasks checked; Story 5.9 created for trust proxy). Prior: Story 5.2 done (domain config, HSTS, CORS verification, deployment runbook). Prior: Story 5.6 review closed → done (npx→direct binary patch applied; Story 5.8 created for prerender type coverage). Prior: Story 5.6 done (SSG prerender — LCP 2,259ms median, lighthouserc.mobile.json restored to 2,500ms). Prior: Story 5.5 review closed → done (health check + uptime monitoring). Prior: Story 5.3 done; Story 5.1 review closed → done; Story 5.7 created; Stories 4.5 + 4.6 dev complete → review; 6.13 review closed
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -124,6 +124,8 @@ development_status:
   5-7-pm2-cluster-mode-multi-core: ready-for-dev
   # 5.8 added 2026-05-20 from Story 5.6 cross-model review (prerender script type coverage; non-trivial)
   5-8-prerender-script-type-coverage: ready-for-dev
+  # 5.9 added 2026-05-20 from Story 5.2 cross-model review (trust proxy missing — req.protocol/req.secure/req.ip incorrect behind reverse proxy; non-trivial)
+  5-9-express-trust-proxy-configuration: ready-for-dev
   epic-5-retrospective: optional
 
   # Epic 6: Visual Design Refresh — Claude Design Handoff (Phase 5)

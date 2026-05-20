@@ -117,6 +117,19 @@ syncsirius.com {
 
 Caddy automatically handles TLS (Let's Encrypt), HTTP→HTTPS redirect, and HSTS. No additional configuration is needed.
 
+### HSTS Preload — Important Caveat
+
+The application sets `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` in production. The `preload` directive signals eligibility for inclusion in browser HSTS preload lists (see [hstspreload.org](https://hstspreload.org)).
+
+**Before submitting the domain to the preload list, understand:**
+
+- Preloading is **irreversible on short notice**. Removal requests are honoured, but propagation to all browsers takes months.
+- All subdomains must also be served over HTTPS with a valid certificate. If any subdomain cannot serve HTTPS, do not preload.
+- If the TLS certificate lapses while the domain is on the preload list, visitors using Chrome/Firefox/Edge will be unable to reach the site via HTTP fallback — the browser will refuse the connection entirely.
+- **Do not submit to the preload list until the domain is stable, certificates are auto-renewing reliably, and all required subdomains support HTTPS.**
+
+To submit (only when ready): visit [https://hstspreload.org](https://hstspreload.org) and follow the instructions.
+
 ---
 
 ## 4. HTTP→HTTPS Redirect

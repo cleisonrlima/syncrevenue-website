@@ -367,25 +367,26 @@ describe('Story 5.2 — CORS origin restriction (AC 3)', () => {
     const savedEnv = process.env.ALLOWED_ORIGIN
     process.env.ALLOWED_ORIGIN = 'https://syncsirius.com'
     vi.resetModules()
+    try {
+      const { createApp } = await import('./index')
+      const prodCorsApp = createApp()
 
-    const { createApp } = await import('./index')
-    const prodCorsApp = createApp()
+      const r = await request(prodCorsApp, {
+        method: 'OPTIONS',
+        path: '/api/health',
+        headers: {
+          Origin: 'https://syncsirius.com',
+          'Access-Control-Request-Method': 'GET',
+        },
+      })
 
-    const r = await request(prodCorsApp, {
-      method: 'OPTIONS',
-      path: '/api/health',
-      headers: {
-        Origin: 'https://syncsirius.com',
-        'Access-Control-Request-Method': 'GET',
-      },
-    })
-
-    const acao = r.headers['access-control-allow-origin']
-    expect(acao).toBe('https://syncsirius.com')
-    expect(acao).not.toBe('*')
-
-    process.env.ALLOWED_ORIGIN = savedEnv
-    vi.resetModules()
+      const acao = r.headers['access-control-allow-origin']
+      expect(acao).toBe('https://syncsirius.com')
+      expect(acao).not.toBe('*')
+    } finally {
+      process.env.ALLOWED_ORIGIN = savedEnv
+      vi.resetModules()
+    }
   })
 })
 
