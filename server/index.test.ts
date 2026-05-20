@@ -48,7 +48,8 @@ describe('Express bootstrap', () => {
   it('GET /api/health returns success envelope', async () => {
     const r = await request(app, { path: '/api/health' })
     expect(r.status).toBe(200)
-    expect(r.json()).toEqual({ success: true, status: 'ok' })
+    expect(r.json()).toMatchObject({ success: true, status: 'ok' })
+    expect(typeof (r.json() as { timestamp: unknown }).timestamp).toBe('string')
   })
 
   it('applies Helmet default security headers', async () => {

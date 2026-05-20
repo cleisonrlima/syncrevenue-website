@@ -17,6 +17,7 @@ import adminContactsRouter from './routes/admin/contacts'
 import adminTeamRouter from './routes/admin/team'
 import adminDashboardRouter from './routes/admin/dashboard'
 import publicTeamRouter from './routes/team'
+import healthRouter from './routes/health'
 
 /**
  * Sets Cache-Control headers for static assets served from dist/client/.
@@ -53,9 +54,7 @@ export function createApp(): Express {
   app.use(express.json())
   app.use(cookieParser())
 
-  app.get('/api/health', (_req, res) => {
-    res.json({ success: true, status: 'ok' })
-  })
+  app.use('/api', healthRouter)
 
   app.use('/api/demo', demoRouter)
   app.use('/api/contact', contactRouter)
