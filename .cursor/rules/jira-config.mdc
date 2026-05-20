@@ -20,6 +20,17 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 
 **Status mapping (this board):** Jira `Done` → `done`; `In Progress` → `in-progress`; `To Do` → `not-started`; `REVIEW` → `review`.
 
+## Epic summary (all closed 2026-05-20)
+
+| Epic | Jira Key | Status |
+|------|----------|--------|
+| Epic 1 — Visitor Content | SYN-1 | done |
+| Epic 2 — Lead Capture | SYN-2 | done |
+| Epic 3 — Content Polish & SEO | SYN-3 | done |
+| Epic 4 — Admin Operations | SYN-4 | done |
+| Epic 5 — Production Deployment | SYN-5 | done |
+| Epic 6 — Visual Design Refresh | SYN-202 | done |
+
 ## Story-to-Issue mapping (Epic 1)
 
 | Story | Jira Key |
@@ -33,7 +44,7 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 
 | Story | Jira Key | sprint-status |
 |-------|----------|---------------|
-| Epic 4 | SYN-4 | in-progress |
+| Epic 4 | SYN-4 | done |
 | 4.1 Admin auth | SYN-28 | done |
 | 4.2 Leads dashboard | SYN-29 | done |
 | 4.3 Lead status | SYN-30 | done (Jira synced 2026-05-18) |
@@ -47,11 +58,11 @@ Epic 3 story 3.11 → **SYN-97** (not SYN-85; mirror block corrected 2026-05-16)
 
 ## Story-to-Issue mapping (Epic 5 — active)
 
-Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Core stories 5.1–5.6 done; TEA + retrospective done; follow-ups 5.7–5.11 queued.
+Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. All stories 5.1–5.13 done; TEA v1+v2 + retrospective done.
 
 | Story | Title | Jira Key | sprint-status | Sub-tasks |
 |-------|-------|----------|---------------|-----------|
-| Epic 5 | Production Deployment (Phase 4) | SYN-5 | in-progress | — |
+| Epic 5 | Production Deployment (Phase 4) | SYN-5 | done | — |
 | 5.1 | Production Build & PM2 Process Management | SYN-34 | done | SYN-429..434 (6, all Done) |
 | 5.2 | Domain Configuration & SSL/TLS | SYN-35 | done | SYN-435..442 (8, all Done) |
 | 5.3 | Environment Variable Hardening | SYN-36 | done | SYN-443,444,446,448 (4, all Done) |
@@ -63,18 +74,18 @@ Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Core stories
 | 5.9 | Express Trust Proxy Configuration | SYN-425 | done | SYN-465..469 (5, all Done) |
 | 5.10 | CI Quality Gate — Build Artifact & Backup Coverage | SYN-426 | done | SYN-470..474 (5, all Done) |
 | 5.11 | Health DAO Unit Tests | SYN-427 | done | SYN-475,476 (2, all Done) |
-| 5.12 | Stabilize Pre-Existing Vitest Flakes (TEA v2 NG2 score 6) | SYN-477 | ready-for-dev (To Do) | SYN-479..483 (5, all To Do — created 2026-05-20) |
-| 5.13 | Vitest Include Glob for scripts/ Test Files (TEA v2 NG1 score 4) | SYN-478 | ready-for-dev (To Do) | SYN-484..487 (4, all To Do — created 2026-05-20) |
+| 5.12 | Stabilize Pre-Existing Vitest Flakes (TEA v2 NG2 score 6) | SYN-477 | done | SYN-479..483 (5, all Done) |
+| 5.13 | Vitest Include Glob for scripts/ Test Files (TEA v2 NG1 score 4) | SYN-478 | done | SYN-484..487 (4, all Done) |
 
-**Sub-task total: 77** (68 Done across 5.1–5.11 + 9 To Do across 5.12–5.13). Jira synced 2026-05-20: 5.7–5.11 + 22 sub-tasks → Done; 5.12+5.13 parents + 9 sub-tasks created.
+**Sub-task total: 77** (all Done across 5.1–5.13). Jira reconciled 2026-05-20: Epic SYN-5 → Done; parents SYN-477/478 + sub-tasks SYN-479..487 already Done.
 
 ## Story-to-Issue mapping (Epic 6 — active)
 
-Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic SYN-202 in In Progress; stories 6.1/6.2/6.3/6.4/6.5/6.6/6.7/6.8/6.9/6.10/6.11/6.12 Done; 6.13 Done after AC 7 mobile `/` LCP residual gap was formally rescoped to Story 5.6.
+Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Visual-only refresh from Anthropic Claude Design handoff. Epic SYN-202 **done**; all stories 6.1–6.13 + 113 sub-tasks Done (6.13 AC 7 LCP rescoped to Story 5.6).
 
 | Story | Title | Jira Key | sprint-status | Sub-tasks |
 |-------|-------|----------|---------------|-----------|
-| Epic 6 | Visual Design Refresh — Claude Design Handoff | SYN-202 | in-progress | — |
+| Epic 6 | Visual Design Refresh — Claude Design Handoff | SYN-202 | done | — |
 | 6.1 | Design Tokens — Sober Palette | SYN-203 | done | SYN-211..215 (5, all Done) |
 | 6.2 | Navbar & Logo Refresh | SYN-204 | done | SYN-216..223 (8, all Done) |
 | 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | SYN-205 | done (Jira synced 2026-05-19) | SYN-224..230 (7, all Done) |
@@ -83,8 +94,8 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Vi
 | 6.6 | ClientReferences Visual Refresh | SYN-208 | done (Jira verified 2026-05-19) | SYN-244..249 (6, all Done) |
 | 6.7 | Team Section Visual Refresh | SYN-209 | done (Jira verified 2026-05-19) | SYN-250..254 (5, all Done) |
 | 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | SYN-210 | done (Jira verified 2026-05-19; partial closure documented — deferrals materialised → 6.9/6.10/6.11/6.12) | SYN-255..263 (9; only SYN-256 + SYN-262 Done — rest deferred → 6.9/6.10/6.11/6.12 per comment on SYN-210) |
-| 6.9 | Shared Form Primitives + i18n Namespace Restructure | SYN-328 | review | SYN-332..343 (12, all Done) |
-| 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum | SYN-329 | review | SYN-344..356 (13, all Done — synced 2026-05-19) |
+| 6.9 | Shared Form Primitives + i18n Namespace Restructure | SYN-328 | done | SYN-332..343 (12, all Done) |
+| 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum | SYN-329 | done | SYN-344..356 (13, all Done — synced 2026-05-19) |
 | 6.11 | Contact Grid + ContactForm Restyle | SYN-330 | done | SYN-357..366 (10, all Done — synced 2026-05-19) |
 | 6.12 | Lighthouse + Axe Regression + Legacy Cleanup | SYN-331 | done | SYN-367..377 (11, all Done — parent + 11 sub-tasks synced 2026-05-19) |
 | 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order | SYN-378 | done | SYN-379..392 (14, all Done) |

@@ -170,3 +170,22 @@ This file tracks Jira-sync deferrals during the Epic 5 follow-up wave (Stories 5
 3. Execute each `intended_action` in order: create parent, create subtasks, transition parent + subtasks to Done.
 4. Append a `## Deferred Actions Resolved` entry below with timestamps + the created Jira keys (parent SYN-XXX, subtasks SYN-YYY..SYN-ZZZ).
 5. If a step is already complete (e.g. parent issue already exists from a prior session), record `already-resolved` and skip without erroring.
+
+## Deferred Actions Resolved
+
+```yaml
+- resolvedAt: 2026-05-20T23:30:00Z
+  agent: jira-assistant (Cursor)
+  action: full-reconcile
+  result:
+    stories_5_7_to_5_11: already-resolved — all parents + subtasks Done in Jira prior to this pass
+    stories_5_12_5_13:
+      parents: SYN-477, SYN-478 — already Done
+      subtasks: SYN-479..483, SYN-484..487 — already Done (9/9)
+    epic_SYN-5: transitioned In Progress → Done
+    epics_SYN-4_SYN-202: transitioned In Progress → Done (all child stories Done)
+    open_story_subtask_gaps: none — JQL `project = SYN AND status != Done AND issuetype in (Story, Subtask)` returned 0
+  local_tracking_updated:
+    - .cursor/rules/jira-config.mdc
+    - _bmad-output/implementation-artifacts/sprint-status.yaml (epic-4/5/6 → done)
+```
