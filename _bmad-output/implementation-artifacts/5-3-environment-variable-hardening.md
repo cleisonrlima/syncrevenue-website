@@ -143,3 +143,46 @@ Claude Sonnet 4.6 — 2026-05-19.
 | Date | Author | Change |
 |---|---|---|
 | 2026-05-19 | Claude Sonnet 4.6 | Story 5.3 implemented: validateEnv() startup guard + 10 unit tests, .env.example full docs + chmod 600 instructions, check-client-bundle-secrets extended with SMTP_HOST + DB_PATH. 742 tests pass; typecheck 0; build clean; secret scan passed. Committed ca03813, pushed to origin/master. Status → done. |
+| 2026-05-20 | Claude Sonnet 4.6 (cross-model review) | Review complete. One trivial finding patched inline: JWT_SECRET length check did not trim whitespace before measuring, allowing a low-entropy padded value to pass (e.g. "abc" + 29 spaces = 32 chars). Fixed by applying `.trim()` before the length comparison in `server/env-validation.ts`. Added one test to cover the edge case (11 tests total). 743/743 tests pass; typecheck 0. Committed 5b1818c, pushed. |
+
+## Review Findings
+
+Reviewer: Claude Sonnet 4.6 (independent cross-model review, 2026-05-20)
+
+### Security
+
+**[PATCHED — TRIVIAL] JWT_SECRET length check bypassed by whitespace padding**
+
+`validateEnv()` checked JWT_SECRET length against the raw value from `process.env`, which includes surrounding whitespace. A value of `"abc" + " ".repeat(29)` (32 chars total, 3 chars of real entropy) passed both the presence check (`.trim() !== ''`) and the length check (`rawValue.length >= 32`), but would produce a cryptographically weak JWT signing key because `jsonwebtoken` signs with the raw string including the spaces.
+
+Fix: apply `.trim()` before the length comparison so only real, non-whitespace characters count toward the minimum. Updated error message reflects this ("after trimming whitespace"). One test added for the edge case.
+
+Patch commit: `5b1818c` — `server/env-validation.ts` line 45, `server/env-validation.test.ts` new test at line 118.
+
+### Correctness
+
+**`require.main === module` guard — CORRECT**
+
+In production (`node dist/server/index.js`, compiled CommonJS), `require.main === module` is `true` and `validateEnv()` runs as expected. In dev (`tsx watch server/index.ts`), tsx emulates CommonJS so the guard is also `true` — dev server also validates env vars, which is correct and intentional. In test (vitest), the module is imported but not executed as main, so `require.main !== module` — tests are unaffected. No issue.
+
+**Whitespace-only values for REQUIRED_ENV_VARS — CORRECT**
+
+The `.trim() === ''` check in the presence filter correctly catches values like `"   "`. All 9 required vars are covered.
+
+**`.env.example` — ACCURATE**
+
+Syntax is correct shell format. All 9 required vars are present and documented. `VITE_SITE_URL` correctly marked as non-secret. `ADMIN_EMAIL`/`ADMIN_PASSWORD` correctly annotated as dev-only seed credentials. `chmod 600 && chown` instructions in header are accurate.
+
+### Test Quality
+
+**Coverage summary (11 tests after patch):** happy path, JWT_SECRET exactly 32 chars, JWT_SECRET exactly 31 chars, JWT_SECRET too short, JWT_SECRET whitespace-padded ≥32 chars raw (NEW), single missing var, multiple missing vars, empty-string var, whitespace-only var, exhaustive REQUIRED_ENV_VARS loop, secret value never in logs. All critical paths covered.
+
+**No remaining gaps identified.**
+
+### Secret Scan
+
+`scripts/check-client-bundle-secrets.mjs` correctly includes all 6 server-only secret key names after this story's additions. `SMTP_PORT` is a non-secret integer and correctly excluded from the scan. No issues.
+
+### No New Stories Required
+
+All findings were trivial (single-line fix + one test). No non-trivial deferred work identified.
