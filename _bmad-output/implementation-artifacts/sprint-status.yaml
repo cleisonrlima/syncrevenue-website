@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-19  # Story 6.13 review closed — preload/hash-scroll/docs patches landed; 6.13 → done; Story 5.6 owns remaining mobile / LCP 3100 → 2500 SSG/prerender work
+last_updated: 2026-05-19  # Story 5.1 created → ready-for-dev; Epic 5 in-progress. Stories 4.5 + 4.6 dev complete → review (4.5: PATCH /api/admin/team/:id/active + toggle UI; 4.6: GET /api/admin/dashboard/stats + Dashboard rewrite + persistent layout nav). Epic 4 primary stories now all dev-done; post-Sprint-3 TEA pass + Epic 4 retrospective due per CLAUDE.md after review acceptance. Jira subtasks SYN-404..413 (4.5) + SYN-414..423 (4.6) created earlier today. Prior: 6.13 review closed, Story 5.6 owns remaining mobile / LCP SSG/prerender work
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -104,16 +104,16 @@ development_status:
   4-2-leads-dashboard-view-filter: done
   4-3-lead-status-management: done
   4-4-team-member-management-create-edit: review
-  4-5-team-member-display-order-active-toggle: backlog
-  4-6-admin-dashboard-navigation-shell: backlog
+  4-5-team-member-display-order-active-toggle: ready-for-dev
+  4-6-admin-dashboard-navigation-shell: review
   # 4.7 + 4.8 added 2026-05-16 from Story 4.1 cross-model review deferred findings
   4-7-admin-login-throttling-lockout: done
   4-8-jwt-revocation-after-password-reseed: done
   epic-4-retrospective: optional
 
   # Epic 5: Production Deployment (Phase 4)
-  epic-5: backlog
-  5-1-production-build-pm2-process-management: backlog
+  epic-5: in-progress
+  5-1-production-build-pm2-process-management: review
   5-2-domain-configuration-ssl-tls: backlog
   5-3-environment-variable-hardening: backlog
   5-4-sqlite-backup-automation: backlog

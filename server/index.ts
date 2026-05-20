@@ -14,7 +14,24 @@ import adminAuthRouter from './routes/admin/auth'
 import adminLeadsRouter from './routes/admin/leads'
 import adminContactsRouter from './routes/admin/contacts'
 import adminTeamRouter from './routes/admin/team'
+import adminDashboardRouter from './routes/admin/dashboard'
 import publicTeamRouter from './routes/team'
+
+/**
+ * Sets Cache-Control headers for static assets served from dist/client/.
+ *
+ * - Vite-hashed assets (e.g. index.abc12345.js) → immutable, 1-year cache
+ * - index.html → no-cache (always revalidate so clients get the latest entry point)
+ *
+ * Exported for unit testing.
+ */
+export function staticCacheHeaders(res: express.Response, filePath: string): void {
+  if (filePath.endsWith('index.html')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  } else if (/-[A-Za-z0-9_]{8,}\.[a-z0-9]+$/i.test(filePath)) {
+    res.setHeader('Cache-Control', 'max-age=31536000, immutable')
+  }
+}
 
 export function createApp(): Express {
   const app = express()
@@ -46,6 +63,7 @@ export function createApp(): Express {
   app.use('/api/admin/leads', requireAdmin, adminLeadsRouter)
   app.use('/api/admin/contacts', requireAdmin, adminContactsRouter)
   app.use('/api/admin/team', requireAdmin, adminTeamRouter)
+  app.use('/api/admin/dashboard', requireAdmin, adminDashboardRouter)
 
   app.use('/api', (_req, res) => {
     res.status(404).json({ success: false, message: 'Not found' })
@@ -66,7 +84,11 @@ export function createApp(): Express {
   if (process.env.NODE_ENV === 'production') {
     const clientDir = path.resolve(__dirname, '../dist/client')
     if (fs.existsSync(clientDir)) {
-      app.use(express.static(clientDir))
+      app.use(
+        express.static(clientDir, {
+          setHeaders: staticCacheHeaders,
+        })
+      )
       app.get(/^\/(?!api).*/, (_req, res) => {
         res.sendFile(path.join(clientDir, 'index.html'))
       })

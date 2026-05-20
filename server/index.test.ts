@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest'
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
@@ -244,4 +244,86 @@ describe('No raw SQL in route handlers', () => {
 
 beforeEach(() => {
   /* per-test isolation hook reserved */
+})
+
+describe('staticCacheHeaders (AC 5: Cache-Control for production static assets)', () => {
+  const makeRes = () => {
+    const headers: Record<string, string> = {}
+    return {
+      setHeader: vi.fn((name: string, value: string) => {
+        headers[name.toLowerCase()] = value
+      }),
+      _headers: headers,
+    }
+  }
+
+  it('sets no-cache on index.html', async () => {
+    const { staticCacheHeaders } = await import('./index')
+    const res = makeRes()
+    staticCacheHeaders(res as unknown as import('express').Response, '/dist/client/index.html')
+    expect(res.setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'no-cache, no-store, must-revalidate'
+    )
+  })
+
+  it('sets immutable long-lived cache on a Vite-hashed JS asset', async () => {
+    const { staticCacheHeaders } = await import('./index')
+    const res = makeRes()
+    staticCacheHeaders(
+      res as unknown as import('express').Response,
+      '/dist/client/assets/index-G46mRFNK.js'
+    )
+    expect(res.setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'max-age=31536000, immutable'
+    )
+  })
+
+  it('sets immutable long-lived cache on a Vite-hashed CSS asset', async () => {
+    const { staticCacheHeaders } = await import('./index')
+    const res = makeRes()
+    staticCacheHeaders(
+      res as unknown as import('express').Response,
+      '/dist/client/assets/index-CpMBkvzi.css'
+    )
+    expect(res.setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'max-age=31536000, immutable'
+    )
+  })
+
+  it('sets immutable long-lived cache on a Vite-hashed WebP image', async () => {
+    const { staticCacheHeaders } = await import('./index')
+    const res = makeRes()
+    staticCacheHeaders(
+      res as unknown as import('express').Response,
+      '/dist/client/assets/hero-mobile-abc12345.webp'
+    )
+    expect(res.setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'max-age=31536000, immutable'
+    )
+  })
+
+  it('sets no Cache-Control header for an unhashed static file (e.g. og-default.png)', async () => {
+    const { staticCacheHeaders } = await import('./index')
+    const res = makeRes()
+    staticCacheHeaders(
+      res as unknown as import('express').Response,
+      '/dist/client/og-default.png'
+    )
+    // Neither rule matches — setHeader should NOT be called
+    expect(res.setHeader).not.toHaveBeenCalled()
+  })
+
+  it('sets no Cache-Control header for robots.txt (no hash segment)', async () => {
+    const { staticCacheHeaders } = await import('./index')
+    const res = makeRes()
+    staticCacheHeaders(
+      res as unknown as import('express').Response,
+      '/dist/client/robots.txt'
+    )
+    expect(res.setHeader).not.toHaveBeenCalled()
+  })
 })
