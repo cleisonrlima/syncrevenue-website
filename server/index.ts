@@ -28,7 +28,9 @@ import publicTeamRouter from './routes/team'
 export function staticCacheHeaders(res: express.Response, filePath: string): void {
   if (filePath.endsWith('index.html')) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-  } else if (/-[A-Za-z0-9_]{8,}\.[a-z0-9]+$/i.test(filePath)) {
+    res.setHeader('Pragma', 'no-cache')
+    res.setHeader('Expires', '0')
+  } else if (/-[A-Za-z0-9]{8,}\.[a-z0-9]+$/.test(filePath)) {
     res.setHeader('Cache-Control', 'max-age=31536000, immutable')
   }
 }

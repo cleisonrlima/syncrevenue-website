@@ -247,17 +247,11 @@ beforeEach(() => {
 })
 
 describe('staticCacheHeaders (AC 5: Cache-Control for production static assets)', () => {
-  const makeRes = () => {
-    const headers: Record<string, string> = {}
-    return {
-      setHeader: vi.fn((name: string, value: string) => {
-        headers[name.toLowerCase()] = value
-      }),
-      _headers: headers,
-    }
-  }
+  const makeRes = () => ({
+    setHeader: vi.fn(),
+  })
 
-  it('sets no-cache on index.html', async () => {
+  it('sets no-cache on index.html (Cache-Control + HTTP/1.0 Pragma/Expires)', async () => {
     const { staticCacheHeaders } = await import('./index')
     const res = makeRes()
     staticCacheHeaders(res as unknown as import('express').Response, '/dist/client/index.html')
@@ -265,6 +259,8 @@ describe('staticCacheHeaders (AC 5: Cache-Control for production static assets)'
       'Cache-Control',
       'no-cache, no-store, must-revalidate'
     )
+    expect(res.setHeader).toHaveBeenCalledWith('Pragma', 'no-cache')
+    expect(res.setHeader).toHaveBeenCalledWith('Expires', '0')
   })
 
   it('sets immutable long-lived cache on a Vite-hashed JS asset', async () => {
