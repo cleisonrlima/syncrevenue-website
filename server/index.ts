@@ -40,8 +40,29 @@ export function staticCacheHeaders(res: express.Response, filePath: string): voi
 export function createApp(): Express {
   const app = express()
 
+  // AC 1 (Story 5.2): Redirect HTTP → HTTPS in production.
+  // Handles the reverse-proxy case where Nginx/Caddy terminates TLS and
+  // forwards to Express via X-Forwarded-Proto. Acts as defence-in-depth;
+  // the primary redirect should also be configured at the proxy level.
+  if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+      if (req.headers['x-forwarded-proto'] === 'http') {
+        return res.redirect(301, `https://${req.headers.host}${req.url}`)
+      }
+      next()
+    })
+  }
+
   app.disable('x-powered-by')
-  app.use(helmet())
+
+  // AC 2 (Story 5.2): Explicit HSTS configuration.
+  // In production: max-age=1 year, includeSubDomains, preload-eligible.
+  // In dev/test: HSTS disabled to prevent browser cache poisoning during development.
+  app.use(helmet({
+    hsts: process.env.NODE_ENV === 'production'
+      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+      : false,
+  }))
 
   const allowedOrigin = process.env.ALLOWED_ORIGIN
   app.use(

@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest'
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
@@ -245,6 +245,148 @@ describe('No raw SQL in route handlers', () => {
 
 beforeEach(() => {
   /* per-test isolation hook reserved */
+})
+
+// ---------------------------------------------------------------------------
+// Story 5.2 — Domain Configuration & SSL/TLS
+// ---------------------------------------------------------------------------
+
+describe('Story 5.2 — HTTP→HTTPS redirect middleware', () => {
+  // The module-level app is created in test/dev mode — redirect must NOT fire.
+  it('does NOT redirect when NODE_ENV is test (default test env)', async () => {
+    const r = await request(app, {
+      path: '/api/health',
+      headers: { 'x-forwarded-proto': 'http' },
+    })
+    // Should return normal 200 — not a 301
+    expect(r.status).toBe(200)
+  })
+
+  describe('production mode', () => {
+    let prodApp: import('express').Express
+    let savedEnv: string | undefined
+
+    beforeAll(async () => {
+      savedEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'production'
+      vi.resetModules()
+      const { createApp } = await import('./index')
+      prodApp = createApp()
+    })
+
+    afterAll(() => {
+      process.env.NODE_ENV = savedEnv
+      vi.resetModules()
+    })
+
+    it('redirects 301 to HTTPS when X-Forwarded-Proto is http', async () => {
+      const r = await request(prodApp, {
+        path: '/api/health',
+        headers: {
+          'x-forwarded-proto': 'http',
+          host: 'syncsirius.com',
+        },
+      })
+      expect(r.status).toBe(301)
+      expect(r.headers['location']).toBe('https://syncsirius.com/api/health')
+    })
+
+    it('does NOT redirect when X-Forwarded-Proto is https (already secure)', async () => {
+      const r = await request(prodApp, {
+        path: '/api/health',
+        headers: { 'x-forwarded-proto': 'https' },
+      })
+      expect(r.status).toBe(200)
+    })
+
+    it('does NOT redirect when X-Forwarded-Proto header is absent', async () => {
+      const r = await request(prodApp, { path: '/api/health' })
+      expect(r.status).toBe(200)
+    })
+
+    it('sets Strict-Transport-Security header with maxAge=31536000 in production', async () => {
+      const r = await request(prodApp, {
+        path: '/api/health',
+        headers: { 'x-forwarded-proto': 'https' },
+      })
+      const hsts = r.headers['strict-transport-security'] as string | undefined
+      expect(hsts).toBeTruthy()
+      expect(hsts).toContain('max-age=31536000')
+      expect(hsts).toContain('includeSubDomains')
+      expect(hsts).toContain('preload')
+    })
+  })
+
+  it('does NOT set Strict-Transport-Security header in test/dev environment', async () => {
+    // The module-level `app` is created with NODE_ENV=test — HSTS must be absent.
+    const r = await request(app, { path: '/api/health' })
+    const hsts = r.headers['strict-transport-security']
+    expect(hsts).toBeUndefined()
+  })
+})
+
+describe('Story 5.2 — CORS origin restriction (AC 3)', () => {
+  // The module-level app uses ALLOWED_ORIGIN='http://localhost:5173'
+
+  it('Access-Control-Allow-Origin matches ALLOWED_ORIGIN exactly, not wildcard', async () => {
+    const r = await request(app, {
+      path: '/api/health',
+      headers: { Origin: 'http://localhost:5173' },
+    })
+    const acao = r.headers['access-control-allow-origin']
+    expect(acao).toBe('http://localhost:5173')
+    expect(acao).not.toBe('*')
+  })
+
+  it('wildcard is never returned even for unmatched origins', async () => {
+    const r = await request(app, {
+      path: '/api/health',
+      headers: { Origin: 'https://attacker.example.com' },
+    })
+    expect(r.headers['access-control-allow-origin']).not.toBe('*')
+  })
+
+  it('CORS preflight OPTIONS returns correct Access-Control-Allow-Origin', async () => {
+    const r = await request(app, {
+      method: 'OPTIONS',
+      path: '/api/health',
+      headers: {
+        Origin: 'http://localhost:5173',
+        'Access-Control-Request-Method': 'GET',
+      },
+    })
+    // Preflight returns 204 or 200; ACAO must match ALLOWED_ORIGIN, not *
+    expect([200, 204]).toContain(r.status)
+    const acao = r.headers['access-control-allow-origin']
+    expect(acao).toBe('http://localhost:5173')
+    expect(acao).not.toBe('*')
+  })
+
+  it('CORS preflight with production origin returns that exact origin', async () => {
+    // Simulate ALLOWED_ORIGIN='https://syncsirius.com' (production scenario)
+    const savedEnv = process.env.ALLOWED_ORIGIN
+    process.env.ALLOWED_ORIGIN = 'https://syncsirius.com'
+    vi.resetModules()
+
+    const { createApp } = await import('./index')
+    const prodCorsApp = createApp()
+
+    const r = await request(prodCorsApp, {
+      method: 'OPTIONS',
+      path: '/api/health',
+      headers: {
+        Origin: 'https://syncsirius.com',
+        'Access-Control-Request-Method': 'GET',
+      },
+    })
+
+    const acao = r.headers['access-control-allow-origin']
+    expect(acao).toBe('https://syncsirius.com')
+    expect(acao).not.toBe('*')
+
+    process.env.ALLOWED_ORIGIN = savedEnv
+    vi.resetModules()
+  })
 })
 
 describe('staticCacheHeaders (AC 5: Cache-Control for production static assets)', () => {
