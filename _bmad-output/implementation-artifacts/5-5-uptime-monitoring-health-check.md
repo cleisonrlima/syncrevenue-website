@@ -1,6 +1,6 @@
 # Story 5.5: Uptime Monitoring & Health Check
 
-Status: ready-for-dev
+Status: done
 
 <!-- Created 2026-05-20. Epic 5 — Production Deployment. Sprint: SYN Sprint 3 (current sprint). Depends on: Story 5.3. -->
 
@@ -78,6 +78,40 @@ So that lead capture downtime is detected and resolved before significant demo r
 - Route isolation: import `db` directly in `health.ts` (same pattern as other routes that import DAOs).
 - `vi.resetModules()` pattern required in tests to get fresh `db` instance per test run (consistent with existing route tests).
 - All 743 existing tests must continue to pass; `tsc --noEmit` must exit 0.
+
+## Review Findings
+
+**Reviewer:** Cross-model independent review (Claude Sonnet 4.6)
+**Review date:** 2026-05-20
+
+### Summary
+
+Implementation passes adversarial review. All 5 focus areas clean. One trivial patch applied inline.
+
+### Findings
+
+#### F1 — DB probe correctness (PASS)
+`ping()` correctly catches all exceptions from `database.prepare('SELECT 1').get()`, including the "database connection is not open" error thrown by better-sqlite3 when the DB is closed. Returns 503 on any throw. No internal error details leak to the response body.
+
+#### F2 — 503 response shape consistency (PASS)
+Shape `{ success, status, timestamp }` is identical between 200 and 503 responses. Keyword monitoring on `"status":"ok"` as documented correctly identifies degraded state. No uptime-monitor compatibility issues.
+
+#### F3 — Test isolation (PASS with trivial patch)
+`vi.resetModules()` in `beforeEach` correctly re-evaluates `../db` with the fresh `DB_PATH` env var, so each test gets a fresh DB-backed `healthDao` singleton. The 503 failure-simulation test used `vi.doMock` + `vi.doUnmock` but the unmock was not wrapped in `try/finally`, meaning a failing assertion could leave the mock registered for subsequent tests. **Patched inline** — `vi.doUnmock` moved to `finally` block. Commit: `fix(story-5.5): close review findings`.
+
+#### F4 — Security (PASS)
+503 response body contains only `{ success: false, status: 'db_unavailable', timestamp }`. The caught exception is swallowed — no stack trace, no internal path, no SQLite error message exposed.
+
+#### F5 — Timing budget (PASS, low flakiness risk noted)
+150ms budget measured from after `createApp()` returns (module loading excluded). Synchronous SQLite `SELECT 1` completes in microseconds. 150ms is very generous. Flakiness risk on heavily loaded CI runners is low-probability and acceptable.
+
+#### F6 — `docs/monitoring-setup.md` accuracy (PASS)
+Endpoint URL pattern, response shape, HTTP status codes, keyword monitoring, alert contacts, PM2 recovery behavior, and autocannon load-test command are all accurate. The load test targets `/api/demo` (correct per AC 4, not the health endpoint). No documentation errors found.
+
+### Non-trivial findings
+None. No new stories required from this review.
+
+---
 
 ### File Write Surface
 
