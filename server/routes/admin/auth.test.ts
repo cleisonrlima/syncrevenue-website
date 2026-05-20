@@ -1,10 +1,40 @@
 // @vitest-environment node
+// Patterns updated by Story 5.12 — see _bmad-output/test-artifacts/test-design/test-design-epic-5-v2.md
+// (NG2: pre-existing flakes — Story 4.7 throttling/lockout suite previously timed out under
+// full-suite CPU contention because every login call ran bcrypt.compareSync at cost factor 12
+// (~250-300ms each) and the two "window elapsed" assertions relied on wall-clock arithmetic.)
+//
+// Fix: bcryptjs is mocked module-wide with a deterministic constant-time stub so every test
+// in this file finishes in well under 100ms. The two assertions that previously synthesised a
+// "16 minutes ago" timestamp via Date.now() arithmetic now drive vi.useFakeTimers() +
+// vi.setSystemTime() to advance the clock deterministically instead of racing the wall clock.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Express } from 'express'
 import type Database from 'better-sqlite3'
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
+
+// Mock bcryptjs at module-load time so every dynamic re-import inside createIsolatedApp
+// (which calls vi.resetModules()) also picks up the stub. The stub is intentionally
+// trivial: hashSync wraps the plaintext in a marker, compareSync confirms the marker
+// matches. This preserves the only semantic property the auth route relies on — that the
+// correct plaintext matches its hash and any other plaintext does not — while eliminating
+// the per-call CPU cost that drove the flake. The mock is in this file scope only; other
+// tests still use real bcrypt.
+vi.mock('bcryptjs', () => {
+  const MARKER = 'syn-stub-bcrypt-v1'
+  function hashSync(plaintext: string, _cost: number): string {
+    return `${MARKER}$${plaintext}`
+  }
+  function compareSync(plaintext: string, hash: string | undefined | null): boolean {
+    if (!hash) return false
+    return hash === `${MARKER}$${plaintext}`
+  }
+  const stub = { hashSync, compareSync }
+  return { default: stub, ...stub }
+})
+
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { request } from '../../test-utils/request'
@@ -269,45 +299,66 @@ describe('admin auth routes', () => {
     })
 
     it('grants 200 + cookie + resets counter when correct password arrives after window elapses', async () => {
+      // Story 5.12 — drive the clock with fake timers instead of synthesising "16 minutes
+      // ago" via Date.now() arithmetic. Anchor the system time, record five failures stamped
+      // at the anchor, then advance 16 minutes so the route sees the lockout window as
+      // elapsed. The DAO stores timestamps as ISO strings, so we only need
+      // vi.setSystemTime() / vi.advanceTimersByTime() to control what `new Date()` returns.
       expect(attemptsDaoModule).toBeTruthy()
-      const sixteenMinAgo = new Date(Date.now() - 16 * 60 * 1000)
-      for (let i = 0; i < 5; i++) {
-        attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', sixteenMinAgo)
+      const anchor = new Date('2026-05-20T12:00:00Z')
+      vi.useFakeTimers()
+      try {
+        vi.setSystemTime(anchor)
+        for (let i = 0; i < 5; i++) {
+          attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', new Date())
+        }
+        vi.advanceTimersByTime(16 * 60 * 1000)
+        const r = await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: PLAINTEXT },
+          remoteAddress: '10.0.3.1',
+        })
+        expect(r.status).toBe(200)
+        const token = extractCookieValue(r.headers['set-cookie'] as string | string[] | undefined, AUTH_COOKIE_NAME)
+        expect(token).toBeTruthy()
+        expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')).toBeUndefined()
+      } finally {
+        vi.useRealTimers()
       }
-      const r = await request(app, {
-        method: 'POST',
-        path: '/api/admin/auth/login',
-        body: { email: 'admin@example.com', password: PLAINTEXT },
-        remoteAddress: '10.0.3.1',
-      })
-      expect(r.status).toBe(200)
-      const token = extractCookieValue(r.headers['set-cookie'] as string | string[] | undefined, AUTH_COOKIE_NAME)
-      expect(token).toBeTruthy()
-      expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')).toBeUndefined()
     })
 
     it('starts a fresh email failure window after the previous lockout expires', async () => {
+      // Story 5.12 — same pattern as the "window elapses" test above. Anchor + advance is
+      // deterministic; wall-clock subtraction is not.
       expect(attemptsDaoModule).toBeTruthy()
-      const sixteenMinAgo = new Date(Date.now() - 16 * 60 * 1000)
-      for (let i = 0; i < 5; i++) {
-        attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', sixteenMinAgo)
-      }
-      const wrong = await request(app, {
-        method: 'POST',
-        path: '/api/admin/auth/login',
-        body: { email: 'admin@example.com', password: 'wrong' },
-        remoteAddress: '10.0.6.1',
-      })
-      expect(wrong.status).toBe(401)
-      expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')?.failed_count).toBe(1)
+      const anchor = new Date('2026-05-20T12:00:00Z')
+      vi.useFakeTimers()
+      try {
+        vi.setSystemTime(anchor)
+        for (let i = 0; i < 5; i++) {
+          attemptsDaoModule!.adminLoginAttemptsDao.recordFailure('admin@example.com', new Date())
+        }
+        vi.advanceTimersByTime(16 * 60 * 1000)
+        const wrong = await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: 'wrong' },
+          remoteAddress: '10.0.6.1',
+        })
+        expect(wrong.status).toBe(401)
+        expect(attemptsDaoModule!.adminLoginAttemptsDao.getByEmail('admin@example.com')?.failed_count).toBe(1)
 
-      const ok = await request(app, {
-        method: 'POST',
-        path: '/api/admin/auth/login',
-        body: { email: 'admin@example.com', password: PLAINTEXT },
-        remoteAddress: '10.0.6.2',
-      })
-      expect(ok.status).toBe(200)
+        const ok = await request(app, {
+          method: 'POST',
+          path: '/api/admin/auth/login',
+          body: { email: 'admin@example.com', password: PLAINTEXT },
+          remoteAddress: '10.0.6.2',
+        })
+        expect(ok.status).toBe(200)
+      } finally {
+        vi.useRealTimers()
+      }
     })
 
     it('does not throttle repeated successful logins from the same IP', async () => {

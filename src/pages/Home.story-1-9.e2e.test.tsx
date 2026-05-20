@@ -1,5 +1,9 @@
+// Patterns updated by Story 5.12 — see _bmad-output/test-artifacts/test-design/test-design-epic-5-v2.md
+// (NG2: pre-existing flakes — RTL `waitFor` polled the DOM at a fixed interval and timed out
+// under full-suite CPU contention. `findBy*` queries retry after every React effect flush and
+// match the lazy-imported section the moment it commits.)
 import { afterEach, describe, expect, it } from 'vitest'
-import { render, screen, waitFor, within, cleanup } from '@testing-library/react'
+import { render, screen, within, cleanup } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import Home from './Home'
@@ -18,7 +22,7 @@ describe('Story 1.9 trust sequence', () => {
   })
 
   it('renders Comparison, Security, ClientReferences, Team, and DemoScheduler in the required order', async () => {
-    const { container } = render(<Home />)
+    render(<Home />)
 
     const comparison = await screen.findByRole('region', {
       name: 'SyncRevenue comparison against manual and generic tools',
@@ -32,10 +36,8 @@ describe('Story 1.9 trust sequence', () => {
     const team = await screen.findByRole('region', {
       name: 'Sync Sirius team specialists',
     }, lazySectionWait)
-    const demoScheduler = await waitFor(() => {
-      const section = container.querySelector('#agendar-demo')
-      expect(section).toBeInTheDocument()
-      return section as HTMLElement
+    const demoScheduler = await screen.findByRole('region', {
+      name: 'Schedule a SyncRevenue demo',
     }, lazySectionWait)
 
     expect(comparison.compareDocumentPosition(security)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)

@@ -1,5 +1,9 @@
+// Patterns updated by Story 5.12 — see _bmad-output/test-artifacts/test-design/test-design-epic-5-v2.md
+// (NG2: pre-existing flakes — RTL `waitFor` polled the DOM at a fixed interval and timed out
+// under full-suite CPU contention. `findBy*` queries retry after every React effect flush and
+// match the lazy-imported section the moment it commits.)
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import App from '@/App'
@@ -40,10 +44,11 @@ describe('Story 1.7 comparison visitor flow', () => {
       { name: 'SyncRevenue comparison against manual and generic tools' },
       { timeout: 6000 },
     )
-    await waitFor(() => {
-      expect(document.querySelector('#security')).toBeInTheDocument()
-    })
-    const security = document.querySelector('#security') as HTMLElement
+    const security = await screen.findByRole(
+      'region',
+      { name: 'Your Data is Protected' },
+      { timeout: 6000 },
+    )
 
     expect(services.compareDocumentPosition(comparison)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(comparison.compareDocumentPosition(security)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)

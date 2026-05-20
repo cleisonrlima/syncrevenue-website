@@ -111,6 +111,7 @@
   - `src/lib/brand-tokens.contrast.test.ts` — WCAG 2.1 AA contrast guard locking the R-A2 Electric Blue exception
   - `src/components/sections/ClientReferences.allowlist.test.tsx` — parses `vault/Planning/client-references-allowlist.md` and asserts every rendered `agencyName` is approved; placeholders fail when `NODE_ENV === 'production'` (R-B1)
 - Vitest excludes `tests/e2e/**` (configured in `vite.config.ts`)
+- **Story 5.12 pattern shift (Home suites).** `src/pages/Home.test.tsx`, `src/pages/Home.story-1-7.e2e.test.tsx`, `src/pages/Home.story-1-8.e2e.test.tsx`, `src/pages/Home.story-1-9.e2e.test.tsx`, `src/pages/Home.story-2-4.e2e.test.tsx` — every `waitFor(() => expect(document.querySelector('#section-id')).toBeInTheDocument())` was replaced with `await screen.findByRole('region', { name: '<aria-label>' }, { timeout: 5000 })`. `findBy*` retries on every React effect flush rather than racing a polling interval, eliminating the chronic timeouts every Epic 5 story dev record observed. The 5s ceiling per query stays explicit because Home's sections are dynamic-imported (`React.lazy` + `Suspense`) and the import chunk can take longer than RTL's 1s default to commit under full-suite CPU contention. See `_bmad-output/test-artifacts/test-design/test-design-epic-5-v2.md` (NG2).
 
 ### Real-browser e2e (Playwright)
 

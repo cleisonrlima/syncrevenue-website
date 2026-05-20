@@ -1,11 +1,20 @@
+// Patterns updated by Story 5.12 — see _bmad-output/test-artifacts/test-design/test-design-epic-5-v2.md
+// (NG2: pre-existing flakes — RTL `waitFor` polled the DOM at a fixed interval and timed out
+// under full-suite CPU contention. `findBy*` queries retry after every React effect flush and
+// match the lazy-imported section the moment it commits.)
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import App from '@/App'
 import i18next from '@/i18n'
 import { useLocaleStore } from '@/store/useLocaleStore'
 import type { PublicTeamMemberRow } from '@/lib/api'
+
+// Lazy-imported sections (Home.tsx wraps Comparison/Security/ClientReferences/Team/DemoScheduler in
+// React.lazy + Suspense). Under full-suite CPU contention the dynamic-import chunk can take longer
+// than RTL's default 1s findBy* timeout to commit, so each query keeps an explicit 5s ceiling.
+const lazySectionWait = { timeout: 5000 }
 
 vi.mock('@/lib/api', async () => {
   const actual = await vi.importActual<typeof import('@/lib/api')>('@/lib/api')
@@ -80,19 +89,15 @@ describe('Story 1.8 team visitor flow', () => {
   it('presents the Team section with translated member details before the demo ask', async () => {
     renderHome()
 
-    const clientReferences = await waitFor(() => {
-      const section = document.querySelector('#clientes')
-      expect(section).toBeInTheDocument()
-      return section as HTMLElement
-    })
+    const clientReferences = await screen.findByRole('region', {
+      name: 'Verified US travel agency references',
+    }, lazySectionWait)
     const team = await screen.findByRole('region', {
       name: 'Sync Sirius team specialists',
-    })
-    const demoScheduler = await waitFor(() => {
-      const section = document.querySelector('#agendar-demo')
-      expect(section).toBeInTheDocument()
-      return section as HTMLElement
-    })
+    }, lazySectionWait)
+    const demoScheduler = await screen.findByRole('region', {
+      name: 'Schedule a SyncRevenue demo',
+    }, lazySectionWait)
 
     expect(clientReferences.compareDocumentPosition(team)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     expect(team.compareDocumentPosition(demoScheduler)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
@@ -115,7 +120,7 @@ describe('Story 1.8 team visitor flow', () => {
 
     const team = await screen.findByRole('region', {
       name: 'Sync Sirius team specialists',
-    })
+    }, lazySectionWait)
     expect(within(team).getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
     expect(within(team).getByText(/commission recovery strategy across the Americas/)).toBeInTheDocument()
 
@@ -127,7 +132,7 @@ describe('Story 1.8 team visitor flow', () => {
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')
     const translatedTeam = await screen.findByRole('region', {
       name: 'Especialistas da equipe Sync Sirius',
-    })
+    }, lazySectionWait)
     expect(
       within(translatedTeam).getByRole('heading', { name: /Especialistas em\s+distribuição aérea/i }),
     ).toBeInTheDocument()
