@@ -1,6 +1,6 @@
 # Story 5.1: Production Build & PM2 Process Management
 
-Status: review
+Status: done
 
 <!-- Created 2026-05-19 for Epic 5 (Production Deployment). Parent Jira: TBD (SYN Sprint 4 or SYN Sprint 3). Subtasks: TBD. -->
 
@@ -217,3 +217,27 @@ claude-sonnet-4-6
 - `package.json` — UPDATED: added `start:prod` script
 - `server/index.ts` — UPDATED: exported `staticCacheHeaders` helper + `express.static` setHeaders
 - `server/index.test.ts` — UPDATED: added 6 `staticCacheHeaders` unit tests
+
+## Review Findings
+
+**Reviewed:** 2026-05-19
+**Reviewer:** claude-sonnet-4-6 (cross-model review pass)
+
+### Patches Applied Inline (trivial)
+
+1. **`server/index.ts` — regex cleanup + HTTP/1.0 headers**: Removed redundant `i` flag from the hash-detection regex (Vite hash chars are already specified as `[A-Za-z0-9]`); removed `_` from the character class (Vite does not use underscores in hashes). New regex: `/-[A-Za-z0-9]{8,}\.[a-z0-9]+$/`. Also added `Pragma: no-cache` and `Expires: '0'` headers to the `index.html` branch for HTTP/1.0 proxy compatibility.
+
+2. **`ecosystem.config.js` — production safety + log paths**: Added `max_restarts: 10` (prevents infinite crash loops), `min_uptime: '5s'` (crash counted only after 5s uptime), `error_file: 'logs/pm2-error.log'`, `out_file: 'logs/pm2-out.log'`. Fixed the `pm2 save` comment wording. Added inline comments for `max_memory_restart` override and cluster mode opt-in guidance.
+
+3. **`server/index.test.ts` — dead code removal**: Removed the unused `_headers` object and its lowercase-normalization closure from the `makeRes` mock. No test read from `_headers`; only `setHeader` spy assertions were used. Updated the index.html test to also assert `Pragma` and `Expires` headers (matching the new implementation).
+
+4. **`.gitignore` — logs directory**: Added `logs/` entry so PM2 log files (`logs/pm2-error.log`, `logs/pm2-out.log`) are not accidentally committed to the repository.
+
+### New Story Created (non-trivial finding)
+
+**Story 5.7 — PM2 Cluster Mode & Multi-Core Production Optimization**
+File: `_bmad-output/implementation-artifacts/5-7-pm2-cluster-mode-multi-core.md`
+
+The cluster mode adoption decision is non-trivial because it requires: (a) verifying the Express app is stateless/cluster-safe, (b) determining whether SQLite concurrent writes under multiple PM2 workers are safe (WAL mode analysis), (c) updating `ecosystem.config.js`, and (d) writing an ADR to `vault/Planning/Architecture-Key.md`. These concerns span architecture, database configuration, and documentation — too much scope for an inline patch. A comment in `ecosystem.config.js` was added pointing operators toward this story.
+
+Jira sync: deferred (OAuth required, user AFK).
