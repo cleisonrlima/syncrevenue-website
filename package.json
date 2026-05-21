@@ -23,7 +23,7 @@
     "db:backup": "bash scripts/backup.sh",
     "test:backup": "node scripts/backup.test.mjs",
     "test:build": "node scripts/test-build-output.mjs",
-    "start": "node dis/server/index.js"
+    "start": "node dist/server/index.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
