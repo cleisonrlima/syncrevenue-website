@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "dev": "concurrently --kill-others-on-fail \"vite\" \"tsx watch server/index.ts\"",
-    "build": "npx tsc -p tsconfig.server.json && vite build && node scripts/generate-seo-assets.mjs && node_modules/.bin/tsx --tsconfig tsconfig.json scripts/prerender.tsx",
+    "build": "tsc -p tsconfig.server.json && vite build && node scripts/generate-seo-assets.mjs && node_modules/.bin/tsx --tsconfig tsconfig.json scripts/prerender.tsx",
     "start:prod": "node dist/server/index.js",
     "typecheck": "tsc --noEmit && tsc --noEmit --project tsconfig.scripts.json",
     "preview": "vite preview",
@@ -22,8 +22,7 @@
     "lint": "eslint .",
     "db:backup": "bash scripts/backup.sh",
     "test:backup": "node scripts/backup.test.mjs",
-    "test:build": "node scripts/test-build-output.mjs",
-    "start": "node dist/server/index.js"
+    "test:build": "node scripts/test-build-output.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
