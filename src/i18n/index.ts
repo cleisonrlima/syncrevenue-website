@@ -14,6 +14,7 @@ i18next
       'pt-BR': { translation: ptBR },
       es: { translation: es },
     },
+    lng: 'en',
     fallbackLng: 'en',
     supportedLngs: ['en', 'pt-BR', 'es'],
     detection: {
