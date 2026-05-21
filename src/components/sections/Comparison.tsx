@@ -44,41 +44,56 @@ function ComparisonTable({ ariaLabel }: { ariaLabel: string }) {
   const { t } = useTranslation()
 
   return (
-    <div className="mt-12 overflow-x-auto rounded-lg border border-brand-slate/20 bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-[14px] border border-[var(--line-strong)] bg-white/[0.03]">
       <table aria-label={ariaLabel} className="min-w-[720px] w-full border-collapse text-left">
-        <thead className="bg-[#F4F6FA]">
+        <thead className="bg-white/[0.04]">
           <tr>
-            <th scope="col" className="w-[22%] px-5 py-4 text-sm font-bold text-brand-navy">
+            <th
+              scope="col"
+              className="w-[22%] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-white/55"
+            >
               {t('comparison.featureHeader', { defaultValue: 'Feature' })}
             </th>
-            <th scope="col" className="w-[26%] px-5 py-4 text-sm font-bold text-brand-navy">
+            <th
+              scope="col"
+              className="w-[26%] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--accent-soft)]"
+            >
               {t('comparison.syncrevenueHeader', { defaultValue: 'SyncRevenue' })}
             </th>
-            <th scope="col" className="w-[26%] px-5 py-4 text-sm font-bold text-brand-navy">
+            <th
+              scope="col"
+              className="w-[26%] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-white/55"
+            >
               {t('comparison.legacyHeader', { defaultValue: 'Manual / Legacy Tools' })}
             </th>
-            <th scope="col" className="w-[26%] px-5 py-4 text-sm font-bold text-brand-navy">
+            <th
+              scope="col"
+              className="w-[26%] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-white/55"
+            >
               {t('comparison.genericHeader', { defaultValue: 'Generic Tools' })}
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-brand-slate/15">
+        <tbody className="divide-y divide-[var(--line)]">
           {featureRows.map(row => (
             <tr key={row.key} className="align-top">
-              <th scope="row" className="px-5 py-5 text-sm font-bold leading-6 text-brand-navy">
+              <th
+                scope="row"
+                className="px-5 py-5 text-[13.5px] font-semibold leading-[1.5] text-white"
+              >
                 {t(`comparison.features.${row.key}.label`, { defaultValue: row.labelDefault })}
               </th>
-              <td className="px-5 py-5 text-sm leading-6 text-brand-slate">
+              <td className="px-5 py-5 text-[13px] leading-[1.6] text-white/[0.78]">
                 {t(`comparison.features.${row.key}.syncrevenue`, {
                   defaultValue: row.syncrevenueDefault,
                 })}
               </td>
-              <td className="px-5 py-5 text-sm leading-6 text-brand-slate">
+              <td className="px-5 py-5 text-[13px] leading-[1.6] text-white/55">
                 {t(`comparison.features.${row.key}.legacy`, {
                   defaultValue: row.legacyDefault,
                 })}
               </td>
-              <td className="px-5 py-5 text-sm leading-6 text-brand-slate">
+              <td className="px-5 py-5 text-[13px] leading-[1.6] text-white/55">
                 {t(`comparison.features.${row.key}.generic`, {
                   defaultValue: row.genericDefault,
                 })}
@@ -98,10 +113,15 @@ export default function Comparison() {
   })
 
   return (
-    <MotionSection id="comparison" role="region" aria-label={ariaLabel} className="bg-white">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <MotionSection
+      id="comparison"
+      role="region"
+      aria-label={ariaLabel}
+      className="sec bg-[var(--ink)] text-white scroll-mt-24"
+    >
+      <div className="sec-inner mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
         <SectionHeader
-          variant="light"
+          variant="sober"
           eyebrow={t('comparison.eyebrow', { defaultValue: 'Why SyncRevenue' })}
           heading={t('comparison.headline', {
             defaultValue: 'Stop Losing Revenue to Manual Processes',
@@ -109,7 +129,7 @@ export default function Comparison() {
           subtext={t('comparison.subtext', {
             defaultValue: 'See how automated commission management compares to the status quo.',
           })}
-          className="section-intro-emphasis [&_h2]:scroll-mt-24"
+          className="[&_h2]:scroll-mt-24"
         />
 
         <ComparisonTable ariaLabel={ariaLabel} />

@@ -162,12 +162,12 @@ export default function HeroProductPanel() {
           ))}
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-[10.5px] font-medium text-white/55">
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-medium text-white/55">
           <span>{t('hero.panel.intsMore.prefix', { defaultValue: '' })}</span>
-          <span className="rounded-[5px] bg-white/[0.04] px-2 py-[3px] font-mono whitespace-nowrap">
+          <span className="rounded-[5px] border border-[var(--line)] bg-white/[0.04] px-2 py-[3px] text-[10.5px] font-semibold tracking-[0.02em] text-white/75 whitespace-nowrap">
             {t('hero.panel.intsMore.ndc', { defaultValue: '' })}
           </span>
-          <span className="rounded-[5px] bg-white/[0.04] px-2 py-[3px] font-mono whitespace-nowrap">
+          <span className="rounded-[5px] border border-[var(--line)] bg-white/[0.04] px-2 py-[3px] text-[10.5px] font-semibold tracking-[0.02em] text-white/75 whitespace-nowrap">
             {t('hero.panel.intsMore.ibe', { defaultValue: '' })}
           </span>
         </div>
@@ -180,7 +180,7 @@ export default function HeroProductPanel() {
       >
         <span
           aria-hidden="true"
-          className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[#5BC98C]"
+          className="inline-block h-[7px] w-[7px] shrink-0 rounded-full bg-[#5BC98C]"
         />
         <span
           className="flex-1 min-w-0 truncate"
@@ -197,7 +197,7 @@ export default function HeroProductPanel() {
           />
         </span>
         <span
-          className="shrink-0 rounded-[5px] bg-[#5BC98C]/15 px-2 py-[3px] font-mono text-[11.5px] font-semibold text-[#5BC98C]"
+          className="shrink-0 text-[12.5px] font-semibold tabular-nums text-[#5BC98C]"
           data-testid="hero-ticker-value"
           style={{
             opacity: fade === 'in' ? 1 : 0,

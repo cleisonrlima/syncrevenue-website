@@ -68,17 +68,17 @@ const ClockIcon = () => (
 function ChannelRow({ channel }: { channel: Channel }) {
   const labelNode = (
     <div>
-      <div className="text-[12px] font-semibold uppercase tracking-[0.04em] text-white/55">
+      <div className="text-[11.5px] font-medium text-white/50 leading-tight">
         {channel.label}
       </div>
-      <div className="mt-[2px] text-[14px] leading-[1.5] text-[var(--accent-soft)]">
+      <div className="mt-[3px] text-[14px] font-semibold leading-tight text-white">
         {channel.value}
       </div>
     </div>
   )
 
   const wrapClass =
-    'channel flex items-center gap-[14px] rounded-[10px] px-[12px] py-[10px] no-underline transition-colors duration-150 hover:bg-white/[0.025]'
+    'channel flex items-center gap-[14px] rounded-[10px] border border-[var(--line)] bg-white/[0.03] px-4 py-[14px] no-underline transition-colors duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.05]'
 
   const icon = (
     <div className={ICON_BOX_CLASS}>
@@ -107,10 +107,10 @@ function ChannelRow({ channel }: { channel: Channel }) {
   } else {
     valueWrap = (
       <div>
-        <div className="text-[12px] font-semibold uppercase tracking-[0.04em] text-white/55">
+        <div className="text-[11.5px] font-medium text-white/50 leading-tight">
           {channel.label}
         </div>
-        <span className="mt-[2px] block text-[14px] leading-[1.5] text-white/80">
+        <span className="mt-[3px] block text-[14px] font-semibold leading-tight text-white">
           {channel.value}
         </span>
       </div>
@@ -140,23 +140,24 @@ export default function Contact() {
       id="contato"
       role="region"
       aria-labelledby="contact-heading"
-      className="sec relative bg-[var(--bg)] text-white"
+      className="sec relative bg-[var(--ink)] text-white"
     >
-      <div className="sec-inner mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        <header className="sec-head mb-[40px] max-w-[720px]">
-          <span className="sec-eyebrow text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--accent-soft)]">
+      <div className="sec-inner mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
+        <header className="sec-head mx-auto mb-14 max-w-[760px] text-center">
+          <div className="sec-eyebrow inline-flex items-center justify-center gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-white/50">
+            <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
             {t('contact.eyebrow', { defaultValue: 'Contact' })}
-          </span>
+          </div>
           <h2
             id="contact-heading"
-            className="sec-h mt-[10px] text-[clamp(28px,3.4vw,40px)] font-bold leading-[1.15] text-white"
+            className="sec-h mt-[18px] text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight tracking-[-0.025em] text-white"
           >
             {t('contact.heading.text', { defaultValue: 'Talk to' })}{' '}
             <span className="accent text-[var(--accent-soft)]">
               {t('contact.heading.accent', { defaultValue: 'SyncSirius' })}
             </span>
           </h2>
-          <p className="sec-sub mt-[14px] text-[15px] leading-[1.6] text-white/65">
+          <p className="sec-sub mt-5 mx-auto max-w-[62ch] text-[15px] leading-[1.65] text-white/[0.65]">
             {t('contact.subhead', {
               defaultValue:
                 'For commercial questions, support, partnerships, or press — your message reaches the right team.',
@@ -164,23 +165,23 @@ export default function Contact() {
           </p>
         </header>
 
-        <div className="form-grid grid max-w-[1180px] grid-cols-1 items-start gap-[40px] min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
+        <div className="form-grid grid mx-auto max-w-[1180px] grid-cols-1 items-start gap-[40px] min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
           <aside className="form-info">
-            <div className="channels flex flex-col gap-[18px]">
+            <div className="channels flex flex-col gap-[10px]">
               {channels.map((channel, idx) => (
                 <ChannelRow key={idx} channel={channel} />
               ))}
             </div>
 
-            <div className="info-card mt-[24px] flex items-start gap-[14px] rounded-[12px] border border-[var(--line-strong)] bg-white/[0.025] p-[16px]">
-              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+            <div className="info-card mt-6 flex items-center gap-[14px] rounded-[10px] border border-[var(--line)] bg-white/[0.03] px-5 py-[18px]">
+              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[9px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
                 <ClockIcon />
               </div>
               <div>
-                <div className="info-card-t text-[13px] font-semibold text-white">
+                <div className="info-card-t text-[13.5px] font-semibold text-white leading-tight">
                   {t('contact.infoCard.title', { defaultValue: 'Average response time' })}
                 </div>
-                <div className="info-card-s mt-[3px] text-[13px] text-white/60">
+                <div className="info-card-s mt-[3px] text-[12px] text-white/55 leading-snug">
                   {t('contact.infoCard.subtitle', {
                     defaultValue: 'Under 4 hours on business days.',
                   })}

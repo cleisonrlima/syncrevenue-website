@@ -18,7 +18,7 @@ import {
   type AuditFormValues,
 } from '@/hooks/useAudit'
 import { useLocaleStore } from '@/store/useLocaleStore'
-import GradientButton from '@/components/ui/GradientButton'
+import { Button } from '@/components/ui/Button'
 import Toast from '@/components/ui/Toast'
 import MotionSection from './MotionSection'
 import SectionHeader from '@/components/ui/SectionHeader'
@@ -40,9 +40,14 @@ const initialValues: AuditFormValues = {
 
 function textInputClasses(hasError: boolean) {
   return cn(
-    'mt-2 w-full rounded-lg border bg-white px-4 py-3 text-base text-brand-navy shadow-sm',
-    'placeholder:text-brand-slate/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-electric-blue',
-    hasError ? 'border-destructive' : 'border-brand-slate/25'
+    'mt-2 w-full rounded-[9px] border bg-white/[0.04] px-[13px] py-[11px] text-[14px] leading-[1.4] text-white',
+    'placeholder:text-white/[0.32]',
+    'transition-colors duration-150',
+    'hover:border-white/[0.22]',
+    'focus:outline-none focus:bg-white/[0.06]',
+    'focus:border-[var(--accent)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
+    'appearance-none',
+    hasError ? 'border-[#FF6B6B]' : 'border-[var(--line-strong)]',
   )
 }
 
@@ -177,12 +182,12 @@ const AuditForm = forwardRef<AuditFormHandle>(function AuditForm(_props, ref) {
         role="status"
         aria-live="polite"
         tabIndex={-1}
-        className="rounded-lg border border-brand-electric-blue/20 bg-white p-8 text-center shadow-sm"
+        className="rounded-[14px] border border-[var(--line-strong)] bg-white/[0.035] p-8 text-center"
       >
-        <h3 className="text-2xl font-bold text-brand-navy">
+        <h3 className="text-[20px] font-bold tracking-[-0.015em] text-white">
           {t('forms.audit.successTitle', { defaultValue: 'Request received!' })}
         </h3>
-        <p className="mt-3 text-base leading-7 text-brand-slate">
+        <p className="mt-3 text-[14px] leading-[1.6] text-white/[0.65]">
           {t('forms.audit.successBody', { defaultValue: 'Our team will reach out shortly.' })}
         </p>
       </div>
@@ -193,11 +198,11 @@ const AuditForm = forwardRef<AuditFormHandle>(function AuditForm(_props, ref) {
     <div id="audit-form" data-testid="commission-audit-form">
       <form
         aria-label={t('forms.audit.title', { defaultValue: 'Commission Audit Request' })}
-        className="grid gap-5 rounded-lg border border-brand-slate/20 bg-white p-6 shadow-sm sm:p-8"
+        className="grid gap-5 rounded-[14px] border border-[var(--line-strong)] bg-white/[0.035] p-6 sm:p-8"
         onSubmit={handleSubmit}
         noValidate
       >
-        <h3 className="text-2xl font-bold text-brand-navy">
+        <h3 className="text-[20px] font-bold tracking-[-0.015em] text-white">
           {t('forms.audit.title', { defaultValue: 'Commission Audit Request' })}
         </h3>
 
@@ -315,8 +320,9 @@ const AuditForm = forwardRef<AuditFormHandle>(function AuditForm(_props, ref) {
 
         <input type="hidden" name="locale" value={values.locale} readOnly />
 
-        <GradientButton
+        <Button
           type="submit"
+          variant="solid-accent"
           size="lg"
           disabled={!canSubmit}
           className="w-full min-h-[44px] sm:w-auto sm:justify-self-start whitespace-nowrap"
@@ -331,7 +337,7 @@ const AuditForm = forwardRef<AuditFormHandle>(function AuditForm(_props, ref) {
           {isSubmitting
             ? t('forms.audit.submitting', { defaultValue: 'Sending...' })
             : t('forms.audit.submit', { defaultValue: 'Request Audit' })}
-        </GradientButton>
+        </Button>
       </form>
 
       {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
@@ -354,17 +360,20 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-semibold text-brand-navy">
+      <label
+        htmlFor={id}
+        className="block text-[12px] font-semibold text-white/70"
+      >
         {label}
         {required && (
-          <span aria-hidden="true" className="ml-1 text-destructive">
+          <span aria-hidden="true" className="ml-1 text-[var(--accent-soft)] font-bold">
             *
           </span>
         )}
       </label>
       {children}
       {error && (
-        <p id={`${id}-error`} className="mt-2 text-sm text-destructive">
+        <p id={`${id}-error`} className="mt-2 text-[12px] text-[#FF6B6B]">
           {error}
         </p>
       )}
@@ -389,12 +398,12 @@ export default function CommissionAudit() {
       id="commission-audit"
       role="region"
       aria-labelledby="commission-audit-heading"
-      className="bg-brand-offwhite"
+      className="sec relative bg-[var(--ink)] text-white scroll-mt-24"
       data-testid="commission-audit-section"
     >
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="sec-inner mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
         <SectionHeader
-          variant="light"
+          variant="sober"
           eyebrow={t('sections.commissionAudit.heading', { defaultValue: 'Free Commission Audit' })}
           heading={t('sections.commissionAudit.heading', { defaultValue: 'Free Commission Leakage Audit' })}
           subtext={t('sections.commissionAudit.subheading', {
@@ -406,26 +415,31 @@ export default function CommissionAudit() {
           {t('sections.commissionAudit.heading', { defaultValue: 'Free Commission Leakage Audit' })}
         </h2>
 
-        <ul className="mt-8 grid gap-4 md:grid-cols-3">
+        <ul className="grid gap-4 md:grid-cols-3">
           {['bullet1', 'bullet2', 'bullet3'].map(key => (
-            <li key={key} className="rounded-lg border border-brand-slate/20 bg-white p-4 text-sm leading-6 text-brand-slate">
+            <li
+              key={key}
+              className="rounded-[14px] border border-[var(--line)] bg-white/[0.03] px-5 py-4 text-[13.5px] leading-[1.6] text-white/[0.7] motion-safe:transition-colors motion-safe:duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.045]"
+            >
               {t(`sections.commissionAudit.${key}`, { defaultValue: '' })}
             </li>
           ))}
         </ul>
 
         <div className="mt-8 flex justify-center">
-          <GradientButton
+          <Button
+            type="button"
+            variant="solid-accent"
             size="lg"
             onClick={scrollToForm}
             className="w-full min-h-[44px] sm:w-auto whitespace-nowrap"
             data-testid="commission-audit-cta"
           >
             {t('sections.commissionAudit.ctaLabel', { defaultValue: 'Request my free audit' })}
-          </GradientButton>
+          </Button>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-10 mx-auto max-w-[920px]">
           <AuditForm ref={formRef} />
         </div>
       </div>

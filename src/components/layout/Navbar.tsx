@@ -165,7 +165,7 @@ export default function Navbar() {
       data-overlay={showOverlay ? 'true' : 'false'}
       data-testid="navbar-root"
     >
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-[1320px] mx-auto px-5 sm:px-8 lg:px-14 h-[76px] flex items-center justify-between">
         <a href="#" className="flex items-center gap-3" aria-label="SyncSirius — home">
           <img
             src="/syncsirius-logo-trans.png"
@@ -178,7 +178,7 @@ export default function Navbar() {
           />
         </a>
 
-        <div className="hidden min-[900px]:flex items-center gap-7">
+        <div className="hidden min-[900px]:flex items-center gap-[34px]">
           {NAV_LINKS.map(({ key, href }) => (
             <a
               key={key}

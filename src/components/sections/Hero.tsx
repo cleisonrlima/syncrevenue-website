@@ -90,7 +90,7 @@ export default function Hero() {
           <div>
             <h1
               id="hero-heading"
-              className="font-extrabold tracking-[-0.025em] text-white max-w-[16ch] mb-6 text-[clamp(2rem,4.8vw,4.2rem)] leading-[1.02]"
+              className="font-extrabold tracking-[-0.025em] text-white max-w-[16ch] mb-6 text-[clamp(2.4rem,4.8vw,4.2rem)] leading-[1.02]"
             >
               {t('hero.headline.line1', { defaultValue: '' })}
               <br />
@@ -159,7 +159,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="mt-20">
+        <div className="mt-[60px]">
           {/* Story 6.13 (AC 5) — bridge `<h1>` (line 88 above) → BenefitsGrid card
               `<h3>` so the Lighthouse `heading-order` audit passes. Visually
               hidden — the benefits block is purely decorative cards under the

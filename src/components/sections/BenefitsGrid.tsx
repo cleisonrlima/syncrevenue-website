@@ -22,7 +22,7 @@ const BENEFITS: ReadonlyArray<{ key: BenefitKey; icon: (props: { className: stri
   {
     key: '0',
     icon: ({ className }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
         <path d="M12 7v5l3 2" />
       </svg>
@@ -31,53 +31,47 @@ const BENEFITS: ReadonlyArray<{ key: BenefitKey; icon: (props: { className: stri
   {
     key: '1',
     icon: ({ className }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <line x1="9" y1="6" x2="20" y2="6" />
-        <line x1="9" y1="12" x2="20" y2="12" />
-        <line x1="9" y1="18" x2="20" y2="18" />
-        <circle cx="5" cy="6" r="1.2" fill="currentColor" />
-        <circle cx="5" cy="12" r="1.2" fill="currentColor" />
-        <circle cx="5" cy="18" r="1.2" fill="currentColor" />
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h10" />
+        <circle cx="19" cy="17" r="2" />
       </svg>
     ),
   },
   {
     key: '2',
     icon: ({ className }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z" />
-        <path d="M14 3v5h5" />
-        <line x1="9" y1="13" x2="15" y2="13" />
-        <line x1="9" y1="17" x2="13" y2="17" />
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <path d="M14 2v6h6M9 13h6M9 17h6" />
       </svg>
     ),
   },
   {
     key: '3',
     icon: ({ className }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <polyline points="3 17 9 11 13 15 21 7" />
-        <polyline points="15 7 21 7 21 13" />
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 3v18h18" />
+        <path d="M7 14l4-4 4 4 5-7" />
       </svg>
     ),
   },
   {
     key: '4',
     icon: ({ className }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 3l8 3v6c0 4.5-3.5 7.5-8 9-4.5-1.5-8-4.5-8-9V6l8-3z" />
-        <polyline points="9 12 11 14 15 10" />
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M9 11l3 3 8-8" />
+        <path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h8" />
       </svg>
     ),
   },
   {
     key: '5',
     icon: ({ className }) => (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <line x1="3" y1="20" x2="21" y2="20" />
-        <rect x="5" y="11" width="3" height="7" />
-        <rect x="10.5" y="7" width="3" height="11" />
-        <rect x="16" y="14" width="3" height="4" />
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M21 21H4.6c-.3 0-.6-.3-.6-.6V3" />
+        <rect x="8" y="11" width="3" height="7" />
+        <rect x="13" y="7" width="3" height="11" />
+        <rect x="18" y="14" width="3" height="4" />
       </svg>
     ),
   },
@@ -129,7 +123,7 @@ export default function BenefitsGrid() {
               </div>
               <MetricChip label={metric} variant={variant} />
             </div>
-            <h3 className="mt-5 text-[15px] font-bold tracking-[-0.01em] leading-tight text-white">
+            <h3 className="mt-4 text-[15px] font-bold tracking-[-0.01em] leading-tight text-white">
               {title}
             </h3>
             <p className="mt-2 text-[13px] leading-[1.55] text-white/[0.72]">{body}</p>

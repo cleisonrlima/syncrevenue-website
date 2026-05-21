@@ -95,7 +95,10 @@ describe('Comparison', () => {
     )
   })
 
-  it('keeps readable text classes on a light section background', () => {
+  it('keeps readable text classes on the sober ink section background', () => {
+    // Refactored to sober palette: section renders dark `--ink`, row headers
+    // pop in pure white, body cells use `white/[0.78]` for the SyncRevenue
+    // column and dimmer `white/55` for the legacy/generic columns.
     renderComparison()
 
     const section = screen.getByRole('region', {
@@ -104,8 +107,8 @@ describe('Comparison', () => {
     const rowHeader = within(section).getByRole('rowheader', { name: 'BSP/ARC Reconciliation' })
     const cell = within(section).getByText(/Automatically detects settlement discrepancies/)
 
-    expect(section).toHaveClass('bg-white')
-    expect(rowHeader).toHaveClass('text-brand-navy')
-    expect(cell).toHaveClass('text-brand-slate')
+    expect(section).toHaveClass('bg-[var(--ink)]')
+    expect(rowHeader).toHaveClass('text-white')
+    expect(cell).toHaveClass('text-white/[0.78]')
   })
 })

@@ -158,9 +158,13 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
   describe('TrustBar preservation (refactored in Story 6.5)', () => {
     it('keeps the TrustBar rendering 4 trust items (now in a single wrap row)', () => {
       renderHero()
-      const allSvgs = document.querySelectorAll('svg[aria-label="verified"]')
-      // Single row now — 4 verified ticks total (no responsive duplication)
-      expect(allSvgs.length).toBe(4)
+      // Per-item icons land via data-testid="trust-item-{i}" — each contains
+      // a single decorative SVG (shield / award / check / globe per design).
+      const items = [0, 1, 2, 3].map(i => screen.getByTestId(`trust-item-${i}`))
+      expect(items.length).toBe(4)
+      items.forEach(item => {
+        expect(item.querySelector('svg')).not.toBeNull()
+      })
     })
   })
 

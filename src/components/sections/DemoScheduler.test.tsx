@@ -27,10 +27,14 @@ describe('DemoScheduler (Story 6.10 — 40/60 grid)', () => {
     expect(section).toHaveAttribute('id', 'agendar-demo')
   })
 
-  it('keeps the sober --ink background (Story 6.8 baseline preserved)', () => {
+  it('uses the sec-deep #0A0B22 background per design (no gradient)', () => {
+    // Design source: Hero.html `.sec-deep{background:#0A0B22}` — same token as
+    // ClientReferences. The earlier var(--ink) baseline (Story 6.8) is
+    // superseded by the design handoff so demo + testimonials share the
+    // darker section tone.
     render(<DemoScheduler />)
     const section = screen.getByRole('region', { name: 'Schedule a SyncRevenue demo' })
-    expect(section.className).toContain('bg-[var(--ink)]')
+    expect(section.className).toContain('bg-[#0A0B22]')
     expect(section.className).not.toMatch(/bg-gradient-to-b/)
     expect(section.className).toMatch(/text-white/)
   })

@@ -91,7 +91,7 @@ export default function ClientReferences() {
     >
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
         <div className="mx-auto mb-14 max-w-[760px] text-center">
-          <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.12em] text-white/50">
+          <div className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-white/50">
             <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
             {t('references.eyebrow', { defaultValue: 'Client References' })}
           </div>
@@ -127,7 +127,7 @@ export default function ClientReferences() {
                 >
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute right-5 top-3 select-none font-serif text-[64px] leading-none text-white/[0.08]"
+                    className="pointer-events-none absolute right-6 top-5 select-none font-serif text-[64px] leading-none text-white/[0.08]"
                   >
                     “
                   </span>
@@ -172,13 +172,13 @@ export default function ClientReferences() {
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
-                          strokeWidth="2"
+                          strokeWidth="2.4"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           aria-hidden="true"
                         >
-                          <path d="M12 22s-7-7-7-12a7 7 0 0114 0c0 5-7 12-7 12z" />
-                          <circle cx="12" cy="10" r="2.5" />
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                          <circle cx="12" cy="10" r="3" />
                         </svg>
                         <span className="truncate">{reference.location}</span>
                       </div>

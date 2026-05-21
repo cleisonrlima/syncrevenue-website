@@ -105,7 +105,7 @@ export default function Team() {
     >
       <div className="sec-inner mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
         <header className="sec-head mx-auto mb-14 max-w-[760px] text-center">
-          <div className="sec-eyebrow inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.12em] text-white/50">
+          <div className="sec-eyebrow inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-white/50">
             <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
             {t('team.eyebrow', { defaultValue: 'Our Team' })}
           </div>
@@ -162,20 +162,20 @@ export default function Team() {
                     </span>
                   </div>
 
-                  <div className="tm-body flex flex-col px-7 pt-6 pb-[22px]">
+                  <div className="tm-body flex flex-col px-[26px] pt-[26px] pb-[22px]">
                     <h3
                       id={headingId}
-                      className="tm-name text-[20px] font-bold tracking-[-0.02em] text-white"
+                      className="tm-name mb-2 text-[20px] font-bold tracking-[-0.02em] leading-tight text-white"
                     >
                       {member.name}
                     </h3>
-                    <p className="tm-role mt-1 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-white/55">
+                    <p className="tm-role mb-4 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-white/55">
                       {member.role}
                     </p>
-                    <p className="tm-bio mt-3 flex-1 text-[13.5px] leading-[1.65] text-white/70">
+                    <p className="tm-bio mb-[18px] flex-1 text-[13.5px] leading-[1.65] text-white/70">
                       {member.bio}
                     </p>
-                    <div className="tm-foot mt-4 flex items-center gap-2.5 border-t border-[var(--line)] pt-3.5">
+                    <div className="tm-foot mt-auto flex items-center gap-2.5 border-t border-[var(--line)] pt-3.5">
                       {isNonEmptyString(member.linkedinUrl) && (
                         <a
                           href={member.linkedinUrl}
@@ -189,8 +189,8 @@ export default function Team() {
                           className="icon-btn linkedin inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-[var(--line-strong)] text-white/75 motion-safe:transition-colors motion-safe:duration-150 hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white"
                         >
                           <svg
-                            width="16"
-                            height="16"
+                            width="15"
+                            height="15"
                             viewBox="0 0 24 24"
                             fill="currentColor"
                             aria-hidden="true"

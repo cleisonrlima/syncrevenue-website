@@ -38,23 +38,24 @@ export default function DemoScheduler() {
       id="agendar-demo"
       role="region"
       aria-label={t('demo.sectionAriaLabel', { defaultValue: 'Schedule a SyncRevenue demo' })}
-      className="sec sec-deep bg-[var(--ink)] text-white overflow-hidden scroll-mt-24"
+      className="sec sec-deep bg-[#0A0B22] text-white overflow-hidden scroll-mt-24"
     >
-      <div className="sec-inner mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        <header className="sec-head mb-[40px] max-w-[720px]">
-          <span className="sec-eyebrow text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--accent-soft)]">
+      <div className="sec-inner mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-14 py-24 lg:py-[100px]">
+        <header className="sec-head mx-auto mb-14 max-w-[760px] text-center">
+          <div className="sec-eyebrow inline-flex items-center justify-center gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-white/50">
+            <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
             {t('demo.eyebrow', { defaultValue: 'Schedule a demo' })}
-          </span>
+          </div>
           <h2
             id="demo-heading"
-            className="sec-h mt-[10px] text-[clamp(28px,3.4vw,40px)] font-bold leading-[1.15] text-white"
+            className="sec-h mt-[18px] text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight tracking-[-0.025em] text-white"
           >
             {t('demo.heading.text', { defaultValue: 'See SyncRevenue running' })}{' '}
             <span className="accent text-[var(--accent-soft)]">
               {t('demo.heading.accent', { defaultValue: 'in your workflow' })}
             </span>
           </h2>
-          <p className="sec-sub mt-[14px] text-[15px] leading-[1.6] text-white/65">
+          <p className="sec-sub mt-5 mx-auto max-w-[62ch] text-[15px] leading-[1.65] text-white/[0.65]">
             {t('demo.subhead', {
               defaultValue:
                 'A short conversation with the team, a personalized demo on your real contracts, and a clear proposal in 48 hours. No commitment.',
@@ -62,7 +63,7 @@ export default function DemoScheduler() {
           </p>
         </header>
 
-        <div className="form-grid grid max-w-[1180px] grid-cols-1 items-start gap-[40px] min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
+        <div className="form-grid grid mx-auto max-w-[1180px] grid-cols-1 items-start gap-[40px] min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
           <aside className="form-info">
             <h3 className="text-[16px] font-semibold text-white/85">
               {t('demo.info.h3', { defaultValue: 'What to expect' })}
@@ -88,15 +89,15 @@ export default function DemoScheduler() {
               ))}
             </ol>
 
-            <div className="info-card mt-[24px] flex items-start gap-[14px] rounded-[12px] border border-[var(--line-strong)] bg-white/[0.025] p-[16px]">
-              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+            <div className="info-card mt-6 flex items-center gap-[14px] rounded-[10px] border border-[var(--line)] bg-white/[0.03] px-5 py-[18px]">
+              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[9px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
                 <ClockIcon />
               </div>
               <div>
-                <div className="info-card-t text-[13px] font-semibold text-white">
+                <div className="info-card-t text-[13.5px] font-semibold text-white leading-tight">
                   {t('demo.info.infoCard.title', { defaultValue: 'Reply within 1 business day' })}
                 </div>
-                <div className="info-card-s mt-[3px] text-[13px] text-white/60">
+                <div className="info-card-s mt-[3px] text-[12px] text-white/55 leading-snug">
                   {t('demo.info.infoCard.subtitle', {
                     defaultValue: 'Maria or Lucas reaches out personally.',
                   })}
