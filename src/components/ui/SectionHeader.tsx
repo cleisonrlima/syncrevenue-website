@@ -51,7 +51,7 @@ export default function SectionHeader({
           {headingAccent ? (
             <>
               {' '}
-              <span className="accent text-[var(--accent-soft)]">{headingAccent}</span>
+              <span className="accent text-[var(--accent-brand-soft)]">{headingAccent}</span>
             </>
           ) : null}
         </HeadingTag>

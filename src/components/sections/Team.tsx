@@ -111,7 +111,7 @@ export default function Team() {
           </div>
           <h2 className="sec-h mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight text-white scroll-mt-24">
             {t('team.headline', { defaultValue: 'Specialists in' })}{' '}
-            <span className="accent text-[var(--accent-soft)]" data-testid="team-headline-accent">
+            <span className="accent text-[var(--accent-brand-soft)]" data-testid="team-headline-accent">
               {t('team.headlineAccent', { defaultValue: 'airline distribution' })}
             </span>
           </h2>
@@ -149,7 +149,7 @@ export default function Team() {
                       <div
                         aria-hidden="true"
                         data-team-photo-placeholder="true"
-                        className="tm-photo-fallback flex h-full w-full items-center justify-center bg-[var(--accent)] text-[60px] font-bold text-white"
+                        className="tm-photo-fallback flex h-full w-full items-center justify-center bg-[var(--accent-brand)] text-[60px] font-bold text-white"
                       >
                         {getInitials(member.name)}
                       </div>

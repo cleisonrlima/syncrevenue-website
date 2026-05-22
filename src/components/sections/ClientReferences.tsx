@@ -97,7 +97,7 @@ export default function ClientReferences() {
           </div>
           <h2 className="mt-4 text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight text-white">
             {t('references.headline', { defaultValue: 'Trusted by real' })}{' '}
-            <span className="text-[var(--accent-soft)]" data-testid="references-accent">
+            <span className="text-[var(--accent-brand-soft)]" data-testid="references-accent">
               {t('references.headlineAccent', { defaultValue: 'agencies' })}
             </span>
           </h2>

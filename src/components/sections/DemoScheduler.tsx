@@ -51,7 +51,7 @@ export default function DemoScheduler() {
             className="sec-h mt-[18px] text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight tracking-[-0.025em] text-white"
           >
             {t('demo.heading.text', { defaultValue: 'See SyncRevenue running' })}{' '}
-            <span className="accent text-[var(--accent-soft)]">
+            <span className="accent text-[var(--accent-brand-soft)]">
               {t('demo.heading.accent', { defaultValue: 'in your workflow' })}
             </span>
           </h2>
@@ -73,7 +73,7 @@ export default function DemoScheduler() {
                 <li key={idx} className="step flex items-start gap-[14px]">
                   <span
                     aria-hidden="true"
-                    className="step-num flex h-[30px] w-[30px] flex-shrink-0 items-center justify-center rounded-[8px] bg-[var(--accent-dim)] text-[13px] font-bold text-[var(--accent-soft)]"
+                    className="step-num flex h-[30px] w-[30px] flex-shrink-0 items-center justify-center rounded-[8px] bg-[var(--accent-brand-dim)] text-[13px] font-bold text-[var(--accent-brand-soft)]"
                   >
                     {i + 1}
                   </span>
@@ -90,7 +90,7 @@ export default function DemoScheduler() {
             </ol>
 
             <div className="info-card mt-6 flex items-center gap-[14px] rounded-[10px] border border-[var(--line)] bg-white/[0.03] px-5 py-[18px]">
-              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[9px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[9px] bg-[var(--accent-brand-dim)] text-[var(--accent-brand-soft)]">
                 <ClockIcon />
               </div>
               <div>

@@ -74,7 +74,7 @@ export default function FormField({
       >
         <span>{label}</span>
         {required && (
-          <span className="req font-bold" style={{ color: 'var(--accent-soft)' }} aria-hidden="true">
+          <span className="req font-bold" style={{ color: 'var(--accent-brand-soft)' }} aria-hidden="true">
             *
           </span>
         )}

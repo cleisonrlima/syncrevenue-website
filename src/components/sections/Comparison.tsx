@@ -56,7 +56,7 @@ function ComparisonTable({ ariaLabel }: { ariaLabel: string }) {
             </th>
             <th
               scope="col"
-              className="w-[26%] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--accent-soft)]"
+              className="w-[26%] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--accent-brand-soft)]"
             >
               {t('comparison.syncrevenueHeader', { defaultValue: 'SyncRevenue' })}
             </th>

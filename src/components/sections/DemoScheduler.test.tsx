@@ -47,7 +47,7 @@ describe('DemoScheduler (Story 6.10 — 40/60 grid)', () => {
     expect(heading.textContent).toContain('See SyncRevenue running')
     expect(heading.textContent).toContain('in your workflow')
     const accent = within(heading).getByText('in your workflow')
-    expect(accent.className).toMatch(/text-\[var\(--accent-soft\)\]/)
+    expect(accent.className).toMatch(/text-\[var\(--accent-brand-soft\)\]/)
     expect(
       within(section).getByText(/A short conversation with the team/i),
     ).toBeInTheDocument()
@@ -79,7 +79,7 @@ describe('DemoScheduler (Story 6.10 — 40/60 grid)', () => {
     expect(within(infoCard).getByText('Maria or Lucas reaches out personally.')).toBeInTheDocument()
     const iconBox = infoCard.querySelector('.info-card-ico') as HTMLElement
     expect(iconBox).not.toBeNull()
-    expect(iconBox.className).toMatch(/bg-\[var\(--accent-dim\)\]/)
+    expect(iconBox.className).toMatch(/bg-\[var\(--accent-brand-dim\)\]/)
   })
 
   it('embeds the DemoForm inside the same section (no modal)', () => {

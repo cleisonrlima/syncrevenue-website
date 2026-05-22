@@ -23,7 +23,7 @@ describe('ClientReferences (Story 6.6 sober refresh)', () => {
     const accent = screen.getByTestId('references-accent')
     expect(accent.tagName).toBe('SPAN')
     expect(accent.textContent).toMatch(/agencies/i)
-    expect(accent.className).toContain('text-[var(--accent-soft)]')
+    expect(accent.className).toContain('text-[var(--accent-brand-soft)]')
   })
 
   it('renders three quote cards with sober monogram (neutral fill — no per-brand gradient)', () => {

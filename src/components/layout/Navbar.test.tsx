@@ -186,7 +186,7 @@ describe('Navbar', () => {
       renderNavbar()
       const cta = screen.getByRole('button', { name: /schedule a demo/i })
       // solid-accent fingerprint (from Story 6.1 Button.tsx)
-      expect(cta.className).toContain('bg-[var(--accent)]')
+      expect(cta.className).toContain('bg-[var(--accent-brand)]')
       expect(cta.className).not.toMatch(/bg-gradient-/)
     })
 

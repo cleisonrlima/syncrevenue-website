@@ -386,3 +386,37 @@ Per Google's `Localized versions` guidance: every language variant's `<link rel=
 - Sitemap `<loc>` (`scripts/generate-seo-assets.mjs`) stays as the no-lng URL — it doubles as the `x-default` signal. Do not duplicate `?lng=` into `<loc>`.
 - Static `index.html` keeps the no-lng URL in the pre-hydration `<link rel="canonical">` / `<meta property="og:url">` (acts as x-default before JS hydrates); hydration overwrites with `?lng=en`.
 - Approach (B) — moving sitemap `<loc>` to `?lng=<locale>` per variant — was rejected to keep the sitemap matrix terse.
+
+### Token Namespace Reconciliation (Story 7.1 — 2026-05-22)
+
+ADR for the Figma OKLCH design-token backport landed by Story 7.1 (Epic 7 foundation). Source: Figma Make file `66Wb2MAv5PLOBSJLoFM3E3` `src/styles/theme.css`. Local target: `src/index.css` + `tailwind.config.ts`.
+
+**Decision A — Backport tokens into Tailwind v3, do NOT migrate to v4.**
+
+D1 spike-then-decide outcome (resolved in Story 7.1). The Figma source uses v4-only syntax (`@import 'tailwindcss'`, `@theme inline`, `@custom-variant dark (&:is(.dark *))`); a v4 migration would touch `tailwind.config.ts`, every plugin, every utility class, and `postcss.config.js`. Backporting the OKLCH token values into the v3 `tailwind.config.ts` via `theme.extend.colors` + `:root` / `.dark` CSS-custom-property blocks preserves the entire working v3 plugin chain and every Epic 1–6 utility class. Concrete mappings:
+
+- Figma `@custom-variant dark (&:is(.dark *))` → existing v3 `darkMode: 'class'` in `tailwind.config.ts` (no-op — already correct).
+- Figma `@theme inline { --color-background: var(--background); ... }` → v3 `theme.extend.colors.background = withAlpha('--background')` (CSS-var pass-through with Tailwind slash-opacity support; no `@theme inline` block).
+- Figma `@import 'tw-animate-css'` → dependency retained in `package.json`, but not imported under Tailwind v3 because `tw-animate-css@1.4.0` emits Tailwind v4 CSS (`@theme` / `@utility`). The existing `tailwindcss-animate` plugin remains the active v3-compatible animation utility source.
+
+**Decision B — Switch every `hsl(var(--token))` in `tailwind.config.ts` to alpha-aware CSS-variable colors.**
+
+Pre-7.1, every shadcn-aliased colour entry (background, foreground, card, popover, primary, secondary, muted, accent, destructive, border, input, ring) wrapped the CSS var in `hsl()` because the original shadcn tokens stored HSL component strings (`222.2 84% 4.9%`). The Figma OKLCH token set stores bare colour functions (`oklch(0.145 0 0)`, `#030213`, `rgba(0, 0, 0, 0.1)`); wrapping `oklch(...)` in `hsl(...)` produces invalid CSS and the property silently falls back to the inherited value. Review also caught that plain `var(--token)` would break Tailwind slash-opacity modifiers. Final approach: all shadcn-aliased entries use `withAlpha('--token')`, returning either `var(--token)` or `color-mix(in oklab, var(--token) calc(<alpha> * 100%), transparent)`.
+
+**Decision C — Rename Epic 6 `--accent` / `--accent-soft` / `--accent-dim` to `--accent-brand` / `--accent-brand-soft` / `--accent-brand-dim`.**
+
+The Figma OKLCH set takes `--accent: oklch(...)` (muted neutral surface — shadcn convention every imported shadcn component will expect). Epic 6's `--accent: #3D6FE0` (sober blue solid CTA accent) cannot share the namespace. Resolution: rename Epic 6 tokens with the `-brand` infix; migrate every consumer in the same commit (17 production files + 7 test files). No backward-compat alias retained — the substitution is mechanical and a deprecation window would defer cleanup without reducing total churn. Affected production files: Button, Hero, HeroProductPanel, Comparison, ClientReferences, BenefitsGrid, CommissionAudit, ContactForm, Security, Contact, DemoScheduler, DemoForm, Services, Team, FormField, FormSelect, FormTextarea, SectionHeader. Affected test files: Button, Hero, DemoForm, ContactForm, DemoScheduler, ClientReferences, Navbar. The `brand-tokens.contrast.manifest.ts` semantic-token key `accent: '#3D6FE0'` is unchanged (it maps a label to a hex value, not a CSS variable — the contrast guard validates the same `#3D6FE0` regardless of which CSS-var name exposes it).
+
+**Decision D — Static `<html class="dark">` in `index.html`, NOT programmatic in `src/main.tsx`.**
+
+Epic 7 decision 2 forces dark site-wide (no OS-theme follow, no toggle). The static class is copied verbatim by Vite into `dist/client/index.html`; `scripts/prerender.tsx` reads that file unchanged and injects the prerendered hero markup inside `<div id="root">`. The dark class therefore lands in the FIRST paint of every build (dev, preview, SSG-prerendered prod), eliminates the FOUC risk that a programmatic `documentElement.classList.add('dark')` in `main.tsx` would create (the prerendered HTML would emit `<html lang="en">` with no class, the browser would paint light theme for one frame, then hydration would add the class), and requires zero changes to `scripts/prerender.tsx`. Re-test this ADR if a future "follow OS theme" or theme-toggle feature lands — at that point the programmatic option becomes preferable.
+
+**Decision E — `cn` re-export at `@/lib/cn`, not duplicate implementation.**
+
+The Figma source imports `cn` from `@/lib/cn` (shadcn registry convention). Local repo had `cn` at `@/lib/utils` since Story 1.2 (clsx + tailwind-merge, identical implementation to Figma's). `src/lib/cn.ts` is a one-line re-export of `cn` from `src/lib/utils.ts` — both import paths resolve to the same function reference (test asserts referential equality). Existing 22 `@/lib/utils` consumers stay untouched; future Epic 7 shadcn component ports (stories 7.3+) can use `@/lib/cn` 1:1 from the Figma source without rename churn.
+
+**Decision F — `useIsMobile` cutoff = `(max-width: 767px)`, NOT 768px.**
+
+Tailwind `md:` prefix applies at `min-width: 768px`. The mobile range is therefore `0..767px`; a `(max-width: 768px)` query would match at exactly 768px (both mobile AND desktop true), creating a one-pixel hysteresis loop at the breakpoint. Hook returns SSR-safe `false` (desktop) before `useEffect` runs so the Story 5.6 prerender pass emits the desktop layout; the `useEffect` listener corrects the value on first paint and on subsequent resize across the breakpoint.
+
+**Verification (Story 7.1 close-out):** `npm run test:run` passes (94 files / 801 tests), focused foundation tests pass (15), `npm run typecheck` passes, `npm run build` passes, `npm run check:contrast` passes, and `npm audit --omit=dev --audit-level=high` reports no high or critical advisories (one moderate `qs@6.15.1` advisory remains).

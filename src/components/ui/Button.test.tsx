@@ -19,7 +19,7 @@ describe('Button', () => {
     it('does not render solid-accent classes', () => {
       render(<Button>Default</Button>)
       const className = screen.getByRole('button').className
-      expect(className).not.toContain('bg-[var(--accent)]')
+      expect(className).not.toContain('bg-[var(--accent-brand)]')
       expect(className).not.toMatch(/-translate-y-px/)
     })
 
@@ -50,8 +50,8 @@ describe('Button', () => {
       const className = screen.getByRole('button').className
 
       // Base solid-accent fingerprint
-      expect(className).toContain('bg-[var(--accent)]')
-      expect(className).toContain('hover:bg-[var(--accent-soft)]')
+      expect(className).toContain('bg-[var(--accent-brand)]')
+      expect(className).toContain('hover:bg-[var(--accent-brand-soft)]')
       expect(className).toContain('text-white')
 
       // No gradient, no glow, no extra shadow
@@ -98,7 +98,7 @@ describe('Button', () => {
       expect(className).toContain('motion-safe:hover:-translate-y-px')
       // Disabled neutralizes hover transform + hover background
       expect(className).toContain('disabled:hover:translate-y-0')
-      expect(className).toContain('disabled:hover:bg-[var(--accent)]')
+      expect(className).toContain('disabled:hover:bg-[var(--accent-brand)]')
       expect(className).toContain('disabled:opacity-50')
       expect(className).toContain('disabled:cursor-not-allowed')
       // No unconditional translate / scale classes

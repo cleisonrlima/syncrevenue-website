@@ -41,7 +41,7 @@ const baseInputClasses = cn(
   'transition-colors duration-150',
   'hover:border-white/[0.22]',
   'focus:outline-none focus:bg-white/[0.06]',
-  'focus:border-[var(--accent)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
+  'focus:border-[var(--accent-brand)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
 )
 
 function inputBorder(hasError: boolean) {

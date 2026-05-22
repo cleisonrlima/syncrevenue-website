@@ -45,7 +45,7 @@ function textInputClasses(hasError: boolean) {
     'transition-colors duration-150',
     'hover:border-white/[0.22]',
     'focus:outline-none focus:bg-white/[0.06]',
-    'focus:border-[var(--accent)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
+    'focus:border-[var(--accent-brand)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
     'appearance-none',
     hasError ? 'border-[#FF6B6B]' : 'border-[var(--line-strong)]',
   )
@@ -366,7 +366,7 @@ function Field({
       >
         {label}
         {required && (
-          <span aria-hidden="true" className="ml-1 text-[var(--accent-soft)] font-bold">
+          <span aria-hidden="true" className="ml-1 text-[var(--accent-brand-soft)] font-bold">
             *
           </span>
         )}

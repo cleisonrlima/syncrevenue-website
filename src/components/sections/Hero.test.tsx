@@ -24,7 +24,7 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
     const accentSpan = within(h1).getByTestId('hero-headline-accent')
     expect(accentSpan.tagName).toBe('SPAN')
     expect(accentSpan.textContent).toMatch(/Less rework at the rate desk\./)
-    expect(accentSpan.className).toContain('text-[var(--accent-soft)]')
+    expect(accentSpan.className).toContain('text-[var(--accent-brand-soft)]')
   })
 
   it('renders the sub paragraph with <strong> slots via <Trans>', () => {
@@ -40,7 +40,7 @@ describe('Hero (Story 6.3 sober rebuild)', () => {
       renderHero()
       const primary = screen.getByTestId('hero-primary-cta')
       expect(primary.tagName).toBe('BUTTON')
-      expect(primary.className).toContain('bg-[var(--accent)]')
+      expect(primary.className).toContain('bg-[var(--accent-brand)]')
       expect(primary.className).not.toMatch(/bg-gradient-/)
       expect(primary.textContent).toMatch(/Schedule a Demo/)
 

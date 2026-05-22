@@ -21,7 +21,23 @@
     }
   }
 
+  /*
+   * `:root` carries:
+   *   1) The legacy brand `--color-*` tokens (Epic 1) — kept for backwards
+   *      compatibility with the Tailwind `brand.*` aliases.
+   *   2) The Epic 6 sober palette renamed to `--accent-brand*` per Story 7.1
+   *      AC 2 namespace reconciliation (the bare `--accent` name is reclaimed
+   *      by the Figma OKLCH token below to match the shadcn convention every
+   *      imported shadcn component expects).
+   *   3) The Figma 'teste' OKLCH design-token set ported verbatim from the
+   *      Figma source's `:root` scope. Dark mode is forced site-wide (Story
+   *      7.1 AC 3 — static `<html class="dark">` in `index.html`) so the
+   *      `:root` light values exist as a defensive fallback only and never
+   *      paint in production. They mirror the Figma source's `:root` to
+   *      preserve fidelity for any future light-mode toggle.
+   */
   :root {
+    /* Legacy brand palette (Epic 1) */
     --color-electric-blue: #0075F0;
     --color-highlight: #00A0F0;
     --color-deep: #0055F0;
@@ -30,68 +46,115 @@
     --color-muted: #8080A0;
     --color-offwhite: #F4F6FA;
 
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-
     /*
-     * Sober palette refresh (Epic 6 — 2026-05-17).
-     * Additive — legacy --color-* tokens above retire per-section in stories 6.2–6.8.
-     * Placed after the shadcn block so `--accent` (and any future collisions) win the cascade
-     * and resolve to the brand value rather than shadcn's HSL component string.
-     * shadcn's --accent / --accent-foreground have no consumers in src/ at the time of writing;
-     * the override is intentional — see Architecture-Key.md → Sober Palette Refresh.
+     * Epic 6 sober palette (originally `--accent`, `--accent-soft`,
+     * `--accent-dim`) renamed to `--accent-brand*` so the Figma OKLCH token
+     * can take the canonical `--accent` namespace. All Epic 6 production +
+     * test consumers migrated in this same commit (Story 7.1 Task 2).
+     * See Architecture-Key.md → Token Namespace Reconciliation (Story 7.1).
      */
     --navy: #0D0D3A;
     --ink: #0A0B2E;
     --deep-bg: #080820;
-    --accent: #3D6FE0;
-    --accent-soft: #5B85E8;
-    --accent-dim: rgba(61, 111, 224, 0.12);
+    --accent-brand: #3D6FE0;
+    --accent-brand-soft: #5B85E8;
+    --accent-brand-dim: rgba(61, 111, 224, 0.12);
     --line: rgba(255, 255, 255, 0.08);
     --line-strong: rgba(255, 255, 255, 0.14);
     --slate-token: #7A8099;
     --muted-token: #5C6377;
     --offwhite: #F4F6FA;
+
+    /*
+     * Figma 'teste' OKLCH design-token set — `:root` (light) scope.
+     * Ported from the Figma source `src/styles/theme.css`. Bare colour
+     * functions (oklch / hex / rgba) — NOT HSL component strings — so the
+     * Tailwind config consumes them as `var(--token)` rather than
+     * `hsl(var(--token))`.
+     */
+    --font-size: 14px;
+    --background: #ffffff;
+    --foreground: oklch(0.145 0 0);
+    --card: #ffffff;
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: #030213;
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.95 0.0058 264.53);
+    --secondary-foreground: #030213;
+    --muted: #ececf0;
+    --muted-foreground: #717182;
+    --accent: #e9ebef;
+    --accent-foreground: #030213;
+    --destructive: #d4183d;
+    --destructive-foreground: #ffffff;
+    --border: rgba(0, 0, 0, 0.1);
+    --input: transparent;
+    --input-background: #f3f3f5;
+    --switch-background: #cbced4;
+    --font-weight-medium: 500;
+    --font-weight-normal: 400;
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: #030213;
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
   }
 
+  /*
+   * `.dark` carries the Figma 'teste' OKLCH dark-theme tokens. Dark is
+   * forced site-wide (Story 7.1 AC 3 — `<html lang="en" class="dark">` in
+   * `index.html`) so this is the active palette in production.
+   * `--accent-brand*` (Epic 6 sober blue) is NOT redeclared here — it
+   * intentionally stays constant across light + dark because the brand
+   * accent should not shift with theme.
+   */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.145 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.145 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.269 0 0);
+    --input-background: oklch(0.269 0 0);
+    --switch-background: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
   }
 }
 
@@ -110,6 +173,11 @@
  *
  * The Google Fonts variable woff2 covers weights 200–800 in a single 27KB
  * file — one @font-face entry suffices.
+ *
+ * Story 7.1 reconciliation: the Figma source ships a `fonts.css` with a
+ * Google Fonts CDN `@import`. That file is INTENTIONALLY NOT re-introduced
+ * here — re-introducing it would regress the desktop CLS work that Story
+ * 6.13 closed.
  */
 @font-face {
   font-family: 'Plus Jakarta Sans';

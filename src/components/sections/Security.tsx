@@ -86,7 +86,7 @@ export default function Security() {
               key={key}
               className="rounded-[14px] border border-[var(--line)] bg-white/[0.03] px-[22px] pt-6 pb-[22px] motion-safe:transition-colors motion-safe:duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.045]"
             >
-              <div className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+              <div className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] bg-[var(--accent-brand-dim)] text-[var(--accent-brand-soft)]">
                 <Icon className="h-[18px] w-[18px]" />
               </div>
               <h3 className="mt-4 text-[15px] font-bold tracking-[-0.01em] leading-tight text-white">
@@ -101,7 +101,7 @@ export default function Security() {
 
         <article className="mt-4 rounded-[14px] border border-[var(--line-strong)] bg-white/[0.035] p-6">
           <div className="flex items-start gap-4">
-            <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+            <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-brand-dim)] text-[var(--accent-brand-soft)]">
               <svg className="h-[18px] w-[18px]" {...ICON_PROPS}>
                 <rect x="3" y="6" width="8" height="12" rx="1.5" />
                 <rect x="13" y="6" width="8" height="12" rx="1.5" />

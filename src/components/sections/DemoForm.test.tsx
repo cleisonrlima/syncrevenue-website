@@ -88,7 +88,7 @@ describe('DemoForm', () => {
   it('applies the accent focus ring class on inputs (Story 6.10 AC 15)', () => {
     render(<DemoForm />)
     const name = screen.getByLabelText(/Full name/i)
-    expect(name.className).toMatch(/focus:border-\[var\(--accent\)\]/)
+    expect(name.className).toMatch(/focus:border-\[var\(--accent-brand\)\]/)
   })
 
   it('renders only the 4 canonical GDS options — Travelport merged, no Galileo/Worldspan/None yet', () => {

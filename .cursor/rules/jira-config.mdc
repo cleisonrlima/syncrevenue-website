@@ -30,6 +30,25 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 | Epic 4 — Admin Operations | SYN-4 | done |
 | Epic 5 — Production Deployment | SYN-5 | done |
 | Epic 6 — Visual Design Refresh | SYN-202 | done |
+| Epic 7 — Figma SaaS Import + Dark Theme | SYN-488 | backlog (To Do) |
+
+## Story-to-Issue mapping (Epic 7 — active)
+
+Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. All stories + 50 sub-tasks in Jira To Do; synced 2026-05-22.
+
+| Story | Title | Jira Key | sprint-status | Sub-tasks |
+|-------|-------|----------|---------------|-----------|
+| Epic 7 | Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme (Phase 6) | SYN-488 | backlog | — |
+| 7.1 | Foundation — Deps, OKLCH Tokens, Force Dark, Shared Utils | SYN-489 | done | SYN-497..502 (6, all Done) |
+| 7.2 | Routes + Layout Scaffold — /v2, /demo, Dashboard Layout, Nav Gating | SYN-490 | backlog | SYN-503..507 (5, all To Do) |
+| 7.3 | Dashboard Pages — Overview, Revenue Recovery, Payouts, Insights, Settings | SYN-491 | backlog | SYN-508..513 (6, all To Do) |
+| 7.4 | Landing + Demo Pages — Port from Figma to /v2 and /demo | SYN-492 | backlog | SYN-514..518 (5, all To Do) |
+| 7.5 | i18n Extraction for Epic 7 Pages — en / pt-BR / es | SYN-493 | backlog | SYN-519..525 (7, all To Do) |
+| 7.6 | Brand Copy Rewrite — SyncSyrius/Insurance → SyncRevenue/Travel Commission | SYN-494 | backlog | SYN-526..532 (7, all To Do) |
+| 7.7 | Prerender Exclusions + Site-Wide Dark Mode Regression Sweep | SYN-495 | backlog | SYN-533..539 (7, all To Do) |
+| 7.8 | New-Route Smoke Tests + Vitest Coverage Floor | SYN-496 | backlog | SYN-540..546 (7, all To Do) |
+
+**Sub-task total: 50** (one per top-level Task in each story file's `## Tasks / Subtasks` section). Jira reconciled 2026-05-22: partial sync had stopped at SYN-528 (7.6 T3); completed SYN-529..546.
 
 ## Story-to-Issue mapping (Epic 1)
 

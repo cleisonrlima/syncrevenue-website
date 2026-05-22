@@ -84,7 +84,7 @@ function MetricChip({ label, variant }: { label: string; variant: string }) {
       data-testid={`benefits-metric-${variant}`}
       className={
         isBlue
-          ? 'rounded-md px-[9px] py-[5px] text-[11.5px] font-medium text-[var(--accent-soft)] bg-[var(--accent-dim)] border border-transparent'
+          ? 'rounded-md px-[9px] py-[5px] text-[11.5px] font-medium text-[var(--accent-brand-soft)] bg-[var(--accent-brand-dim)] border border-transparent'
           : 'rounded-md px-[9px] py-[5px] text-[11.5px] font-medium text-white/70 bg-transparent border border-[var(--line)]'
       }
     >
@@ -117,7 +117,7 @@ export default function BenefitsGrid() {
             <div className="flex items-start justify-between gap-3">
               <div
                 aria-hidden="true"
-                className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]"
+                className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-brand-dim)] text-[var(--accent-brand-soft)]"
               >
                 <Icon className="h-[18px] w-[18px]" />
               </div>

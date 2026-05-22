@@ -12,7 +12,7 @@ type Channel = {
 }
 
 const ICON_BOX_CLASS =
-  'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[9px] text-[var(--accent-soft)] bg-[var(--accent-dim)]'
+  'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[9px] text-[var(--accent-brand-soft)] bg-[var(--accent-brand-dim)]'
 
 const ChannelIcon = ({ kind }: { kind: ChannelKind }) => {
   const stroke = {
@@ -153,7 +153,7 @@ export default function Contact() {
             className="sec-h mt-[18px] text-[clamp(1.9rem,3.4vw,2.8rem)] font-bold leading-tight tracking-[-0.025em] text-white"
           >
             {t('contact.heading.text', { defaultValue: 'Talk to' })}{' '}
-            <span className="accent text-[var(--accent-soft)]">
+            <span className="accent text-[var(--accent-brand-soft)]">
               {t('contact.heading.accent', { defaultValue: 'SyncSirius' })}
             </span>
           </h2>
@@ -174,7 +174,7 @@ export default function Contact() {
             </div>
 
             <div className="info-card mt-6 flex items-center gap-[14px] rounded-[10px] border border-[var(--line)] bg-white/[0.03] px-5 py-[18px]">
-              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[9px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+              <div className="info-card-ico flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[9px] bg-[var(--accent-brand-dim)] text-[var(--accent-brand-soft)]">
                 <ClockIcon />
               </div>
               <div>

@@ -60,6 +60,9 @@
 | `src/components/forms/FormSelect.tsx` | Story 6.9 native select wrapper; `.select-wrap` chevron, focus styling, and forced option background `#0A0B2E` including nested `optgroup` children |
 | `src/components/forms/FormTextarea.tsx` | Story 6.9 textarea primitive; dark field styling, vertical resize, shared focus/error state |
 | `src/components/forms/FormFoot.tsx` | Story 6.9 footer primitive; note + submit row, stacks below 600px |
+| `src/components/figma/ImageWithFallback.tsx` | Story 7.1 — 1:1 port of Figma `teste` source. `<img>` wrapper with `forwardRef`; on `error` event swaps `src` to an inline SVG data URI (no second network request) and tags `data-fallback="true"`. Caller `onError` is invoked before the swap so external observability still fires. |
+| `src/hooks/use-mobile.ts` | Story 7.1 — 1:1 port of Figma `useIsMobile` hook. `matchMedia('(max-width: 767px)')` listener (767, not 768, to avoid one-pixel hysteresis at the Tailwind `md:` breakpoint). SSR-safe default `false` so the Story 5.6 prerender pass emits the desktop layout; `useEffect` corrects on first paint + on resize across the breakpoint. Modern `addEventListener('change')` with legacy-Safari `addListener` fallback. |
+| `src/lib/cn.ts` | Story 7.1 — one-line re-export of `cn` from `src/lib/utils.ts` so future Epic 7 shadcn component ports (stories 7.3+) can use `import { cn } from '@/lib/cn'` 1:1 from the Figma source. Same function reference (referential equality), zero duplication, 22 existing `@/lib/utils` consumers untouched. |
 | `src/components/forms/EncryptedTransitNote.tsx` | Story 6.9 shared shield note backed by `forms.encryptedNote` |
 
 ---

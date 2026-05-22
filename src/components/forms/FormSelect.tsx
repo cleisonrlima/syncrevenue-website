@@ -70,7 +70,7 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(function FormS
           invalid
             ? 'border-[var(--form-error,#FF6B6B)]'
             : 'border-[var(--line-strong)]',
-          'focus:border-[var(--accent)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
+          'focus:border-[var(--accent-brand)] focus:[box-shadow:0_0_0_3px_rgba(61,111,224,0.12)]',
           className,
         )}
         {...rest}

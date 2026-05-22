@@ -103,20 +103,47 @@ Source: `_bmad-output/planning-artifacts/epics.md`
 
 ## Epic 6 — Visual Design Refresh — Claude Design Handoff (Phase 5)
 
+**Jira:** SYN-202 epic; all 13 stories (SYN-203..210, SYN-328..331, SYN-378) + 113 sub-tasks Done across SYN Sprints; final reconciliation 2026-05-20.
+
 Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. Sober palette anchored on single accent `#3D6FE0`; no gradients/glows/dot-grids. Visual-only — preserves all existing FR behavior; UX-DR2/DR3 deliberately superseded (divergence documented in `Planning/Architecture-Key.md` after Story 6.1 lands).
 
-| Story | Title | Status |
-|---|---|---|
-| 6.1 | Design Tokens — Sober Palette | `[x]` done |
-| 6.2 | Navbar & Logo Refresh | `[x]` done |
-| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | `[x]` done |
-| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | `[x]` done |
-| 6.5 | Benefits Grid + Trust Strip | `[x]` done |
-| 6.6 | ClientReferences Visual Refresh | `[x]` done |
-| 6.7 | Team Section Visual Refresh | `[x]` done |
-| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | `[x]` done |
-| 6.9 | Shared Form Primitives + i18n Namespace Restructure (6.8 deferral) | `[x]` done |
-| 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | `[x]` done |
-| 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | `[x]` done |
-| 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | `[x]` done |
-| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | `[x]` done — AC 7 mobile LCP residual gap rescoped to Story 5.6 (Epic 5) |
+| Story | Title | Jira | Status |
+|---|---|---|---|
+| 6.1 | Design Tokens — Sober Palette | SYN-203 | `[x]` done |
+| 6.2 | Navbar & Logo Refresh | SYN-204 | `[x]` done |
+| 6.3 | Hero Left — Airplane Background, Copy, KPI Strip | SYN-205 | `[x]` done |
+| 6.4 | Hero Right — Product Panel, Integration Tiles, Live Ticker | SYN-206 | `[x]` done |
+| 6.5 | Benefits Grid + Trust Strip | SYN-207 | `[x]` done |
+| 6.6 | ClientReferences Visual Refresh | SYN-208 | `[x]` done |
+| 6.7 | Team Section Visual Refresh | SYN-209 | `[x]` done |
+| 6.8 | Demo + Contact Forms Visual Refresh + Locale Parity Sweep | SYN-210 | `[x]` done |
+| 6.9 | Shared Form Primitives + i18n Namespace Restructure (6.8 deferral) | SYN-328 | `[x]` done |
+| 6.10 | DemoScheduler Grid + DemoForm Restyle + GDS Enum (6.8 deferral) | SYN-329 | `[x]` done |
+| 6.11 | Contact Grid + ContactForm Restyle (6.8 deferral) | SYN-330 | `[x]` done |
+| 6.12 | Lighthouse + axe + Legacy Cleanup (6.8 deferral) | SYN-331 | `[x]` done |
+| 6.13 | Epic 6 Follow-ups — Stragglers + CLS/LCP/Heading-Order (6.12 deferral) | SYN-378 | `[x]` done — AC 7 mobile LCP residual gap rescoped to Story 5.6 (Epic 5) |
+
+**Epic 6 Retrospective:** pending — not yet authored. Per CLAUDE.md "Post-Epic Retrospective (Mandatory)" rule, `bmad-retrospective` must run against the completed epic (SYN-202 closed 2026-05-20). Outstanding action: create `_bmad-output/implementation-artifacts/epic-6-retro-YYYY-MM-DD.md`.
+
+## Epic 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme (Phase 6)
+
+**Jira:** [SYN-488](https://xillinha.atlassian.net/browse/SYN-488) (Epic) + stories SYN-489..496 + 50 sub-tasks SYN-497..546 — all To Do; full sync 2026-05-22.
+
+Source: Figma Make file `https://www.figma.com/make/66Wb2MAv5PLOBSJLoFM3E3/teste` (fileKey `66Wb2MAv5PLOBSJLoFM3E3`). Imports a 7-page SaaS product surface (Landing variant + DemoForm + 5-page Dashboard suite) and a ~40-component shadcn-style UI library on top of an OKLCH dark-theme token system. New routes coexist with the existing public marketing site; dark theme applied site-wide (re-skinning `/`, `/privacy`, `/admin/*`); brand copy reconciled from "SyncSyrius" / insurance domain → "SyncRevenue / Sync Sirius" / travel-agency-commission domain. Full breakdown in `_bmad-output/planning-artifacts/epics.md` (Epic 7 section).
+
+| Story | Title | Jira | Status |
+|---|---|---|---|
+| 7.1 | Foundation — Deps, Token Backport, Dark Mode Default, Base Utilities | SYN-489 | `[x]` done — code review patches complete 2026-05-22. Fixed Tailwind v3 animation compatibility, alpha-capable shadcn token colors, `ImageWithFallback` `src` retry behavior, and `useIsMobile` listener fallback. Full suite passes (94 files / 801 tests), typecheck passes, build passes, contrast passes, and audit has no high/critical advisories. |
+| 7.2 | Routes / Layout Scaffold — `/v2`, `/demo`, `/dashboard/*` + DashboardLayout Shell | SYN-490 | `[ ]` not started |
+| 7.3 | Dashboard Pages — Overview, Revenue Recovery, Payouts, Insights, Settings | SYN-491 | `[ ]` not started |
+| 7.4 | Landing at `/v2` + DemoForm at `/demo` | SYN-492 | `[ ]` not started |
+| 7.5 | i18n Extraction for Epic 7 Pages — en / pt-BR / es | SYN-493 | `[ ]` not started |
+| 7.6 | Brand Copy Rewrite — SyncSyrius/Insurance → SyncRevenue/Travel Commission | SYN-494 | `[ ]` not started |
+| 7.7 | Prerender Exclusions + Site-Wide Dark Mode Regression Sweep | SYN-495 | `[ ]` not started |
+| 7.8 | New-Route Smoke Tests + Vitest Coverage Floor | SYN-496 | `[ ]` not started |
+
+**Implementation order:** 7.1 → 7.2 → 7.3 → 7.4 → 7.5 → 7.6 → 7.7 → 7.8.
+
+**Epic 7 Retrospective:** pending — runs after all 8 stories Done.
+
+**Epic 7 TEA pass:** pending — runs as single sprint pass over all 8 stories per CLAUDE.md "Post-Sprint TEA" rule (NOT per-story).

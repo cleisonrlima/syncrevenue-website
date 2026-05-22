@@ -15,11 +15,11 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // Sober accent button (Epic 6 — Hero.html .btn / .btn-lg). No gradient, no glow, no extra shadow.
   'solid-accent': cn(
     'inline-flex items-center justify-center font-semibold text-white',
-    'bg-[var(--accent)] hover:bg-[var(--accent-soft)]',
+    'bg-[var(--accent-brand)] hover:bg-[var(--accent-brand-soft)]',
     'motion-safe:transition-[background-color,transform] motion-safe:duration-150 motion-safe:ease-out',
     'motion-safe:hover:-translate-y-px',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
-    'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-[var(--accent)]',
+    'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-[var(--accent-brand)]',
   ),
 }
 

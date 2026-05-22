@@ -94,7 +94,7 @@ export default function Hero() {
             >
               {t('hero.headline.line1', { defaultValue: '' })}
               <br />
-              <span className="text-[var(--accent-soft)]" data-testid="hero-headline-accent">
+              <span className="text-[var(--accent-brand-soft)]" data-testid="hero-headline-accent">
                 {t('hero.headline.line2', { defaultValue: '' })}
               </span>
             </h1>

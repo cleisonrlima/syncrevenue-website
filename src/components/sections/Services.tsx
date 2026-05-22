@@ -101,7 +101,7 @@ export default function Services() {
                 key={service.key}
                 className="rounded-[14px] border border-[var(--line)] bg-white/[0.03] px-[22px] pt-6 pb-[22px] motion-safe:transition-colors motion-safe:duration-150 hover:border-[var(--line-strong)] hover:bg-white/[0.045]"
               >
-                <div className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] bg-[var(--accent-dim)] text-[var(--accent-soft)]">
+                <div className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] bg-[var(--accent-brand-dim)] text-[var(--accent-brand-soft)]">
                   <Icon className="h-[18px] w-[18px]" />
                 </div>
                 <h3 className="mt-4 text-[15px] font-bold tracking-[-0.01em] leading-tight text-white">

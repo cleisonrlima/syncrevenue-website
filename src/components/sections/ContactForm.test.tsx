@@ -89,7 +89,7 @@ describe('ContactForm', () => {
     expect(chevron).not.toBeNull()
 
     const subject = screen.getByLabelText(/^Subject/i)
-    expect(subject.className).toMatch(/focus:border-\[var\(--accent\)\]/)
+    expect(subject.className).toMatch(/focus:border-\[var\(--accent-brand\)\]/)
   })
 
   it('renders the EncryptedTransitNote in the form-foot', () => {

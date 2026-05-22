@@ -97,7 +97,7 @@ export default function HeroProductPanel() {
     >
       <div className="flex items-start gap-4">
         <div
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent)] text-white"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-[var(--accent-brand)] text-white"
           aria-hidden="true"
           data-testid="hero-panel-mark"
         >
