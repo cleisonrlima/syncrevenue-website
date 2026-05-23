@@ -218,9 +218,9 @@ describe('Navbar', () => {
   })
 
   describe('Story 6.2 — logo asset', () => {
-    it('renders the SyncSirius logo with explicit width/height (CLS prevention)', () => {
+    it('renders the Sync Sirius logo with explicit width/height (CLS prevention)', () => {
       renderNavbar()
-      const logo = screen.getByAltText('SyncSirius') as HTMLImageElement
+      const logo = screen.getByAltText('Sync Sirius') as HTMLImageElement
       expect(logo.getAttribute('src')).toBe('/syncsirius-logo-trans.png')
       expect(logo.getAttribute('width')).toBe('32')
       expect(logo.getAttribute('height')).toBe('32')

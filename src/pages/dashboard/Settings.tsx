@@ -260,15 +260,15 @@ function GeneralSettings() {
               </label>
               <select
                 id="settings-timezone"
-                defaultValue="saopaulo"
+                defaultValue="America/Sao_Paulo"
                 className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white appearance-none focus:outline-none focus:border-blue-500/50 transition-colors"
               >
-                <option value="saopaulo">{t('dashboard.settings.general.timezoneOptions.saopaulo', 'America/Sao_Paulo (BRT)')}</option>
-                <option value="newyork">{t('dashboard.settings.general.timezoneOptions.newyork', 'America/New_York (ET)')}</option>
-                <option value="london">{t('dashboard.settings.general.timezoneOptions.london', 'Europe/London (GMT/BST)')}</option>
-                <option value="est">{t('dashboard.settings.general.timezoneOptions.est', 'Eastern Time (ET)')}</option>
-                <option value="pst">{t('dashboard.settings.general.timezoneOptions.pst', 'Pacific Time (PT)')}</option>
-                <option value="gmt">{t('dashboard.settings.general.timezoneOptions.gmt', 'Greenwich Mean Time (GMT)')}</option>
+                <option value="America/Sao_Paulo">{t('dashboard.settings.general.timezoneOptions.saopaulo', 'America/Sao_Paulo (BRT)')}</option>
+                <option value="America/New_York">{t('dashboard.settings.general.timezoneOptions.newyork', 'America/New_York (ET)')}</option>
+                <option value="Europe/London">{t('dashboard.settings.general.timezoneOptions.london', 'Europe/London (GMT/BST)')}</option>
+                <option value="America/Detroit">{t('dashboard.settings.general.timezoneOptions.est', 'Eastern Time (ET)')}</option>
+                <option value="America/Los_Angeles">{t('dashboard.settings.general.timezoneOptions.pst', 'Pacific Time (PT)')}</option>
+                <option value="Etc/GMT">{t('dashboard.settings.general.timezoneOptions.gmt', 'Greenwich Mean Time (GMT)')}</option>
               </select>
             </div>
           </div>
@@ -481,20 +481,22 @@ function BillingSettings() {
             {t('dashboard.settings.billing.currentPlan', 'Current Plan')}
           </h2>
           <p className="text-sm text-slate-400">
-            {t('dashboard.settings.billing.subheading', 'You are currently on the Enterprise tier.')}
+            {t('dashboard.settings.billing.subheading', 'Your organization uses a managed SyncRevenue plan.')}
           </p>
         </div>
         <span className="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-400 border border-blue-500/20 rounded-full text-sm font-bold tracking-wide">
-          {t('dashboard.settings.billing.tier', 'ENTERPRISE')}
+          {t('dashboard.settings.billing.tier', 'MANAGED')}
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
           <div className="text-sm text-slate-400 mb-1">
-            {t('dashboard.settings.billing.monthlyCost', 'Monthly Cost')}
+            {t('dashboard.settings.billing.monthlyCost', 'Plan Terms')}
           </div>
-          <div className="text-2xl font-bold text-white">$1,499</div>
+          <div className="text-2xl font-bold text-white">
+            {t('dashboard.settings.billing.planTermsValue', 'Custom')}
+          </div>
         </div>
         <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
           <div className="text-sm text-slate-400 mb-1">

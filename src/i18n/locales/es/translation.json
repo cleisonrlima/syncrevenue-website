@@ -1,6 +1,6 @@
 {
   "nav": {
-    "demo": "Solicitar Demo",
+    "demo": "Programar Demo",
     "contact": "Contacto",
     "home": "Inicio",
     "privacy": "Política de Privacidad",
@@ -552,7 +552,7 @@
       "security": "Seguridad",
       "customers": "Clientes",
       "login": "Iniciar sesión",
-      "bookDemo": "Agendar Demo",
+      "bookDemo": "Programar Demo",
       "openMenu": "Abrir menú",
       "closeMenu": "Cerrar menú"
     },
@@ -589,7 +589,7 @@
       "bgImageAlt": "Negocios abstractos",
       "explorePlatform": "Explorar plataforma",
       "exploreProduct": "Explorar producto",
-      "requestDemo": "Solicitar Demo",
+      "requestDemo": "Programar Demo",
       "trustBadge1": "Integración sin fricción",
       "trustBadge2": "Cancele cuando quiera",
       "systemStatus": "Estado del sistema",
@@ -611,7 +611,7 @@
       },
       "card3": {
         "title": "Resolución automatizada",
-        "description": "Genere informes de disputa con un clic, con el formato exacto que las aerolíneas y proveedores GDS necesitan para resolver casos rápidamente."
+        "description": "Genere informes de disputa con un clic, con el formato exacto que las aerolíneas y proveedores de GDS necesitan para resolver casos rápidamente."
       }
     },
     "security": {
@@ -637,7 +637,7 @@
     "cta": {
       "heading": "¿Listo para transformar sus ingresos?",
       "subheading": "Únase a las agencias que están optimizando sus finanzas con la suite Sync Sirius.",
-      "button": "Agendar Demo"
+      "button": "Programar Demo"
     },
     "footer": {
       "logoAlt": "Logo Sync Sirius",
@@ -658,7 +658,7 @@
       "badge": "Demo en vivo",
       "heading": "Vea SyncRevenue en acción.",
       "description": "Descubra cómo nuestra plataforma automatizada de auditoría de comisiones puede recuperar ingresos perdidos y simplificar sus pagos. Complete el formulario y nuestro equipo se pondrá en contacto para agendar una demostración personalizada.",
-      "bullet1": "Identifique pagos de comisión faltantes al instante",
+      "bullet1": "Identifique pagos de comisión faltantes antes del cierre",
       "bullet2": "Automatice pagos de agentes con 100% de precisión",
       "bullet3": "Visualice el rendimiento de la agencia y los pronósticos globales"
     },
@@ -675,7 +675,7 @@
         "company": "Agencia Acme",
         "phone": "+34 600 000 000"
       },
-      "submit": "Solicitar Demo",
+      "submit": "Programar Demo",
       "disclaimer": "Al enviar este formulario, usted acepta nuestros Términos de Servicio y Política de Privacidad."
     },
     "success": {
@@ -935,9 +935,10 @@
       },
       "billing": {
         "currentPlan": "Plan actual",
-        "subheading": "Actualmente está en el tier Enterprise.",
-        "tier": "ENTERPRISE",
-        "monthlyCost": "Costo mensual",
+        "subheading": "Su organización usa un plan gestionado de SyncRevenue.",
+        "tier": "GESTIONADO",
+        "monthlyCost": "Términos del plan",
+        "planTermsValue": "A medida",
         "nextBilling": "Próxima facturación",
         "apiRequests": "Solicitudes a la API",
         "paymentMethod": "Método de pago",

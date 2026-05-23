@@ -50,7 +50,7 @@ describe('Landing (Story 7.4 — /v2)', () => {
   it('renders the first-slide hero h1 verbatim from the Figma source', () => {
     renderLanding()
     // The first slide's h1 starts with "Recover lost revenue." followed by a
-    // <br/> + the gradient "Instantly." highlight. The text query matches the
+    // <br/> + the gradient highlight. The text query matches the
     // accessible name (which collapses the <br/> and concatenates the runs).
     const heading = screen.getByRole('heading', { level: 1, name: /Recover lost revenue\./i })
     expect(heading).toBeInTheDocument()
@@ -61,13 +61,13 @@ describe('Landing (Story 7.4 — /v2)', () => {
     expect(screen.getByText(/TRUSTED BY FORWARD-THINKING AGENCIES/)).toBeInTheDocument()
   })
 
-  it('routes the primary nav "Book a Demo" CTA to /demo', () => {
+  it('routes the primary nav "Schedule a Demo" CTA to /demo', () => {
     renderLanding()
-    // The nav has a desktop "Book a Demo" link AND the mobile menu has one.
+    // The nav has a desktop "Schedule a Demo" link AND the mobile menu has one.
     // Both should point to /demo. We assert at least one such anchor exists
     // with the right href (avoids brittle "desktop vs mobile" forking).
     const bookDemoLinks = screen
-      .getAllByRole('link', { name: /Book a Demo/i })
+      .getAllByRole('link', { name: /Schedule a Demo/i })
       .filter((el) => el.getAttribute('href') === '/demo')
     expect(bookDemoLinks.length).toBeGreaterThanOrEqual(1)
   })

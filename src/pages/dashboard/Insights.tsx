@@ -87,10 +87,10 @@ const PRODUCT_PERFORMANCE = [
 ]
 
 const TOP_AGENTS = [
-  { name: 'Oak & Stone Partners', region: 'North America', volume: '$1.2M', growth: '+18%' },
-  { name: 'Nexus Financial', region: 'EMEA', volume: '$850K', growth: '+24%' },
-  { name: 'Vanguard Group', region: 'North America', volume: '$720K', growth: '+5%' },
-  { name: 'Elevate Inc', region: 'APAC', volume: '$430K', growth: '+42%' },
+  { name: 'Meridian Travel', region: 'North America', volume: '$1.2M', growth: '+18%' },
+  { name: 'Apex Voyages', region: 'EMEA', volume: '$850K', growth: '+24%' },
+  { name: 'SkyBridge Travel', region: 'North America', volume: '$720K', growth: '+5%' },
+  { name: 'Global Wings Ltd', region: 'APAC', volume: '$430K', growth: '+42%' },
 ]
 
 export default function Insights() {

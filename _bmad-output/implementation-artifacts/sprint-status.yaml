@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-22  # Story 7.5 review patches complete -> done. Added Epic 7 route-owned language switchers, localized chart tooltip/series labels, translated-status search, neutral unknown status handling, row-specific action labels, interpolation placeholder parity, and route-level locale tests. typecheck/test:run (101 files / 859 tests)/build all green.
+last_updated: 2026-05-23  # Story 7.6 review patches complete -> done. Removed stale Epic 7 fallback/default brand copy, applied pricing-neutral billing copy, completed travel-domain Insights mock data, switched timezone values to IANA IDs, added targeted regression tests. typecheck/test:run (101 files / 862 tests)/dev smoke (21 route-locale checks) all green.
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -169,7 +169,7 @@ development_status:
   7-3-dashboard-pages: done
   7-4-landing-demo-pages: done
   7-5-i18n-extraction: done
-  7-6-brand-copy-rewrite: review
+  7-6-brand-copy-rewrite: done
   7-7-prerender-exclusions-dark-mode-regression: backlog
   7-8-new-route-smoke-tests-coverage: backlog
   epic-7-tea: pending  # per CLAUDE.md "Post-Sprint TEA Pass" — runs once over the full 8-story set after Story 7.8 closes

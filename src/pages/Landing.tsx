@@ -56,7 +56,7 @@ import LanguageSwitcher from '@/i18n/LanguageSwitcher'
  *     real translations.
  *
  * Preserved verbatim (do NOT silently change — owned by other stories):
- *   - "SyncSyrius" brand name (5 occurrences) — Story 7.6 owns the rewrite
+ *   - legacy Figma brand name occurrences — Story 7.6 owns the rewrite
  *     to "SyncRevenue"
  *   - All insurance / commission-audit copy (slide descriptions, benefits
  *     grid, security strip, CTA) — Story 7.6 owns the travel-commission
@@ -127,25 +127,25 @@ const SLIDE_FALLBACKS: Record<SlideId, {
   floatingValue: string
 }> = {
   revenue: {
-    badge: 'SyncRevenue 2.0 is now live',
+    badge: 'SyncRevenue is now available',
     title: 'Recover lost revenue.',
-    titleHighlight: 'Instantly.',
+    titleHighlight: 'Before it disappears.',
     description:
       'The automated commission auditing platform that finds missing agency revenue before it hits your bottom line. Stop leaving money on the table.',
     floatingTitle: 'Recovered this month',
     floatingValue: '+$24,500.00',
   },
   pay: {
-    badge: 'Introducing SyncPay',
+    badge: 'Introducing SyncRevenue Payouts',
     title: 'Automate payouts.',
-    titleHighlight: 'Flawlessly.',
+    titleHighlight: 'Accurately.',
     description:
-      'Route commissions to your agents instantly and accurately. Simplify your payout workflows and eliminate manual transaction errors.',
+      'Route commissions to your agents reliably and accurately. Simplify your payout workflows and eliminate manual transaction errors.',
     floatingTitle: 'Payout Processed',
     floatingValue: '$12,450 to 8 Agents',
   },
   insights: {
-    badge: 'SyncInsights Enterprise',
+    badge: 'SyncRevenue Insights',
     title: 'Predictive analytics.',
     titleHighlight: 'Visualized.',
     description:
@@ -254,11 +254,11 @@ export default function Landing() {
           <div className="flex items-center gap-2">
             <ImageWithFallback
               src={LOGO_SRC}
-              alt={t('landing.nav.logoAlt', 'SyncSyrius Logo')}
+              alt={t('landing.nav.logoAlt', 'Sync Sirius logo')}
               className="h-8 w-auto rounded object-contain"
             />
             <span className="text-xl font-bold tracking-tight text-white">
-              {t('landing.nav.brand', 'SyncSyrius')}
+              {t('landing.nav.brand', 'SyncRevenue')}
             </span>
           </div>
 
@@ -289,7 +289,7 @@ export default function Landing() {
               to="/demo"
               className="text-sm font-medium bg-white text-black hover:bg-slate-200 transition-colors px-5 py-2.5 rounded-full inline-flex items-center gap-2"
             >
-              {t('landing.nav.bookDemo', 'Book a Demo')}
+              {t('landing.nav.bookDemo', 'Schedule a Demo')}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -355,7 +355,7 @@ export default function Landing() {
                 to="/demo"
                 className="bg-white text-black py-4 rounded-xl mt-4 font-medium flex items-center justify-center gap-2"
               >
-                {t('landing.nav.bookDemo', 'Book a Demo')} <ArrowRight className="w-5 h-5" />
+                {t('landing.nav.bookDemo', 'Schedule a Demo')} <ArrowRight className="w-5 h-5" />
               </Link>
               <div className="pt-2">
                 <LanguageSwitcher />
@@ -428,7 +428,7 @@ export default function Landing() {
                           className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-full border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-lg"
                         >
                           <PlayCircle className="w-5 h-5" />
-                          {t('landing.hero.requestDemo', 'Request Demo')}
+                          {t('landing.hero.requestDemo', 'Schedule a Demo')}
                         </Link>
                       </div>
 
@@ -530,7 +530,7 @@ export default function Landing() {
             <p className="text-lg text-slate-400">
               {t(
                 'landing.benefits.subheading',
-                'Manual commission tracking is prone to human error. Our intelligent platform cross-references your carrier statements with your internal data in seconds.',
+                'Manual commission tracking is prone to human error. Our intelligent platform cross-references your GDS statements with your internal data in seconds.',
               )}
             </p>
           </div>
@@ -541,7 +541,7 @@ export default function Landing() {
               title={t('landing.benefits.card1.title', 'Real-time Reconciliation')}
               description={t(
                 'landing.benefits.card1.description',
-                'Automatically match expected commissions against actual carrier payouts as soon as statements arrive.',
+                'Automatically match expected commissions against actual GDS payouts as soon as statements arrive.',
               )}
             />
             <FeatureCard
@@ -549,7 +549,7 @@ export default function Landing() {
               title={t('landing.benefits.card2.title', 'Discrepancy Detection')}
               description={t(
                 'landing.benefits.card2.description',
-                'Instantly flag missing payments, incorrect rates, and clawback errors before the books close.',
+                'Flag missing payments, incorrect rates, and debit memo (ADM) errors before the books close.',
               )}
             />
             <FeatureCard
@@ -557,7 +557,7 @@ export default function Landing() {
               title={t('landing.benefits.card3.title', 'Automated Resolution')}
               description={t(
                 'landing.benefits.card3.description',
-                'Generate one-click dispute reports formatted exactly how carriers need them to resolve issues fast.',
+                'Generate one-click dispute reports formatted exactly how airlines and GDS providers need them to resolve issues fast.',
               )}
             />
           </div>
@@ -627,14 +627,14 @@ export default function Landing() {
           <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
             {t(
               'landing.cta.subheading',
-              'Join the agencies optimizing their finances with the SyncSyrius product suite.',
+              'Join the agencies optimizing their finances with the Sync Sirius product suite.',
             )}
           </p>
           <Link
             to="/demo"
             className="px-10 py-5 bg-white text-black text-xl font-bold rounded-full hover:bg-slate-200 transition-colors shadow-[0_0_40px_rgba(255,255,255,0.3)] inline-block"
           >
-            {t('landing.cta.button', 'Schedule a Demo Today')}
+            {t('landing.cta.button', 'Schedule a Demo')}
           </Link>
         </div>
       </section>
@@ -644,11 +644,11 @@ export default function Landing() {
           <div className="flex items-center gap-2 text-white">
             <ImageWithFallback
               src={LOGO_SRC}
-              alt={t('landing.footer.logoAlt', 'SyncSyrius Logo Alt')}
+              alt={t('landing.footer.logoAlt', 'Sync Sirius logo')}
               className="h-6 w-auto rounded object-contain grayscale opacity-80"
             />
             <span className="font-bold text-lg tracking-tight">
-              {t('landing.footer.brand', 'SyncSyrius')}
+              {t('landing.footer.brand', 'SyncRevenue')}
             </span>
           </div>
 
@@ -665,7 +665,7 @@ export default function Landing() {
           </div>
 
           <p>
-            {t('landing.footer.copyright', '© {{year}} SyncSyrius. All rights reserved.', {
+            {t('landing.footer.copyright', '© {{year}} Sync Sirius. All rights reserved.', {
               year: new Date().getFullYear(),
             })}
           </p>

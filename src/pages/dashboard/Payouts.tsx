@@ -35,7 +35,7 @@ import { useDocumentMeta } from '@/components/SEO'
  *     input) — same baseline hardening as `RevenueRecovery.tsx`.
  *
  * Mock data (`METRICS`, `PAYOUTS`) retains the Figma vocabulary (agent
- * names, "SyncPay", "ACH Transfer", etc.); Story 7.6 owns the brand-copy +
+ * names, legacy payout sub-brand labels, "ACH Transfer", etc.); Story 7.6 owns the brand-copy +
  * domain vocabulary rewrite. The 5-tab filter pattern + status pill +
  * initials avatar are 1:1 ports from the Figma source — including the
  * inline gradient-corner glow that distinguishes each metric card on

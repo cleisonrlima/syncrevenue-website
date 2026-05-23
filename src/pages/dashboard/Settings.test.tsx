@@ -67,6 +67,30 @@ describe('Settings', () => {
     expect(screen.getByRole('heading', { level: 2, name: /Danger Zone/ })).toBeInTheDocument()
   })
 
+  it('defaults currency and timezone to travel-agency market options', () => {
+    renderPage()
+    const currency = screen.getByLabelText(/Base Currency/) as HTMLSelectElement
+    const timezone = screen.getByLabelText(/Timezone/) as HTMLSelectElement
+
+    expect(currency.value).toBe('brl')
+    expect(Array.from(currency.options).map((option) => option.value)).toEqual([
+      'brl',
+      'eur',
+      'usd',
+      'gbp',
+    ])
+
+    expect(timezone.value).toBe('America/Sao_Paulo')
+    expect(Array.from(timezone.options).map((option) => option.value)).toEqual([
+      'America/Sao_Paulo',
+      'America/New_York',
+      'Europe/London',
+      'America/Detroit',
+      'America/Los_Angeles',
+      'Etc/GMT',
+    ])
+  })
+
   it('switching to Team Members swaps to the TeamSettings table with the three mock members', async () => {
     const user = userEvent.setup()
     renderPage()

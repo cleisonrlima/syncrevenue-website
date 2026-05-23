@@ -1,6 +1,6 @@
 {
   "nav": {
-    "demo": "Request Demo",
+    "demo": "Schedule a Demo",
     "contact": "Contact",
     "home": "Home",
     "privacy": "Privacy Policy",
@@ -552,7 +552,7 @@
       "security": "Security",
       "customers": "Customers",
       "login": "Log in",
-      "bookDemo": "Book a Demo",
+      "bookDemo": "Schedule a Demo",
       "openMenu": "Open menu",
       "closeMenu": "Close menu"
     },
@@ -589,7 +589,7 @@
       "bgImageAlt": "Abstract Business",
       "explorePlatform": "Explore Platform",
       "exploreProduct": "Explore Product",
-      "requestDemo": "Request Demo",
+      "requestDemo": "Schedule a Demo",
       "trustBadge1": "Seamless integration",
       "trustBadge2": "Cancel anytime",
       "systemStatus": "System Status",
@@ -658,7 +658,7 @@
       "badge": "Live Demo",
       "heading": "See SyncRevenue in action.",
       "description": "Discover how our automated commission auditing platform can recover lost revenue and streamline your payouts. Fill out the form, and our team will get in touch to schedule a personalized walkthrough.",
-      "bullet1": "Identify missing commission payments instantly",
+      "bullet1": "Identify missing commission payments before close",
       "bullet2": "Automate agent payouts with 100% accuracy",
       "bullet3": "Visualize agency performance and global forecasting"
     },
@@ -675,7 +675,7 @@
         "company": "Acme Agency",
         "phone": "+1 (555) 000-0000"
       },
-      "submit": "Request Demo",
+      "submit": "Schedule a Demo",
       "disclaimer": "By submitting this form, you agree to our Terms of Service and Privacy Policy."
     },
     "success": {
@@ -935,9 +935,10 @@
       },
       "billing": {
         "currentPlan": "Current Plan",
-        "subheading": "You are currently on the Enterprise tier.",
-        "tier": "ENTERPRISE",
-        "monthlyCost": "Monthly Cost",
+        "subheading": "Your organization uses a managed SyncRevenue plan.",
+        "tier": "MANAGED",
+        "monthlyCost": "Plan Terms",
+        "planTermsValue": "Custom",
         "nextBilling": "Next Billing Date",
         "apiRequests": "API Requests",
         "paymentMethod": "Payment Method",

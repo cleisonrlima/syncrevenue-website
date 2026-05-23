@@ -121,13 +121,13 @@ export default function DashboardLayout() {
         <div className="flex items-center gap-3 px-6 h-16 border-b border-white/10">
           <ImageWithFallback
             src="/logos/syncsirius-logo.png"
-            alt={t('dashboard.layout.logoAlt', 'SyncSirius')}
+            alt={t('dashboard.layout.logoAlt', 'Sync Sirius logo')}
             width={32}
             height={32}
             className="h-8 w-auto block"
           />
           <span className="text-sm font-semibold text-white tracking-wide">
-            {t('dashboard.layout.brand', 'SyncSirius')}
+            {t('dashboard.layout.brand', 'SyncRevenue')}
           </span>
         </div>
 

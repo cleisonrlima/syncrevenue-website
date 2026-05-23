@@ -1,6 +1,6 @@
 {
   "nav": {
-    "demo": "Solicitar Demo",
+    "demo": "Agendar Demo",
     "contact": "Contato",
     "home": "Início",
     "privacy": "Política de Privacidade",
@@ -589,7 +589,7 @@
       "bgImageAlt": "Negócios abstratos",
       "explorePlatform": "Explorar plataforma",
       "exploreProduct": "Explorar produto",
-      "requestDemo": "Solicitar Demo",
+      "requestDemo": "Agendar Demo",
       "trustBadge1": "Integração sem fricção",
       "trustBadge2": "Cancele quando quiser",
       "systemStatus": "Status do sistema",
@@ -658,7 +658,7 @@
       "badge": "Demo ao vivo",
       "heading": "Veja o SyncRevenue em ação.",
       "description": "Descubra como nossa plataforma automatizada de auditoria de comissões pode recuperar receita perdida e simplificar seus pagamentos. Preencha o formulário e nossa equipe entrará em contato para agendar uma demonstração personalizada.",
-      "bullet1": "Identifique pagamentos de comissão ausentes instantaneamente",
+      "bullet1": "Identifique pagamentos de comissão ausentes antes do fechamento",
       "bullet2": "Automatize pagamentos de agentes com 100% de precisão",
       "bullet3": "Visualize o desempenho da agência e previsões globais"
     },
@@ -675,7 +675,7 @@
         "company": "Agência Acme",
         "phone": "+55 (11) 90000-0000"
       },
-      "submit": "Solicitar Demo",
+      "submit": "Agendar Demo",
       "disclaimer": "Ao enviar este formulário, você concorda com nossos Termos de Serviço e Política de Privacidade."
     },
     "success": {
@@ -935,9 +935,10 @@
       },
       "billing": {
         "currentPlan": "Plano atual",
-        "subheading": "Você está atualmente no tier Enterprise.",
-        "tier": "ENTERPRISE",
-        "monthlyCost": "Custo mensal",
+        "subheading": "Sua organização usa um plano gerenciado do SyncRevenue.",
+        "tier": "GERENCIADO",
+        "monthlyCost": "Termos do plano",
+        "planTermsValue": "Sob medida",
         "nextBilling": "Próxima cobrança",
         "apiRequests": "Requisições à API",
         "paymentMethod": "Método de pagamento",

@@ -36,7 +36,7 @@ import LanguageSwitcher from '@/i18n/LanguageSwitcher'
  *     are unchanged.
  *
  * Preserved verbatim (do NOT silently change — owned by other stories):
- *   - "SyncSyrius" brand name (3 occurrences) — Story 7.6 owns the rewrite
+ *   - legacy Figma brand name occurrences — Story 7.6 owns the rewrite
  *     to "SyncRevenue"
  *   - All commission-audit / agency copy — Story 7.6 owns the travel-commission
  *     rewrite
@@ -77,11 +77,11 @@ export default function Demo() {
           <Link to="/" className="flex items-center gap-2">
             <ImageWithFallback
               src={LOGO_SRC}
-              alt={t('figmaDemo.nav.logoAlt', 'SyncSyrius Logo')}
+              alt={t('figmaDemo.nav.logoAlt', 'Sync Sirius logo')}
               className="h-8 w-auto rounded object-contain"
             />
             <span className="text-xl font-bold tracking-tight text-white">
-              {t('figmaDemo.nav.brand', 'SyncSyrius')}
+              {t('figmaDemo.nav.brand', 'SyncRevenue')}
             </span>
           </Link>
           <div className="flex items-center gap-3">
@@ -108,7 +108,7 @@ export default function Demo() {
               {t('figmaDemo.hero.badge', 'Live Demo')}
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
-              {t('figmaDemo.hero.heading', 'See SyncSyrius in action.')}
+              {t('figmaDemo.hero.heading', 'See SyncRevenue in action.')}
             </h1>
             <p className="text-lg text-slate-400 mb-8 leading-relaxed">
               {t(
@@ -119,7 +119,7 @@ export default function Demo() {
 
             <div className="space-y-6">
               {[
-                t('figmaDemo.hero.bullet1', 'Identify missing commission payments instantly'),
+                t('figmaDemo.hero.bullet1', 'Identify missing commission payments before close'),
                 t('figmaDemo.hero.bullet2', 'Automate agent payouts with 100% accuracy'),
                 t('figmaDemo.hero.bullet3', 'Visualize agency performance and global forecasting'),
               ].map((item, i) => (
@@ -268,7 +268,7 @@ export default function Demo() {
                   type="submit"
                   className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold py-3 rounded-lg transition-all mt-6 shadow-lg shadow-indigo-500/25"
                 >
-                  {t('figmaDemo.form.submit', 'Request Demo')}
+                  {t('figmaDemo.form.submit', 'Schedule a Demo')}
                 </button>
 
                 <p className="text-xs text-center text-slate-500 mt-4">

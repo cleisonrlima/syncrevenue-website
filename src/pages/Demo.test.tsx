@@ -40,9 +40,9 @@ describe('Demo (Story 7.4 — /demo)', () => {
     expect(screen.getByLabelText(/Phone Number \(Optional\)/i)).toHaveAttribute('type', 'tel')
   })
 
-  it('renders the gradient submit button with verbatim Figma copy', () => {
+  it('renders the gradient submit button with localized demo scheduling copy', () => {
     renderDemo()
-    expect(screen.getByRole('button', { name: /Request Demo/i })).toHaveAttribute('type', 'submit')
+    expect(screen.getByRole('button', { name: /Schedule a Demo/i })).toHaveAttribute('type', 'submit')
   })
 
   it('flips to the post-submit motion success panel when the form is submitted', async () => {
@@ -54,7 +54,7 @@ describe('Demo (Story 7.4 — /demo)', () => {
     await user.type(screen.getByLabelText(/Work Email/i), 'jane@agency.com')
     await user.type(screen.getByLabelText(/Company Name/i), 'Acme Agency')
 
-    const form = screen.getByRole('button', { name: /Request Demo/i }).closest('form')
+    const form = screen.getByRole('button', { name: /Schedule a Demo/i }).closest('form')
     expect(form).not.toBeNull()
     // Use fireEvent.submit so the `required` validation runs against the
     // values we typed above. userEvent.click on submit also works but
@@ -81,7 +81,7 @@ describe('Demo (Story 7.4 — /demo)', () => {
     await user.type(screen.getByLabelText(/Work Email/i), 'jane@agency.com')
     await user.type(screen.getByLabelText(/Company Name/i), 'Acme Agency')
 
-    const form = screen.getByRole('button', { name: /Request Demo/i }).closest('form')
+    const form = screen.getByRole('button', { name: /Schedule a Demo/i }).closest('form')
     fireEvent.submit(form as HTMLFormElement)
 
     const successPanel = screen

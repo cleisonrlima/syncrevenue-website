@@ -1,6 +1,6 @@
 # Story 7.6: Brand Copy Rewrite — SyncSyrius/Insurance → SyncRevenue/Travel Commission
 
-Status: review
+Status: done
 
 Epic: 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme
 
@@ -60,13 +60,27 @@ So that the dashboard suite reads as a coherent extension of the existing Sync S
 
 - [x] **Task 6: Cross-model brand-voice review (AC: 4)**
   - [x] Brand-voice audit items addressed inline: removed "Flawlessly" / "Instantly" marketing fluff from hero slides; removed "SyncRevenue 2.0" version vanity; renamed SyncPay → SyncRevenue Payouts; renamed SyncInsights Enterprise → SyncRevenue Insights
-  - [x] Independent cross-model review pending (this task box reflects dev-side voice audit pass; reviewer confirms or surfaces follow-ups)
+  - [x] Independent cross-model review complete; review patches applied and verified
 
 - [x] **Task 7: Test sweep (AC: 7)**
-  - [x] `npm run test:run` — 101 files / 859 tests passing
+  - [x] `npm run test:run` — 101 files / 862 tests passing after review patches
   - [x] Locale parity guard passing (deep key parity en/pt-BR/es maintained; new currency/timezone keys added in all 3 locales)
   - [x] `npm run typecheck` — exit 0
   - [x] `npm run build` — 2967 modules transformed, exit 0
+  - [x] `npm run dev` smoke — 21 route-locale checks across `/v2`, `/demo`, `/dashboard`, `/dashboard/recovery`, `/dashboard/payouts`, `/dashboard/insights`, `/dashboard/settings` in en/pt-BR/es
+
+### Review Findings
+
+- [x] [Review][Patch] Billing plan copy still exposes hardcoded Enterprise/$1,499 pricing; user chose pricing-neutral custom/managed plan copy [src/pages/dashboard/Settings.tsx:484]
+- [x] [Review][Patch] Stale Epic 7 fallback/default copy remains [src/pages/Landing.tsx:130]
+- [x] [Review][Patch] Dashboard layout logo and brand fallbacks still say SyncSirius [src/components/layout/DashboardLayout.tsx:124]
+- [x] [Review][Patch] Contact heading defaultValue still says SyncSirius [src/components/sections/Contact.tsx:157]
+- [x] [Review][Patch] TOP_AGENTS mock data still uses finance/placeholder organizations [src/pages/dashboard/Insights.tsx:89]
+- [x] [Review][Patch] Timezone select stores slug values instead of IANA timezone IDs [src/pages/dashboard/Settings.tsx:263]
+- [x] [Review][Patch] Settings tests do not cover new currency/timezone defaults and option ordering [src/pages/dashboard/Settings.test.tsx:62]
+- [x] [Review][Patch] RevenueRecovery tests do not cover renamed GDS/PNR search and row-action interpolation [src/pages/dashboard/RevenueRecovery.test.tsx:90]
+- [x] [Review][Patch] Spanish copy uses awkward "proveedores GDS" phrasing [src/i18n/locales/es/translation.json:561]
+- [x] [Review][Patch] Story record still says independent review pending and omits required dev-route locale smoke evidence [_bmad-output/implementation-artifacts/7-6-brand-copy-rewrite.md:61]
 
 ## Dev Notes
 
@@ -164,4 +178,5 @@ Story 7.6 was implemented as a pure copy/data transform — no new components, n
 
 ### Change Log
 
+- 2026-05-23: Story 7.6 review patches — stale fallback/default brand copy removed, pricing-neutral billing copy applied, travel-domain Insights mock data completed, timezone values switched to IANA IDs, targeted tests added. typecheck/test:run (101/862)/dev smoke (21 route-locale checks) all green.
 - 2026-05-23: Story 7.6 brand copy rewrite — SyncSyrius/insurance → SyncRevenue/Sync Sirius/travel-commission vocabulary. All 3 locale JSONs, 5 dashboard TSX mock data files, 7 test files updated. typecheck/test:run (101/859)/build all green.

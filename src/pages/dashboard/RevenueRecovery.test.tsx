@@ -112,6 +112,33 @@ describe('RevenueRecovery', () => {
     expect(within(tbody).getAllByTestId('dashboard-recovery-row')).toHaveLength(3)
   })
 
+  it('matches renamed GDS and PNR fields in search filtering', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    await user.click(screen.getByTestId('dashboard-recovery-tab-all-discrepancies'))
+    await user.type(screen.getByLabelText(/Search tickets/), 'Sabre')
+    await user.click(screen.getByRole('button', { name: /Filter results/ }))
+
+    let tbody = screen.getByTestId('dashboard-recovery-tbody')
+    expect(within(tbody).getAllByTestId('dashboard-recovery-row')).toHaveLength(2)
+
+    await user.clear(screen.getByLabelText(/Search tickets/))
+    await user.type(screen.getByLabelText(/Search tickets/), 'PNR-K7H2X')
+    await user.click(screen.getByRole('button', { name: /Filter results/ }))
+
+    tbody = screen.getByTestId('dashboard-recovery-tbody')
+    expect(within(tbody).getAllByTestId('dashboard-recovery-row')).toHaveLength(1)
+    expect(within(tbody).getByText('Amadeus')).toBeInTheDocument()
+  })
+
+  it('uses PNR interpolation for recovery row action labels', () => {
+    renderPage()
+    expect(
+      screen.getByRole('button', { name: 'Open actions for PNR-K7H2X' }),
+    ).toBeInTheDocument()
+  })
+
   it('keeps pagination boundary buttons disabled while all filtered rows are shown', () => {
     renderPage()
     expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled()

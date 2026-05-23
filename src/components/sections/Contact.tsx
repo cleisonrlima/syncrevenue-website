@@ -154,7 +154,7 @@ export default function Contact() {
           >
             {t('contact.heading.text', { defaultValue: 'Talk to' })}{' '}
             <span className="accent text-[var(--accent-brand-soft)]">
-              {t('contact.heading.accent', { defaultValue: 'SyncSirius' })}
+              {t('contact.heading.accent', { defaultValue: 'Sync Sirius' })}
             </span>
           </h2>
           <p className="sec-sub mt-5 mx-auto max-w-[62ch] text-[15px] leading-[1.65] text-white/[0.65]">

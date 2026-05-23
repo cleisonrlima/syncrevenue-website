@@ -74,9 +74,9 @@ describe('Insights', () => {
   it('renders all four Top Agencies rows', () => {
     renderPage()
     const list = screen.getByTestId('dashboard-insights-top-agents')
-    expect(within(list).getByText('Oak & Stone Partners')).toBeInTheDocument()
-    expect(within(list).getByText('Nexus Financial')).toBeInTheDocument()
-    expect(within(list).getByText('Vanguard Group')).toBeInTheDocument()
-    expect(within(list).getByText('Elevate Inc')).toBeInTheDocument()
+    expect(within(list).getByText('Meridian Travel')).toBeInTheDocument()
+    expect(within(list).getByText('Apex Voyages')).toBeInTheDocument()
+    expect(within(list).getByText('SkyBridge Travel')).toBeInTheDocument()
+    expect(within(list).getByText('Global Wings Ltd')).toBeInTheDocument()
   })
 })
