@@ -3,6 +3,15 @@
 Date: 2026-05-23
 Scope: Site-wide dark mode smoke per AC 2 — all existing routes under `<html class="dark">`
 
+Screenshot evidence:
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/home.png`
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/privacy.png`
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/admin-login.png`
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/admin-login-error.png`
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/admin-dashboard.png`
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/admin-leads.png`
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/admin-team.png`
+
 ## Architecture Context
 
 Dark mode is forced site-wide via static `<html lang="en" class="dark">` in `index.html` (Story 7.1 AC 3).
@@ -32,6 +41,7 @@ The site has two color systems:
 - Login card: `bg-white text-brand-navy` — white card on navy background
 - This is intentional: the card provides a high-contrast light island on the dark page
 - `Input` component: `bg-white text-brand-navy` — correct inside the white card
+- Submit CTA patched to `bg-brand-deep text-white` after axe flagged `bg-brand-electric-blue text-white` at 4.37:1
 - Focus ring: `focus-visible:ring-brand-electric-blue` — visible on white card (#0075F0 on white, ~4.84:1)
 - `AdminLayout` loading skeleton: `bg-brand-navy` — correct dark background
 
@@ -68,8 +78,8 @@ The existing pages (Epics 1–6) were designed with dark surfaces as first-class
 - Text tokens (`text-white`, `text-brand-offwhite`, `text-brand-muted`) were chosen for contrast on navy
 - The `<html class="dark">` toggle only activates the OKLCH CSS custom properties, which are used exclusively by the new Epic 7 dashboard components
 
-No contrast regressions, FOUC, or white-on-white / near-black-on-near-black issues were detected.
+No contrast regressions, FOUC, or white-on-white / near-black-on-near-black issues were detected after the admin Login CTA contrast patch.
 
 ## New Waiver Entries Required
 
-None. The contrast manifest (`scripts/check-brand-contrast.mjs`) covers the legacy brand palette exhaustively. The OKLCH tokens are scoped to Epic 7 dashboard components that are designed for dark use only.
+None. The contrast manifest (`scripts/check-brand-contrast.mjs`) now covers the legacy brand palette and active Epic 7 dark token text/background pairs.

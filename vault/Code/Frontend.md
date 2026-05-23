@@ -18,7 +18,7 @@
 | `src/pages/dashboard/Payouts.tsx` | `/dashboard/payouts` | Epic 7 dashboard Payouts placeholder — full page lands in Story 7.3 |
 | `src/pages/dashboard/Insights.tsx` | `/dashboard/insights` | Epic 7 dashboard Insights placeholder — full page lands in Story 7.3 |
 | `src/pages/dashboard/Settings.tsx` | `/dashboard/settings` | Epic 7 dashboard Settings placeholder — full page lands in Story 7.3 |
-| `src/pages/admin/Login.tsx` | `/admin/login` | Admin login (stub) |
+| `src/pages/admin/Login.tsx` | `/admin/login` | Admin login; Story 7.7 review patch uses `bg-brand-deep text-white` CTA to satisfy axe color-contrast |
 | `src/pages/admin/Dashboard.tsx` | `/admin/dashboard` | Admin dashboard (stub) |
 | `src/pages/admin/Leads.tsx` | `/admin/leads` | Admin leads (stub) |
 | `src/pages/admin/Team.tsx` | `/admin/team` | Admin team (stub) |
@@ -71,6 +71,7 @@
 | `src/components/figma/ImageWithFallback.tsx` | Story 7.1 — 1:1 port of Figma `teste` source. `<img>` wrapper with `forwardRef`; on `error` event swaps `src` to an inline SVG data URI (no second network request) and tags `data-fallback="true"`. Caller `onError` is invoked before the swap so external observability still fires. |
 | `src/hooks/use-mobile.ts` | Story 7.1 — 1:1 port of Figma `useIsMobile` hook. `matchMedia('(max-width: 767px)')` listener (767, not 768, to avoid one-pixel hysteresis at the Tailwind `md:` breakpoint). SSR-safe default `false` so the Story 5.6 prerender pass emits the desktop layout; `useEffect` corrects on first paint + on resize across the breakpoint. Modern `addEventListener('change')` with legacy-Safari `addListener` fallback. |
 | `src/lib/cn.ts` | Story 7.1 — one-line re-export of `cn` from `src/lib/utils.ts` so future Epic 7 shadcn component ports (stories 7.3+) can use `import { cn } from '@/lib/cn'` 1:1 from the Figma source. Same function reference (referential equality), zero duplication, 22 existing `@/lib/utils` consumers untouched. |
+| `src/lib/route-registry.ts` | Story 7.7 review patch — shared route/prerender decision registry for `/`, `/privacy`, `/v2`, `/demo`, `/dashboard/*`, `/admin/*`, and `/404`; `scripts/prerender.tsx` uses it for wildcard-aware defensive warn |
 | `src/components/forms/EncryptedTransitNote.tsx` | Story 6.9 shared shield note backed by `forms.encryptedNote` |
 
 ---
@@ -84,6 +85,7 @@
 - Skip link: first DOM element in App.tsx; `sr-only focus:not-sr-only`; targets `<main id="main-content">`
 - `<main id="main-content" className="pt-16">` — `pt-16` offsets 64px fixed Navbar
 - Epic 7 route chrome gating: public Navbar/Footer render only on `/`, `/privacy`, and `/admin/*`; `/v2`, `/demo`, `/dashboard/*`, and catch-all routes suppress public chrome. Dashboard unknown child routes render inside `DashboardLayout` via nested wildcard.
+- Story 7.7 route/prerender guardrail: add any new registered route to `src/lib/route-registry.ts`; `src/lib/route-registry.test.ts` and `scripts/prerender.tsx` verify every route has an include/exclude prerender decision.
 - Locale sourced from `useLocaleStore` — never directly from i18next
 - Form state: `'idle' | 'submitting' | 'success' | 'error'` — see [[Architecture-Key]]
 - **API envelope strictness** — `src/lib/api.ts` rejects 2xx responses missing `success: true` (Story 2.2)
@@ -131,7 +133,7 @@
 - Config: `playwright.config.ts` — projects: chromium, webkit, mobile-chrome, mobile-webkit
 - Specs under `tests/e2e/`:
   - `smoke.spec.ts` — P0-1, `/` and `/privacy` mount, no console errors
-  - `a11y-axe.spec.ts` — P0-6 / P1-8 / P1-9, `@axe-core/playwright` WCAG 2.1 AA scan × 2 routes × 3 locales (color-contrast disabled to honor R-A2 exception)
+  - `a11y-axe.spec.ts` — P0-6 / P1-8 / P1-9, `@axe-core/playwright` WCAG 2.1 AA scan on `/` and `/privacy` × 3 locales plus `/admin/login`, `/admin/dashboard`, `/admin/leads`, `/admin/team`; Story 7.7 keeps `color-contrast` active for the sweep
   - `mobile-overlay.spec.ts` — P0-5 / P1-4, hamburger open + Esc close + focus trap (Pixel 7 device)
   - `locale-switch.spec.ts` — P1-1 / P1-2, locale switch happy path on `/` and `/privacy` without navigation; scroll preservation
   - `skip-link.spec.ts` — P1-5, skip-to-main is first tab stop

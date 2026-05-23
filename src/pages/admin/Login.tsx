@@ -74,7 +74,7 @@ export default function Login() {
           type="submit"
           disabled={isSubmitting}
           aria-busy={isSubmitting}
-          className="mt-6 w-full rounded-lg bg-brand-electric-blue px-4 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-6 w-full rounded-lg bg-brand-deep px-4 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {t('admin.login.submit', { defaultValue: 'Sign In' })}
         </Button>

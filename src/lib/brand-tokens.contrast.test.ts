@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { BRAND_CONTRAST_MANIFEST } from './brand-tokens.contrast.manifest'
+import {
+  BRAND_CONTRAST_MANIFEST,
+  EPIC7_DARK_CONTRAST_MANIFEST,
+} from './brand-tokens.contrast.manifest'
 
 /**
  * R-A2 contrast guard (Test Design Epic 1).
@@ -175,5 +178,41 @@ describe('Brand contrast manifest', () => {
       const recomputed = contrastRatio(e.fgHex, e.bgHex)
       expect(Math.abs(recomputed - e.ratio)).toBeLessThan(0.05)
     }
+  })
+})
+
+describe('Epic 7 dark token contrast manifest', () => {
+  it('covers active Figma dark text/background token pairs', () => {
+    const pairs = EPIC7_DARK_CONTRAST_MANIFEST.map(e => `${e.fg}|${e.bg}`).sort()
+
+    expect(pairs).toEqual([
+      'accent-foreground|accent',
+      'card-foreground|card',
+      'destructive-foreground|destructive',
+      'foreground|background',
+      'muted-foreground|muted',
+      'popover-foreground|popover',
+      'primary-foreground|primary',
+      'secondary-foreground|secondary',
+      'sidebar-accent-foreground|sidebar-accent',
+      'sidebar-foreground|sidebar',
+      'sidebar-primary-foreground|sidebar-primary',
+    ].sort())
+  })
+
+  it('every active dark token text pair passes WCAG AA normal text', () => {
+    const unwaivedFailures = EPIC7_DARK_CONTRAST_MANIFEST.filter(
+      e => !e.aaNormal && e.waiver === null,
+    )
+    expect(unwaivedFailures).toEqual([])
+  })
+
+  it('destructive toast pair passes after Story 7.7 dark-token fix', () => {
+    const entry = EPIC7_DARK_CONTRAST_MANIFEST.find(
+      e => e.fg === 'destructive-foreground' && e.bg === 'destructive',
+    )
+
+    expect(entry).toBeDefined()
+    expect(entry!.aaNormal).toBe(true)
   })
 })

@@ -58,3 +58,17 @@ export const BRAND_CONTRAST_MANIFEST: BrandContrastEntry[] = [
   { fg: "white", bg: "navy", fgHex: "#FFFFFF", bgHex: "#0D0D3A", ratio: 18.49, aaNormal: true, aaLarge: true, waiver: null },
   { fg: "white", bg: "offwhite", fgHex: "#FFFFFF", bgHex: "#F4F6FA", ratio: 1.08, aaNormal: false, aaLarge: false, waiver: { id: "R-NT1", reason: "Surface-on-surface pair; never used for text in production." } },
 ]
+
+export const EPIC7_DARK_CONTRAST_MANIFEST: BrandContrastEntry[] = [
+  { fg: "foreground", bg: "background", fgHex: "#FAFAFA", bgHex: "#0A0A0A", ratio: 18.97, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "card-foreground", bg: "card", fgHex: "#FAFAFA", bgHex: "#0A0A0A", ratio: 18.97, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "popover-foreground", bg: "popover", fgHex: "#FAFAFA", bgHex: "#0A0A0A", ratio: 18.97, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "primary-foreground", bg: "primary", fgHex: "#171717", bgHex: "#FAFAFA", ratio: 17.18, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "secondary-foreground", bg: "secondary", fgHex: "#FAFAFA", bgHex: "#262626", ratio: 14.50, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "muted-foreground", bg: "muted", fgHex: "#A1A1A1", bgHex: "#262626", ratio: 5.86, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "accent-foreground", bg: "accent", fgHex: "#FAFAFA", bgHex: "#262626", ratio: 14.50, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "destructive-foreground", bg: "destructive", fgHex: "#FAFAFA", bgHex: "#82181A", ratio: 9.60, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "sidebar-foreground", bg: "sidebar", fgHex: "#FAFAFA", bgHex: "#171717", ratio: 17.18, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "sidebar-primary-foreground", bg: "sidebar-primary", fgHex: "#FAFAFA", bgHex: "#1447E6", ratio: 6.55, aaNormal: true, aaLarge: true, waiver: null },
+  { fg: "sidebar-accent-foreground", bg: "sidebar-accent", fgHex: "#FAFAFA", bgHex: "#262626", ratio: 14.50, aaNormal: true, aaLarge: true, waiver: null },
+]

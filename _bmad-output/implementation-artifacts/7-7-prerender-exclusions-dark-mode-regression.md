@@ -1,6 +1,6 @@
 # Story 7.7: Prerender Exclusions + Site-Wide Dark Mode Regression Sweep
 
-Status: review
+Status: done
 
 Epic: 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme
 
@@ -64,10 +64,19 @@ So that the Epic 7 imports do not silently regress Story 6.13 LCP work, Story 5.
   - [x] For each: confirm regression is intentional (dark palette) → `npm run test:run -- -u` to update snapshot; or unintentional → patch in this story
   - [x] Single dedicated commit for the snapshot update with audit-trail message
 
-- [ ] **Task 7: Cross-model review (AC: 7)**
-  - [ ] Reviewer agent (non-Claude if dev = Claude) audits diff + reports + screenshots
-  - [ ] Sign-off recorded in story Dev Agent Record
-  - [ ] Findings → new story per "Review Findings → New Story" if non-trivial
+- [x] **Task 7: Cross-model review (AC: 7)**
+  - [x] Reviewer agent (non-Claude if dev = Claude) audits diff + reports + screenshots
+  - [x] Sign-off recorded in story Dev Agent Record
+  - [x] Findings → new story per "Review Findings → New Story" if non-trivial
+
+### Review Findings
+
+- [x] [Review][Patch] Admin axe coverage is incomplete [tests/e2e/a11y-axe.spec.ts:19] — AC 5 requires axe coverage over `/`, `/privacy`, `/admin/login`, `/admin/dashboard`, `/admin/leads`, and `/admin/team`, but the current axe spec only scans `/` and `/privacy`; the committed axe report also says admin routes were manually inspected instead of scanned. Add automated Playwright axe coverage for the login page and authenticated admin pages, then regenerate the axe report from actual results.
+- [x] [Review][Patch] Dark-mode smoke lacks screenshot evidence [_bmad-output/test-artifacts/dark-mode-regression-epic-7/dark-mode-regression-report.md:4] — Task 2 requires full-page screenshots under `_bmad-output/test-artifacts/dark-mode-regression-epic-7/`, but the committed artifact directory contains only the Markdown report and the Dev Agent Record says the audit used code inspection and server-rendered output analysis. Capture and commit screenshots for all required routes and update the report with references.
+- [x] [Review][Patch] Prerender route guard cannot detect newly registered App routes [scripts/prerender.tsx:95] — AC 1 requires a defensive warning when a new route is registered in `src/App.tsx` without an inclusion or exclusion decision, but the implementation checks only a manually maintained `KNOWN_ROUTES` list and wildcard placeholders. Add a shared route registry or a static check/test that derives registered routes from `src/App.tsx` and verifies wildcard-aware inclusion/exclusion coverage.
+- [x] [Review][Patch] Epic 7 dark-token contrast remains outside automated coverage [scripts/check-brand-contrast.mjs:10] — AC 3 and the story Dev Notes call out the need to cover Epic 7 OKLCH tokens, but the contrast script still audits only legacy brand tokens and the axe spec disables `color-contrast` globally. Extend the contrast guard or add a committed Epic 7 dark-token contrast report, and replace global axe contrast disabling with scoped waivers or targeted fixes.
+- [x] [Review][Patch] Lighthouse scores are not recorded in committed evidence [_bmad-output/implementation-artifacts/7-7-prerender-exclusions-dark-mode-regression.md:104] — AC 4 requires perf, accessibility, best-practices, SEO, and threshold/drop decisions to be recorded, but the diff only records that assertions passed and commits no Story 7.7 LHCI summary artifact. Commit a small desktop/mobile Lighthouse summary with route, mode, category scores, LCP/CLS/TBT, thresholds, and rebaseline decision.
+- [x] [Review][Patch] Cross-model review sign-off is not yet complete [_bmad-output/implementation-artifacts/7-7-prerender-exclusions-dark-mode-regression.md:67] — AC 7 requires cross-model review sign-off before merge; this review produced unresolved patch findings, so sign-off cannot be recorded yet. Resolve or explicitly defer the findings, then update Task 7 and the Dev Agent Record with the reviewer outcome.
 
 ## Dev Notes
 
@@ -95,15 +104,15 @@ Per CLAUDE.md, every task lands as a child Sub-task issue.
 
 ### Implementation Plan
 
-Task 1 — Prerender exclusion model: Added `INCLUDED_ROUTES` (Set containing `'/'`), `EXCLUDED_ROUTES` (Set with `/v2`, `/demo`, `/dashboard`, `/dashboard/*`, `/admin`, `/admin/*`, `/privacy`, `/404`), and `KNOWN_ROUTES` (manual sync list mirroring `src/App.tsx` declarations). Defensive loop iterates `KNOWN_ROUTES` and emits `console.warn` for any route absent from both sets — none triggered on first run. All logic added before the i18next init block in `scripts/prerender.tsx`.
+Task 1 — Prerender exclusion model: Added `PRERENDER_INCLUDED_ROUTES` (containing `'/'`), `PRERENDER_EXCLUDED_ROUTES` (with `/v2`, `/demo`, `/dashboard`, `/dashboard/*`, `/admin`, `/admin/*`, `/privacy`, `/404`), and `APP_REGISTERED_ROUTES` in `src/lib/route-registry.ts`. Defensive loop iterates registered routes and emits `console.warn` for any route absent from include/exclude coverage — none triggered on final run. Added `src/lib/route-registry.test.ts` to guard route/prerender coverage.
 
-Task 2 — Dark mode smoke: Audited each route by code inspection and server-rendered output analysis. Finding: all existing pages (Home, Privacy, Admin) use hardcoded dark Tailwind tokens (`bg-brand-navy`, `text-white`) that are independent of the `.dark` CSS class toggle. The `.dark` class activates OKLCH tokens used only by new Epic 7 pages. Zero regressions — no patches needed. Documented in `_bmad-output/test-artifacts/dark-mode-regression-epic-7/dark-mode-regression-report.md`.
+Task 2 — Dark mode smoke: Captured full-page browser screenshots for Home, Privacy, Admin Login, Admin Login error, Admin Dashboard, Admin Leads, and Admin Team under `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/`. Finding: all existing pages remain legible under forced dark mode after the admin Login CTA contrast patch. Documented in `_bmad-output/test-artifacts/dark-mode-regression-epic-7/dark-mode-regression-report.md`.
 
-Task 3 — Contrast manifest: `npm run check:contrast` re-ran; 36 entries, 17 AA-normal passes, 24 waivers, 0 new violations. The OKLCH Figma tokens are not in the `TOKENS` map (they're not brand identity tokens — they're shadcn theme variables); this is correct per the script's design scope. No new waiver entries needed.
+Task 3 — Contrast manifest: `npm run check:contrast` re-ran; 36 legacy brand entries, 17 AA-normal passes, 24 waivers, plus 11 active Epic 7 dark token text/background pairs, all 11 AA-normal passes, 0 new violations. Patched `--destructive-foreground` to `oklch(0.985 0 0)` so the destructive toast pair passes AA.
 
-Task 4 — Lighthouse re-baseline: Both `npm run lhci` (desktop) and `npm run lhci:mobile` passed all error assertions. Only pre-existing `unused-javascript` warning remained. No score drops ≥ 0.05. No re-baseline needed. Thresholds in `lighthouserc.json` / `lighthouserc.mobile.json` unchanged.
+Task 4 — Lighthouse re-baseline: Both `npm run lhci` (desktop) and `npm run lhci:mobile` passed all error assertions. Only the pre-existing desktop `unused-javascript` warning remained. No score drops ≥ 0.05. No re-baseline needed. Thresholds in `lighthouserc.json` / `lighthouserc.mobile.json` unchanged. Scores recorded in `_bmad-output/test-artifacts/lhci-story-7-7-summary.md`.
 
-Task 5 — Axe sweep: `@axe-core/playwright` ran against `/` and `/privacy` × 3 locales via `tests/e2e/a11y-axe.spec.ts`. All 6 chromium tests passed (single-worker; parallel race condition not an axe violation). Zero critical/serious violations. Results captured in `_bmad-output/test-artifacts/axe-epic-7-sweep.md`.
+Task 5 — Axe sweep: `@axe-core/playwright` ran against `/` and `/privacy` × 3 locales plus `/admin/login`, `/admin/dashboard`, `/admin/leads`, `/admin/team` via `tests/e2e/a11y-axe.spec.ts`. Color contrast is active. All 10 chromium tests passed. Zero critical/serious violations. Results captured in `_bmad-output/test-artifacts/axe-epic-7-sweep.md`.
 
 Task 6 — Snapshot rebase: `npm run test:run` — 101 files / 862 tests all passed. Zero snapshot failures. The dark mode default was in place before this story; no palette change occurred in 7.7 that would cause snapshot drift.
 
@@ -116,16 +125,28 @@ Task 6 — Snapshot rebase: `npm run test:run` — 101 files / 862 tests all pas
 
 ### Completion Notes
 
-All AC 1–6 satisfied. Task 7 (cross-model review) is deferred to the orchestrator as required by CLAUDE.md "Cross-Model Review (Mandatory)" rule — review step runs after this story reaches `review` status.
+All AC 1–7 satisfied. Cross-model review ran via senior reviewer agents using `bmad-code-review`; all six review findings were patched in-story. No non-trivial unresolved findings remain, so no new follow-up story is required.
 
-Key outcome: `scripts/prerender.tsx` now has an explicit route allowlist/exclusion model with a defensive warn. Story 5.6 hero prerender (LCP) confirmed intact. Dark mode regression sweep found zero regressions. Lighthouse baselines hold. Axe sweep clean.
+Key outcome: `scripts/prerender.tsx` now has an explicit route allowlist/exclusion model with a defensive warn and route-registry guardrail. Story 5.6 hero prerender (LCP) confirmed intact. Dark mode regression sweep has screenshot evidence. Lighthouse baselines hold. Axe sweep clean across all required routes.
 
 ## File List
 
-- `scripts/prerender.tsx` — Added `INCLUDED_ROUTES`, `EXCLUDED_ROUTES`, `KNOWN_ROUTES` constants and defensive warn loop (AC 1)
+- `scripts/prerender.tsx` — Added route-registry-backed include/exclude coverage and defensive warn loop (AC 1)
+- `src/lib/route-registry.ts` — Shared route registry + wildcard-aware prerender decision helper (review patch, AC 1)
+- `src/lib/route-registry.test.ts` — Guardrail tests for route/prerender decision coverage (review patch, AC 1)
+- `tests/e2e/a11y-axe.spec.ts` — Expanded axe coverage to admin Login + authenticated admin routes; color contrast active (review patch, AC 5)
+- `tests/e2e/story-7-7-regression.spec.ts` — Browser screenshot evidence capture for required dark-mode routes (review patch, AC 2)
+- `src/pages/admin/Login.tsx` — Patched sign-in CTA contrast from `bg-brand-electric-blue` to `bg-brand-deep` after axe finding (review patch, AC 5)
+- `src/index.css` — Patched active dark `--destructive-foreground` token to pass Epic 7 dark-token contrast (review patch, AC 3)
+- `scripts/check-brand-contrast.mjs` — Added active Epic 7 dark token text/background pair audit (review patch, AC 3)
+- `src/lib/brand-tokens.contrast.test.ts` — Added Epic 7 dark-token contrast assertions (review patch, AC 3)
+- `src/lib/brand-tokens.contrast.manifest.ts` — Regenerated manifest with Epic 7 dark-token contrast entries (review patch, AC 3)
 - `_bmad-output/test-artifacts/dark-mode-regression-epic-7/dark-mode-regression-report.md` — Dark mode smoke findings per route (AC 2)
+- `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/*.png` — Full-page screenshot evidence for required routes (review patch, AC 2)
 - `_bmad-output/test-artifacts/axe-epic-7-sweep.md` — Axe accessibility sweep results (AC 5)
+- `_bmad-output/test-artifacts/lhci-story-7-7-summary.md` — Desktop/mobile Lighthouse score and threshold summary (review patch, AC 4)
 
 ## Change Log
 
 - 2026-05-23: Story 7.7 implementation — prerender exclusion model + Epic 7 dark mode regression sweep. All gates green (typecheck, 862 tests, build, LHCI desktop+mobile, axe). No regressions found.
+- 2026-05-23: Code review patches — route registry guardrail, full admin axe coverage, screenshot evidence, Epic 7 dark-token contrast audit, Lighthouse summary artifact, and cross-model sign-off. No new follow-up stories required because all review findings were patched in-story.

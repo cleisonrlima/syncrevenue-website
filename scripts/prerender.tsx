@@ -34,9 +34,10 @@
  *   - /privacy and /404 have no LCP-critical above-the-fold content worth optimising.
  *
  * Defensive check (Story 7.7 AC 1 — console.warn, not fail for Sprint 1):
- *   If a route registered in KNOWN_ROUTES is absent from both INCLUDED_ROUTES and
- *   EXCLUDED_ROUTES, the script emits a console.warn so the engineer can decide which
- *   list it belongs to. Upgraded to a non-zero exit in a follow-up sprint.
+ *   If a route registered in APP_REGISTERED_ROUTES is absent from both
+ *   INCLUDED_ROUTES and EXCLUDED_ROUTES, the script emits a console.warn so the
+ *   engineer can decide which list it belongs to. Upgraded to a non-zero exit
+ *   in a follow-up sprint.
  *
  * Run via:   npx tsx --tsconfig tsconfig.json scripts/prerender.tsx
  * Wire via:  See package.json "build" script
@@ -51,6 +52,12 @@ import { readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 import en from '@/i18n/locales/en/translation.json'
 import App from '@/App'
+import {
+  APP_REGISTERED_ROUTES,
+  PRERENDER_EXCLUDED_ROUTES,
+  PRERENDER_INCLUDED_ROUTES,
+  isPrerenderRouteCovered,
+} from '@/lib/route-registry'
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
@@ -66,48 +73,19 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 //     skeleton to public crawlers.
 //   - /privacy, /404: no LCP-critical above-the-fold content.
 //
-// KNOWN_ROUTES must stay in sync with the Route declarations in src/App.tsx.
+// APP_REGISTERED_ROUTES must stay in sync with Route declarations in src/App.tsx.
 // Defensive check (console.warn only for Sprint 1 — promoted to non-zero exit
 // in the follow-up story): if any KNOWN_ROUTE is absent from both sets, emit
 // a warning so the engineer can decide which list it belongs to.
 // ---------------------------------------------------------------------------
 
-/** Routes that the prerender step actively renders to dist/client/index.html. */
-const INCLUDED_ROUTES = new Set(['/'])
+const INCLUDED_ROUTES = new Set<string>(PRERENDER_INCLUDED_ROUTES)
+const EXCLUDED_ROUTES = new Set<string>(PRERENDER_EXCLUDED_ROUTES)
 
-/** Routes explicitly excluded from SSG prerender (see docstring above). */
-const EXCLUDED_ROUTES = new Set([
-  '/v2',
-  '/demo',
-  '/dashboard',
-  '/dashboard/*',
-  '/admin',
-  '/admin/*',
-  '/privacy',
-  '/404',
-])
-
-/**
- * Canonical list of registered routes — mirrors src/App.tsx Route declarations.
- * Keep this in sync manually for Sprint 1; a follow-up story will auto-derive
- * this from the route config to eliminate the dual-maintenance risk.
- */
-const KNOWN_ROUTES = [
-  '/',
-  '/privacy',
-  '/v2',
-  '/demo',
-  '/dashboard',
-  '/dashboard/*',
-  '/admin',
-  '/admin/*',
-  '/404',
-]
-
-for (const route of KNOWN_ROUTES) {
-  if (!INCLUDED_ROUTES.has(route) && !EXCLUDED_ROUTES.has(route)) {
+for (const route of APP_REGISTERED_ROUTES) {
+  if (!isPrerenderRouteCovered(route)) {
     console.warn(
-      `[prerender] WARNING: route "${route}" is registered in KNOWN_ROUTES but absent from both INCLUDED_ROUTES and EXCLUDED_ROUTES.`,
+      `[prerender] WARNING: route "${route}" is registered in APP_REGISTERED_ROUTES but absent from both INCLUDED_ROUTES and EXCLUDED_ROUTES.`,
       'Add it to one of the two lists in scripts/prerender.tsx.',
       '(This check will become a non-zero exit in a follow-up sprint.)',
     )

@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.6 done, 7.7 in review. **Story 7.7 (prerender exclusions + dark mode regression) dev complete 2026-05-23** — `scripts/prerender.tsx` now has explicit `INCLUDED_ROUTES`/`EXCLUDED_ROUTES`/`KNOWN_ROUTES` constants with defensive warn. Dark mode regression sweep: zero regressions. 101 files / 862 tests green.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.7 done. **Story 7.7 (prerender exclusions + dark mode regression) review patches complete 2026-05-23** — route-registry-backed prerender guardrail, screenshot evidence, full required-route axe sweep, Epic 7 dark-token contrast audit, and LHCI summary artifact landed.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
@@ -29,6 +29,12 @@
 - Locale bundles: `src/i18n/locales/{en,pt-BR,es}/translation.json` now include `landing.*`, `figmaDemo.*`, and `dashboard.*` namespaces for Epic 7 surfaces.
 - Route chrome: `src/pages/Landing.tsx`, `src/pages/Demo.tsx`, and `src/components/layout/DashboardLayout.tsx` render `LanguageSwitcher` without re-enabling the public Navbar/Footer.
 - Tests: `src/components/sections/Sections.i18n.test.tsx` validates Epic 7 required keys, tree shape, and interpolation placeholders; `src/App.routes.test.tsx` verifies route-level locale switching; dashboard tests verify translated status search. Full suite now **101 files / 859 tests pass**.
+
+**New since Story 7.7 (Prerender Exclusions + Dark Regression, 2026-05-23):**
+- Route guardrail: `src/lib/route-registry.ts` + `src/lib/route-registry.test.ts`; `scripts/prerender.tsx` consumes shared route decisions and warns for uncovered registered routes.
+- Accessibility evidence: `tests/e2e/a11y-axe.spec.ts` now covers `/`, `/privacy`, `/admin/login`, `/admin/dashboard`, `/admin/leads`, `/admin/team`; color contrast remains active.
+- Visual evidence: `tests/e2e/story-7-7-regression.spec.ts` captures full-page screenshots under `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/`.
+- Contrast: `scripts/check-brand-contrast.mjs` and `src/lib/brand-tokens.contrast.manifest.ts` now include active Epic 7 dark token text/background pairs.
 
 ---
 
