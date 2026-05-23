@@ -38,18 +38,28 @@ export const initialFormValues: AdminTeamFormValues = {
 }
 
 export function createAdminTeamSchema(t: TFunction) {
+  const requiredError = t('admin.team.form.errors.required', {
+    defaultValue: 'This field is required.',
+  })
+  const urlError = t('admin.team.form.errors.url', {
+    defaultValue: 'Must be a valid URL.',
+  })
+  const orderIndexError = t('admin.team.form.errors.orderIndex', {
+    defaultValue: 'Must be a non-negative integer.',
+  })
+
   const required = (max: number) =>
     z
       .string()
       .trim()
-      .min(1, t('admin.team.form.errors.required'))
-      .max(max, t('admin.team.form.errors.required'))
+      .min(1, requiredError)
+      .max(max, requiredError)
 
   const url = z
     .string()
     .trim()
     .max(2000)
-    .url(t('admin.team.form.errors.url'))
+    .url(urlError)
     .or(z.literal(''))
     .optional()
 
@@ -66,11 +76,11 @@ export function createAdminTeamSchema(t: TFunction) {
       },
       z
         .number({
-          invalid_type_error: t('admin.team.form.errors.orderIndex'),
-          required_error: t('admin.team.form.errors.orderIndex'),
+          invalid_type_error: orderIndexError,
+          required_error: orderIndexError,
         })
-        .int(t('admin.team.form.errors.orderIndex'))
-        .min(0, t('admin.team.form.errors.orderIndex'))
+        .int(orderIndexError)
+        .min(0, orderIndexError)
     )
 
   return z
