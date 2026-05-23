@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.5 done. **Story 7.5 (i18n extraction) done 2026-05-22** — `/v2`, `/demo`, and `/dashboard/*` now use `landing.*`, `figmaDemo.*`, and `dashboard.*` translations across en/pt-BR/es; route-owned chrome exposes `LanguageSwitcher`; locale parity includes tree-shape and interpolation-token checks; route/dashboard tests cover 859-test green suite.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.6 done, 7.7 in review. **Story 7.7 (prerender exclusions + dark mode regression) dev complete 2026-05-23** — `scripts/prerender.tsx` now has explicit `INCLUDED_ROUTES`/`EXCLUDED_ROUTES`/`KNOWN_ROUTES` constants with defensive warn. Dark mode regression sweep: zero regressions. 101 files / 862 tests green.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
