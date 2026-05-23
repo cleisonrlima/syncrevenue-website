@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-23  # Story 7.7 code review patches complete -> done. Added route registry guardrail, screenshot evidence, full required-route axe coverage, Epic 7 dark-token contrast audit, Lighthouse summary artifact, and cross-model sign-off. No follow-up stories required.
+last_updated: 2026-05-23  # Story 7.8 complete → review. 2 new Playwright specs, axe spec extended (7 new routes), vite.config coverage thresholds. Baseline: 102/868 green ×3. typecheck + build + test-build-output exit 0.
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -171,6 +171,6 @@ development_status:
   7-5-i18n-extraction: done
   7-6-brand-copy-rewrite: done
   7-7-prerender-exclusions-dark-mode-regression: done
-  7-8-new-route-smoke-tests-coverage: backlog
+  7-8-new-route-smoke-tests-coverage: review
   epic-7-tea: pending  # per CLAUDE.md "Post-Sprint TEA Pass" — runs once over the full 8-story set after Story 7.8 closes
   epic-7-retrospective: pending  # per CLAUDE.md "Post-Epic Retrospective" — runs after epic-7 → done

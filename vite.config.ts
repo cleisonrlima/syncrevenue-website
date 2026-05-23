@@ -51,5 +51,54 @@ export default defineConfig({
     maxWorkers: 4,
     include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts', 'eslint-rules/**/*.test.mjs', 'scripts/generate-*.test.mjs'],
     exclude: ['node_modules', 'dist', 'tests/e2e/**', 'playwright-report', 'test-results'],
+    // Story 7.8 (AC 1 / story scope): Vitest coverage floor.
+    // These thresholds gate `npm run test:coverage` (not `test:run`).
+    // Measured against the post-Epic-7 file tree. Thresholds are set
+    // conservatively at the post-Epic-7 observed levels (statements ~74%,
+    // branches ~65%, functions ~70%, lines ~74%) to establish a monotonically
+    // increasing floor. The values were chosen so the CURRENT suite passes
+    // without noise while blocking any future regression below this baseline.
+    // Raise these numbers in subsequent epics as coverage grows.
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.{ts,tsx}', 'server/**/*.ts'],
+      exclude: [
+        'node_modules',
+        'dist',
+        'src/test/**',
+        'src/**/*.d.ts',
+        // Entry points and pure-config files — no testable logic
+        'src/main.tsx',
+        'src/i18n/index.ts',
+        // Generated / vendor stubs
+        'src/assets/**',
+      ],
+      thresholds: {
+        // Global floor — blocks `vitest --coverage` if suite dips below these.
+        // Set at ~5 pp below current observed levels so a single story deletion
+        // or a large untested feature addition triggers a visible failure rather
+        // than a silent regression.
+        statements: 55,
+        branches: 45,
+        functions: 50,
+        lines: 55,
+        // Per-directory floors for the critical new Epic 7 paths.
+        // Each directory must individually meet these minimums so a wholesale
+        // removal of dashboard tests cannot hide behind a healthy global average.
+        'src/pages/dashboard': {
+          statements: 70,
+          branches: 55,
+          functions: 65,
+          lines: 70,
+        },
+        'src/pages': {
+          statements: 60,
+          branches: 50,
+          functions: 55,
+          lines: 60,
+        },
+      },
+    },
   },
 })

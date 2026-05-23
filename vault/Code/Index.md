@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.7 done. **Story 7.7 (prerender exclusions + dark mode regression) review patches complete 2026-05-23** — route-registry-backed prerender guardrail, screenshot evidence, full required-route axe sweep, Epic 7 dark-token contrast audit, and LHCI summary artifact landed.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.7 done + Story 7.8 in review. **Story 7.8 (new-route smoke tests + coverage floor) → review 2026-05-23** — 2 new Playwright journey specs, axe spec extended (7 new Epic 7 routes), Vitest coverage thresholds added. Baseline: 102 files / 868 tests green ×3.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
@@ -35,6 +35,12 @@
 - Accessibility evidence: `tests/e2e/a11y-axe.spec.ts` now covers `/`, `/privacy`, `/admin/login`, `/admin/dashboard`, `/admin/leads`, `/admin/team`; color contrast remains active.
 - Visual evidence: `tests/e2e/story-7-7-regression.spec.ts` captures full-page screenshots under `_bmad-output/test-artifacts/dark-mode-regression-epic-7/screenshots/`.
 - Contrast: `scripts/check-brand-contrast.mjs` and `src/lib/brand-tokens.contrast.manifest.ts` now include active Epic 7 dark token text/background pairs.
+
+**New since Story 7.8 (New-Route Smoke Tests + Coverage Floor, 2026-05-23):**
+- New Playwright specs: `tests/e2e/v2-to-demo.spec.ts` (Landing → Demo form journey) and `tests/e2e/dashboard-nav.spec.ts` (Dashboard → 4 child route nav traversal).
+- Extended: `tests/e2e/a11y-axe.spec.ts` — 2 new Epic 7 public route scans (/v2, /demo) + 5 dashboard route scans (/dashboard, /dashboard/recovery, /dashboard/payouts, /dashboard/insights, /dashboard/settings). Zero serious/critical violations required.
+- Extended: `vite.config.ts` — `test.coverage` block added with v8 provider; global floor (statements 55%, branches 45%, functions 50%, lines 55%); per-directory floors for `src/pages/dashboard` and `src/pages`.
+- Baseline confirmed: **102 files / 868 tests** (post-Epic-7 vs. pre-Epic-7 89/772; delta +13 files / +96 tests); 3× consecutive green.
 
 ---
 
