@@ -195,8 +195,24 @@ export default function DashboardHome() {
                   contentStyle={{ backgroundColor: '#1A1A24', borderColor: '#ffffff1a', borderRadius: '8px' }}
                   itemStyle={{ color: '#fff' }}
                 />
-                <Area type="monotone" dataKey="recovered" stroke="#818cf8" strokeWidth={2} fillOpacity={1} fill="url(#colorRecovered)" />
-                <Area type="monotone" dataKey="baseline" stroke="#94a3b8" strokeWidth={2} fillOpacity={1} fill="url(#colorBaseline)" />
+                <Area
+                  type="monotone"
+                  dataKey="recovered"
+                  name={t('dashboard.overview.chart.recoveredSeries', 'Recovered')}
+                  stroke="#818cf8"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorRecovered)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="baseline"
+                  name={t('dashboard.overview.chart.baselineSeries', 'Baseline')}
+                  stroke="#94a3b8"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorBaseline)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>

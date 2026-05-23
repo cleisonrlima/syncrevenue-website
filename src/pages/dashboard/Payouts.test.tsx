@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeAll } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { afterEach, describe, it, expect, beforeAll } from 'vitest'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Payouts from './Payouts'
-import '@/i18n'
+import i18next from '@/i18n'
+import { useLocaleStore } from '@/store/useLocaleStore'
 
 /**
  * Story 7.3 (AC 3 + AC 6): Coverage for the Payouts page.
@@ -31,6 +32,13 @@ beforeAll(() => {
     ;(globalThis as unknown as { ResizeObserver: typeof ResizeObserver }).ResizeObserver =
       ResizeObserverMock as unknown as typeof ResizeObserver
   }
+})
+
+afterEach(async () => {
+  await act(async () => {
+    await i18next.changeLanguage('en')
+    useLocaleStore.setState({ locale: 'en' })
+  })
 })
 
 function renderPage() {
@@ -93,6 +101,21 @@ describe('Payouts', () => {
     await user.click(screen.getByRole('button', { name: /Filter results/ }))
     expect(screen.getByText('No payouts found matching your criteria.')).toBeInTheDocument()
     expect(screen.getByText(/Showing 0 of 7 results/)).toBeInTheDocument()
+  })
+
+  it('matches translated status labels in search filtering', async () => {
+    const user = userEvent.setup()
+    await act(async () => {
+      await i18next.changeLanguage('es')
+      useLocaleStore.setState({ locale: 'es' })
+    })
+    renderPage()
+
+    await user.type(screen.getByLabelText(/Buscar agentes/), 'Procesando')
+    await user.click(screen.getByRole('button', { name: /Filtrar resultados/ }))
+
+    const tbody = screen.getByTestId('dashboard-payouts-tbody')
+    expect(within(tbody).getAllByTestId('dashboard-payouts-row')).toHaveLength(2)
   })
 
   it('keeps pagination boundary buttons disabled while all filtered rows are shown', () => {

@@ -715,14 +715,17 @@
       "failed": "Falló",
       "active": "Activo",
       "invited": "Invitado",
-      "connected": "Conectado"
+      "connected": "Conectado",
+      "unknown": "Desconocido"
     },
     "pagination": {
       "previous": "Anterior",
       "next": "Siguiente"
     },
     "rowActions": {
-      "open": "Abrir acciones de la fila"
+      "open": "Abrir acciones de la fila",
+      "openRecovery": "Abrir acciones de {{policy}}",
+      "openPayout": "Abrir acciones de {{agent}}"
     },
     "overview": {
       "title": "Vista general",
@@ -735,7 +738,9 @@
       "chart": {
         "title": "Tendencia de recuperación de ingresos",
         "subtitle": "Comparando comisiones recuperadas vs. línea base",
-        "timeRangeLabel": "Rango de tiempo"
+        "timeRangeLabel": "Rango de tiempo",
+        "recoveredSeries": "Recuperado",
+        "baselineSeries": "Línea base"
       },
       "timeRanges": {
         "last7Months": "Últimos 7 meses",
@@ -836,6 +841,7 @@
         "forecastedEoy": "Pronóstico EOY",
         "averageMargin": "Margen promedio",
         "activeTerritories": "Territorios activos",
+        "activeTerritoriesTrend": "+2 nuevos",
         "yoySuffix": "YoY"
       },
       "forecast": {
@@ -847,11 +853,13 @@
       "regional": {
         "title": "Distribución regional",
         "subtitle": "Desglose de ingresos por mercado global",
-        "centerLabel": "Regiones"
+        "centerLabel": "Regiones",
+        "tooltipShare": "Participación"
       },
       "product": {
         "title": "Líneas de producto",
-        "subtitle": "Volumen de comisiones por tipo de seguro"
+        "subtitle": "Volumen de comisiones por tipo de seguro",
+        "tooltipVolume": "Volumen"
       },
       "topAgencies": {
         "title": "Principales agencias",

@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1 and 7.2 done. **Story 7.2 (Routes / Layout Scaffold) done 2026-05-22** — `/v2`, `/demo`, and `/dashboard/*` scaffolded; `DashboardLayout` shell added with desktop + mobile dashboard navigation; route chrome gating tightened; placeholder SEO locale keys added; route/layout tests cover 805-test green suite.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1–7.5 done. **Story 7.5 (i18n extraction) done 2026-05-22** — `/v2`, `/demo`, and `/dashboard/*` now use `landing.*`, `figmaDemo.*`, and `dashboard.*` translations across en/pt-BR/es; route-owned chrome exposes `LanguageSwitcher`; locale parity includes tree-shape and interpolation-token checks; route/dashboard tests cover 859-test green suite.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
@@ -24,6 +24,11 @@
 - Layout: `src/components/layout/DashboardLayout.tsx` adds Epic 7 dashboard shell with desktop sidebar, mobile horizontal nav fallback, header search/bell/import CTA, user card, and `<Outlet />`.
 - Placeholders: `src/pages/Landing.tsx`, `src/pages/Demo.tsx`, `src/pages/dashboard/{DashboardHome,RevenueRecovery,Payouts,Insights,Settings}.tsx`.
 - Tests: `src/App.routes.test.tsx` + `src/components/layout/DashboardLayout.test.tsx`; full suite now **94 files / 805 tests pass**.
+
+**New since Story 7.5 (i18n Extraction, 2026-05-22):**
+- Locale bundles: `src/i18n/locales/{en,pt-BR,es}/translation.json` now include `landing.*`, `figmaDemo.*`, and `dashboard.*` namespaces for Epic 7 surfaces.
+- Route chrome: `src/pages/Landing.tsx`, `src/pages/Demo.tsx`, and `src/components/layout/DashboardLayout.tsx` render `LanguageSwitcher` without re-enabling the public Navbar/Footer.
+- Tests: `src/components/sections/Sections.i18n.test.tsx` validates Epic 7 required keys, tree shape, and interpolation placeholders; `src/App.routes.test.tsx` verifies route-level locale switching; dashboard tests verify translated status search. Full suite now **101 files / 859 tests pass**.
 
 ---
 

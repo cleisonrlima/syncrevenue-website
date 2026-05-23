@@ -715,14 +715,17 @@
       "failed": "Failed",
       "active": "Active",
       "invited": "Invited",
-      "connected": "Connected"
+      "connected": "Connected",
+      "unknown": "Unknown"
     },
     "pagination": {
       "previous": "Previous",
       "next": "Next"
     },
     "rowActions": {
-      "open": "Open row actions"
+      "open": "Open row actions",
+      "openRecovery": "Open actions for {{policy}}",
+      "openPayout": "Open actions for {{agent}}"
     },
     "overview": {
       "title": "Overview",
@@ -735,7 +738,9 @@
       "chart": {
         "title": "Revenue Recovery Trend",
         "subtitle": "Comparing recovered vs baseline commissions",
-        "timeRangeLabel": "Time range"
+        "timeRangeLabel": "Time range",
+        "recoveredSeries": "Recovered",
+        "baselineSeries": "Baseline"
       },
       "timeRanges": {
         "last7Months": "Last 7 Months",
@@ -836,6 +841,7 @@
         "forecastedEoy": "Forecasted EOY",
         "averageMargin": "Average Margin",
         "activeTerritories": "Active Territories",
+        "activeTerritoriesTrend": "+2 new",
         "yoySuffix": "YoY"
       },
       "forecast": {
@@ -847,11 +853,13 @@
       "regional": {
         "title": "Regional Distribution",
         "subtitle": "Revenue breakdown by global market",
-        "centerLabel": "Regions"
+        "centerLabel": "Regions",
+        "tooltipShare": "Share"
       },
       "product": {
         "title": "Product Lines",
-        "subtitle": "Commission volume by insurance type"
+        "subtitle": "Commission volume by insurance type",
+        "tooltipVolume": "Volume"
       },
       "topAgencies": {
         "title": "Top Agencies",

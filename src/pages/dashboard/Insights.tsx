@@ -163,7 +163,7 @@ export default function Insights() {
         <MetricCard
           title={t('dashboard.insights.metrics.activeTerritories', 'Active Territories')}
           value="14"
-          trend="+2 new"
+          trend={t('dashboard.insights.metrics.activeTerritoriesTrend', '+2 new')}
           icon={Globe2}
           color="text-indigo-400"
           bg="bg-indigo-400/10"
@@ -217,6 +217,7 @@ export default function Insights() {
               <Line
                 type="monotone"
                 dataKey="actual"
+                name={t('dashboard.insights.forecast.legendActual', 'Actual')}
                 stroke="#f59e0b"
                 strokeWidth={3}
                 dot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }}
@@ -225,6 +226,7 @@ export default function Insights() {
               <Line
                 type="monotone"
                 dataKey="forecast"
+                name={t('dashboard.insights.forecast.legendForecast', 'Forecast')}
                 stroke="#f59e0b"
                 strokeWidth={3}
                 strokeDasharray="5 5"
@@ -268,7 +270,10 @@ export default function Insights() {
                 <Tooltip
                   contentStyle={{ backgroundColor: '#1A1A24', borderColor: '#ffffff1a', borderRadius: '8px' }}
                   itemStyle={{ color: '#fff' }}
-                  formatter={(value) => [`${value}%`, 'Share']}
+                  formatter={(value) => [
+                    `${value}%`,
+                    t('dashboard.insights.regional.tooltipShare', 'Share'),
+                  ]}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -318,7 +323,10 @@ export default function Insights() {
                 <Tooltip
                   cursor={{ fill: '#ffffff05' }}
                   contentStyle={{ backgroundColor: '#1A1A24', borderColor: '#ffffff1a', borderRadius: '8px' }}
-                  formatter={(value) => [`$${value}k`, 'Volume']}
+                  formatter={(value) => [
+                    `$${value}k`,
+                    t('dashboard.insights.product.tooltipVolume', 'Volume'),
+                  ]}
                 />
                 <Bar dataKey="revenue" fill="#8b5cf6" radius={[0, 4, 4, 0]} barSize={24}>
                   {PRODUCT_PERFORMANCE.map((entry, index) => (

@@ -119,11 +119,38 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]['id']
 
-// Map English row.status → translated pill label key.
-const STATUS_KEY_MAP: Record<string, string> = {
-  'Action Required': 'actionRequired',
-  Disputed: 'disputed',
-  Resolved: 'resolved',
+type RecoveryStatusMeta = {
+  key: string
+  fallback: string
+  className: string
+}
+
+// Map English row.status → translated pill label key + visual treatment.
+// Unknown statuses render neutrally instead of defaulting to a success state.
+const RECOVERY_STATUS_META: Record<string, RecoveryStatusMeta> = {
+  'Action Required': {
+    key: 'dashboard.status.actionRequired',
+    fallback: 'Action Required',
+    className: 'bg-amber-400/10 text-amber-400 border border-amber-400/20',
+  },
+  Disputed: {
+    key: 'dashboard.status.disputed',
+    fallback: 'Disputed',
+    className: 'bg-indigo-400/10 text-indigo-400 border border-indigo-400/20',
+  },
+  Resolved: {
+    key: 'dashboard.status.resolved',
+    fallback: 'Resolved',
+    className: 'bg-green-400/10 text-green-400 border border-green-400/20',
+  },
+}
+
+function getRecoveryStatusMeta(status: string): RecoveryStatusMeta {
+  return RECOVERY_STATUS_META[status] ?? {
+    key: 'dashboard.status.unknown',
+    fallback: 'Unknown',
+    className: 'bg-slate-400/10 text-slate-300 border border-slate-400/20',
+  }
 }
 
 export default function RevenueRecovery() {
@@ -145,9 +172,11 @@ export default function RevenueRecovery() {
     const tab = TABS.find((entry) => entry.id === activeTab)
     const matchesTab = activeTab === 'all' || (tab && item.status === tab.englishMatch)
     const normalizedQuery = appliedQuery.trim().toLowerCase()
+    const statusMeta = getRecoveryStatusMeta(item.status)
+    const translatedStatus = t(statusMeta.key, statusMeta.fallback)
     const matchesQuery =
       normalizedQuery.length === 0 ||
-      [item.carrier, item.policy, item.client, item.type, item.status].some((value) =>
+      [item.carrier, item.policy, item.client, item.type, item.status, translatedStatus].some((value) =>
         value.toLowerCase().includes(normalizedQuery),
       )
 
@@ -294,6 +323,7 @@ export default function RevenueRecovery() {
             <tbody className="text-sm" data-testid="dashboard-recovery-tbody">
               {filteredData.map((row) => {
                 const delta = row.expected - row.actual
+                const statusMeta = getRecoveryStatusMeta(row.status)
                 return (
                   <tr
                     key={row.id}
@@ -317,21 +347,17 @@ export default function RevenueRecovery() {
                     <td className="px-6 py-4 text-slate-400">{row.type}</td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          row.status === 'Action Required'
-                            ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20'
-                            : row.status === 'Disputed'
-                            ? 'bg-indigo-400/10 text-indigo-400 border border-indigo-400/20'
-                            : 'bg-green-400/10 text-green-400 border border-green-400/20'
-                        }`}
+                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${statusMeta.className}`}
                       >
-                        {t(`dashboard.status.${STATUS_KEY_MAP[row.status] ?? 'resolved'}`, row.status)}
+                        {t(statusMeta.key, statusMeta.fallback)}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         type="button"
-                        aria-label={t('dashboard.rowActions.open', 'Open row actions')}
+                        aria-label={t('dashboard.rowActions.openRecovery', 'Open actions for {{policy}}', {
+                          policy: row.policy,
+                        })}
                         className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                       >
                         <MoreHorizontal className="w-5 h-5" />

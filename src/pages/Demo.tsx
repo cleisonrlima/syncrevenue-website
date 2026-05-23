@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle2, Building2, Mail, User, Phone } from 'lucide-re
 import { motion } from 'motion/react'
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback'
 import { useDocumentMeta } from '@/components/SEO'
+import LanguageSwitcher from '@/i18n/LanguageSwitcher'
 
 /**
  * Story 7.4 (AC 4, 5, 6): Verbatim port of the Figma 'teste' DemoForm page
@@ -83,13 +84,16 @@ export default function Demo() {
               {t('figmaDemo.nav.brand', 'SyncSyrius')}
             </span>
           </Link>
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {t('figmaDemo.nav.backToHome', 'Back to Home')}
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {t('figmaDemo.nav.backToHome', 'Back to Home')}
+            </Link>
+          </div>
         </div>
       </nav>
 

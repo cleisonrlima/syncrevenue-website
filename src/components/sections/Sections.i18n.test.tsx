@@ -176,6 +176,11 @@ function getByPath(obj: unknown, path: string): unknown {
   }, obj)
 }
 
+function interpolationTokens(value: unknown): string[] {
+  if (typeof value !== 'string') return []
+  return Array.from(value.matchAll(/\{\{\s*([^,\s}]+)[^}]*\}\}/g), (match) => match[1]).sort()
+}
+
 const REQUIRED_DEMO_PATHS = [
   'demo.eyebrow',
   'demo.heading.text',
@@ -448,9 +453,12 @@ const REQUIRED_DASHBOARD_STATUS_PATHS = [
   'dashboard.status.active',
   'dashboard.status.invited',
   'dashboard.status.connected',
+  'dashboard.status.unknown',
   'dashboard.pagination.previous',
   'dashboard.pagination.next',
   'dashboard.rowActions.open',
+  'dashboard.rowActions.openRecovery',
+  'dashboard.rowActions.openPayout',
 ]
 
 const REQUIRED_DASHBOARD_OVERVIEW_PATHS = [
@@ -462,6 +470,8 @@ const REQUIRED_DASHBOARD_OVERVIEW_PATHS = [
   'dashboard.overview.chart.title',
   'dashboard.overview.chart.subtitle',
   'dashboard.overview.chart.timeRangeLabel',
+  'dashboard.overview.chart.recoveredSeries',
+  'dashboard.overview.chart.baselineSeries',
   'dashboard.overview.timeRanges.last7Months',
   'dashboard.overview.timeRanges.thisYear',
   'dashboard.overview.timeRanges.allTime',
@@ -537,6 +547,7 @@ const REQUIRED_DASHBOARD_INSIGHTS_PATHS = [
   'dashboard.insights.metrics.forecastedEoy',
   'dashboard.insights.metrics.averageMargin',
   'dashboard.insights.metrics.activeTerritories',
+  'dashboard.insights.metrics.activeTerritoriesTrend',
   'dashboard.insights.metrics.yoySuffix',
   'dashboard.insights.forecast.title',
   'dashboard.insights.forecast.subtitle',
@@ -545,8 +556,10 @@ const REQUIRED_DASHBOARD_INSIGHTS_PATHS = [
   'dashboard.insights.regional.title',
   'dashboard.insights.regional.subtitle',
   'dashboard.insights.regional.centerLabel',
+  'dashboard.insights.regional.tooltipShare',
   'dashboard.insights.product.title',
   'dashboard.insights.product.subtitle',
+  'dashboard.insights.product.tooltipVolume',
   'dashboard.insights.topAgencies.title',
   'dashboard.insights.topAgencies.subtitle',
 ]
@@ -682,5 +695,24 @@ describe('Story 7.5 — namespace parity for landing.*, figmaDemo.*, dashboard.*
     const esPaths = collectLeafPaths((esResources as Json).dashboard, 'dashboard').sort()
     expect(ptPaths).toEqual(enPaths)
     expect(esPaths).toEqual(enPaths)
+  })
+
+  it('interpolation placeholders match across en/pt-BR/es for every Epic 7 key', () => {
+    const mismatches: string[] = []
+
+    for (const path of REQUIRED_EPIC_7_PATHS) {
+      const enTokens = interpolationTokens(getByPath(enResources, path))
+      const ptTokens = interpolationTokens(getByPath(ptResources, path))
+      const esTokens = interpolationTokens(getByPath(esResources, path))
+
+      if (ptTokens.join('|') !== enTokens.join('|')) {
+        mismatches.push(`pt-BR:${path}`)
+      }
+      if (esTokens.join('|') !== enTokens.join('|')) {
+        mismatches.push(`es:${path}`)
+      }
+    }
+
+    expect(mismatches).toEqual([])
   })
 })

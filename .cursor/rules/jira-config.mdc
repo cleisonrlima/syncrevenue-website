@@ -34,7 +34,7 @@ Local sprint tracking file: `_bmad-output/implementation-artifacts/sprint-status
 
 ## Story-to-Issue mapping (Epic 7 — active)
 
-Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Jira reconciled 2026-05-22 (7.5 dev complete → REVIEW + sub-tasks Done).
+Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Jira reconciled 2026-05-22 (7.5 review patches complete → DONE + sub-tasks Done).
 
 | Story | Title | Jira Key | sprint-status | Sub-tasks |
 |-------|-------|----------|---------------|-----------|
@@ -43,7 +43,7 @@ Source: `_bmad-output/implementation-artifacts/sprint-status.yaml`. Jira reconci
 | 7.2 | Routes + Layout Scaffold — /v2, /demo, Dashboard Layout, Nav Gating | SYN-490 | done | SYN-503..507 (5, all Done) |
 | 7.3 | Dashboard Pages — Overview, Revenue Recovery, Payouts, Insights, Settings | SYN-491 | done | SYN-508..513 (6, all Done) |
 | 7.4 | Landing + Demo Pages — Port from Figma to /v2 and /demo | SYN-492 | done | SYN-514..518 (5, all Done) |
-| 7.5 | i18n Extraction for Epic 7 Pages — en / pt-BR / es | SYN-493 | review | SYN-519..525 (7, all Done) |
+| 7.5 | i18n Extraction for Epic 7 Pages — en / pt-BR / es | SYN-493 | done | SYN-519..525 (7, all Done) |
 | 7.6 | Brand Copy Rewrite — SyncSyrius/Insurance → SyncRevenue/Travel Commission | SYN-494 | backlog | SYN-526..532 (7, all To Do) |
 | 7.7 | Prerender Exclusions + Site-Wide Dark Mode Regression Sweep | SYN-495 | backlog | SYN-533..539 (7, all To Do) |
 | 7.8 | New-Route Smoke Tests + Vitest Coverage Floor | SYN-496 | backlog | SYN-540..546 (7, all To Do) |

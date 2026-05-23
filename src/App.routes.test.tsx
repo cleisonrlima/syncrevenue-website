@@ -1,8 +1,10 @@
-import { describe, it, expect, beforeAll } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { afterEach, describe, it, expect, beforeAll } from 'vitest'
+import { act, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
-import '@/i18n'
+import i18next from '@/i18n'
+import { useLocaleStore } from '@/store/useLocaleStore'
 
 // Story 7.3 (AC 6) update: the dashboard child routes now mount the full
 // Figma ports which use recharts `ResponsiveContainer`. recharts depends on
@@ -21,6 +23,13 @@ beforeAll(() => {
     ;(globalThis as unknown as { ResizeObserver: typeof ResizeObserver }).ResizeObserver =
       ResizeObserverMock as unknown as typeof ResizeObserver
   }
+})
+
+afterEach(async () => {
+  await act(async () => {
+    await i18next.changeLanguage('en')
+    useLocaleStore.setState({ locale: 'en' })
+  })
 })
 
 /**
@@ -153,5 +162,31 @@ describe('App route chrome gating', () => {
       expect(await screen.findByTestId(testid)).toBeInTheDocument()
       unmount()
     }
+  })
+
+  it('exposes a working language switcher on /demo route-owned chrome', async () => {
+    const user = userEvent.setup()
+    renderAt('/demo')
+
+    expect(await screen.findByRole('heading', { name: 'See SyncSyrius in action.' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /EN/i }))
+    await user.click(screen.getByRole('menuitemradio', { name: /PT-BR/i }))
+
+    expect(await screen.findByRole('heading', { name: 'Veja o SyncSyrius em ação.' })).toBeInTheDocument()
+  })
+
+  it('updates dashboard route copy after locale changes', async () => {
+    renderAt('/dashboard/recovery')
+
+    expect(screen.getByRole('group', { name: 'Select language' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Revenue Recovery' })).toBeInTheDocument()
+
+    await act(async () => {
+      await i18next.changeLanguage('es')
+      useLocaleStore.setState({ locale: 'es' })
+    })
+
+    expect(await screen.findByRole('heading', { name: 'Recuperación de ingresos' })).toBeInTheDocument()
   })
 })

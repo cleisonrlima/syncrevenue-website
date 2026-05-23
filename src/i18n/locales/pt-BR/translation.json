@@ -715,14 +715,17 @@
       "failed": "Falhou",
       "active": "Ativo",
       "invited": "Convidado",
-      "connected": "Conectado"
+      "connected": "Conectado",
+      "unknown": "Desconhecido"
     },
     "pagination": {
       "previous": "Anterior",
       "next": "Próximo"
     },
     "rowActions": {
-      "open": "Abrir ações da linha"
+      "open": "Abrir ações da linha",
+      "openRecovery": "Abrir ações de {{policy}}",
+      "openPayout": "Abrir ações de {{agent}}"
     },
     "overview": {
       "title": "Visão geral",
@@ -735,7 +738,9 @@
       "chart": {
         "title": "Tendência de recuperação de receita",
         "subtitle": "Comparando comissões recuperadas vs. linha de base",
-        "timeRangeLabel": "Intervalo de tempo"
+        "timeRangeLabel": "Intervalo de tempo",
+        "recoveredSeries": "Recuperado",
+        "baselineSeries": "Linha de base"
       },
       "timeRanges": {
         "last7Months": "Últimos 7 meses",
@@ -836,6 +841,7 @@
         "forecastedEoy": "Previsão de EOY",
         "averageMargin": "Margem média",
         "activeTerritories": "Territórios ativos",
+        "activeTerritoriesTrend": "+2 novos",
         "yoySuffix": "YoY"
       },
       "forecast": {
@@ -847,11 +853,13 @@
       "regional": {
         "title": "Distribuição regional",
         "subtitle": "Detalhamento de receita por mercado global",
-        "centerLabel": "Regiões"
+        "centerLabel": "Regiões",
+        "tooltipShare": "Participação"
       },
       "product": {
         "title": "Linhas de produto",
-        "subtitle": "Volume de comissão por tipo de seguro"
+        "subtitle": "Volume de comissão por tipo de seguro",
+        "tooltipVolume": "Volume"
       },
       "topAgencies": {
         "title": "Principais agências",

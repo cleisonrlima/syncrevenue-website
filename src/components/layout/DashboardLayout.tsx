@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import ImageWithFallback from '@/components/figma/ImageWithFallback'
 import { cn } from '@/lib/cn'
+import LanguageSwitcher from '@/i18n/LanguageSwitcher'
 
 /**
  * Story 7.2 (AC 2): `DashboardLayout` — the Epic 7 dashboard shell.
@@ -181,6 +182,7 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <button
               type="button"
               aria-label={t('dashboard.layout.notificationsLabel', 'View notifications')}

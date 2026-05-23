@@ -102,11 +102,47 @@ const TABS = [
 
 type PayoutsTabId = (typeof TABS)[number]['id']
 
-const STATUS_KEY_MAP: Record<string, string> = {
-  Completed: 'completed',
-  Processing: 'processing',
-  Scheduled: 'scheduled',
-  Failed: 'failed',
+type PayoutStatusMeta = {
+  key: string
+  fallback: string
+  className: string
+  icon: 'completed' | 'processing' | 'scheduled' | 'failed' | 'unknown'
+}
+
+const PAYOUT_STATUS_META: Record<string, PayoutStatusMeta> = {
+  Completed: {
+    key: 'dashboard.status.completed',
+    fallback: 'Completed',
+    className: 'bg-green-400/10 text-green-400 border-green-400/20',
+    icon: 'completed',
+  },
+  Processing: {
+    key: 'dashboard.status.processing',
+    fallback: 'Processing',
+    className: 'bg-blue-400/10 text-blue-400 border-blue-400/20',
+    icon: 'processing',
+  },
+  Scheduled: {
+    key: 'dashboard.status.scheduled',
+    fallback: 'Scheduled',
+    className: 'bg-slate-400/10 text-slate-300 border-slate-400/20',
+    icon: 'scheduled',
+  },
+  Failed: {
+    key: 'dashboard.status.failed',
+    fallback: 'Failed',
+    className: 'bg-rose-400/10 text-rose-400 border-rose-400/20',
+    icon: 'failed',
+  },
+}
+
+function getPayoutStatusMeta(status: string): PayoutStatusMeta {
+  return PAYOUT_STATUS_META[status] ?? {
+    key: 'dashboard.status.unknown',
+    fallback: 'Unknown',
+    className: 'bg-slate-400/10 text-slate-300 border-slate-400/20',
+    icon: 'unknown',
+  }
 }
 
 export default function Payouts() {
@@ -128,9 +164,11 @@ export default function Payouts() {
     const tab = TABS.find((entry) => entry.id === activeTab)
     const matchesTab = activeTab === 'all' || (tab && item.status === tab.englishMatch)
     const normalizedQuery = appliedQuery.trim().toLowerCase()
+    const statusMeta = getPayoutStatusMeta(item.status)
+    const translatedStatus = t(statusMeta.key, statusMeta.fallback)
     const matchesQuery =
       normalizedQuery.length === 0 ||
-      [item.agent, item.role, item.method, item.status, item.date].some((value) =>
+      [item.agent, item.role, item.method, item.status, item.date, translatedStatus].some((value) =>
         value.toLowerCase().includes(normalizedQuery),
       )
 
@@ -295,12 +333,14 @@ export default function Payouts() {
               </tr>
             </thead>
             <tbody className="text-sm" data-testid="dashboard-payouts-tbody">
-              {filteredData.map((row) => (
-                <tr
-                  key={row.id}
-                  data-testid="dashboard-payouts-row"
-                  className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group"
-                >
+              {filteredData.map((row) => {
+                const statusMeta = getPayoutStatusMeta(row.status)
+                return (
+                  <tr
+                    key={row.id}
+                    data-testid="dashboard-payouts-row"
+                    className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group"
+                  >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div
@@ -328,34 +368,29 @@ export default function Payouts() {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                        row.status === 'Completed'
-                          ? 'bg-green-400/10 text-green-400 border-green-400/20'
-                          : row.status === 'Processing'
-                          ? 'bg-blue-400/10 text-blue-400 border-blue-400/20'
-                          : row.status === 'Scheduled'
-                          ? 'bg-slate-400/10 text-slate-300 border-slate-400/20'
-                          : 'bg-rose-400/10 text-rose-400 border-rose-400/20'
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${statusMeta.className}`}
                     >
-                      {row.status === 'Completed' && <CheckCircle2 className="w-3 h-3" />}
-                      {row.status === 'Processing' && <Clock className="w-3 h-3 animate-pulse" />}
-                      {row.status === 'Scheduled' && <Clock className="w-3 h-3" />}
-                      {row.status === 'Failed' && <XCircle className="w-3 h-3" />}
-                      {t(`dashboard.status.${STATUS_KEY_MAP[row.status] ?? 'completed'}`, row.status)}
+                      {statusMeta.icon === 'completed' && <CheckCircle2 className="w-3 h-3" />}
+                      {statusMeta.icon === 'processing' && <Clock className="w-3 h-3 animate-pulse" />}
+                      {statusMeta.icon === 'scheduled' && <Clock className="w-3 h-3" />}
+                      {statusMeta.icon === 'failed' && <XCircle className="w-3 h-3" />}
+                      {t(statusMeta.key, statusMeta.fallback)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button
                       type="button"
-                      aria-label={t('dashboard.rowActions.open', 'Open row actions')}
+                      aria-label={t('dashboard.rowActions.openPayout', 'Open actions for {{agent}}', {
+                        agent: row.agent,
+                      })}
                       className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                     >
                       <MoreHorizontal className="w-5 h-5" />
                     </button>
                   </td>
-                </tr>
-              ))}
+                  </tr>
+                )
+              })}
 
               {filteredData.length === 0 && (
                 <tr>

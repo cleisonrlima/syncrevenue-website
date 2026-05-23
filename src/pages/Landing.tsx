@@ -22,6 +22,7 @@ import {
 
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback'
 import { useDocumentMeta } from '@/components/SEO'
+import LanguageSwitcher from '@/i18n/LanguageSwitcher'
 
 /**
  * Story 7.4 (AC 1, 2, 3, 6): Verbatim port of the Figma 'teste' Landing page
@@ -277,6 +278,7 @@ export default function Landing() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            <LanguageSwitcher />
             <Link
               to="/dashboard"
               className="text-sm font-medium text-slate-300 hover:text-white transition-colors px-4 py-2"
@@ -355,6 +357,9 @@ export default function Landing() {
               >
                 {t('landing.nav.bookDemo', 'Book a Demo')} <ArrowRight className="w-5 h-5" />
               </Link>
+              <div className="pt-2">
+                <LanguageSwitcher />
+              </div>
             </div>
           </motion.div>
         )}

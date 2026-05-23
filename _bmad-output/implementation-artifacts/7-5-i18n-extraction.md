@@ -1,6 +1,6 @@
 # Story 7.5: i18n Extraction for Epic 7 Pages — en / pt-BR / es
 
-Status: review
+Status: done
 
 Epic: 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme
 
@@ -62,16 +62,27 @@ So that visitors get the dashboard suite + demo + landing variant in their detec
   - [x] `useDocumentMeta` already passed i18n keys for title/description/og fields (set up by Stories 7.2/7.3/7.4); pt-BR + es `seo.*` entries were already present, no change required.
 
 - [x] **Task 7: Test sweep + i18n smoke (AC: 6)**
-  - [x] `npm run test:run` — exit 0 (101 files / 854 tests)
+  - [x] `npm run test:run` — exit 0 (101 files / 859 tests)
   - [x] `npm run typecheck` — exit 0
   - [x] `npm run build` — exit 0 (pre-existing Hero.tsx `fetchPriority` warning outside Story 7.5 scope)
+
+### Review Findings
+
+- [x] [Review][Patch] Epic 7 routes lack an available language switcher [src/App.tsx:104] — fixed by adding `LanguageSwitcher` to Landing, Demo, and DashboardLayout route-owned chrome.
+- [x] [Review][Patch] Dashboard chart and metric hover labels still expose hardcoded English/internal labels [src/pages/dashboard/Insights.tsx:166] — fixed by adding localized Recharts series/tooltip labels and extracting `+2 new`.
+- [x] [Review][Patch] Translated status labels are not searchable in localized dashboards [src/pages/dashboard/RevenueRecovery.tsx:144] — fixed by including translated status labels in Recovery and Payouts search values.
+- [x] [Review][Patch] Unknown statuses fall through to success-like labels/styles [src/pages/dashboard/RevenueRecovery.tsx:328] — fixed by routing unknown statuses to neutral styling and `dashboard.status.unknown`.
+- [x] [Review][Patch] Locale parity tests do not verify interpolation placeholder parity [src/components/sections/Sections.i18n.test.tsx:650] — fixed by adding placeholder-token parity checks for Epic 7 keys.
+- [x] [Review][Patch] Row action buttons have identical accessible names per table [src/pages/dashboard/RevenueRecovery.tsx:334] — fixed with row-specific `openRecovery` / `openPayout` labels.
+- [x] [Review][Patch] Epic 7 route-level locale switching is not covered by tests [src/components/sections/Sections.i18n.test.tsx:644] — fixed with route-level language-switch tests for `/demo` and `/dashboard/recovery`.
+- [x] [Review][Patch] Deferred-action note is stale after commit/push landed [./7-5-i18n-extraction.md:111] — fixed by replacing the stale deferred note with a resolved-actions note.
 
 ## Dev Agent Record
 
 ### Completion notes
 
 - **Namespace deviation from AC 1** (approved by user 2026-05-22): the `/demo` Figma page strings landed under `figmaDemo.*` instead of `demo.*`. Rationale: `demo.*` is already populated by the Epic 1/2 `DemoScheduler` section on the `/` home page (`demo.eyebrow`, `demo.form.*`, etc.). Using the same prefix for the `/demo` Figma surface would have collided — different page, totally different copy, same key namespace. `figmaDemo.*` keeps both surfaces clean and avoids a destructive rewrite of established Epic 1 keys.
-- **Status-pill conditional styling deferred to Story 7.6**: `RevenueRecovery.tsx` and `Payouts.tsx` keep their `row.status === 'English'` conditional branches keyed on the raw English label. The rendered pill text is now translated via `dashboard.status.<key>`, but the styling logic still matches against English. Documented in dev-note 4 of the story; Story 7.6 owns the redesign to enum-keyed status values.
+- **Status-pill conditional styling review fix**: `RevenueRecovery.tsx` and `Payouts.tsx` now map raw mock-data status labels through local status metadata so labels resolve through `dashboard.status.*`, localized status labels participate in search, and unknown future statuses render neutrally instead of as resolved/completed. Story 7.6 still owns the broader domain-vocabulary rewrite.
 - **`TIME_RANGES` state IDs decoupled from labels** (`DashboardHome.tsx`): the time-range `<select>` now stores `last7Months` / `thisYear` / `allTime` as state values rather than the English-readable labels. The displayed `<option>` text is `t('dashboard.overview.timeRanges.*')`. The Story 7.3 DashboardHome test was updated to reflect the new state values (one-line change).
 - **`TABS` / `METRICS` arrays refactored to carry i18n keys**: `RevenueRecovery.tsx`, `Payouts.tsx`, `Settings.tsx` previously held English label strings directly in their const arrays. Each was refactored to a `{ id, labelKey, labelFallback, ... }` shape so `t()` resolves the label at render time. `testIdSlug` was preserved per row so the existing `dashboard-recovery-tab-all-discrepancies` / `dashboard-payouts-tab-failed` / `dashboard-settings-integration-stripe` test selectors continue to match.
 - **DashboardLayout `data-i18n-key` attribute preserved**: Story 7.2 added a `data-i18n-key` attribute to each nav item span as a placeholder. Story 7.5 wires the actual `t(labelKey, defaultLabel)` resolution but keeps the attribute as a diagnostic hook (no harm; could be removed in Story 7.6).
@@ -93,9 +104,12 @@ Translation bundles (3):
 - `src/i18n/locales/pt-BR/translation.json`
 - `src/i18n/locales/es/translation.json`
 
-Test files (2):
+Test files (5):
 - `src/components/sections/Sections.i18n.test.tsx` (extended)
 - `src/pages/dashboard/DashboardHome.test.tsx` (TIME_RANGES state-ID assertion update)
+- `src/App.routes.test.tsx` (route-owned chrome locale switcher coverage)
+- `src/pages/dashboard/RevenueRecovery.test.tsx` (translated status search coverage)
+- `src/pages/dashboard/Payouts.test.tsx` (translated status search coverage)
 
 Status / vault:
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
@@ -107,10 +121,11 @@ Status / vault:
 ### Change Log
 
 - 2026-05-22 — Story 7.5 dev pass complete. Three new i18n namespaces (`landing.*`, `figmaDemo.*`, `dashboard.*`) added to en/pt-BR/es bundles with full tree-shape parity. `useTranslation` wired into 8 Epic 7 surfaces. Parity guard extended in `Sections.i18n.test.tsx` with `REQUIRED_EPIC_7_PATHS` (~200 leaf keys). Status: not-started → review.
+- 2026-05-22 — Senior code review patches complete. Added route-owned language switchers, localized Recharts labels/tooltips, translated-status search, neutral unknown-status handling, row-specific action labels, interpolation placeholder parity, and route-level locale switching tests. `npm run typecheck`, `npm run test:run` (101 files / 859 tests), and `npm run build` all green. Status: review → done.
 
-## Deferred Actions
+## Deferred Actions Resolved
 
-- **2026-05-22 — `git commit` + `git push` + Jira sync (SYN-493 + sub-tasks SYN-519..523 To Do → In Review):** the Claude agent that completed Story 7.5 dev had every `git commit` invocation blocked at the harness sandbox layer (3 retries × multiple forms — heredoc, `-m`, `-F-` stdin all denied; `dangerouslyDisableSandbox` also refused). All Story 7.5 changes are staged and verified locally: `git status` shows 18 files staged, `npm run typecheck` green, `npm run test:run` green (101 files / 854 tests), `npm run build` green. The next agent (manual orchestrator run or a freshly-spawned Claude/Codex with shell permissions) MUST execute the deferred actions in order: (a) `git commit` the staged changes with the message in the Change Log above, (b) `git push` to remote, (c) invoke `/jira-assistant` to transition SYN-493 + sub-tasks SYN-519..523 from To Do → In Review. Use the staged set verbatim — no further file edits required.
+- **2026-05-22 — commit/push deferral resolved before review:** Story 7.5 dev changes landed in commit `4786563` and were pushed to `origin/master` before this review run. Review patches are local in this follow-up change set and supersede the stale staged-work note. Jira sync to Done remains part of this review closure.
 
 ## Dev Notes
 
@@ -122,7 +137,7 @@ Status / vault:
 
 3. **Recharts chart labels.** Recharts `XAxis` and `YAxis` can take `tickFormatter` props (`(val) => \`$\${val}k\``). The literal `$` and `k` are not i18n content — they're locale-formatting concerns. Defer locale-aware number formatting to a later epic; Story 7.5 leaves these inline.
 
-4. **Status pill copy ("Pending", "Resolved", "Disputed", etc.).** These are UI labels — extract under e.g. `dashboard.recovery.status.pending`. The mapping in `statusColor` styling stays string-keyed against the English value for now; consider switching to enum-keyed in a follow-up.
+4. **Status pill copy ("Pending", "Resolved", "Disputed", etc.).** These are UI labels and now resolve through `dashboard.status.*`. The mock row data still stores English status labels, but render/search go through local status metadata with a neutral unknown fallback so future new statuses do not silently render as resolved/completed.
 
 ### Out of scope
 
