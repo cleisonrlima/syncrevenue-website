@@ -272,7 +272,7 @@ function TeamMemberForm({
           className="bg-white/10 text-white hover:bg-white/20"
           data-testid="team-form-cancel"
         >
-          {t('admin.team.form.cancel')}
+          {t('admin.team.form.cancel', { defaultValue: 'Cancel' })}
         </Button>
       </div>
     </form>
@@ -528,7 +528,7 @@ export default function Team() {
               data-testid={`team-edit-${row.id}`}
               className="bg-white/10 text-white hover:bg-white/20"
             >
-              {t('admin.team.actions.edit')}
+              {t('admin.team.actions.edit', { defaultValue: 'Edit' })}
             </Button>
           </td>
         </tr>
@@ -543,7 +543,7 @@ export default function Team() {
     <main className="min-h-screen px-6 py-12">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-3xl font-semibold">{t('admin.team.title')}</h1>
+          <h1 className="text-3xl font-semibold">{t('admin.team.title', { defaultValue: 'Team Members' })}</h1>
           {mode.kind === 'list' && !loading && !errorKey ? (
             <Button
               type="button"
@@ -551,7 +551,7 @@ export default function Team() {
               data-testid="team-add"
               className="bg-white text-brand-navy hover:opacity-90"
             >
-              {t('admin.team.add')}
+              {t('admin.team.add', { defaultValue: 'Add Team Member' })}
             </Button>
           ) : null}
         </div>
@@ -570,7 +570,7 @@ export default function Team() {
                 onClick={handleRetry}
                 className="mt-3 bg-white text-brand-navy hover:opacity-90"
               >
-                {t('admin.team.errors.retry')}
+                {t('admin.team.errors.retry', { defaultValue: 'Retry' })}
               </Button>
             </div>
           ) : loading ? (
@@ -587,10 +587,10 @@ export default function Team() {
             </div>
           ) : mode.kind === 'create' ? (
             <>
-              <h2 className="text-xl font-semibold">{t('admin.team.form.title.create')}</h2>
+              <h2 className="text-xl font-semibold">{t('admin.team.form.title.create', { defaultValue: 'New Team Member' })}</h2>
               <TeamMemberForm
                 initialValues={initialFormValues}
-                submitLabel={t('admin.team.form.submit.create')}
+                submitLabel={t('admin.team.form.submit.create', { defaultValue: 'Create member' })}
                 isSubmitting={submitting}
                 formError={formError ? t(formError) : null}
                 onSubmit={handleCreate}
@@ -599,10 +599,10 @@ export default function Team() {
             </>
           ) : mode.kind === 'edit' && editingRow ? (
             <>
-              <h2 className="text-xl font-semibold">{t('admin.team.form.title.edit')}</h2>
+              <h2 className="text-xl font-semibold">{t('admin.team.form.title.edit', { defaultValue: 'Edit Team Member' })}</h2>
               <TeamMemberForm
                 initialValues={rowToFormValues(editingRow)}
-                submitLabel={t('admin.team.form.submit.edit')}
+                submitLabel={t('admin.team.form.submit.edit', { defaultValue: 'Save changes' })}
                 isSubmitting={submitting}
                 formError={formError ? t(formError) : null}
                 onSubmit={handleEdit(editingRow.id)}
@@ -614,7 +614,7 @@ export default function Team() {
               data-testid="admin-team-empty"
               className="rounded-lg border border-white/10 bg-white/5 p-6 text-sm text-white/80"
             >
-              <p>{t('admin.team.empty')}</p>
+              <p>{t('admin.team.empty', { defaultValue: 'No team members yet. Click Add Team Member to create the first one.' })}</p>
             </div>
           ) : rows ? (
             <div className="overflow-x-auto rounded-lg border border-white/10">
@@ -625,22 +625,22 @@ export default function Team() {
                 <thead className="bg-white/5 text-xs uppercase tracking-wide text-white/70">
                   <tr>
                     <th scope="col" className="px-3 py-2">
-                      {t('admin.team.columns.name')}
+                      {t('admin.team.columns.name', { defaultValue: 'Name' })}
                     </th>
                     <th scope="col" className="px-3 py-2">
-                      {t('admin.team.columns.role')}
+                      {t('admin.team.columns.role', { defaultValue: 'Role' })}
                     </th>
                     <th scope="col" className="px-3 py-2">
-                      {t('admin.team.columns.active')}
+                      {t('admin.team.columns.active', { defaultValue: 'Active' })}
                     </th>
                     <th scope="col" className="px-3 py-2">
                       {t('admin.team.columns.toggle', { defaultValue: 'Status' })}
                     </th>
                     <th scope="col" className="px-3 py-2">
-                      {t('admin.team.columns.order')}
+                      {t('admin.team.columns.order', { defaultValue: 'Order' })}
                     </th>
                     <th scope="col" className="px-3 py-2">
-                      {t('admin.team.columns.actions')}
+                      {t('admin.team.columns.actions', { defaultValue: 'Actions' })}
                     </th>
                   </tr>
                 </thead>

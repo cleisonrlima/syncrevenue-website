@@ -193,7 +193,7 @@ export default function Navbar() {
         <div className="hidden min-[900px]:flex items-center gap-3">
           <LanguageSwitcher />
           <Button type="button" variant="solid-accent" size="md" onClick={handleDemoCta}>
-            {t('nav.cta')}
+            {t('nav.cta', { defaultValue: 'Schedule a Demo' })}
           </Button>
         </div>
 
@@ -251,7 +251,7 @@ export default function Navbar() {
               className="text-white text-xl py-3 min-h-[44px] flex items-center"
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.cta')}
+              {t('nav.cta', { defaultValue: 'Schedule a Demo' })}
             </a>
             <div className="mt-4"><LanguageSwitcher /></div>
           </nav>

@@ -31,10 +31,10 @@ export default function Login() {
         className="w-full max-w-sm rounded-2xl bg-white p-8 text-brand-navy shadow-xl"
         noValidate
       >
-        <h1 className="text-2xl font-semibold">{t('admin.login.title')}</h1>
+        <h1 className="text-2xl font-semibold">{t('admin.login.title', { defaultValue: 'Admin Sign In' })}</h1>
 
         <Label className="mt-6" htmlFor="admin-login-email">
-          {t('admin.login.email')}
+          {t('admin.login.email', { defaultValue: 'Email' })}
         </Label>
         <Input
           id="admin-login-email"
@@ -47,7 +47,7 @@ export default function Login() {
         />
 
         <Label className="mt-4" htmlFor="admin-login-password">
-          {t('admin.login.password')}
+          {t('admin.login.password', { defaultValue: 'Password' })}
         </Label>
         <Input
           id="admin-login-password"
@@ -76,7 +76,7 @@ export default function Login() {
           aria-busy={isSubmitting}
           className="mt-6 w-full rounded-lg bg-brand-electric-blue px-4 py-3 text-base font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {t('admin.login.submit')}
+          {t('admin.login.submit', { defaultValue: 'Sign In' })}
         </Button>
       </form>
     </main>

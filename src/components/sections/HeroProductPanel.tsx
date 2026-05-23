@@ -46,11 +46,23 @@ const TICKER_FADE_MS = 200
 
 type TickerEntry = { pnr: string; value: string }
 
+const DEFAULT_TICKER_ENTRIES = [
+  { pnr: 'PNR-44128', value: '+ $8,420' },
+  { pnr: 'PNR-92710', value: '+ $3,985' },
+  { pnr: 'PNR-58044', value: '+ $12,310' },
+  { pnr: 'PNR-67219', value: '+ $5,670' },
+  { pnr: 'PNR-39816', value: '+ $2,140' },
+  { pnr: 'PNR-71452', value: '+ $9,870' },
+] as const
+
 export default function HeroProductPanel() {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
 
-  const entries = (t('hero.panel.ticker.entries', { returnObjects: true }) ?? []) as unknown
+  const entries = (t('hero.panel.ticker.entries', {
+    returnObjects: true,
+    defaultValue: DEFAULT_TICKER_ENTRIES,
+  }) ?? []) as unknown
   const tickerEntries: TickerEntry[] = Array.isArray(entries)
     ? (entries as TickerEntry[]).filter(e => typeof e?.pnr === 'string' && typeof e?.value === 'string')
     : []

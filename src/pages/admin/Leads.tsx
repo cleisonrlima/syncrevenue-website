@@ -43,7 +43,7 @@ function formatCreated(value: string, language: string): string {
 function MessageCell({ value }: { value: string | null }) {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
-  if (!value) return <span aria-hidden="true">{t('admin.leads.messagePreview.none')}</span>
+  if (!value) return <span aria-hidden="true">{t('admin.leads.messagePreview.none', { defaultValue: '—' })}</span>
   const needsToggle = value.length > MESSAGE_PREVIEW_LIMIT
   if (!needsToggle) return <span>{value}</span>
   const preview = value.slice(0, MESSAGE_PREVIEW_LIMIT)
@@ -55,7 +55,7 @@ function MessageCell({ value }: { value: string | null }) {
         onClick={() => setExpanded(prev => !prev)}
         className="text-xs font-medium text-brand-electric-blue underline underline-offset-2 hover:opacity-80"
       >
-        {expanded ? t('admin.leads.messagePreview.less') : t('admin.leads.messagePreview.more')}
+        {expanded ? t('admin.leads.messagePreview.less', { defaultValue: 'Show less' }) : t('admin.leads.messagePreview.more', { defaultValue: 'Show more' })}
       </button>
     </span>
   )
@@ -234,7 +234,7 @@ export default function Leads() {
               </span>
               <select
                 data-testid={`lead-status-select-${row.id}`}
-                aria-label={t('admin.leads.statusUpdate.label')}
+                aria-label={t('admin.leads.statusUpdate.label', { defaultValue: 'Update status' })}
                 aria-busy={isPending || undefined}
                 disabled={isPending}
                 value={row.status}
@@ -276,12 +276,12 @@ export default function Leads() {
   return (
     <main className="min-h-screen px-6 py-12">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-3xl font-semibold">{t('admin.leads.title')}</h1>
+        <h1 className="text-3xl font-semibold">{t('admin.leads.title', { defaultValue: 'Leads' })}</h1>
 
         <div className="mt-6 flex flex-wrap items-end gap-4">
           <div>
             <Label htmlFor="admin-leads-locale-filter" className="text-white/70">
-              {t('admin.leads.filters.locale')}
+              {t('admin.leads.filters.locale', { defaultValue: 'Locale' })}
             </Label>
             <select
               id="admin-leads-locale-filter"
@@ -290,7 +290,7 @@ export default function Leads() {
               onChange={e => setLocaleFilter(e.target.value as LocaleSelection)}
               className="mt-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white"
             >
-              <option value="all">{t('admin.leads.filters.localeAll')}</option>
+              <option value="all">{t('admin.leads.filters.localeAll', { defaultValue: 'All locales' })}</option>
               {LOCALE_OPTIONS.map(loc => (
                 <option key={loc} value={loc}>
                   {t(`admin.leads.locale.${loc}`)}
@@ -300,7 +300,7 @@ export default function Leads() {
           </div>
           <div>
             <Label htmlFor="admin-leads-status-filter" className="text-white/70">
-              {t('admin.leads.filters.status')}
+              {t('admin.leads.filters.status', { defaultValue: 'Status' })}
             </Label>
             <select
               id="admin-leads-status-filter"
@@ -309,7 +309,7 @@ export default function Leads() {
               onChange={e => setStatusFilter(e.target.value as StatusSelection)}
               className="mt-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white"
             >
-              <option value="all">{t('admin.leads.filters.statusAll')}</option>
+              <option value="all">{t('admin.leads.filters.statusAll', { defaultValue: 'All statuses' })}</option>
               {STATUS_OPTIONS.map(st => (
                 <option key={st} value={st}>
                   {t(`admin.leads.status.${st}`)}
@@ -333,7 +333,7 @@ export default function Leads() {
                 onClick={handleRetry}
                 className="mt-3 bg-white text-brand-navy hover:opacity-90"
               >
-                {t('admin.leads.errors.retry')}
+                {t('admin.leads.errors.retry', { defaultValue: 'Retry' })}
               </Button>
             </div>
           ) : loading ? (
@@ -350,7 +350,7 @@ export default function Leads() {
             </div>
           ) : rows && rows.length === 0 ? (
             <div data-testid="admin-leads-empty" className="rounded-lg border border-white/10 bg-white/5 p-6 text-sm text-white/80">
-              <p>{filtersActive ? t('admin.leads.empty.filtered') : t('admin.leads.empty.title')}</p>
+              <p>{filtersActive ? t('admin.leads.empty.filtered', { defaultValue: 'No leads match this filter.' }) : t('admin.leads.empty.title', { defaultValue: 'No leads yet. Demo requests will appear here.' })}</p>
               {filtersActive ? (
                 <Button
                   type="button"
@@ -358,7 +358,7 @@ export default function Leads() {
                   onClick={handleClearFilters}
                   className="mt-4 bg-white text-brand-navy hover:opacity-90"
                 >
-                  {t('admin.leads.filters.clear')}
+                  {t('admin.leads.filters.clear', { defaultValue: 'Clear filters' })}
                 </Button>
               ) : null}
             </div>
@@ -367,15 +367,15 @@ export default function Leads() {
               <table data-testid="admin-leads-table" className="min-w-full text-left text-sm text-white">
                 <thead className="bg-white/5 text-xs uppercase tracking-wide text-white/70">
                   <tr>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.name')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.company')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.email')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.gds')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.role')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.locale')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.status')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.created')}</th>
-                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.message')}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.name', { defaultValue: 'Name' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.company', { defaultValue: 'Company' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.email', { defaultValue: 'Email' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.gds', { defaultValue: 'GDS' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.role', { defaultValue: 'Role' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.locale', { defaultValue: 'Locale' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.status', { defaultValue: 'Status' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.created', { defaultValue: 'Created' })}</th>
+                    <th scope="col" className="px-3 py-2">{t('admin.leads.columns.message', { defaultValue: 'Message' })}</th>
                   </tr>
                 </thead>
                 <tbody>{tableBody}</tbody>
