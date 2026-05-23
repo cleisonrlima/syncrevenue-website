@@ -134,7 +134,7 @@ Source: Figma Make file `https://www.figma.com/make/66Wb2MAv5PLOBSJLoFM3E3/teste
 | Story | Title | Jira | Status |
 |---|---|---|---|
 | 7.1 | Foundation — Deps, Token Backport, Dark Mode Default, Base Utilities | SYN-489 | `[x]` done — code review patches complete 2026-05-22. Fixed Tailwind v3 animation compatibility, alpha-capable shadcn token colors, `ImageWithFallback` `src` retry behavior, and `useIsMobile` listener fallback. Full suite passes (94 files / 801 tests), typecheck passes, build passes, contrast passes, and audit has no high/critical advisories. |
-| 7.2 | Routes / Layout Scaffold — `/v2`, `/demo`, `/dashboard/*` + DashboardLayout Shell | SYN-490 | `[ ]` not started |
+| 7.2 | Routes / Layout Scaffold — `/v2`, `/demo`, `/dashboard/*` + DashboardLayout Shell | SYN-490 | `[x]` done — code review patches complete 2026-05-22. Added mobile dashboard navigation, removed nested main landmarks, tightened route chrome gating and dashboard wildcard handling, filled placeholder SEO translations, and extended route tests for Footer gating. Full suite passes (94 files / 805 tests), typecheck passes. |
 | 7.3 | Dashboard Pages — Overview, Revenue Recovery, Payouts, Insights, Settings | SYN-491 | `[ ]` not started |
 | 7.4 | Landing at `/v2` + DemoForm at `/demo` | SYN-492 | `[ ]` not started |
 | 7.5 | i18n Extraction for Epic 7 Pages — en / pt-BR / es | SYN-493 | `[ ]` not started |

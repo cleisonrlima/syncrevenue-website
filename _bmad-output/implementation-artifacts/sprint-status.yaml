@@ -165,7 +165,7 @@ development_status:
   # Jira: SYN-488 (Epic) + SYN-489..496 (stories) + SYN-497..546 (50 sub-tasks) — synced 2026-05-22
   epic-7: in-progress
   7-1-foundation-deps-tokens-dark-mode: done
-  7-2-routes-layout-scaffold: backlog
+  7-2-routes-layout-scaffold: done
   7-3-dashboard-pages: backlog
   7-4-landing-demo-pages: backlog
   7-5-i18n-extraction: backlog

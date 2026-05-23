@@ -487,6 +487,50 @@
       "description": "Vea cómo Sync Sirius trata contactos del sitio, datos de leads, retención y derechos de privacidad.",
       "ogTitle": "Política de Privacidad | Sync Sirius",
       "ogDescription": "Vea cómo Sync Sirius trata contactos del sitio, datos de leads, retención y derechos de privacidad."
+    },
+    "landing": {
+      "title": "Vista previa de la plataforma SyncSirius | Sync Sirius",
+      "description": "Vea la próxima superficie de marketing de SyncSirius antes de que se publique la landing page completa.",
+      "ogTitle": "Vista previa de la plataforma SyncSirius | Sync Sirius",
+      "ogDescription": "Vea la próxima superficie de marketing de SyncSirius antes de que se publique la landing page completa."
+    },
+    "demo": {
+      "title": "Agendar demo | Sync Sirius",
+      "description": "Vea la próxima experiencia de solicitud de demo de SyncSirius.",
+      "ogTitle": "Agendar demo | Sync Sirius",
+      "ogDescription": "Vea la próxima experiencia de solicitud de demo de SyncSirius."
+    },
+    "dashboard": {
+      "home": {
+        "title": "Resumen del dashboard | Sync Sirius",
+        "description": "Vea el scaffold del resumen del dashboard de SyncSirius.",
+        "ogTitle": "Resumen del dashboard | Sync Sirius",
+        "ogDescription": "Vea el scaffold del resumen del dashboard de SyncSirius."
+      },
+      "recovery": {
+        "title": "Recuperación de ingresos | Sync Sirius",
+        "description": "Vea el scaffold del dashboard de recuperación de ingresos de SyncSirius.",
+        "ogTitle": "Recuperación de ingresos | Sync Sirius",
+        "ogDescription": "Vea el scaffold del dashboard de recuperación de ingresos de SyncSirius."
+      },
+      "payouts": {
+        "title": "Pagos | Sync Sirius",
+        "description": "Vea el scaffold del dashboard de pagos de SyncSirius.",
+        "ogTitle": "Pagos | Sync Sirius",
+        "ogDescription": "Vea el scaffold del dashboard de pagos de SyncSirius."
+      },
+      "insights": {
+        "title": "Insights | Sync Sirius",
+        "description": "Vea el scaffold del dashboard de insights de SyncSirius.",
+        "ogTitle": "Insights | Sync Sirius",
+        "ogDescription": "Vea el scaffold del dashboard de insights de SyncSirius."
+      },
+      "settings": {
+        "title": "Configuración | Sync Sirius",
+        "description": "Vea el scaffold de configuración del dashboard de SyncSirius.",
+        "ogTitle": "Configuración | Sync Sirius",
+        "ogDescription": "Vea el scaffold de configuración del dashboard de SyncSirius."
+      }
     }
   },
   "errors": {

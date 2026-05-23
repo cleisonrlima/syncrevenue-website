@@ -50,9 +50,20 @@ describe('DashboardLayout', () => {
     })
   })
 
+  it('renders a mobile dashboard navigation fallback', () => {
+    renderLayout()
+    const mobileNav = screen.getByTestId('dashboard-mobile-nav')
+    const links = within(mobileNav).getAllByRole('link')
+    expect(links).toHaveLength(5)
+    NAV_LABELS.forEach((label, idx) => {
+      expect(links[idx]).toHaveTextContent(label)
+    })
+  })
+
   it('renders the dashboard chrome (sidebar + header + main outlet target)', () => {
     renderLayout()
     expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(screen.getByTestId('dashboard-mobile-nav')).toBeInTheDocument()
     expect(screen.getByTestId('dashboard-header')).toBeInTheDocument()
     expect(screen.getByTestId('dashboard-main')).toBeInTheDocument()
     expect(screen.getByTestId('dashboard-search-input')).toBeInTheDocument()

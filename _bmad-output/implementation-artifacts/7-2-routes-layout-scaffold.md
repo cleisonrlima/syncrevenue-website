@@ -1,6 +1,6 @@
 # Story 7.2: Routes / Layout Scaffold — `/v2`, `/demo`, `/dashboard/*` + DashboardLayout Shell
 
-Status: not-started
+Status: done
 
 Epic: 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme
 
@@ -30,38 +30,47 @@ So that Stories 7.3 (dashboard pages) and 7.4 (Landing + DemoForm) can drop thei
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Register 7 new routes in `src/App.tsx` (AC: 1)**
-  - [ ] Add `<Route path="/v2" element={<Landing />} />` (placeholder import)
-  - [ ] Add `<Route path="/demo" element={<Demo />} />` (placeholder import)
-  - [ ] Add `<Route path="/dashboard" element={<DashboardLayout />}>` with index `<DashboardHome />` + 4 child routes (recovery/payouts/insights/settings)
-  - [ ] Verify route precedence — `*` catch-all stays LAST, dashboard nested routes precede `*`
-  - [ ] `npm run dev` smoke: navigate to each new route, confirm no console errors
+- [x] **Task 1: Register 7 new routes in `src/App.tsx` (AC: 1)**
+  - [x] Add `<Route path="/v2" element={<Landing />} />` (placeholder import)
+  - [x] Add `<Route path="/demo" element={<Demo />} />` (placeholder import)
+  - [x] Add `<Route path="/dashboard" element={<DashboardLayout />}>` with index `<DashboardHome />` + 4 child routes (recovery/payouts/insights/settings)
+  - [x] Verify route precedence — `*` catch-all stays LAST, dashboard nested routes precede `*`
+  - [x] `npm run dev` smoke: navigate to each new route, confirm no console errors
 
-- [ ] **Task 2: Port `DashboardLayout.tsx` to `src/components/layout/DashboardLayout.tsx` (AC: 2)**
-  - [ ] Swap `react-router` imports → `react-router-dom`
-  - [ ] Lucide icons (LayoutDashboard, Target, CreditCard, BarChart2, Settings, Bell, Search, TrendingUp) imported from `lucide-react` (added by Story 7.1)
-  - [ ] Replace `ImageWithFallback` import path to local `src/components/figma/ImageWithFallback` (added by Story 7.1)
-  - [ ] Replace inline logo import `../../imports/1351_rev_1.jpg` with `/logo-or-asset-from-public.png` (local asset — confirm logo asset path during port)
-  - [ ] Inline user card (initials, name, email) keeps Figma placeholder values for now (Settings page will derive from real user state in a later epic)
+- [x] **Task 2: Port `DashboardLayout.tsx` to `src/components/layout/DashboardLayout.tsx` (AC: 2)**
+  - [x] Swap `react-router` imports → `react-router-dom`
+  - [x] Lucide icons (LayoutDashboard, Target, CreditCard, BarChart2, Settings, Bell, Search, TrendingUp) imported from `lucide-react` (added by Story 7.1)
+  - [x] Replace `ImageWithFallback` import path to local `src/components/figma/ImageWithFallback` (added by Story 7.1)
+  - [x] Replace inline logo import `../../imports/1351_rev_1.jpg` with `/logo-or-asset-from-public.png` (local asset — confirm logo asset path during port)
+  - [x] Inline user card (initials, name, email) keeps Figma placeholder values for now (Settings page will derive from real user state in a later epic)
 
-- [ ] **Task 3: Gate public Navbar + Footer off for dashboard (AC: 3, 4)**
-  - [ ] In `src/App.tsx`, expand the existing `isHomeRoute` pattern to also derive `isDashboardRoute = location.pathname.startsWith('/dashboard')` and `isFigmaPublicRoute = ['/v2', '/demo'].includes(location.pathname)`
-  - [ ] Conditionally render `<Navbar />` and `<Footer />` ONLY for non-dashboard, non-figma-public routes
-  - [ ] Confirm ScrollRestoration + skip-to-content link still work on every route they DO render under
-  - [ ] Document the guard in inline comment referencing this story
+- [x] **Task 3: Gate public Navbar + Footer off for dashboard (AC: 3, 4)**
+  - [x] In `src/App.tsx`, expand the existing `isHomeRoute` pattern to also derive `isDashboardRoute = location.pathname.startsWith('/dashboard')` and `isFigmaPublicRoute = ['/v2', '/demo'].includes(location.pathname)`
+  - [x] Conditionally render `<Navbar />` and `<Footer />` ONLY for non-dashboard, non-figma-public routes
+  - [x] Confirm ScrollRestoration + skip-to-content link still work on every route they DO render under
+  - [x] Document the guard in inline comment referencing this story
 
-- [ ] **Task 4: Author 7 placeholder pages (AC: 5)**
-  - [ ] `src/pages/Landing.tsx` (mounted at `/v2`)
-  - [ ] `src/pages/Demo.tsx` (mounted at `/demo`)
-  - [ ] `src/pages/dashboard/DashboardHome.tsx`, `RevenueRecovery.tsx`, `Payouts.tsx`, `Insights.tsx`, `Settings.tsx`
-  - [ ] Each placeholder: default export, single `<h1>` with route title, one-line note pointing at the implementing story
-  - [ ] Each placeholder: `useDocumentMeta({ titleKey, descriptionKey, path })` so SEO meta is consistent (i18n keys can be temporary hardcoded fallbacks; full extraction in Story 7.5)
+- [x] **Task 4: Author 7 placeholder pages (AC: 5)**
+  - [x] `src/pages/Landing.tsx` (mounted at `/v2`)
+  - [x] `src/pages/Demo.tsx` (mounted at `/demo`)
+  - [x] `src/pages/dashboard/DashboardHome.tsx`, `RevenueRecovery.tsx`, `Payouts.tsx`, `Insights.tsx`, `Settings.tsx`
+  - [x] Each placeholder: default export, single `<h1>` with route title, one-line note pointing at the implementing story
+  - [x] Each placeholder: `useDocumentMeta({ titleKey, descriptionKey, path })` so SEO meta is consistent (i18n keys can be temporary hardcoded fallbacks; full extraction in Story 7.5)
 
-- [ ] **Task 5: Test coverage for scaffold (AC: 6)**
-  - [ ] `src/components/layout/DashboardLayout.test.tsx` — sidebar nav, active state, link clicks
-  - [ ] `src/App.routes.test.tsx` (or extend an existing spec) — asserts Navbar/Footer gating
-  - [ ] `npm run test:run` × 3 — all exit 0
-  - [ ] `npx tsc --noEmit && npx tsc --noEmit --project tsconfig.scripts.json` exit 0
+- [x] **Task 5: Test coverage for scaffold (AC: 6)**
+  - [x] `src/components/layout/DashboardLayout.test.tsx` — sidebar nav, active state, link clicks
+  - [x] `src/App.routes.test.tsx` (or extend an existing spec) — asserts Navbar/Footer gating
+  - [x] `npm run test:run` × 3 — all exit 0
+  - [x] `npx tsc --noEmit && npx tsc --noEmit --project tsconfig.scripts.json` exit 0
+
+### Review Findings
+
+- [x] [Review][Patch] Add mobile-accessible dashboard navigation; current sidebar is hidden below `lg` with no fallback [src/components/layout/DashboardLayout.tsx:81]
+- [x] [Review][Patch] Remove nested `<main>` landmarks between the app shell and dashboard shell [src/App.tsx:60]
+- [x] [Review][Patch] Replace deny-list chrome gating with route-accurate checks for dashboard, Figma public routes, and allowed public chrome [src/App.tsx:35]
+- [x] [Review][Patch] Add dashboard-scoped handling for unknown dashboard child routes so `/dashboard/*` misses keep the dashboard shell [src/App.tsx:69]
+- [x] [Review][Patch] Add SEO translations or fallback support for all new placeholder route meta keys [src/pages/Landing.tsx:15]
+- [x] [Review][Patch] Extend route chrome tests to assert Footer/contentinfo visibility, not only Navbar visibility [src/App.routes.test.tsx:45]
 
 ## Dev Notes
 

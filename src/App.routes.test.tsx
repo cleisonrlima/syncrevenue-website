@@ -30,21 +30,25 @@ describe('App route chrome gating', () => {
   it('renders the public Navbar on /', () => {
     renderAt('/')
     expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('renders the public Navbar on /privacy', () => {
     renderAt('/privacy')
     expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('renders the public Navbar on /admin/login (admin coexists with public chrome)', () => {
     renderAt('/admin/login')
     expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /dashboard', () => {
     renderAt('/dashboard')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
     // DashboardLayout chrome should be present instead
     expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
   })
@@ -52,19 +56,48 @@ describe('App route chrome gating', () => {
   it('does NOT render the public Navbar on a nested dashboard route', () => {
     renderAt('/dashboard/recovery')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
     expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /v2 (Landing has its own nav)', () => {
     renderAt('/v2')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
     expect(screen.getByTestId('landing-placeholder-heading')).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /demo (DemoForm has its own nav)', () => {
     renderAt('/demo')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
     expect(screen.getByTestId('demo-placeholder-heading')).toBeInTheDocument()
+  })
+
+  it('keeps Epic 7 chrome suppression with trailing slashes', () => {
+    const landing = renderAt('/v2/')
+    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    landing.unmount()
+
+    renderAt('/demo/')
+    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+  })
+
+  it('does NOT render public chrome on unknown catch-all routes', () => {
+    renderAt('/missing-route')
+    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
+  })
+
+  it('renders unknown dashboard child routes inside DashboardLayout', () => {
+    renderAt('/dashboard/missing-route')
+    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
   })
 
   it('renders the dashboard index page (DashboardHome placeholder) at /dashboard', () => {
@@ -83,6 +116,7 @@ describe('App route chrome gating', () => {
     for (const { path, testid } of cases) {
       const { unmount } = renderAt(path)
       expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
+      expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
       expect(screen.getByTestId(testid)).toBeInTheDocument()
       unmount()
     }

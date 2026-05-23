@@ -23,7 +23,9 @@ import Settings from '@/pages/dashboard/Settings'
 
 export default function App() {
   const location = useLocation()
-  const isHomeRoute = location.pathname === '/'
+  const normalizedPathname =
+    location.pathname.length > 1 ? location.pathname.replace(/\/+$/, '') : location.pathname
+  const isHomeRoute = normalizedPathname === '/'
 
   // Story 7.2 (AC 3, 4): Suppress the public Navbar + Footer on Epic 7
   // surfaces that own their own chrome:
@@ -32,9 +34,13 @@ export default function App() {
   //   - `/demo` (DemoForm) ships its own minimal nav in the Figma source
   // ScrollRestoration + skip-to-content link + the <main> wrapper stay
   // global — they continue to work on every route, public chrome or not.
-  const isDashboardRoute = location.pathname.startsWith('/dashboard')
-  const isFigmaPublicRoute = location.pathname === '/v2' || location.pathname === '/demo'
-  const showPublicChrome = !isDashboardRoute && !isFigmaPublicRoute
+  const isDashboardRoute = normalizedPathname === '/dashboard' || normalizedPathname.startsWith('/dashboard/')
+  const isFigmaPublicRoute = normalizedPathname === '/v2' || normalizedPathname === '/demo'
+  const showPublicChrome =
+    normalizedPathname === '/' ||
+    normalizedPathname === '/privacy' ||
+    normalizedPathname === '/admin' ||
+    normalizedPathname.startsWith('/admin/')
 
   // Top padding rules:
   //   - Home (`/`) sits flush under the transparent overlay navbar
@@ -72,6 +78,7 @@ export default function App() {
               <Route path="payouts" element={<Payouts />} />
               <Route path="insights" element={<Insights />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Navigate to="login" replace />} />

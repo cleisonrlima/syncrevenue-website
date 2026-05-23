@@ -52,6 +52,12 @@ type NavItem = {
   Icon: typeof LayoutDashboard
 }
 
+type DashboardNavLinkProps = {
+  item: NavItem
+  testIdPrefix: 'dashboard-nav' | 'dashboard-mobile-nav'
+  compact?: boolean
+}
+
 const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: '/dashboard', labelKey: 'dashboard.nav.overview', defaultLabel: 'Overview', Icon: LayoutDashboard },
   { to: '/dashboard/recovery', labelKey: 'dashboard.nav.recovery', defaultLabel: 'Revenue Recovery', Icon: Target },
@@ -59,6 +65,32 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { to: '/dashboard/insights', labelKey: 'dashboard.nav.insights', defaultLabel: 'Insights', Icon: BarChart2 },
   { to: '/dashboard/settings', labelKey: 'dashboard.nav.settings', defaultLabel: 'Settings', Icon: SettingsIcon },
 ]
+
+function DashboardNavLink({ item, testIdPrefix, compact = false }: DashboardNavLinkProps) {
+  const { to, labelKey, defaultLabel, Icon } = item
+  const exact = to === '/dashboard'
+  const testIdSuffix = to.split('/').pop() || 'overview'
+
+  return (
+    <NavLink
+      to={to}
+      end={exact}
+      data-testid={`${testIdPrefix}-${testIdSuffix}`}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center rounded-md text-sm font-medium motion-safe:transition-colors motion-safe:duration-150',
+          compact ? 'gap-2 px-3 py-2 whitespace-nowrap min-h-[40px]' : 'gap-3 px-3 py-2 min-h-[40px]',
+          isActive
+            ? 'bg-white/10 text-white'
+            : 'text-white/70 hover:text-white hover:bg-white/5',
+        )
+      }
+    >
+      <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+      <span data-i18n-key={labelKey}>{defaultLabel}</span>
+    </NavLink>
+  )
+}
 
 // Inline placeholder user card values. Story 7.6/Settings page will swap
 // these for real user state in a later epic — for now Figma's placeholders
@@ -99,32 +131,9 @@ export default function DashboardLayout() {
           aria-label="Dashboard primary navigation"
           data-testid="dashboard-sidebar-nav"
         >
-          {NAV_ITEMS.map(({ to, labelKey, defaultLabel, Icon }) => {
-            // NavLink's `end` flag — only the `/dashboard` index route should
-            // strict-match; nested routes (`/dashboard/recovery` etc.) match
-            // normally. Without `end`, the Overview item would stay active on
-            // every nested page.
-            const exact = to === '/dashboard'
-            return (
-              <NavLink
-                key={to}
-                to={to}
-                end={exact}
-                data-testid={`dashboard-nav-${to.split('/').pop() || 'overview'}`}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium motion-safe:transition-colors motion-safe:duration-150 min-h-[40px]',
-                    isActive
-                      ? 'bg-white/10 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/5',
-                  )
-                }
-              >
-                <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span data-i18n-key={labelKey}>{defaultLabel}</span>
-              </NavLink>
-            )
-          })}
+          {NAV_ITEMS.map((item) => (
+            <DashboardNavLink key={item.to} item={item} testIdPrefix="dashboard-nav" />
+          ))}
         </nav>
 
         <div className="border-t border-white/10 p-4">
@@ -185,8 +194,21 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <main
+        <nav
+          className="lg:hidden border-b border-white/10 bg-[rgba(8,8,32,0.78)] overflow-x-auto px-3 py-2"
+          aria-label="Dashboard mobile navigation"
+          data-testid="dashboard-mobile-nav"
+        >
+          <div className="flex min-w-max gap-1">
+            {NAV_ITEMS.map((item) => (
+              <DashboardNavLink key={item.to} item={item} testIdPrefix="dashboard-mobile-nav" compact />
+            ))}
+          </div>
+        </nav>
+
+        <section
           id="dashboard-main"
+          aria-label="Dashboard content"
           className={cn(
             'flex-1 p-4 sm:p-6 lg:p-8',
             // Story 7.2: scroll-mt-16 mirrors the sibling main wrapper in
@@ -198,7 +220,7 @@ export default function DashboardLayout() {
           data-active-overview={isOverviewActive ? 'true' : undefined}
         >
           <Outlet />
-        </main>
+        </section>
       </div>
     </div>
   )
