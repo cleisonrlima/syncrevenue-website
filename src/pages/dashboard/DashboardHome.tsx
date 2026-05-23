@@ -48,8 +48,6 @@ import { useDocumentMeta } from '@/components/SEO'
  * Epic 7; migration to `var(--chart-N)` is a future story.
  */
 
-// TODO(epic-7-story-6): rename `carrier`/`policy` fields + sample copy to
-// travel-commission vocabulary; also wire to real data in a later epic.
 const REVENUE_DATA = [
   { name: 'Jan', recovered: 4000, baseline: 2400 },
   { name: 'Feb', recovered: 5500, baseline: 2800 },
@@ -60,14 +58,14 @@ const REVENUE_DATA = [
   { name: 'Jul', recovered: 12500, baseline: 4600 },
 ]
 
-// Status pill data: `statusKey` drives the translated label via
-// `t('dashboard.status.<statusKey>')`; `statusColor` styling stays inline
-// (kept English-keyed pre-Story-7.5; Story 7.6 owns the redesign).
+// Status pill: `statusKey` drives the translated label via
+// `t('dashboard.status.<statusKey>')`; `statusColor` styling stays inline.
+// `gds` = GDS provider (Amadeus/Sabre/Travelport); `pnr` = booking reference.
 const DISCREPANCIES = [
-  { id: '1', carrier: 'Global Life', policy: 'POL-8823', expected: 1200, actual: 800, statusKey: 'pending', statusColor: 'text-amber-400 bg-amber-400/10' },
-  { id: '2', carrier: 'Apex Health', policy: 'POL-9011', expected: 450, actual: 0, statusKey: 'resolved', statusColor: 'text-green-400 bg-green-400/10' },
-  { id: '3', carrier: 'Prime Auto', policy: 'POL-7734', expected: 890, actual: 800, statusKey: 'disputed', statusColor: 'text-indigo-400 bg-indigo-400/10' },
-  { id: '4', carrier: 'Global Life', policy: 'POL-8824', expected: 2100, actual: 1500, statusKey: 'pending', statusColor: 'text-amber-400 bg-amber-400/10' },
+  { id: '1', gds: 'Amadeus', pnr: 'PNR-K7H2X', expected: 1200, actual: 800, statusKey: 'pending', statusColor: 'text-amber-400 bg-amber-400/10' },
+  { id: '2', gds: 'Sabre', pnr: 'PNR-M3R9W', expected: 450, actual: 0, statusKey: 'resolved', statusColor: 'text-green-400 bg-green-400/10' },
+  { id: '3', gds: 'Travelport', pnr: 'PNR-Q5T8B', expected: 890, actual: 800, statusKey: 'disputed', statusColor: 'text-indigo-400 bg-indigo-400/10' },
+  { id: '4', gds: 'Amadeus', pnr: 'PNR-X2J4N', expected: 2100, actual: 1500, statusKey: 'pending', statusColor: 'text-amber-400 bg-amber-400/10' },
 ] as const
 
 // Time range state uses stable ID-style keys; the `t()` lookup resolves the
@@ -230,8 +228,8 @@ export default function DashboardHome() {
                 className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors cursor-pointer"
               >
                 <div>
-                  <p className="text-sm font-medium text-white">{item.carrier}</p>
-                  <p className="text-xs text-slate-400">{item.policy}</p>
+                  <p className="text-sm font-medium text-white">{item.gds}</p>
+                  <p className="text-xs text-slate-400">{item.pnr}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-bold text-white">

@@ -212,7 +212,7 @@ function GeneralSettings() {
                 <input
                   id="settings-company-name"
                   type="text"
-                  defaultValue="Acme Financial Corp"
+                  defaultValue="Meridian Travel Agency"
                   className="w-full pl-9 pr-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-colors"
                 />
               </div>
@@ -227,7 +227,7 @@ function GeneralSettings() {
                 <input
                   id="settings-support-email"
                   type="email"
-                  defaultValue="support@acmefinancial.com"
+                  defaultValue="support@meridiantravel.com"
                   className="w-full pl-9 pr-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-colors"
                 />
               </div>
@@ -243,12 +243,13 @@ function GeneralSettings() {
                 <Globe className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <select
                   id="settings-currency"
-                  defaultValue="usd"
+                  defaultValue="brl"
                   className="w-full pl-9 pr-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white appearance-none focus:outline-none focus:border-blue-500/50 transition-colors"
                 >
-                  <option value="usd">{t('dashboard.settings.general.currencyOptions.usd', 'USD - US Dollar')}</option>
-                  <option value="eur">{t('dashboard.settings.general.currencyOptions.eur', 'EUR - Euro')}</option>
-                  <option value="gbp">{t('dashboard.settings.general.currencyOptions.gbp', 'GBP - British Pound')}</option>
+                  <option value="brl">{t('dashboard.settings.general.currencyOptions.brl', 'BRL — Brazilian Real')}</option>
+                  <option value="eur">{t('dashboard.settings.general.currencyOptions.eur', 'EUR — Euro')}</option>
+                  <option value="usd">{t('dashboard.settings.general.currencyOptions.usd', 'USD — US Dollar')}</option>
+                  <option value="gbp">{t('dashboard.settings.general.currencyOptions.gbp', 'GBP — British Pound')}</option>
                 </select>
               </div>
             </div>
@@ -259,9 +260,12 @@ function GeneralSettings() {
               </label>
               <select
                 id="settings-timezone"
-                defaultValue="est"
+                defaultValue="saopaulo"
                 className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white appearance-none focus:outline-none focus:border-blue-500/50 transition-colors"
               >
+                <option value="saopaulo">{t('dashboard.settings.general.timezoneOptions.saopaulo', 'America/Sao_Paulo (BRT)')}</option>
+                <option value="newyork">{t('dashboard.settings.general.timezoneOptions.newyork', 'America/New_York (ET)')}</option>
+                <option value="london">{t('dashboard.settings.general.timezoneOptions.london', 'Europe/London (GMT/BST)')}</option>
                 <option value="est">{t('dashboard.settings.general.timezoneOptions.est', 'Eastern Time (ET)')}</option>
                 <option value="pst">{t('dashboard.settings.general.timezoneOptions.pst', 'Pacific Time (PT)')}</option>
                 <option value="gmt">{t('dashboard.settings.general.timezoneOptions.gmt', 'Greenwich Mean Time (GMT)')}</option>

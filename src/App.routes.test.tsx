@@ -168,12 +168,12 @@ describe('App route chrome gating', () => {
     const user = userEvent.setup()
     renderAt('/demo')
 
-    expect(await screen.findByRole('heading', { name: 'See SyncSyrius in action.' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'See SyncRevenue in action.' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /EN/i }))
     await user.click(screen.getByRole('menuitemradio', { name: /PT-BR/i }))
 
-    expect(await screen.findByRole('heading', { name: 'Veja o SyncSyrius em ação.' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Veja o SyncRevenue em ação.' })).toBeInTheDocument()
   })
 
   it('updates dashboard route copy after locale changes', async () => {

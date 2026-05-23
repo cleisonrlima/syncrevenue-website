@@ -39,7 +39,7 @@
       }
     },
     "panel": {
-      "tag": "SYNCSIRIUS · MOTOR DE COMISSÕES",
+      "tag": "SYNC SIRIUS · MOTOR DE COMISSÕES",
       "name": "SyncRevenue",
       "line": "Sistema especialista que aplica a regra correta de comissão e markup <0>no fluxo mid-office</0> — antes da emissão do bilhete.",
       "intsLabel": "GDS integrados",
@@ -428,7 +428,7 @@
     "eyebrow": "Contato",
     "heading": {
       "text": "Fale com a",
-      "accent": "SyncSirius"
+      "accent": "Sync Sirius"
     },
     "subhead": "Para dúvidas comerciais, suporte, parcerias ou imprensa — sua mensagem vai pro time certo.",
     "channels": {
@@ -489,47 +489,47 @@
       "ogDescription": "Veja como a Sync Sirius trata contatos do site, dados de leads, retenção e direitos de privacidade."
     },
     "landing": {
-      "title": "Prévia da Plataforma SyncSirius | Sync Sirius",
-      "description": "Veja a prévia da próxima superfície de marketing da SyncSirius antes da landing page completa.",
-      "ogTitle": "Prévia da Plataforma SyncSirius | Sync Sirius",
-      "ogDescription": "Veja a prévia da próxima superfície de marketing da SyncSirius antes da landing page completa."
+      "title": "Plataforma SyncRevenue | Sync Sirius",
+      "description": "Reconciliação automatizada de comissões GDS e recuperação de receita para agências de viagem — a plataforma SyncRevenue da Sync Sirius.",
+      "ogTitle": "Plataforma SyncRevenue | Sync Sirius",
+      "ogDescription": "Reconciliação automatizada de comissões GDS e recuperação de receita para agências de viagem — a plataforma SyncRevenue da Sync Sirius."
     },
     "demo": {
       "title": "Agendar Demo | Sync Sirius",
-      "description": "Veja a prévia da próxima experiência de solicitação de demo da SyncSirius.",
+      "description": "Solicite uma demonstração personalizada do SyncRevenue e veja a recuperação automática de comissões nos seus contratos GDS reais.",
       "ogTitle": "Agendar Demo | Sync Sirius",
-      "ogDescription": "Veja a prévia da próxima experiência de solicitação de demo da SyncSirius."
+      "ogDescription": "Solicite uma demonstração personalizada do SyncRevenue e veja a recuperação automática de comissões nos seus contratos GDS reais."
     },
     "dashboard": {
       "home": {
-        "title": "Visão Geral do Dashboard | Sync Sirius",
-        "description": "Veja a prévia do scaffold da visão geral do dashboard SyncSirius.",
-        "ogTitle": "Visão Geral do Dashboard | Sync Sirius",
-        "ogDescription": "Veja a prévia do scaffold da visão geral do dashboard SyncSirius."
+        "title": "Visão Geral do Dashboard | SyncRevenue",
+        "description": "Acompanhe recuperação de comissões, divergências ativas e status de pagamentos no dashboard SyncRevenue.",
+        "ogTitle": "Visão Geral do Dashboard | SyncRevenue",
+        "ogDescription": "Acompanhe recuperação de comissões, divergências ativas e status de pagamentos no dashboard SyncRevenue."
       },
       "recovery": {
-        "title": "Recuperação de Receita | Sync Sirius",
-        "description": "Veja a prévia do scaffold de recuperação de receita da SyncSirius.",
-        "ogTitle": "Recuperação de Receita | Sync Sirius",
-        "ogDescription": "Veja a prévia do scaffold de recuperação de receita da SyncSirius."
+        "title": "Recuperação de Receita | SyncRevenue",
+        "description": "Audite extratos de GDS, gerencie disputas de ADM e acompanhe a recuperação de comissões no SyncRevenue.",
+        "ogTitle": "Recuperação de Receita | SyncRevenue",
+        "ogDescription": "Audite extratos de GDS, gerencie disputas de ADM e acompanhe a recuperação de comissões no SyncRevenue."
       },
       "payouts": {
-        "title": "Pagamentos | Sync Sirius",
-        "description": "Veja a prévia do scaffold de pagamentos da SyncSirius.",
-        "ogTitle": "Pagamentos | Sync Sirius",
-        "ogDescription": "Veja a prévia do scaffold de pagamentos da SyncSirius."
+        "title": "Pagamentos | SyncRevenue",
+        "description": "Gerencie e automatize a distribuição de comissões para agentes via SyncRevenue Pagamentos.",
+        "ogTitle": "Pagamentos | SyncRevenue",
+        "ogDescription": "Gerencie e automatize a distribuição de comissões para agentes via SyncRevenue Pagamentos."
       },
       "insights": {
-        "title": "Insights | Sync Sirius",
-        "description": "Veja a prévia do scaffold de insights da SyncSirius.",
-        "ogTitle": "Insights | Sync Sirius",
-        "ogDescription": "Veja a prévia do scaffold de insights da SyncSirius."
+        "title": "Insights | SyncRevenue",
+        "description": "Preveja receitas de comissão e visualize o desempenho global da agência com SyncRevenue Insights.",
+        "ogTitle": "Insights | SyncRevenue",
+        "ogDescription": "Preveja receitas de comissão e visualize o desempenho global da agência com SyncRevenue Insights."
       },
       "settings": {
-        "title": "Configurações | Sync Sirius",
-        "description": "Veja a prévia do scaffold de configurações da SyncSirius.",
-        "ogTitle": "Configurações | Sync Sirius",
-        "ogDescription": "Veja a prévia do scaffold de configurações da SyncSirius."
+        "title": "Configurações | SyncRevenue",
+        "description": "Gerencie perfil da organização, acesso de equipe, integrações e faturamento no SyncRevenue.",
+        "ogTitle": "Configurações | SyncRevenue",
+        "ogDescription": "Gerencie perfil da organização, acesso de equipe, integrações e faturamento no SyncRevenue."
       }
     }
   },
@@ -545,8 +545,8 @@
   },
   "landing": {
     "nav": {
-      "logoAlt": "Logo SyncSyrius",
-      "brand": "SyncSyrius",
+      "logoAlt": "Logo Sync Sirius",
+      "brand": "SyncRevenue",
       "products": "Produtos",
       "benefits": "Benefícios",
       "security": "Segurança",
@@ -561,23 +561,23 @@
     },
     "heroSlides": {
       "revenue": {
-        "badge": "SyncRevenue 2.0 já está no ar",
+        "badge": "SyncRevenue já está disponível",
         "title": "Recupere receita perdida.",
-        "titleHighlight": "Instantaneamente.",
+        "titleHighlight": "Antes que desapareça.",
         "description": "A plataforma automatizada de auditoria de comissões que encontra a receita perdida da agência antes que ela impacte o resultado. Pare de deixar dinheiro na mesa.",
         "floatingTitle": "Recuperado neste mês",
         "floatingValue": "+US$ 24.500,00"
       },
       "pay": {
-        "badge": "Conheça o SyncPay",
+        "badge": "Conheça o SyncRevenue Pagamentos",
         "title": "Automatize pagamentos.",
-        "titleHighlight": "Sem falhas.",
-        "description": "Direcione comissões para seus agentes instantaneamente e com precisão. Simplifique fluxos de pagamento e elimine erros de transação manual.",
+        "titleHighlight": "Com precisão.",
+        "description": "Direcione comissões para seus agentes de forma confiável e precisa. Simplifique fluxos de pagamento e elimine erros de transação manual.",
         "floatingTitle": "Pagamento processado",
         "floatingValue": "US$ 12.450 para 8 agentes"
       },
       "insights": {
-        "badge": "SyncInsights Enterprise",
+        "badge": "SyncRevenue Insights",
         "title": "Análises preditivas.",
         "titleHighlight": "Visualizadas.",
         "description": "Preveja o fluxo de caixa e visualize o desempenho da agência em territórios globais. Transforme dados brutos de comissões em inteligência estratégica de negócios.",
@@ -600,18 +600,18 @@
     },
     "benefits": {
       "heading": "Automatize o invisível.",
-      "subheading": "O rastreamento manual de comissões é propenso a erro humano. Nossa plataforma inteligente cruza extratos de transportadoras com seus dados internos em segundos.",
+      "subheading": "O rastreamento manual de comissões é propenso a erro humano. Nossa plataforma inteligente cruza extratos de GDS com seus dados internos em segundos.",
       "card1": {
         "title": "Reconciliação em tempo real",
-        "description": "Combine automaticamente comissões esperadas com pagamentos reais das transportadoras assim que os extratos chegarem."
+        "description": "Combine automaticamente comissões esperadas com pagamentos reais dos GDS assim que os extratos chegarem."
       },
       "card2": {
         "title": "Detecção de divergências",
-        "description": "Sinalize instantaneamente pagamentos ausentes, taxas incorretas e erros de clawback antes do fechamento do livro."
+        "description": "Sinalize pagamentos ausentes, taxas incorretas e erros de memo de débito (ADM) antes do fechamento do livro."
       },
       "card3": {
         "title": "Resolução automatizada",
-        "description": "Gere relatórios de disputa em um clique, formatados exatamente como as transportadoras precisam para resolver casos rapidamente."
+        "description": "Gere relatórios de disputa em um clique, formatados exatamente como as companhias aéreas e provedores GDS precisam para resolver casos rapidamente."
       }
     },
     "security": {
@@ -636,27 +636,27 @@
     },
     "cta": {
       "heading": "Pronto para transformar sua receita?",
-      "subheading": "Junte-se às agências que estão otimizando suas finanças com a suíte SyncSyrius.",
-      "button": "Agendar Demo Hoje"
+      "subheading": "Junte-se às agências que estão otimizando suas finanças com a suíte Sync Sirius.",
+      "button": "Agendar Demo"
     },
     "footer": {
-      "logoAlt": "Logo SyncSyrius alternativo",
-      "brand": "SyncSyrius",
+      "logoAlt": "Logo Sync Sirius",
+      "brand": "SyncRevenue",
       "privacy": "Política de Privacidade",
       "terms": "Termos de Serviço",
       "contact": "Contato de Suporte",
-      "copyright": "© {{year}} SyncSyrius. Todos os direitos reservados."
+      "copyright": "© {{year}} Sync Sirius. Todos os direitos reservados."
     }
   },
   "figmaDemo": {
     "nav": {
-      "logoAlt": "Logo SyncSyrius",
-      "brand": "SyncSyrius",
+      "logoAlt": "Logo Sync Sirius",
+      "brand": "SyncRevenue",
       "backToHome": "Voltar ao início"
     },
     "hero": {
       "badge": "Demo ao vivo",
-      "heading": "Veja o SyncSyrius em ação.",
+      "heading": "Veja o SyncRevenue em ação.",
       "description": "Descubra como nossa plataforma automatizada de auditoria de comissões pode recuperar receita perdida e simplificar seus pagamentos. Preencha o formulário e nossa equipe entrará em contato para agendar uma demonstração personalizada.",
       "bullet1": "Identifique pagamentos de comissão ausentes instantaneamente",
       "bullet2": "Automatize pagamentos de agentes com 100% de precisão",
@@ -686,8 +686,8 @@
   },
   "dashboard": {
     "layout": {
-      "brand": "SyncSirius",
-      "logoAlt": "SyncSirius",
+      "brand": "SyncRevenue",
+      "logoAlt": "Logo Sync Sirius",
       "searchLabel": "Pesquisar no dashboard",
       "searchPlaceholder": "Pesquisar...",
       "notificationsLabel": "Ver notificações",
@@ -724,7 +724,7 @@
     },
     "rowActions": {
       "open": "Abrir ações da linha",
-      "openRecovery": "Abrir ações de {{policy}}",
+      "openRecovery": "Abrir ações de {{pnr}}",
       "openPayout": "Abrir ações de {{agent}}"
     },
     "overview": {
@@ -755,7 +755,7 @@
     },
     "recovery": {
       "title": "Recuperação de receita",
-      "subtitle": "Audite extratos das transportadoras e gerencie disputas de comissão.",
+      "subtitle": "Audite extratos de GDS e gerencie disputas de comissão.",
       "actions": {
         "exportReport": "Exportar relatório",
         "newDispute": "Nova disputa"
@@ -766,7 +766,7 @@
         "inDispute": "Em disputa",
         "inDisputeSub": "12 disputas ativas",
         "recoveredYtd": "Recuperado (YTD)",
-        "recoveredYtdSub": "De 85 apólices"
+        "recoveredYtdSub": "De 85 tickets"
       },
       "tabs": {
         "all": "Todas as divergências",
@@ -774,11 +774,11 @@
         "disputed": "Em disputa",
         "resolved": "Resolvido"
       },
-      "searchLabel": "Pesquisar apólices",
-      "searchPlaceholder": "Pesquisar apólices...",
+      "searchLabel": "Pesquisar tickets",
+      "searchPlaceholder": "Pesquisar tickets...",
       "filterLabel": "Filtrar resultados",
       "table": {
-        "carrier": "Transportadora & Apólice",
+        "carrier": "GDS / Companhia & PNR",
         "client": "Cliente",
         "expected": "Esperado",
         "actual": "Real",
@@ -794,7 +794,7 @@
     },
     "payouts": {
       "title": "Pagamentos de agentes",
-      "subtitle": "Gerencie e automatize a distribuição de comissões via SyncPay.",
+      "subtitle": "Gerencie e automatize a distribuição de comissões via SyncRevenue Pagamentos.",
       "actions": {
         "export": "Exportar",
         "runCycle": "Executar ciclo de pagamento"
@@ -858,7 +858,7 @@
       },
       "product": {
         "title": "Linhas de produto",
-        "subtitle": "Volume de comissão por tipo de seguro",
+        "subtitle": "Volume de comissão por linha de produto de viagem",
         "tooltipVolume": "Volume"
       },
       "topAgencies": {
@@ -885,12 +885,16 @@
         "supportEmail": "E-mail de suporte",
         "baseCurrency": "Moeda base",
         "currencyOptions": {
-          "usd": "USD - Dólar americano",
-          "eur": "EUR - Euro",
-          "gbp": "GBP - Libra esterlina"
+          "brl": "BRL — Real brasileiro",
+          "eur": "EUR — Euro",
+          "usd": "USD — Dólar americano",
+          "gbp": "GBP — Libra esterlina"
         },
         "timezone": "Fuso horário",
         "timezoneOptions": {
+          "saopaulo": "America/Sao_Paulo (BRT)",
+          "newyork": "America/New_York (ET)",
+          "london": "Europe/London (GMT/BST)",
           "est": "Eastern Time (ET)",
           "pst": "Pacific Time (PT)",
           "gmt": "Greenwich Mean Time (GMT)"

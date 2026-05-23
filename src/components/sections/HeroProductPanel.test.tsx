@@ -28,8 +28,8 @@ describe('HeroProductPanel (Story 6.4)', () => {
     expect(screen.getByTestId('hero-product-panel')).toBeInTheDocument()
     expect(screen.getByTestId('hero-panel-mark')).toBeInTheDocument()
     expect(screen.getByText('SyncRevenue')).toBeInTheDocument()
-    // Eyebrow tag has SYNCSIRIUS prefix in every locale
-    expect(screen.getByText(/^SYNCSIRIUS/i)).toBeInTheDocument()
+    // Eyebrow tag has SYNC SIRIUS prefix in every locale
+    expect(screen.getByText(/^SYNC SIRIUS/i)).toBeInTheDocument()
   })
 
   it('renders the panel line with a <strong> emphasis slot via <Trans>', () => {

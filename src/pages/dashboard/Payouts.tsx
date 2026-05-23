@@ -83,13 +83,13 @@ const METRICS: ReadonlyArray<PayoutMetric> = [
 ]
 
 const PAYOUTS = [
-  { id: '1', agent: 'Sarah Jenkins', role: 'Senior Partner', amount: 4500, date: 'May 22, 2026', method: 'ACH Transfer', status: 'Completed' },
-  { id: '2', agent: 'Michael Chen', role: 'Associate', amount: 2100, date: 'May 22, 2026', method: 'Direct Deposit', status: 'Completed' },
-  { id: '3', agent: 'Emma Thompson', role: 'Managing Director', amount: 8400, date: 'May 23, 2026', method: 'Wire Transfer', status: 'Processing' },
-  { id: '4', agent: 'David Rodriguez', role: 'Associate', amount: 1850, date: 'May 23, 2026', method: 'Direct Deposit', status: 'Processing' },
-  { id: '5', agent: 'Jessica Davis', role: 'Senior Partner', amount: 5200, date: 'May 24, 2026', method: 'ACH Transfer', status: 'Scheduled' },
-  { id: '6', agent: 'James Wilson', role: 'Associate', amount: 1900, date: 'May 18, 2026', method: 'Direct Deposit', status: 'Failed' },
-  { id: '7', agent: 'Amanda Martinez', role: 'Partner', amount: 3600, date: 'May 15, 2026', method: 'ACH Transfer', status: 'Completed' },
+  { id: '1', agent: 'Sarah Jenkins', role: 'Senior Travel Consultant', amount: 4500, date: 'May 22, 2026', method: 'ACH Transfer', status: 'Completed' },
+  { id: '2', agent: 'Michael Chen', role: 'Travel Consultant', amount: 2100, date: 'May 22, 2026', method: 'Direct Deposit', status: 'Completed' },
+  { id: '3', agent: 'Emma Thompson', role: 'Branch Manager', amount: 8400, date: 'May 23, 2026', method: 'Wire Transfer', status: 'Processing' },
+  { id: '4', agent: 'David Rodriguez', role: 'Travel Consultant', amount: 1850, date: 'May 23, 2026', method: 'Direct Deposit', status: 'Processing' },
+  { id: '5', agent: 'Jessica Davis', role: 'Senior Travel Consultant', amount: 5200, date: 'May 24, 2026', method: 'ACH Transfer', status: 'Scheduled' },
+  { id: '6', agent: 'James Wilson', role: 'Travel Consultant', amount: 1900, date: 'May 18, 2026', method: 'Direct Deposit', status: 'Failed' },
+  { id: '7', agent: 'Amanda Martinez', role: 'Senior Agent', amount: 3600, date: 'May 15, 2026', method: 'ACH Transfer', status: 'Completed' },
 ]
 
 const TABS = [
@@ -187,7 +187,7 @@ export default function Payouts() {
             {t('dashboard.payouts.title', 'Agent Payouts')}
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            {t('dashboard.payouts.subtitle', 'Manage and automate commission distributions via SyncPay.')}
+            {t('dashboard.payouts.subtitle', 'Manage and automate commission distributions via SyncRevenue Payouts.')}
           </p>
         </div>
         <div className="flex items-center gap-3">

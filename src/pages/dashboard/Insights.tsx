@@ -80,10 +80,10 @@ const REGIONAL_DATA = [
 ]
 
 const PRODUCT_PERFORMANCE = [
-  { name: 'Life Ins.', revenue: 450, growth: 12 },
-  { name: 'Health', revenue: 380, growth: 8 },
-  { name: 'Auto', revenue: 290, growth: 15 },
-  { name: 'Property', revenue: 210, growth: -2 },
+  { name: 'Air', revenue: 450, growth: 12 },
+  { name: 'Hotel', revenue: 380, growth: 8 },
+  { name: 'Car', revenue: 290, growth: 15 },
+  { name: 'Cruise', revenue: 210, growth: -2 },
 ]
 
 const TOP_AGENTS = [
@@ -304,7 +304,7 @@ export default function Insights() {
             {t('dashboard.insights.product.title', 'Product Lines')}
           </h2>
           <p className="text-sm text-slate-400 mb-6">
-            {t('dashboard.insights.product.subtitle', 'Commission volume by insurance type')}
+            {t('dashboard.insights.product.subtitle', 'Commission volume by travel product line')}
           </p>
           <div className="h-[250px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">

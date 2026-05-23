@@ -61,7 +61,7 @@ describe('RevenueRecovery', () => {
     renderPage()
     const heading = screen.getByRole('heading', { level: 1, name: /Revenue Recovery/ })
     expect(heading).toBeInTheDocument()
-    expect(screen.getByText(/Audit carrier statements and manage commission disputes/)).toBeInTheDocument()
+    expect(screen.getByText(/Audit GDS statements and manage commission disputes/)).toBeInTheDocument()
   })
 
   it('renders the three KPI metric cards', () => {
@@ -90,7 +90,7 @@ describe('RevenueRecovery', () => {
   it('renders the empty-state row when search filtering has zero matches', async () => {
     const user = userEvent.setup()
     renderPage()
-    await user.type(screen.getByLabelText(/Search policies/), 'NO_MATCH_POLICY')
+    await user.type(screen.getByLabelText(/Search tickets/), 'NO_MATCH_TICKET')
     await user.click(screen.getByRole('button', { name: /Filter results/ }))
     expect(screen.getByText('No discrepancies found for this view.')).toBeInTheDocument()
     expect(screen.getByText(/Showing 0 of 7 results/)).toBeInTheDocument()
@@ -105,7 +105,7 @@ describe('RevenueRecovery', () => {
     renderPage()
 
     await user.click(screen.getByTestId('dashboard-recovery-tab-all-discrepancies'))
-    await user.type(screen.getByLabelText(/Pesquisar apólices/), 'Ação necessária')
+    await user.type(screen.getByLabelText(/Pesquisar tickets/), 'Ação necessária')
     await user.click(screen.getByRole('button', { name: /Filtrar resultados/ }))
 
     const tbody = screen.getByTestId('dashboard-recovery-tbody')

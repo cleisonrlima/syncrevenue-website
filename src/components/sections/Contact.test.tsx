@@ -33,10 +33,10 @@ describe('Contact section', () => {
 
     expect(screen.getByText('Contact')).toBeInTheDocument()
 
-    const heading = screen.getByRole('heading', { level: 2, name: /Talk to .*SyncSirius/ })
+    const heading = screen.getByRole('heading', { level: 2, name: /Talk to .*Sync Sirius/ })
     expect(heading).toBeInTheDocument()
     expect(heading).toHaveAttribute('id', 'contact-heading')
-    const accent = within(heading).getByText('SyncSirius')
+    const accent = within(heading).getByText('Sync Sirius')
     expect(accent.classList.contains('accent')).toBe(true)
 
     expect(
@@ -90,7 +90,7 @@ describe('Contact section', () => {
 
     expect(screen.getByText('Contato')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { level: 2, name: /Fale com a .*SyncSirius/ })
+      screen.getByRole('heading', { level: 2, name: /Fale com a .*Sync Sirius/ })
     ).toBeInTheDocument()
 
     const channels = container.querySelectorAll('.channel')

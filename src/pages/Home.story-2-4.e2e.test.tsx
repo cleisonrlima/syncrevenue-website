@@ -44,7 +44,7 @@ describe('Story 2.4 DemoScheduler entry points (Story 6.10 — id renamed)', () 
 
     const contact = await screen.findByRole(
       'region',
-      { name: /Talk to .*SyncSirius/ },
+      { name: /Talk to .*Sync Sirius/ },
       lazySectionWait,
     )
 

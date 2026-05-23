@@ -91,12 +91,12 @@ describe('DashboardHome (Overview)', () => {
   it('renders all four Recent Discrepancies rows from the mock data', () => {
     renderPage()
     const list = screen.getByTestId('dashboard-home-recent-list')
-    expect(within(list).getByText('POL-8823')).toBeInTheDocument()
-    expect(within(list).getByText('POL-9011')).toBeInTheDocument()
-    expect(within(list).getByText('POL-7734')).toBeInTheDocument()
-    expect(within(list).getByText('POL-8824')).toBeInTheDocument()
+    expect(within(list).getByText('PNR-K7H2X')).toBeInTheDocument()
+    expect(within(list).getByText('PNR-M3R9W')).toBeInTheDocument()
+    expect(within(list).getByText('PNR-Q5T8B')).toBeInTheDocument()
+    expect(within(list).getByText('PNR-X2J4N')).toBeInTheDocument()
     expect(within(list).getByText('Delta $400.00')).toBeInTheDocument()
-    // "Global Life" appears twice (rows 1 + 4); use getAllByText.
-    expect(within(list).getAllByText('Global Life')).toHaveLength(2)
+    // "Amadeus" appears twice (rows 1 + 4); use getAllByText.
+    expect(within(list).getAllByText('Amadeus')).toHaveLength(2)
   })
 })

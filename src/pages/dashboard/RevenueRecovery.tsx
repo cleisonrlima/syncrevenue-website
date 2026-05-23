@@ -37,15 +37,13 @@ import { useDocumentMeta } from '@/components/SEO'
  *     full per-route axe sweep.
  *
  * Mock data (`METRICS`, `DISCREPANCIES`) retains the Figma vocabulary
- * (carrier, policy, clawback, etc.); Story 7.6 owns the brand-copy +
+ * Story 7.6 owns the brand-copy +
  * domain vocabulary rewrite. The 4-tab filter pattern uses `useState<string>`
  * with derived `filter`; identical pattern repeats in `Payouts.tsx`.
  * Empty-state row + pagination footer are wired but stateless (real
  * pagination lands in a later epic).
  */
 
-// TODO(epic-7-story-6): rename `carrier`/`policy`/`clawback` fields + sample
-// copy to travel-commission vocabulary; wire to real data in a later epic.
 // Story 7.5: `labelKey`/`subKey` resolve via `t()`; English fallbacks remain
 // inline so dev-mode missing-key renders are still legible.
 type Metric = {
@@ -85,25 +83,26 @@ const METRICS: ReadonlyArray<Metric> = [
     labelFallback: 'Recovered (YTD)',
     value: '$154,800.00',
     subKey: 'dashboard.recovery.metrics.recoveredYtdSub',
-    subFallback: 'From 85 policies',
+    subFallback: 'From 85 tickets',
     icon: CheckCircle,
     color: 'text-green-400',
     bg: 'bg-green-400/10',
   },
 ]
 
-// Row `status` uses the English label as identity key for the
-// conditional pill styling below (kept English-keyed pre-Story-7.6 per the
-// Story 7.5 plan approved 2026-05-22). The displayed label is resolved via
-// `t('dashboard.status.<englishToKey>')` at render time.
+// Row `status` uses the English label as identity key for conditional pill
+// styling (established by Story 7.5; preserved in 7.6). Displayed label is
+// resolved via `t('dashboard.status.<englishToKey>')` at render time.
+// `gds` = GDS/airline provider; `pnr` = booking reference (PNR format).
+// `type` aligns to travel-commission taxonomy: ADM → debit memo disputes.
 const DISCREPANCIES = [
-  { id: '1', carrier: 'Global Life', policy: 'POL-8823', client: 'Acme Corp', expected: 1200, actual: 800, type: 'Missing Payment', status: 'Action Required' },
-  { id: '2', carrier: 'Apex Health', policy: 'POL-9011', client: 'TechFlow', expected: 450, actual: 0, type: 'Clawback Error', status: 'Disputed' },
-  { id: '3', carrier: 'Prime Auto', policy: 'POL-7734', client: 'Vanguard', expected: 890, actual: 800, type: 'Incorrect Rate', status: 'Resolved' },
-  { id: '4', carrier: 'Global Life', policy: 'POL-8824', client: 'Acme Corp', expected: 2100, actual: 1500, type: 'Missing Payment', status: 'Action Required' },
-  { id: '5', carrier: 'SecureCare', policy: 'POL-4412', client: 'Elevate Inc', expected: 300, actual: 150, type: 'Incorrect Rate', status: 'Action Required' },
-  { id: '6', carrier: 'Apex Health', policy: 'POL-9012', client: 'TechFlow', expected: 800, actual: 400, type: 'Missing Payment', status: 'Disputed' },
-  { id: '7', carrier: 'Prime Auto', policy: 'POL-7735', client: 'Vanguard', expected: 1200, actual: 1200, type: 'Matched', status: 'Resolved' },
+  { id: '1', gds: 'Amadeus', pnr: 'PNR-K7H2X', client: 'Meridian Travel', expected: 1200, actual: 800, type: 'Missing Payment', status: 'Action Required' },
+  { id: '2', gds: 'Sabre', pnr: 'PNR-M3R9W', client: 'SkyBridge Corp', expected: 450, actual: 0, type: 'Debit Memo / ADM', status: 'Disputed' },
+  { id: '3', gds: 'Travelport', pnr: 'PNR-Q5T8B', client: 'Apex Voyages', expected: 890, actual: 800, type: 'Incorrect Rate', status: 'Resolved' },
+  { id: '4', gds: 'Amadeus', pnr: 'PNR-X2J4N', client: 'Meridian Travel', expected: 2100, actual: 1500, type: 'Missing Payment', status: 'Action Required' },
+  { id: '5', gds: 'Sabre', pnr: 'PNR-R8D1F', client: 'Global Wings Ltd', expected: 300, actual: 150, type: 'Incorrect Rate', status: 'Action Required' },
+  { id: '6', gds: 'Travelport', pnr: 'PNR-W6N3C', client: 'SkyBridge Corp', expected: 800, actual: 400, type: 'Missing Payment', status: 'Disputed' },
+  { id: '7', gds: 'Amadeus', pnr: 'PNR-B4Z7V', client: 'Apex Voyages', expected: 1200, actual: 1200, type: 'Matched', status: 'Resolved' },
 ]
 
 // Tab IDs decouple the active-tab state from the rendered label.
@@ -176,7 +175,7 @@ export default function RevenueRecovery() {
     const translatedStatus = t(statusMeta.key, statusMeta.fallback)
     const matchesQuery =
       normalizedQuery.length === 0 ||
-      [item.carrier, item.policy, item.client, item.type, item.status, translatedStatus].some((value) =>
+      [item.gds, item.pnr, item.client, item.type, item.status, translatedStatus].some((value) =>
         value.toLowerCase().includes(normalizedQuery),
       )
 
@@ -195,7 +194,7 @@ export default function RevenueRecovery() {
             {t('dashboard.recovery.title', 'Revenue Recovery')}
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            {t('dashboard.recovery.subtitle', 'Audit carrier statements and manage commission disputes.')}
+            {t('dashboard.recovery.subtitle', 'Audit GDS statements and manage commission disputes.')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -278,7 +277,7 @@ export default function RevenueRecovery() {
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <label htmlFor="dashboard-recovery-search" className="sr-only">
-                {t('dashboard.recovery.searchLabel', 'Search policies')}
+                {t('dashboard.recovery.searchLabel', 'Search tickets')}
               </label>
               <input
                 id="dashboard-recovery-search"
@@ -290,7 +289,7 @@ export default function RevenueRecovery() {
                     setAppliedQuery(searchQuery)
                   }
                 }}
-                placeholder={t('dashboard.recovery.searchPlaceholder', 'Search policies...')}
+                placeholder={t('dashboard.recovery.searchPlaceholder', 'Search tickets...')}
                 className="pl-9 pr-4 py-2 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/50 w-full sm:w-64 transition-colors"
               />
             </div>
@@ -310,7 +309,7 @@ export default function RevenueRecovery() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-white/5 text-sm text-slate-400">
-                <th className="px-6 py-4 font-medium">{t('dashboard.recovery.table.carrier', 'Carrier & Policy')}</th>
+                <th className="px-6 py-4 font-medium">{t('dashboard.recovery.table.carrier', 'GDS / Airline & PNR')}</th>
                 <th className="px-6 py-4 font-medium">{t('dashboard.recovery.table.client', 'Client')}</th>
                 <th className="px-6 py-4 font-medium">{t('dashboard.recovery.table.expected', 'Expected')}</th>
                 <th className="px-6 py-4 font-medium">{t('dashboard.recovery.table.actual', 'Actual')}</th>
@@ -331,8 +330,8 @@ export default function RevenueRecovery() {
                     className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group"
                   >
                     <td className="px-6 py-4">
-                      <div className="font-medium text-white">{row.carrier}</div>
-                      <div className="text-slate-500 text-xs mt-0.5">{row.policy}</div>
+                      <div className="font-medium text-white">{row.gds}</div>
+                      <div className="text-slate-500 text-xs mt-0.5">{row.pnr}</div>
                     </td>
                     <td className="px-6 py-4 text-slate-300">{row.client}</td>
                     <td className="px-6 py-4 text-slate-300">${row.expected.toFixed(2)}</td>
@@ -355,8 +354,8 @@ export default function RevenueRecovery() {
                     <td className="px-6 py-4 text-right">
                       <button
                         type="button"
-                        aria-label={t('dashboard.rowActions.openRecovery', 'Open actions for {{policy}}', {
-                          policy: row.policy,
+                        aria-label={t('dashboard.rowActions.openRecovery', 'Open actions for {{pnr}}', {
+                          pnr: row.pnr,
                         })}
                         className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                       >

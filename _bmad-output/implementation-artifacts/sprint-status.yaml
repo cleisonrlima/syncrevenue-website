@@ -169,7 +169,7 @@ development_status:
   7-3-dashboard-pages: done
   7-4-landing-demo-pages: done
   7-5-i18n-extraction: done
-  7-6-brand-copy-rewrite: backlog
+  7-6-brand-copy-rewrite: review
   7-7-prerender-exclusions-dark-mode-regression: backlog
   7-8-new-route-smoke-tests-coverage: backlog
   epic-7-tea: pending  # per CLAUDE.md "Post-Sprint TEA Pass" — runs once over the full 8-story set after Story 7.8 closes

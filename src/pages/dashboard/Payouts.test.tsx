@@ -58,7 +58,7 @@ describe('Payouts', () => {
     renderPage()
     const heading = screen.getByRole('heading', { level: 1, name: /Agent Payouts/ })
     expect(heading).toBeInTheDocument()
-    expect(screen.getByText(/Manage and automate commission distributions via SyncPay/)).toBeInTheDocument()
+    expect(screen.getByText(/Manage and automate commission distributions via SyncRevenue Payouts/)).toBeInTheDocument()
   })
 
   it('renders all seven payout rows on the default All Payouts tab', () => {

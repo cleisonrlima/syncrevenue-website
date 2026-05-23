@@ -39,7 +39,7 @@
       }
     },
     "panel": {
-      "tag": "SYNCSIRIUS · COMMISSION ENGINE",
+      "tag": "SYNC SIRIUS · COMMISSION ENGINE",
       "name": "SyncRevenue",
       "line": "Expert system that applies the correct commission and markup rule <0>in the mid-office flow</0> — before ticket issuance.",
       "intsLabel": "GDS integrations",
@@ -428,7 +428,7 @@
     "eyebrow": "Contact",
     "heading": {
       "text": "Talk to",
-      "accent": "SyncSirius"
+      "accent": "Sync Sirius"
     },
     "subhead": "For commercial questions, support, partnerships, or press — your message reaches the right team.",
     "channels": {
@@ -489,47 +489,47 @@
       "ogDescription": "Read how Sync Sirius handles website inquiries, lead data, retention, and privacy rights for Brazil and California visitors."
     },
     "landing": {
-      "title": "SyncSirius Platform Preview | Sync Sirius",
-      "description": "Preview the next SyncSirius marketing surface before the full landing page ships.",
-      "ogTitle": "SyncSirius Platform Preview | Sync Sirius",
-      "ogDescription": "Preview the next SyncSirius marketing surface before the full landing page ships."
+      "title": "SyncRevenue Platform | Sync Sirius",
+      "description": "Automated GDS commission reconciliation and agency revenue recovery — the SyncRevenue platform by Sync Sirius.",
+      "ogTitle": "SyncRevenue Platform | Sync Sirius",
+      "ogDescription": "Automated GDS commission reconciliation and agency revenue recovery — the SyncRevenue platform by Sync Sirius."
     },
     "demo": {
-      "title": "Book a Demo | Sync Sirius",
-      "description": "Preview the upcoming SyncSirius demo request experience.",
-      "ogTitle": "Book a Demo | Sync Sirius",
-      "ogDescription": "Preview the upcoming SyncSirius demo request experience."
+      "title": "Schedule a Demo | Sync Sirius",
+      "description": "Request a personalized SyncRevenue demo and see automated commission recovery running on your real GDS contracts.",
+      "ogTitle": "Schedule a Demo | Sync Sirius",
+      "ogDescription": "Request a personalized SyncRevenue demo and see automated commission recovery running on your real GDS contracts."
     },
     "dashboard": {
       "home": {
-        "title": "Dashboard Overview | Sync Sirius",
-        "description": "Preview the SyncSirius dashboard overview scaffold.",
-        "ogTitle": "Dashboard Overview | Sync Sirius",
-        "ogDescription": "Preview the SyncSirius dashboard overview scaffold."
+        "title": "Dashboard Overview | SyncRevenue",
+        "description": "Track commission recovery, active discrepancies, and payout status in the SyncRevenue dashboard.",
+        "ogTitle": "Dashboard Overview | SyncRevenue",
+        "ogDescription": "Track commission recovery, active discrepancies, and payout status in the SyncRevenue dashboard."
       },
       "recovery": {
-        "title": "Revenue Recovery | Sync Sirius",
-        "description": "Preview the SyncSirius revenue recovery dashboard scaffold.",
-        "ogTitle": "Revenue Recovery | Sync Sirius",
-        "ogDescription": "Preview the SyncSirius revenue recovery dashboard scaffold."
+        "title": "Revenue Recovery | SyncRevenue",
+        "description": "Audit GDS statements, manage ADM disputes, and track commission recovery in SyncRevenue.",
+        "ogTitle": "Revenue Recovery | SyncRevenue",
+        "ogDescription": "Audit GDS statements, manage ADM disputes, and track commission recovery in SyncRevenue."
       },
       "payouts": {
-        "title": "Payouts | Sync Sirius",
-        "description": "Preview the SyncSirius payouts dashboard scaffold.",
-        "ogTitle": "Payouts | Sync Sirius",
-        "ogDescription": "Preview the SyncSirius payouts dashboard scaffold."
+        "title": "Payouts | SyncRevenue",
+        "description": "Manage and automate commission distributions to agents via SyncRevenue Payouts.",
+        "ogTitle": "Payouts | SyncRevenue",
+        "ogDescription": "Manage and automate commission distributions to agents via SyncRevenue Payouts."
       },
       "insights": {
-        "title": "Insights | Sync Sirius",
-        "description": "Preview the SyncSirius insights dashboard scaffold.",
-        "ogTitle": "Insights | Sync Sirius",
-        "ogDescription": "Preview the SyncSirius insights dashboard scaffold."
+        "title": "Insights | SyncRevenue",
+        "description": "Forecast commission revenue and visualize global agency performance with SyncRevenue Insights.",
+        "ogTitle": "Insights | SyncRevenue",
+        "ogDescription": "Forecast commission revenue and visualize global agency performance with SyncRevenue Insights."
       },
       "settings": {
-        "title": "Settings | Sync Sirius",
-        "description": "Preview the SyncSirius settings dashboard scaffold.",
-        "ogTitle": "Settings | Sync Sirius",
-        "ogDescription": "Preview the SyncSirius settings dashboard scaffold."
+        "title": "Settings | SyncRevenue",
+        "description": "Manage your organization profile, team access, integrations, and billing in SyncRevenue.",
+        "ogTitle": "Settings | SyncRevenue",
+        "ogDescription": "Manage your organization profile, team access, integrations, and billing in SyncRevenue."
       }
     }
   },
@@ -545,8 +545,8 @@
   },
   "landing": {
     "nav": {
-      "logoAlt": "SyncSyrius Logo",
-      "brand": "SyncSyrius",
+      "logoAlt": "Sync Sirius logo",
+      "brand": "SyncRevenue",
       "products": "Products",
       "benefits": "Benefits",
       "security": "Security",
@@ -561,23 +561,23 @@
     },
     "heroSlides": {
       "revenue": {
-        "badge": "SyncRevenue 2.0 is now live",
+        "badge": "SyncRevenue is now available",
         "title": "Recover lost revenue.",
-        "titleHighlight": "Instantly.",
+        "titleHighlight": "Before it disappears.",
         "description": "The automated commission auditing platform that finds missing agency revenue before it hits your bottom line. Stop leaving money on the table.",
         "floatingTitle": "Recovered this month",
         "floatingValue": "+$24,500.00"
       },
       "pay": {
-        "badge": "Introducing SyncPay",
+        "badge": "Introducing SyncRevenue Payouts",
         "title": "Automate payouts.",
-        "titleHighlight": "Flawlessly.",
-        "description": "Route commissions to your agents instantly and accurately. Simplify your payout workflows and eliminate manual transaction errors.",
+        "titleHighlight": "Accurately.",
+        "description": "Route commissions to your agents reliably and accurately. Simplify your payout workflows and eliminate manual transaction errors.",
         "floatingTitle": "Payout Processed",
         "floatingValue": "$12,450 to 8 Agents"
       },
       "insights": {
-        "badge": "SyncInsights Enterprise",
+        "badge": "SyncRevenue Insights",
         "title": "Predictive analytics.",
         "titleHighlight": "Visualized.",
         "description": "Forecast cash flow and visualize agency performance across global territories. Turn raw commission data into strategic business intelligence.",
@@ -600,18 +600,18 @@
     },
     "benefits": {
       "heading": "Automate the invisible.",
-      "subheading": "Manual commission tracking is prone to human error. Our intelligent platform cross-references your carrier statements with your internal data in seconds.",
+      "subheading": "Manual commission tracking is prone to human error. Our intelligent platform cross-references your GDS statements with your internal data in seconds.",
       "card1": {
         "title": "Real-time Reconciliation",
-        "description": "Automatically match expected commissions against actual carrier payouts as soon as statements arrive."
+        "description": "Automatically match expected commissions against actual GDS payouts as soon as statements arrive."
       },
       "card2": {
         "title": "Discrepancy Detection",
-        "description": "Instantly flag missing payments, incorrect rates, and clawback errors before the books close."
+        "description": "Flag missing payments, incorrect rates, and debit memo (ADM) errors before the books close."
       },
       "card3": {
         "title": "Automated Resolution",
-        "description": "Generate one-click dispute reports formatted exactly how carriers need them to resolve issues fast."
+        "description": "Generate one-click dispute reports formatted exactly how airlines and GDS providers need them to resolve issues fast."
       }
     },
     "security": {
@@ -636,27 +636,27 @@
     },
     "cta": {
       "heading": "Ready to transform your revenue?",
-      "subheading": "Join the agencies optimizing their finances with the SyncSyrius product suite.",
-      "button": "Schedule a Demo Today"
+      "subheading": "Join the agencies optimizing their finances with the Sync Sirius product suite.",
+      "button": "Schedule a Demo"
     },
     "footer": {
-      "logoAlt": "SyncSyrius Logo Alt",
-      "brand": "SyncSyrius",
+      "logoAlt": "Sync Sirius logo",
+      "brand": "SyncRevenue",
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
       "contact": "Contact Support",
-      "copyright": "© {{year}} SyncSyrius. All rights reserved."
+      "copyright": "© {{year}} Sync Sirius. All rights reserved."
     }
   },
   "figmaDemo": {
     "nav": {
-      "logoAlt": "SyncSyrius Logo",
-      "brand": "SyncSyrius",
+      "logoAlt": "Sync Sirius logo",
+      "brand": "SyncRevenue",
       "backToHome": "Back to Home"
     },
     "hero": {
       "badge": "Live Demo",
-      "heading": "See SyncSyrius in action.",
+      "heading": "See SyncRevenue in action.",
       "description": "Discover how our automated commission auditing platform can recover lost revenue and streamline your payouts. Fill out the form, and our team will get in touch to schedule a personalized walkthrough.",
       "bullet1": "Identify missing commission payments instantly",
       "bullet2": "Automate agent payouts with 100% accuracy",
@@ -686,8 +686,8 @@
   },
   "dashboard": {
     "layout": {
-      "brand": "SyncSirius",
-      "logoAlt": "SyncSirius",
+      "brand": "SyncRevenue",
+      "logoAlt": "Sync Sirius logo",
       "searchLabel": "Search dashboard",
       "searchPlaceholder": "Search...",
       "notificationsLabel": "View notifications",
@@ -724,7 +724,7 @@
     },
     "rowActions": {
       "open": "Open row actions",
-      "openRecovery": "Open actions for {{policy}}",
+      "openRecovery": "Open actions for {{pnr}}",
       "openPayout": "Open actions for {{agent}}"
     },
     "overview": {
@@ -755,7 +755,7 @@
     },
     "recovery": {
       "title": "Revenue Recovery",
-      "subtitle": "Audit carrier statements and manage commission disputes.",
+      "subtitle": "Audit GDS statements and manage commission disputes.",
       "actions": {
         "exportReport": "Export Report",
         "newDispute": "New Dispute"
@@ -766,7 +766,7 @@
         "inDispute": "In Dispute",
         "inDisputeSub": "12 active disputes",
         "recoveredYtd": "Recovered (YTD)",
-        "recoveredYtdSub": "From 85 policies"
+        "recoveredYtdSub": "From 85 tickets"
       },
       "tabs": {
         "all": "All Discrepancies",
@@ -774,11 +774,11 @@
         "disputed": "Disputed",
         "resolved": "Resolved"
       },
-      "searchLabel": "Search policies",
-      "searchPlaceholder": "Search policies...",
+      "searchLabel": "Search tickets",
+      "searchPlaceholder": "Search tickets...",
       "filterLabel": "Filter results",
       "table": {
-        "carrier": "Carrier & Policy",
+        "carrier": "GDS / Airline & PNR",
         "client": "Client",
         "expected": "Expected",
         "actual": "Actual",
@@ -794,7 +794,7 @@
     },
     "payouts": {
       "title": "Agent Payouts",
-      "subtitle": "Manage and automate commission distributions via SyncPay.",
+      "subtitle": "Manage and automate commission distributions via SyncRevenue Payouts.",
       "actions": {
         "export": "Export",
         "runCycle": "Run Payout Cycle"
@@ -858,7 +858,7 @@
       },
       "product": {
         "title": "Product Lines",
-        "subtitle": "Commission volume by insurance type",
+        "subtitle": "Commission volume by travel product line",
         "tooltipVolume": "Volume"
       },
       "topAgencies": {
@@ -885,12 +885,16 @@
         "supportEmail": "Support Email",
         "baseCurrency": "Base Currency",
         "currencyOptions": {
-          "usd": "USD - US Dollar",
-          "eur": "EUR - Euro",
-          "gbp": "GBP - British Pound"
+          "brl": "BRL — Brazilian Real",
+          "eur": "EUR — Euro",
+          "usd": "USD — US Dollar",
+          "gbp": "GBP — British Pound"
         },
         "timezone": "Timezone",
         "timezoneOptions": {
+          "saopaulo": "America/Sao_Paulo (BRT)",
+          "newyork": "America/New_York (ET)",
+          "london": "Europe/London (GMT/BST)",
           "est": "Eastern Time (ET)",
           "pst": "Pacific Time (PT)",
           "gmt": "Greenwich Mean Time (GMT)"
