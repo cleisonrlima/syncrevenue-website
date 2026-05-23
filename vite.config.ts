@@ -9,6 +9,22 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist/client',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
+          if (id.includes('/recharts/')) return 'vendor-charts'
+          if (id.includes('/react-slick/') || id.includes('/slick-carousel/')) return 'vendor-carousel'
+          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'vendor-react'
+          if (id.includes('/react-router/') || id.includes('/react-router-dom/')) return 'vendor-router'
+          if (id.includes('/@radix-ui/')) return 'vendor-radix'
+          if (id.includes('/lucide-react/')) return 'vendor-icons'
+          if (id.includes('/i18next/') || id.includes('/react-i18next/')) return 'vendor-i18n'
+          if (id.includes('/motion/')) return 'vendor-motion'
+          return undefined
+        },
+      },
+    },
   },
   server: {
     port: 5173,
@@ -67,6 +83,8 @@ export default defineConfig({
         'node_modules',
         'dist',
         'src/test/**',
+        'src/**/*.test.{ts,tsx}',
+        'server/**/*.test.ts',
         'src/**/*.d.ts',
         // Entry points and pure-config files — no testable logic
         'src/main.tsx',
@@ -86,13 +104,13 @@ export default defineConfig({
         // Per-directory floors for the critical new Epic 7 paths.
         // Each directory must individually meet these minimums so a wholesale
         // removal of dashboard tests cannot hide behind a healthy global average.
-        'src/pages/dashboard': {
+        'src/pages/dashboard/**/*.{ts,tsx}': {
           statements: 70,
           branches: 55,
           functions: 65,
           lines: 70,
         },
-        'src/pages': {
+        'src/pages/**/*.{ts,tsx}': {
           statements: 60,
           branches: 50,
           functions: 55,

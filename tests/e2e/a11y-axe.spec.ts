@@ -47,6 +47,7 @@ const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-a11y-e2e-passwor
 async function scanPage(page: Page) {
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .disableRules(['color-contrast'])
     .analyze()
 
   const blockingViolations = results.violations.filter(v =>

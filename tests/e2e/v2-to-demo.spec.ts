@@ -19,20 +19,23 @@ import { test, expect } from '@playwright/test'
  */
 
 test.describe('Story 7.8 — /v2 → /demo journey @P1', () => {
+  test.setTimeout(90_000)
+
   test('navigates from Landing hero to the Demo form and submits successfully', async ({ page }) => {
     // Step 1: land on /v2 and confirm hero h1 visible
-    await page.goto('/v2', { waitUntil: 'networkidle' })
-    await expect(page.getByRole('heading', { level: 1, name: /Recover lost revenue\./i })).toBeVisible()
+    await page.goto('/v2', { waitUntil: 'domcontentloaded', timeout: 45_000 })
+    await expect(page.getByRole('heading', { level: 1 }).filter({ hasText: /Recover lost revenue\./i })).toBeVisible()
 
-    // Step 2: click the primary nav "Schedule a Demo" CTA
-    // The nav may have both desktop and mobile versions; any href=/demo link works.
-    const bookLink = page.locator('a[href="/demo"]').first()
+    // Step 2: click a visible "Schedule a Demo" CTA. The desktop nav CTA is
+    // first in DOM but hidden on mobile, so scope to Playwright's visible
+    // pseudo-class for the configured mobile projects.
+    const bookLink = page.locator('a[href="/demo"]:visible').first()
     await expect(bookLink).toBeVisible()
     await bookLink.click()
 
     // Step 3: confirm we arrived on /demo
     await expect(page).toHaveURL(/\/demo/)
-    await expect(page.getByRole('heading', { level: 1, name: /Book a Demo/i })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: /See SyncRevenue in action/i })).toBeVisible()
 
     // Step 4: fill required fields
     await page.getByLabel(/First Name/i).fill('Jane')

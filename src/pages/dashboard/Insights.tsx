@@ -250,7 +250,10 @@ export default function Insights() {
           <p className="text-sm text-slate-400 mb-6">
             {t('dashboard.insights.regional.subtitle', 'Revenue breakdown by global market')}
           </p>
-          <div className="h-[250px] w-full flex items-center justify-center relative">
+          <div
+            className="h-[250px] w-full flex items-center justify-center relative"
+            aria-hidden="true"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -262,6 +265,7 @@ export default function Insights() {
                   paddingAngle={5}
                   dataKey="value"
                   stroke="none"
+                  rootTabIndex={-1}
                 >
                   {REGIONAL_DATA.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />

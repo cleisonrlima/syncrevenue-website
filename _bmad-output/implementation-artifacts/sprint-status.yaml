@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-23  # Story 7.8 complete → review. 2 new Playwright specs, axe spec extended (7 new routes), vite.config coverage thresholds. Baseline: 102/868 green ×3. typecheck + build + test-build-output exit 0.
+last_updated: 2026-05-23  # Story 7.8 review patches complete -> done. Fixed mobile Playwright route journey, wired runnable coverage floor + CI, removed build chunk warning, recorded Lighthouse/axe TEA baseline, and patched dashboard insights chart a11y.
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -171,6 +171,6 @@ development_status:
   7-5-i18n-extraction: done
   7-6-brand-copy-rewrite: done
   7-7-prerender-exclusions-dark-mode-regression: done
-  7-8-new-route-smoke-tests-coverage: review
+  7-8-new-route-smoke-tests-coverage: done
   epic-7-tea: pending  # per CLAUDE.md "Post-Sprint TEA Pass" — runs once over the full 8-story set after Story 7.8 closes
   epic-7-retrospective: pending  # per CLAUDE.md "Post-Epic Retrospective" — runs after epic-7 → done

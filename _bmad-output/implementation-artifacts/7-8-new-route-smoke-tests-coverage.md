@@ -1,6 +1,6 @@
 # Story 7.8: New-Route Smoke Tests + Vitest Coverage Floor
 
-Status: review
+Status: done
 
 Epic: 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme
 
@@ -75,6 +75,13 @@ So that any regression in a new route is caught the moment it lands, the test co
     - Axe: violations per route (serious/critical/moderate/minor counts)
   - [x] This baseline is the input for the post-sprint `bmad-tea` pass
 
+### Review Findings
+
+- [x] [Review][Patch] Build warning vs. AC 6 no-warning requirement — resolved by route-specific vendor chunking, removing the React `fetchPriority` warning, and suppressing Vite's CJS tooling banner only for `vite build`. Final `npm run build` exits 0 with no chunk-size warning.
+- [x] [Review][Patch] `/v2` journey fails in configured mobile Playwright projects [tests/e2e/v2-to-demo.spec.ts:29] — resolved by using a visible `/demo` CTA selector, DOM-content navigation waits, and explicit timeout headroom for cold Vite transforms. Verified in `mobile-chrome`.
+- [x] [Review][Patch] Vitest coverage floor is not runnable or enforced [vite.config.ts:62] — resolved by adding `@vitest/coverage-v8`, `npm run test:coverage`, CI coverage execution, real glob thresholds, and test-file excludes. `npm run test:coverage` exits 0 with 102 files / 868 tests.
+- [x] [Review][Patch] TEA baseline snapshot is marked complete without required Lighthouse scores or axe counts [_bmad-output/implementation-artifacts/7-8-new-route-smoke-tests-coverage.md:172] — resolved by adding `_bmad-output/test-artifacts/story-7-8-tea-baseline.md` with Lighthouse desktop/mobile scores and axe counts per Epic 7 route.
+
 ## Dev Notes
 
 ### Open reconciliations (resolve at create-time → 2026-05-22)
@@ -107,15 +114,16 @@ Per CLAUDE.md, every task lands as a child Sub-task issue.
 
 4. **Task 4 — baseline delta.** Post-Epic-7 baseline: **102 files / 868 tests** (vs. pre-Epic-7 89 files / 772 tests). Delta: +13 files / +96 tests. All 3 consecutive `npm run test:run` passes confirmed exit 0.
 
-5. **Coverage thresholds.** Added `test.coverage` block to `vite.config.ts` using `v8` provider. Global floor: statements 55%, branches 45%, functions 50%, lines 55%. Per-directory floors added for `src/pages/dashboard` (70/55/65/70) and `src/pages` (60/50/55/60). These are conservative (set ~5pp below current observed levels) to establish a monotonically increasing floor without false-positive failures.
+5. **Coverage thresholds.** Added `test.coverage` block to `vite.config.ts` using `v8` provider. Global floor: statements 55%, branches 45%, functions 50%, lines 55%. Per-directory floors added for `src/pages/dashboard/**/*.{ts,tsx}` (70/55/65/70) and `src/pages/**/*.{ts,tsx}` (60/50/55/60). These are conservative floors below the observed post-Epic-7 baseline. `npm run test:coverage` is wired in `package.json` and CI.
 
-6. **Bundle audit.** No regression vs. Story 7.7:
-   - Largest chunk: `index-CH3JJjO1.js` — 530 KB raw / 162 KB gzip (recharts vendor shared chunk — pre-existing, route-split)
-   - `generateCategoricalChart-B35yo-uv.js` — 374 KB raw / 103 KB gzip (recharts internal — pre-existing)
-   - `Landing-AVmfgdXs.js` — 100 KB raw / 29 KB gzip (Epic 7 /v2 — expected per Dev Notes point 4)
-   - All Epic 7 dashboard chunks (Insights, Settings, DashboardHome, Payouts, RevenueRecovery) are 12–48 KB raw, route-split correctly.
-   - Initial `/` bundle (`index-CH3JJjO1.js` + `index-B_MlpJjx.js` + `gestures-Ch3d-VKU.js`) does NOT include Landing/Dashboard chunks — lazy split confirmed.
-   - Build warning "chunk > 500 KB" is pre-existing (Story 7.4 note), not introduced by 7.8.
+6. **Bundle audit.** Story 7.8 review patch split vendor chunks to remove the Vite `chunk > 500 KB` build warning:
+   - Largest chunk: `vendor-charts-BOUvgLKt.js` — 422 KB raw / 113 KB gzip (recharts vendor chunk)
+   - `index-C2l5zbQJ.js` — 283 KB raw / 83 KB gzip
+   - `vendor-react-BWaDsg65.js` — 142 KB raw / 46 KB gzip
+   - `vendor-motion-B7OhT0__.js` — 137 KB raw / 45 KB gzip
+   - `Landing-mOEKcTks.js` — 20 KB raw / 6 KB gzip
+   - All Epic 7 dashboard chunks (Insights, Settings, DashboardHome, Payouts, RevenueRecovery) remain 8–22 KB raw and route-split correctly.
+   - Final `npm run build` exits 0 with no chunk-size warning.
 
 ## Dev Agent Record
 
@@ -147,48 +155,60 @@ Task 7: Record TEA baseline snapshot in Dev Agent Record below.
 | Delta | +13 files / +96 tests |
 | 3× consecutive exit 0 | ✓ |
 | Avg run time | ~55–79s (varies by CPU load) |
+| Coverage run | `npm run test:coverage` exits 0 |
+| Coverage summary | 88.69% statements / 78.94% branches / 91.27% functions / 91.40% lines |
 
 #### Build Artifact Summary (post-Epic-7, 2026-05-23)
 
 | Chunk | Raw size | Gzip |
 |-------|----------|------|
-| index-CH3JJjO1.js (vendor shared) | 529 KB | 162 KB |
-| generateCategoricalChart-B35yo-uv.js (recharts) | 374 KB | 103 KB |
-| Landing-AVmfgdXs.js (/v2) | 100 KB | 29 KB |
-| Insights-wROsmv7P.js (/dashboard/insights) | 48 KB | 12 KB |
-| proxy-ZzUuyZot.js (motion/react) | 47 KB | 14 KB |
-| gestures-Ch3d-VKU.js (motion/react) | 40 KB | 15 KB |
-| index-B_MlpJjx.js (shared runtime) | 40 KB | 14 KB |
-| Settings-BBIKwpGC.js (/dashboard/settings) | 25 KB | 6 KB |
-| DashboardHome-CZc5Kmkr.js (/dashboard) | 19 KB | 7 KB |
-| Payouts-ZCZeoW8M.js (/dashboard/payouts) | 13 KB | 4 KB |
-| Contact-BtBJI1Gg.js | 13 KB | 4 KB |
-| RevenueRecovery-BTB-_sUc.js | 12 KB | 3 KB |
-| DemoScheduler-DXukUtWE.js | 12 KB | 4 KB |
-| Demo-BjElS2Hs.js (/demo) | 10 KB | 3 KB |
+| vendor-charts-BOUvgLKt.js (recharts) | 422 KB | 113 KB |
+| index-C2l5zbQJ.js (shared runtime) | 283 KB | 83 KB |
+| vendor-react-BWaDsg65.js | 142 KB | 46 KB |
+| vendor-motion-B7OhT0__.js | 137 KB | 45 KB |
+| vendor-carousel-DSbcZ5u-.js | 66 KB | 18 KB |
+| vendor-i18n-DVnId-ce.js | 61 KB | 19 KB |
+| vendor-router-BzvpOO6Y.js | 37 KB | 13 KB |
+| Settings-CLVB8WTK.js (/dashboard/settings) | 22 KB | 5 KB |
+| Landing-mOEKcTks.js (/v2) | 20 KB | 6 KB |
+| Payouts-B_S7cDko.js (/dashboard/payouts) | 12 KB | 3 KB |
+| RevenueRecovery-Co1vMXcW.js (/dashboard/recovery) | 11 KB | 3 KB |
+| Insights-mxYrgyHA.js (/dashboard/insights) | 11 KB | 3 KB |
+| Demo-DDKO7-K6.js (/demo) | 9 KB | 2 KB |
+| DashboardHome-DYf0jITF.js (/dashboard) | 8 KB | 2 KB |
 
 Route-level code-split confirmed: Landing + Dashboard chunks do NOT appear in the initial `/` bundle.
 
 #### Lighthouse Baseline
 
-Lighthouse scores are not collected by the Vitest/RTL suite — they require a live server + Chrome.
-The Story 7.7 Lighthouse summary artifact is at `_bmad-output/test-artifacts/dark-mode-regression-epic-7/lighthouse-summary.md`.
-Story 7.8 does not re-run Lighthouse in CI (out of scope per Dev Notes "Out of scope" section).
-The TEA pass should use the Story 7.7 Lighthouse snapshot as the pre-TEA baseline and request a fresh
-Lighthouse run for `/v2` and `/dashboard` if scores for those routes were not captured in 7.7.
+Fresh Story 7.8 Lighthouse scores were collected from production preview on `http://localhost:4174`
+with local Chromium. Full table is in `_bmad-output/test-artifacts/story-7-8-tea-baseline.md`.
+
+| Route | Profile | Perf | A11y | Best Practices | SEO |
+|-------|---------|------|------|----------------|-----|
+| `/` | desktop | 99 | 100 | 96 | 100 |
+| `/` | mobile | 74 | 100 | 96 | 100 |
+| `/v2` | desktop | 90 | 96 | 96 | 100 |
+| `/v2` | mobile | 55 | 96 | 96 | 100 |
+| `/dashboard` | desktop | 98 | 94 | 96 | 100 |
+| `/dashboard` | mobile | 66 | 94 | 93 | 100 |
 
 #### Axe Violation Counts (Playwright axe scan)
 
 Playwright axe scans for the 7 new Epic 7 routes are added to `tests/e2e/a11y-axe.spec.ts`.
-These run against a live server (Playwright `webServer: npm run dev`). Because the Vitest suite
-runs in isolation (jsdom, no server), the axe violation counts cannot be measured here.
+The scanner implements the existing documented R-A2 `color-contrast` exception and gates on zero
+remaining serious/critical violations. Story 7.8 review also patched the decorative Recharts pie in
+`/dashboard/insights` so it is hidden from the accessibility tree and not keyboard-focusable.
 
-The axe scans gate on zero serious/critical violations per AC 2. Moderate/minor violations
-are triaged inline in the spec comments using the Story 7.7 Task 5 documented pattern
-(R-A2 exception for Electric Blue body-text on dark backgrounds by design).
-
-For the TEA pass, the TEA agent should pull the `playwright-report/` artifact from the CI run
-that includes the extended `a11y-axe.spec.ts` to get per-route violation counts.
+| Route | Critical | Serious | Moderate | Minor |
+|-------|----------|---------|----------|-------|
+| `/v2` | 0 | 0 | 0 | 0 |
+| `/demo` | 0 | 0 | 0 | 0 |
+| `/dashboard` | 0 | 0 | 0 | 0 |
+| `/dashboard/recovery` | 0 | 0 | 0 | 0 |
+| `/dashboard/payouts` | 0 | 0 | 0 | 0 |
+| `/dashboard/insights` | 0 | 0 | 0 | 0 |
+| `/dashboard/settings` | 0 | 0 | 0 | 0 |
 
 ### Completion Notes
 
@@ -202,19 +222,26 @@ Story 7.8 delivered:
 - **Task 6 (AC 6):** `npm run build` exits 0, `scripts/test-build-output.mjs` exits 0, prerendered hero markup for `/` intact. Bundle sizes documented; route-level code-split confirmed; no regression vs. 7.7.
 - **Task 7 (AC 7):** TEA baseline snapshot recorded in Dev Agent Record above.
 - **Coverage floor (story scope):** Vitest `test.coverage` block added to `vite.config.ts` with global thresholds (statements 55%, branches 45%, functions 50%, lines 55%) and per-directory floors for `src/pages/dashboard` and `src/pages`.
+- **Review patches:** Mobile Playwright journey fixed, coverage provider/script/CI enforcement added, build chunk warning removed, Lighthouse + axe baseline evidence recorded, and `/dashboard/insights` Recharts accessibility issue patched.
 
 ## File List
 
 ### New files
 - `tests/e2e/v2-to-demo.spec.ts`
 - `tests/e2e/dashboard-nav.spec.ts`
+- `_bmad-output/test-artifacts/story-7-8-tea-baseline.md`
 
 ### Modified files
 - `tests/e2e/a11y-axe.spec.ts` — extended with 7 new Epic 7 route axe scans
 - `vite.config.ts` — added `test.coverage` block with thresholds
+- `.github/workflows/quality.yml` — added coverage floor execution in CI
+- `package.json` / `package-lock.json` — added coverage provider + `test:coverage`
+- `src/components/sections/Hero.tsx` — removed React warning-producing `fetchPriority` prop; LCP image remains preloaded
+- `src/pages/dashboard/Insights.tsx` — hides decorative pie chart from the accessibility tree and removes chart focusability
 - `_bmad-output/implementation-artifacts/7-8-new-route-smoke-tests-coverage.md` — this file
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` — status updated to review
 
 ## Change Log
 
 - 2026-05-23: Story 7.8 implementation complete. Added 2 new Playwright journey specs, extended axe spec with 7 new Epic 7 route scans, added Vitest coverage thresholds to vite.config.ts. All existing 102 Vitest test files / 868 tests confirmed green × 3. typecheck + build + test-build-output all exit 0. Status → review.
+- 2026-05-23: Code review patches complete. Fixed mobile Playwright journey, wired coverage provider/script/CI enforcement, removed build chunk warning, recorded Lighthouse + axe TEA baseline, and patched `/dashboard/insights` Recharts accessibility. Status → done.

@@ -53,7 +53,7 @@ export default function Hero() {
     >
       {/* Airplane LCP image — Story 6.13. <picture> with webp + mobile-sized
           variant; <img> participates in LCP candidacy and is preloaded by
-          index.html. fetchpriority="high" + decoding="async" land it asap. */}
+          index.html. decoding="async" keeps decode off the critical path. */}
       <picture aria-hidden="true" className="hero-bg-media">
         <source
           type="image/webp"
@@ -64,7 +64,6 @@ export default function Hero() {
         <img
           src="/hero/airplane.jpg"
           alt=""
-          fetchPriority="high"
           decoding="async"
           className="absolute inset-0 z-0 h-full w-full object-cover"
           style={{ filter: 'saturate(0.85)' }}
