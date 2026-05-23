@@ -127,7 +127,7 @@ Source bundle: `_bmad-output/design-handoffs/syncsirius-website-2026-05-17/`. So
 
 ## Epic 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme (Phase 6)
 
-**Jira:** [SYN-488](https://xillinha.atlassian.net/browse/SYN-488) (Epic) + stories SYN-489..496 + 50 sub-tasks SYN-497..546 — all To Do; full sync 2026-05-22.
+**Jira:** [SYN-488](https://xillinha.atlassian.net/browse/SYN-488) (Epic, In Progress) + stories SYN-489..496 + 50 sub-tasks SYN-497..546 — 7.1–7.4 Done (SYN-489..492 + sub-tasks SYN-497..518); 7.5–7.8 To Do (SYN-493..496 + sub-tasks SYN-519..546). Reconciled 2026-05-22.
 
 Source: Figma Make file `https://www.figma.com/make/66Wb2MAv5PLOBSJLoFM3E3/teste` (fileKey `66Wb2MAv5PLOBSJLoFM3E3`). Imports a 7-page SaaS product surface (Landing variant + DemoForm + 5-page Dashboard suite) and a ~40-component shadcn-style UI library on top of an OKLCH dark-theme token system. New routes coexist with the existing public marketing site; dark theme applied site-wide (re-skinning `/`, `/privacy`, `/admin/*`); brand copy reconciled from "SyncSyrius" / insurance domain → "SyncRevenue / Sync Sirius" / travel-agency-commission domain. Full breakdown in `_bmad-output/planning-artifacts/epics.md` (Epic 7 section).
 
