@@ -1,5 +1,5 @@
 /**
- * prerender.tsx — Story 5.6 SSG prerender step
+ * prerender.tsx — Story 5.6 SSG prerender step (updated Story 7.7)
  *
  * Runs after `vite build` via `npm run build`. Uses react-dom/server renderToString
  * to server-render the home-page (route `/`) and injects the resulting markup into
@@ -13,8 +13,30 @@
  *     zero runtime cost and is transparent to the Vite build pipeline
  *   - i18n locale fan-out: single canonical `/` prerender in `en` (default fallback);
  *     locale switch hydrates client-side after first paint via react-i18next
- *   - Excluded routes: /admin/*, /privacy, /404 — dynamic/auth or already minimal
  *   - Bundle impact: zero (script runs at build time only, not shipped to browser)
+ *
+ * Story 7.7 (AC 1): Route allowlist / exclusion model.
+ *
+ * The site now has two classes of routes:
+ *   1. Public marketing surfaces that benefit from SSG prerender (LCP/FCP gains):
+ *        INCLUDED_ROUTES = ['/']
+ *   2. SaaS surfaces + dynamic/auth routes that MUST NOT be prerendered:
+ *        EXCLUDED_ROUTES — see constant below.
+ *
+ * Design rationale:
+ *   - Dashboard pages (/dashboard/*) have client-side state, lazy data, and the
+ *     full recharts + slick-carousel dep tree. Prerendering them would produce
+ *     meaningless empty-state HTML and inflate the build.
+ *   - /v2 (Landing) and /demo ship their own dark <nav> and heavy slick CSS;
+ *     they are lazy-loaded precisely to keep them out of the SSG pipeline.
+ *   - /admin/* pages are authenticated; prerendering would expose layout skeleton
+ *     HTML that reveals admin structure to public crawlers.
+ *   - /privacy and /404 have no LCP-critical above-the-fold content worth optimising.
+ *
+ * Defensive check (Story 7.7 AC 1 — console.warn, not fail for Sprint 1):
+ *   If a route registered in KNOWN_ROUTES is absent from both INCLUDED_ROUTES and
+ *   EXCLUDED_ROUTES, the script emits a console.warn so the engineer can decide which
+ *   list it belongs to. Upgraded to a non-zero exit in a follow-up sprint.
  *
  * Run via:   npx tsx --tsconfig tsconfig.json scripts/prerender.tsx
  * Wire via:  See package.json "build" script
@@ -31,6 +53,66 @@ import en from '@/i18n/locales/en/translation.json'
 import App from '@/App'
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
+
+// ---------------------------------------------------------------------------
+// Story 7.7 AC 1: Route allowlist / exclusion constants.
+//
+// INCLUDED_ROUTES — routes that are actively prerendered (currently only '/').
+// EXCLUDED_ROUTES — routes known to the build that MUST NOT be prerendered:
+//   - /v2, /demo: Figma public surfaces with their own dark nav + heavy CSS;
+//     lazy-loaded precisely to stay out of the SSG pipeline.
+//   - /dashboard, /dashboard/*: client-side state, lazy data, recharts tree.
+//   - /admin, /admin/*: authenticated surfaces; prerender would expose layout
+//     skeleton to public crawlers.
+//   - /privacy, /404: no LCP-critical above-the-fold content.
+//
+// KNOWN_ROUTES must stay in sync with the Route declarations in src/App.tsx.
+// Defensive check (console.warn only for Sprint 1 — promoted to non-zero exit
+// in the follow-up story): if any KNOWN_ROUTE is absent from both sets, emit
+// a warning so the engineer can decide which list it belongs to.
+// ---------------------------------------------------------------------------
+
+/** Routes that the prerender step actively renders to dist/client/index.html. */
+const INCLUDED_ROUTES = new Set(['/'])
+
+/** Routes explicitly excluded from SSG prerender (see docstring above). */
+const EXCLUDED_ROUTES = new Set([
+  '/v2',
+  '/demo',
+  '/dashboard',
+  '/dashboard/*',
+  '/admin',
+  '/admin/*',
+  '/privacy',
+  '/404',
+])
+
+/**
+ * Canonical list of registered routes — mirrors src/App.tsx Route declarations.
+ * Keep this in sync manually for Sprint 1; a follow-up story will auto-derive
+ * this from the route config to eliminate the dual-maintenance risk.
+ */
+const KNOWN_ROUTES = [
+  '/',
+  '/privacy',
+  '/v2',
+  '/demo',
+  '/dashboard',
+  '/dashboard/*',
+  '/admin',
+  '/admin/*',
+  '/404',
+]
+
+for (const route of KNOWN_ROUTES) {
+  if (!INCLUDED_ROUTES.has(route) && !EXCLUDED_ROUTES.has(route)) {
+    console.warn(
+      `[prerender] WARNING: route "${route}" is registered in KNOWN_ROUTES but absent from both INCLUDED_ROUTES and EXCLUDED_ROUTES.`,
+      'Add it to one of the two lists in scripts/prerender.tsx.',
+      '(This check will become a non-zero exit in a follow-up sprint.)',
+    )
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Suppress expected React SSR build-time warnings:

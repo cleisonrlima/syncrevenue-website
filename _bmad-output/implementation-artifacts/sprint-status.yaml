@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-23  # Story 7.6 review patches complete -> done. Removed stale Epic 7 fallback/default brand copy, applied pricing-neutral billing copy, completed travel-domain Insights mock data, switched timezone values to IANA IDs, added targeted regression tests. typecheck/test:run (101 files / 862 tests)/dev smoke (21 route-locale checks) all green.
+last_updated: 2026-05-23  # Story 7.7 dev complete -> review. Prerender exclusion model (INCLUDED_ROUTES/EXCLUDED_ROUTES/KNOWN_ROUTES + defensive warn) implemented. Dark mode regression sweep: zero regressions found. Lighthouse desktop+mobile pass. Axe sweep clean. 101 files / 862 tests green.
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -170,7 +170,7 @@ development_status:
   7-4-landing-demo-pages: done
   7-5-i18n-extraction: done
   7-6-brand-copy-rewrite: done
-  7-7-prerender-exclusions-dark-mode-regression: backlog
+  7-7-prerender-exclusions-dark-mode-regression: review
   7-8-new-route-smoke-tests-coverage: backlog
   epic-7-tea: pending  # per CLAUDE.md "Post-Sprint TEA Pass" — runs once over the full 8-story set after Story 7.8 closes
   epic-7-retrospective: pending  # per CLAUDE.md "Post-Epic Retrospective" — runs after epic-7 → done
