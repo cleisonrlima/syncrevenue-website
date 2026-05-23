@@ -6,7 +6,7 @@ export default function Footer() {
   const { t } = useTranslation()
 
   return (
-    <footer className="bg-brand-navy text-brand-muted">
+    <footer className="bg-brand-navy text-brand-muted" data-testid="public-footer">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           <address className="not-italic">

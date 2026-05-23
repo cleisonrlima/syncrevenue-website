@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -11,15 +12,53 @@ import Leads from '@/pages/admin/Leads'
 import Team from '@/pages/admin/Team'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ScrollRestoration from '@/components/ScrollRestoration'
-// Story 7.2 (AC 1, 5): Epic 7 surfaces.
-import Landing from '@/pages/Landing'
-import Demo from '@/pages/Demo'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import DashboardHome from '@/pages/dashboard/DashboardHome'
-import RevenueRecovery from '@/pages/dashboard/RevenueRecovery'
-import Payouts from '@/pages/dashboard/Payouts'
-import Insights from '@/pages/dashboard/Insights'
-import Settings from '@/pages/dashboard/Settings'
+
+// Story 7.4 architectural follow-up (Story 7.7 owned originally — pulled
+// forward to unblock `npm run build`): the Epic 7 Wave 3 pages each pull in
+// a heavyweight side-effect at module-load time that broke the SSG prerender
+// pipeline (`scripts/prerender.tsx` imports App which transitively imported
+// `slick-carousel/slick/slick.css` — tsx cannot parse CSS in Node) AND
+// inflated the public `/` initial bundle for visitors who never visit them.
+//
+// Switching all Wave 3 routes to `React.lazy()` defers their module
+// evaluation (and side-effectful CSS / heavy graphing libs) to the moment a
+// user actually navigates to the route. Side benefits:
+//   - `npm run build` succeeds because Landing.tsx is no longer eagerly
+//     imported by the prerender step (it just sees the import expression as
+//     a static analysis hint).
+//   - Initial `/` bundle drops dramatically — recharts (~150 KB), react-slick
+//     (~50 KB), and the dashboard sub-component tree (~50 KB) all move into
+//     their own chunks.
+//   - The dashboard sidebar (rendered by `DashboardLayout`) stays interactive
+//     while a child route chunk loads (Suspense fallback only swaps the
+//     Outlet body, not the layout chrome).
+//
+// Lazy split-points NOT touched:
+//   - `Home`, `Privacy`, `NotFound` — these are the prerender path and the
+//     public chrome routes; keeping them eager preserves the Story 5.6 LCP
+//     work (SSG HTML must reference these synchronously).
+//   - `AdminLayout` + the admin tree — admin chunks are already small and
+//     authenticated routes don't have the same first-paint pressure.
+const Landing = lazy(() => import('@/pages/Landing'))
+const Demo = lazy(() => import('@/pages/Demo'))
+const DashboardHome = lazy(() => import('@/pages/dashboard/DashboardHome'))
+const RevenueRecovery = lazy(() => import('@/pages/dashboard/RevenueRecovery'))
+const Payouts = lazy(() => import('@/pages/dashboard/Payouts'))
+const Insights = lazy(() => import('@/pages/dashboard/Insights'))
+const Settings = lazy(() => import('@/pages/dashboard/Settings'))
+
+function RouteLoading() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="min-h-screen bg-[#0A0A0A] text-slate-300 flex items-center justify-center"
+    >
+      Loading...
+    </div>
+  )
+}
 
 export default function App() {
   const location = useLocation()
@@ -64,20 +103,74 @@ export default function App() {
       </a>
       {showPublicChrome ? <Navbar /> : null}
       <main id="main-content" className={mainClassName}>
-        <ErrorBoundary>
+        <ErrorBoundary key={normalizedPathname}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/privacy" element={<Privacy />} />
-            {/* Story 7.2 (AC 1): Epic 7 public surfaces (full bodies in Story 7.4). */}
-            <Route path="/v2" element={<Landing />} />
-            <Route path="/demo" element={<Demo />} />
-            {/* Story 7.2 (AC 1, 2): Epic 7 dashboard suite (full bodies in Story 7.3). */}
+            {/* Story 7.2 (AC 1) / Story 7.4: Epic 7 public surfaces.
+                Lazy-loaded — see top-of-file rationale. */}
+            <Route
+              path="/v2"
+              element={
+                <Suspense fallback={<RouteLoading />}>
+                  <Landing />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/demo"
+              element={
+                <Suspense fallback={<RouteLoading />}>
+                  <Demo />
+                </Suspense>
+              }
+            />
+            {/* Story 7.2 (AC 1, 2) / Story 7.3: Epic 7 dashboard suite.
+                DashboardLayout renders the sidebar + header eagerly; each
+                child route chunk loads on demand. The Suspense boundary is
+                scoped to the Outlet body so the layout chrome stays
+                interactive during chunk fetch. */}
             <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<DashboardHome />} />
-              <Route path="recovery" element={<RevenueRecovery />} />
-              <Route path="payouts" element={<Payouts />} />
-              <Route path="insights" element={<Insights />} />
-              <Route path="settings" element={<Settings />} />
+              <Route
+                index
+                element={
+                  <Suspense fallback={null}>
+                    <DashboardHome />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="recovery"
+                element={
+                  <Suspense fallback={null}>
+                    <RevenueRecovery />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="payouts"
+                element={
+                  <Suspense fallback={null}>
+                    <Payouts />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="insights"
+                element={
+                  <Suspense fallback={null}>
+                    <Insights />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <Suspense fallback={null}>
+                    <Settings />
+                  </Suspense>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/admin" element={<AdminLayout />}>

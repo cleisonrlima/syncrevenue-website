@@ -1,6 +1,6 @@
 # Story 7.4: Landing at `/v2` + DemoForm at `/demo`
 
-Status: not-started
+Status: done
 
 Epic: 7 — Figma 'teste' SaaS Import — Dashboard Suite + Dark Theme
 
@@ -32,36 +32,48 @@ So that the dark-theme marketing surface and demo-capture flow are end-to-end na
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Port Landing.tsx (AC: 1, 2, 3)**
-  - [ ] Copy Figma source verbatim → `src/pages/Landing.tsx`
-  - [ ] Swap imports: `react-router` → `react-router-dom`; figma `ImageWithFallback` → local path
-  - [ ] Move logo imports from `../../imports/1351_rev_*.jpg` to absolute `/logos/syncsirius-logo.png` (or whatever Story 6.2 established as canonical)
-  - [ ] Remove the redundant `useEffect(() => document.documentElement.classList.add('dark'), [])` since Story 7.1 sets dark globally
-  - [ ] Preserve the inline `<style>` block for slick-dots override
-  - [ ] Smoke: scroll-listener cleanup on unmount, mobile menu open/close works
-  - [ ] Co-located test `Landing.test.tsx` per AC 7
+- [x] **Task 1: Port Landing.tsx (AC: 1, 2, 3)**
+  - [x] Copy Figma source verbatim → `src/pages/Landing.tsx`
+  - [x] Swap imports: `react-router` → `react-router-dom`; figma `ImageWithFallback` → local `@/components/figma/ImageWithFallback`
+  - [x] Move logo imports from `../../imports/1351_rev_*.jpg` to absolute `/logos/syncsirius-logo.png` (Story 7.2 canonical asset)
+  - [x] Remove the redundant `useEffect(() => document.documentElement.classList.add('dark'), [])` since Story 7.1 sets dark globally
+  - [x] Preserve the inline `<style>` block for slick-dots override
+  - [x] Smoke: scroll-listener cleanup on unmount, mobile menu open/close works (verified via test + JSX inspection)
+  - [x] Co-located test `Landing.test.tsx` per AC 7 (5 specs, all green)
 
-- [ ] **Task 2: Port Demo.tsx (AC: 4)**
-  - [ ] Copy Figma source verbatim → `src/pages/Demo.tsx`
-  - [ ] Swap imports as Task 1
-  - [ ] Replace logo import path
-  - [ ] Preserve the AnimatePresence + motion success-panel transition
-  - [ ] `handleSubmit` stays at `setSubmitted(true)` — no API call this story
-  - [ ] Co-located test `Demo.test.tsx` per AC 7
+- [x] **Task 2: Port Demo.tsx (AC: 4)**
+  - [x] Copy Figma source verbatim → `src/pages/Demo.tsx`
+  - [x] Swap imports as Task 1
+  - [x] Replace logo import path
+  - [x] Preserve the AnimatePresence + motion success-panel transition (uses `motion.div` directly without `AnimatePresence` wrapper — verbatim)
+  - [x] `handleSubmit` stays at `setSubmitted(true)` — no API call this story
+  - [x] Co-located test `Demo.test.tsx` per AC 7 (6 specs, all green)
 
-- [ ] **Task 3: Confirm Navbar/Footer gating from Story 7.2 (AC: 5)**
-  - [ ] Manual smoke: `npm run dev`, navigate to `/v2` and `/demo`, confirm the existing public Navbar + Footer do NOT render (Story 7.2 should have already done this; Story 7.4 verifies)
-  - [ ] If gating regressed, file a 5-line patch in this story's commit
+- [x] **Task 3: Confirm Navbar/Footer gating from Story 7.2 (AC: 5)**
+  - [x] Verified via `src/App.routes.test.tsx` — full 12-spec gating suite passes including `/v2`, `/demo`, `/dashboard/*` chrome suppression
+  - [x] Patch applied: `src/components/layout/Footer.tsx` gained `data-testid="public-footer"` so the gating assertions can distinguish the public Footer from Landing's own `<footer>` (which also registers role="contentinfo"). App.routes.test.tsx updated to query the testid instead of the role.
 
-- [ ] **Task 4: Asset wiring**
-  - [ ] Confirm `/logos/syncsirius-logo.png` (or the canonical path) exists in `public/`. If not, copy from repo-root `1351_rev_1.jpg` and re-encode to webp at 32 + 64 + 128 px variants for the dark nav
-  - [ ] Confirm `lucide-react` icons used by Landing (ArrowRight, BarChart3, ShieldCheck, Zap, CheckCircle2, Menu, X, PlayCircle, TrendingUp, LineChart, Wallet, Globe2) all resolve
+- [x] **Task 4: Asset wiring**
+  - [x] `/logos/syncsirius-logo.png` already in `public/logos/` (Story 7.2)
+  - [x] All lucide-react icons resolved against `node_modules/lucide-react/dist/esm/icons/`: ArrowRight, BarChart3, ShieldCheck, Zap, CheckCircle2, Menu, X, PlayCircle, TrendingUp, LineChart, Wallet, Globe2 (Landing); ArrowLeft, CheckCircle2, Building2, Mail, User, Phone (Demo)
 
-- [ ] **Task 5: Test sweep (AC: 7)**
-  - [ ] `Landing.test.tsx` + `Demo.test.tsx` pass
-  - [ ] `npm run test:run` × 3 — exit 0
-  - [ ] `npm run typecheck` exit 0
-  - [ ] `npm run build` — verify slick CSS is bundled only for `/v2` chunk (`dist/client/assets/Landing-*.css`)
+- [x] **Task 5: Test sweep (AC: 7)**
+  - [x] `Landing.test.tsx` + `Demo.test.tsx` pass (11 new tests)
+  - [x] `npm run test:run` × 3 consecutive — exit 0 (101 files / 840 tests each run)
+  - [x] `npx tsc --noEmit && npx tsc --noEmit --project tsconfig.scripts.json` exit 0
+  - [x] `npm run build` — slick CSS isolated to `dist/client/assets/Landing-*.css` chunk (verified: 0 `slick` occurrences in main `index-*.css`, 1+ in Landing CSS chunk)
+
+### Review Findings
+
+- [x] [Review][Patch] Slick dot override is not preserved verbatim [`src/pages/Landing.tsx:288`]
+- [x] [Review][Patch] `/v2` and `/demo` lazy routes render blank during chunk load [`src/App.tsx:103`]
+- [x] [Review][Patch] App-level ErrorBoundary is not keyed/reset on route changes after lazy-route failures [`src/App.tsx:94`]
+- [x] [Review][Patch] App route tests no longer prove `/v2` and `/demo` lazy route bodies resolve [`src/App.routes.test.tsx:82`]
+- [x] [Review][Patch] Demo page nests a route-level `<main>` inside the App-level `<main>` [`src/pages/Demo.tsx:91`]
+- [x] [Review][Patch] Demo first/last-name grid remains two columns on narrow mobile widths [`src/pages/Demo.tsx:149`]
+- [x] [Review][Patch] Landing mobile menu lacks dialog semantics, Escape close, and focus management [`src/pages/Landing.tsx:225`]
+- [x] [Review][Patch] Landing footer links use dead `href="#"` destinations [`src/pages/Landing.tsx:512`]
+- [x] [Review][Patch] Landing scroll state is not initialized on mount for restored scroll/hash visits [`src/pages/Landing.tsx:140`]
 
 ## Dev Notes
 
@@ -85,3 +97,57 @@ So that the dark-theme marketing surface and demo-capture flow are end-to-end na
 ### Subtasks land in Jira
 
 Per CLAUDE.md, every task lands as a child Sub-task issue.
+
+## Dev Agent Record
+
+### Debug Log
+
+- 2026-05-22 — Figma MCP fetch via `ReadMcpResourceTool` against `file://figma/make/source/66Wb2MAv5PLOBSJLoFM3E3/src/app/pages/Landing.tsx` + `DemoForm.tsx`: SUCCESS. Both files returned full inline TSX. The caveat from Story 7.2 — `get_design_context` returning only resource link descriptors for Figma Make files — still applies, but `ReadMcpResourceTool` was connected this session and resolved the linked resources. Ported verbatim with the swaps documented in each file's top-of-file JSDoc.
+- Initial port + co-located tests landed cleanly (Landing 5 specs, Demo 6 specs, all green in isolation).
+- Full-suite regression revealed THREE pre-existing test-harness gaps that the Epic 7 import graph surfaced (NOT functional regressions in the port itself):
+  1. `react-slick` transitively imports `enquire.js` which requires `window.matchMedia` at module load. jsdom does not provide `matchMedia` by default, so any test file that imports `App.tsx` (`App.routes.test.tsx`, the Home story-1-* e2e specs, `Privacy.test.tsx`) failed to LOAD the module — dropping 18 tests from the count. Fix: 3-line `matchMedia` polyfill in `src/test/setup.ts`. This was originally a Story 7.1 oversight (the deps were installed but the jsdom shim was not added).
+  2. The global `motion/react` vitest mock covered `motion.<tag>` but not `useScroll`, `useTransform`, or `AnimatePresence` (all used by Landing). Tests that render Landing inside `<App />` (App.routes.test.tsx) crashed at render time and were swallowed by `ErrorBoundary` showing a "Failed to load section" fallback. Fix: extended the global mock with `AnimatePresence` (pass-through Fragment), `useScroll` (stub returning a frozen `MotionValue`-shape), `useTransform` (returns the first `to` value). Story 7.1 follow-up.
+  3. Pre-existing full-suite flakes called out in CLAUDE.md sprint-status (Home.story-1-{6,7,8,9}.e2e, Privacy.story-1-10, Team / CommissionAudit / DemoForm / ContactForm) timing out under CPU contention because Home.tsx lazy-loads 9 section components. Epic 7 added Landing's transformation cost to the App import graph, making the contention worse. Investigated multiple knobs: raising `testTimeout` from 5000ms → 30000ms alone was not enough (assertions failed in <8s with "Unable to find role=region" — sections never committed). Pre-warming the lazy imports in setup.ts made it WORSE (loaded eagerly during setup, multiplying cost). The deterministic fix was capping worker concurrency: Vitest 4 collapsed `poolOptions.{forks,threads}.maxForks` into a single top-level `maxWorkers`. Set `maxWorkers: 4` in `vite.config.ts`. Story 5.12 follow-up flake-stabilisation.
+- Architectural follow-up surfaced during `npm run build` smoke: `scripts/prerender.tsx` imports `App` which (after the Landing port) transitively imports `slick-carousel/slick/slick.css`. The `tsx` Node loader cannot parse CSS files → build failed. Story 7.4 Dev Notes flagged this for Story 7.7 (prerender exclusion list). Pulled forward by user approval: lazy-loaded ALL Epic 7 Wave 3 routes (Landing, Demo, all 5 dashboard pages) via `React.lazy()` + `<Suspense fallback={null}>` in `src/App.tsx`. Side benefits: (a) prerender no longer crashes — Vite's lazy import is a static-analysis hint, not an eager Node `require`; (b) initial `/` bundle drops 97 KB (Landing chunk) + 374 KB (recharts chunk) + ~50 KB (dashboard sub-components); (c) dashboard sidebar stays interactive during child route chunk fetch. Kept `Home`, `Privacy`, `NotFound`, and the admin tree eager — Home is the SSG prerender path, the others are tiny.
+- `App.routes.test.tsx` dashboard child-route assertions (`getByTestId('dashboard-home')`, etc.) needed `findByTestId` after the lazy refactor (Suspense fallback is `null` so the testid is async). Updated 2 specs in that file.
+- `dist/client/assets/Landing-*.css` confirmed to be a separate chunk containing the slick CSS (slick string present 1+ times; 0 occurrences in the main `index-*.css` bundle). AC 2 satisfied.
+
+### Completion Notes
+
+- All 7 ACs (1-7) satisfied. See File List + Tasks/Subtasks above.
+- Figma source: ported verbatim with documented swaps. "SyncSyrius" brand name preserved across 5 occurrences in Landing + 3 in Demo (Story 7.6 owns the rewrite). Insurance / commission-audit copy preserved verbatim (Story 7.6 owns travel-commission rewrite).
+- One minor accessibility tightening applied during the Demo port: form `<label>` elements gained `htmlFor` bindings and inputs gained matching `id` + `name` attributes. The Figma source left labels visually associated but not programmatically linked. Field copy, ordering, and visual layout are unchanged. Documented in Demo.tsx top-of-file JSDoc.
+- THREE shared-state edits applied per the rolling deviation protocol (each one was raised, approved, then landed):
+  1. `src/test/setup.ts` — `matchMedia` polyfill (Story 7.1 follow-up plumbing)
+  2. `src/test/setup.ts` — `motion/react` mock extension with `AnimatePresence` + `useScroll` + `useTransform` (Story 7.1 follow-up plumbing)
+  3. `vite.config.ts` — `testTimeout: 30000` + `hookTimeout: 30000` + `maxWorkers: 4` (Story 5.12 follow-up flake-stabilisation)
+- ONE architectural follow-up applied per user-approved scope expansion:
+  4. `src/App.tsx` — all Epic 7 Wave 3 routes converted to `React.lazy()` + `<Suspense fallback={null}>` (Story 7.7 architectural cleanup pulled forward to unblock the build). Updated `src/App.routes.test.tsx` to use `findByTestId` for the dashboard child-route assertions.
+- `src/components/layout/Footer.tsx` gained `data-testid="public-footer"` so App.routes.test.tsx can distinguish the public Footer from Landing's own `<footer>` (which also registers role="contentinfo").
+- Test count delta: started at 805 tests / 94 files (observed at session start, vs orchestrator-handoff baseline of 799 — Dev-C's dashboard tests had already landed). Ended at 840 tests / 101 files across 3 consecutive green runs. Net delta from Story 7.4 alone: +11 tests (Landing 5 + Demo 6). Other +24 tests are Dev-C's parallel Story 7.3 work.
+- `npm run dev` smoke not run (orchestrator-mandated verification gates already cover the build path: typecheck + 3× test:run + production build with successful SSG prerender all green). The `/v2` + `/demo` smoke is covered by the test suite at the integration level.
+- HALT condition: code-review step. Review pending — handed off to orchestrator per CLAUDE.md cross-model review rule.
+
+### File List
+
+New files:
+- `src/pages/Landing.test.tsx`
+- `src/pages/Demo.test.tsx`
+
+Modified files (Story 7.4 scope):
+- `src/pages/Landing.tsx` — placeholder replaced with full verbatim Figma port (~485 lines incl. JSDoc + verbatim CAROUSEL_SLIDES array)
+- `src/pages/Demo.tsx` — placeholder replaced with full verbatim Figma port (~280 lines incl. JSDoc; added a11y-tightening on input/label associations)
+- `src/App.tsx` — `Landing`, `Demo`, and all 5 dashboard pages converted to `React.lazy()` + `<Suspense fallback={null}>` (architectural follow-up to unblock the SSG prerender)
+- `src/App.routes.test.tsx` — dashboard child-route assertions migrated to `findByTestId` for the Suspense-wrapped lazy routes; chrome-suppression assertions switched from `queryByRole('contentinfo')` to `queryByTestId('public-footer')` to distinguish public Footer from Landing's own `<footer>`
+- `src/components/layout/Footer.tsx` — added `data-testid="public-footer"` (single attribute, no visual change)
+- `src/test/setup.ts` — added `matchMedia` jsdom polyfill + extended `motion/react` mock with `AnimatePresence` / `useScroll` / `useTransform` stubs
+- `vite.config.ts` — added `testTimeout: 30000`, `hookTimeout: 30000`, `maxWorkers: 4` (flake stabilisation)
+- `_bmad-output/implementation-artifacts/7-4-landing-demo-pages.md` — status flipped to `review`; tasks ticked; Dev Agent Record + File List + Change Log populated
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — `7-4-landing-demo-pages: backlog → review`; `last_updated` summary appended
+- `vault/Planning/Epics-Index.md` — Story 7.4 row updated to reflect review status
+
+### Change Log
+
+| Date       | Author    | Change                                                                                                                        |
+| ---------- | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-22 | Dev (AI)  | Story 7.4 dev pass complete: full Figma Landing + Demo ports + 11 new tests + 3 shared-state fixes (matchMedia polyfill, motion mock extension, vitest concurrency cap) + Epic 7 Wave 3 lazy-load refactor in App.tsx. 101 files / 840 tests × 3 green. Status → review. |

@@ -1,8 +1,27 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
 import '@/i18n'
+
+// Story 7.3 (AC 6) update: the dashboard child routes now mount the full
+// Figma ports which use recharts `ResponsiveContainer`. recharts depends on
+// `ResizeObserver`, which is not provided by jsdom. The per-page Vitest
+// specs install the same mock locally; this gating spec needs it too so
+// the dashboard pages render inside the full `<App />` tree without the
+// `<ErrorBoundary>` swallowing the crash.
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+beforeAll(() => {
+  if (typeof globalThis.ResizeObserver === 'undefined') {
+    ;(globalThis as unknown as { ResizeObserver: typeof ResizeObserver }).ResizeObserver =
+      ResizeObserverMock as unknown as typeof ResizeObserver
+  }
+})
 
 /**
  * Story 7.2 (AC 3, 4, 6): Public Navbar + Footer gating assertions.
@@ -30,25 +49,25 @@ describe('App route chrome gating', () => {
   it('renders the public Navbar on /', () => {
     renderAt('/')
     expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+    expect(screen.getByTestId('public-footer')).toBeInTheDocument()
   })
 
   it('renders the public Navbar on /privacy', () => {
     renderAt('/privacy')
     expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+    expect(screen.getByTestId('public-footer')).toBeInTheDocument()
   })
 
   it('renders the public Navbar on /admin/login (admin coexists with public chrome)', () => {
     renderAt('/admin/login')
     expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+    expect(screen.getByTestId('public-footer')).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /dashboard', () => {
     renderAt('/dashboard')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     // DashboardLayout chrome should be present instead
     expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
   })
@@ -56,68 +75,82 @@ describe('App route chrome gating', () => {
   it('does NOT render the public Navbar on a nested dashboard route', () => {
     renderAt('/dashboard/recovery')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /v2 (Landing has its own nav)', () => {
     renderAt('/v2')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
-    expect(screen.getByTestId('landing-placeholder-heading')).toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
   })
 
-  it('does NOT render the public Navbar on /demo (DemoForm has its own nav)', () => {
+  it('does NOT render the public Navbar on /demo (DemoForm has its own nav)', async () => {
     renderAt('/demo')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
-    expect(screen.getByTestId('demo-placeholder-heading')).toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
+    expect(await screen.findByLabelText(/Work Email/i)).toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('resolves the lazy Landing body on /v2', async () => {
+    renderAt('/v2')
+    expect(await screen.findByText(/TRUSTED BY FORWARD-THINKING AGENCIES/)).toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
   it('keeps Epic 7 chrome suppression with trailing slashes', () => {
     const landing = renderAt('/v2/')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     landing.unmount()
 
     renderAt('/demo/')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
   })
 
   it('does NOT render public chrome on unknown catch-all routes', () => {
     renderAt('/missing-route')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
   })
 
   it('renders unknown dashboard child routes inside DashboardLayout', () => {
     renderAt('/dashboard/missing-route')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
   })
 
-  it('renders the dashboard index page (DashboardHome placeholder) at /dashboard', () => {
+  it('renders the dashboard index page (DashboardHome) at /dashboard', async () => {
     renderAt('/dashboard')
-    expect(screen.getByTestId('dashboard-home-placeholder')).toBeInTheDocument()
+    // Story 7.3 replaced the Story 7.2 `dashboard-home-placeholder` testid
+    // with the full Figma port, which exposes `data-testid="dashboard-home"`
+    // on its outer wrapper. Story 7.4 then made the dashboard routes
+    // React.lazy split-points to unblock the SSG prerender pipeline — so
+    // the child route commits asynchronously and we need `findBy*` to wait
+    // on the Suspense boundary to resolve.
+    expect(await screen.findByTestId('dashboard-home')).toBeInTheDocument()
   })
 
-  it('renders each dashboard child route under DashboardLayout', () => {
+  it('renders each dashboard child route under DashboardLayout', async () => {
+    // Story 7.3 testids match the page name with no `-placeholder` suffix.
+    // Story 7.4 made each child route a React.lazy split-point — async wait.
     const cases = [
-      { path: '/dashboard/recovery', testid: 'dashboard-recovery-placeholder' },
-      { path: '/dashboard/payouts', testid: 'dashboard-payouts-placeholder' },
-      { path: '/dashboard/insights', testid: 'dashboard-insights-placeholder' },
-      { path: '/dashboard/settings', testid: 'dashboard-settings-placeholder' },
+      { path: '/dashboard/recovery', testid: 'dashboard-recovery' },
+      { path: '/dashboard/payouts', testid: 'dashboard-payouts' },
+      { path: '/dashboard/insights', testid: 'dashboard-insights' },
+      { path: '/dashboard/settings', testid: 'dashboard-settings' },
     ] as const
 
     for (const { path, testid } of cases) {
       const { unmount } = renderAt(path)
       expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
-      expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument()
-      expect(screen.getByTestId(testid)).toBeInTheDocument()
+      expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
+      expect(await screen.findByTestId(testid)).toBeInTheDocument()
       unmount()
     }
   })
