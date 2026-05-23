@@ -318,3 +318,369 @@ describe('Story 6.9 — namespace parity for demo.*, contact.*, forms.encryptedN
     expect(esPaths).toEqual(enPaths)
   })
 })
+
+// Story 7.5 — namespace parity for new `landing.*`, `figmaDemo.*`,
+// `dashboard.*` trees. Mirrors the Story 6.9 pattern: explicit required
+// leaf paths + full tree-shape equality so en/pt-BR/es never drift apart.
+
+const REQUIRED_LANDING_PATHS = [
+  'landing.nav.logoAlt',
+  'landing.nav.brand',
+  'landing.nav.products',
+  'landing.nav.benefits',
+  'landing.nav.security',
+  'landing.nav.customers',
+  'landing.nav.login',
+  'landing.nav.bookDemo',
+  'landing.nav.openMenu',
+  'landing.nav.closeMenu',
+  'landing.mobileMenu.ariaLabel',
+  'landing.heroSlides.revenue.badge',
+  'landing.heroSlides.revenue.title',
+  'landing.heroSlides.revenue.titleHighlight',
+  'landing.heroSlides.revenue.description',
+  'landing.heroSlides.revenue.floatingTitle',
+  'landing.heroSlides.revenue.floatingValue',
+  'landing.heroSlides.pay.badge',
+  'landing.heroSlides.pay.title',
+  'landing.heroSlides.pay.titleHighlight',
+  'landing.heroSlides.pay.description',
+  'landing.heroSlides.pay.floatingTitle',
+  'landing.heroSlides.pay.floatingValue',
+  'landing.heroSlides.insights.badge',
+  'landing.heroSlides.insights.title',
+  'landing.heroSlides.insights.titleHighlight',
+  'landing.heroSlides.insights.description',
+  'landing.heroSlides.insights.floatingTitle',
+  'landing.heroSlides.insights.floatingValue',
+  'landing.hero.bgImageAlt',
+  'landing.hero.explorePlatform',
+  'landing.hero.exploreProduct',
+  'landing.hero.requestDemo',
+  'landing.hero.trustBadge1',
+  'landing.hero.trustBadge2',
+  'landing.hero.systemStatus',
+  'landing.hero.liveSyncActive',
+  'landing.trust.heading',
+  'landing.benefits.heading',
+  'landing.benefits.subheading',
+  'landing.benefits.card1.title',
+  'landing.benefits.card1.description',
+  'landing.benefits.card2.title',
+  'landing.benefits.card2.description',
+  'landing.benefits.card3.title',
+  'landing.benefits.card3.description',
+  'landing.security.heading',
+  'landing.security.subheading',
+  'landing.security.soc2.title',
+  'landing.security.soc2.sub',
+  'landing.security.e2e.title',
+  'landing.security.e2e.sub',
+  'landing.security.rbac.title',
+  'landing.security.rbac.sub',
+  'landing.security.uptime.title',
+  'landing.security.uptime.sub',
+  'landing.cta.heading',
+  'landing.cta.subheading',
+  'landing.cta.button',
+  'landing.footer.logoAlt',
+  'landing.footer.brand',
+  'landing.footer.privacy',
+  'landing.footer.terms',
+  'landing.footer.contact',
+  'landing.footer.copyright',
+]
+
+const REQUIRED_FIGMA_DEMO_PATHS = [
+  'figmaDemo.nav.logoAlt',
+  'figmaDemo.nav.brand',
+  'figmaDemo.nav.backToHome',
+  'figmaDemo.hero.badge',
+  'figmaDemo.hero.heading',
+  'figmaDemo.hero.description',
+  'figmaDemo.hero.bullet1',
+  'figmaDemo.hero.bullet2',
+  'figmaDemo.hero.bullet3',
+  'figmaDemo.form.firstName',
+  'figmaDemo.form.lastName',
+  'figmaDemo.form.workEmail',
+  'figmaDemo.form.companyName',
+  'figmaDemo.form.phoneNumber',
+  'figmaDemo.form.placeholders.firstName',
+  'figmaDemo.form.placeholders.lastName',
+  'figmaDemo.form.placeholders.email',
+  'figmaDemo.form.placeholders.company',
+  'figmaDemo.form.placeholders.phone',
+  'figmaDemo.form.submit',
+  'figmaDemo.form.disclaimer',
+  'figmaDemo.success.heading',
+  'figmaDemo.success.body',
+  'figmaDemo.success.reset',
+]
+
+const REQUIRED_DASHBOARD_LAYOUT_PATHS = [
+  'dashboard.layout.brand',
+  'dashboard.layout.logoAlt',
+  'dashboard.layout.searchLabel',
+  'dashboard.layout.searchPlaceholder',
+  'dashboard.layout.notificationsLabel',
+  'dashboard.layout.importCta',
+  'dashboard.layout.sidebarAriaLabel',
+  'dashboard.layout.primaryNavAriaLabel',
+  'dashboard.layout.mobileNavAriaLabel',
+  'dashboard.layout.contentAriaLabel',
+  'dashboard.nav.overview',
+  'dashboard.nav.recovery',
+  'dashboard.nav.payouts',
+  'dashboard.nav.insights',
+  'dashboard.nav.settings',
+]
+
+const REQUIRED_DASHBOARD_STATUS_PATHS = [
+  'dashboard.status.pending',
+  'dashboard.status.resolved',
+  'dashboard.status.disputed',
+  'dashboard.status.actionRequired',
+  'dashboard.status.completed',
+  'dashboard.status.processing',
+  'dashboard.status.scheduled',
+  'dashboard.status.failed',
+  'dashboard.status.active',
+  'dashboard.status.invited',
+  'dashboard.status.connected',
+  'dashboard.pagination.previous',
+  'dashboard.pagination.next',
+  'dashboard.rowActions.open',
+]
+
+const REQUIRED_DASHBOARD_OVERVIEW_PATHS = [
+  'dashboard.overview.title',
+  'dashboard.overview.subtitle',
+  'dashboard.overview.metrics.totalRecovered',
+  'dashboard.overview.metrics.activeDiscrepancies',
+  'dashboard.overview.metrics.payoutsProcessed',
+  'dashboard.overview.chart.title',
+  'dashboard.overview.chart.subtitle',
+  'dashboard.overview.chart.timeRangeLabel',
+  'dashboard.overview.timeRanges.last7Months',
+  'dashboard.overview.timeRanges.thisYear',
+  'dashboard.overview.timeRanges.allTime',
+  'dashboard.overview.recentDiscrepancies.title',
+  'dashboard.overview.recentDiscrepancies.deltaLabel',
+  'dashboard.overview.recentDiscrepancies.viewAll',
+]
+
+const REQUIRED_DASHBOARD_RECOVERY_PATHS = [
+  'dashboard.recovery.title',
+  'dashboard.recovery.subtitle',
+  'dashboard.recovery.actions.exportReport',
+  'dashboard.recovery.actions.newDispute',
+  'dashboard.recovery.metrics.unrecovered',
+  'dashboard.recovery.metrics.unrecoveredSub',
+  'dashboard.recovery.metrics.inDispute',
+  'dashboard.recovery.metrics.inDisputeSub',
+  'dashboard.recovery.metrics.recoveredYtd',
+  'dashboard.recovery.metrics.recoveredYtdSub',
+  'dashboard.recovery.tabs.all',
+  'dashboard.recovery.tabs.actionRequired',
+  'dashboard.recovery.tabs.disputed',
+  'dashboard.recovery.tabs.resolved',
+  'dashboard.recovery.searchLabel',
+  'dashboard.recovery.searchPlaceholder',
+  'dashboard.recovery.filterLabel',
+  'dashboard.recovery.table.carrier',
+  'dashboard.recovery.table.client',
+  'dashboard.recovery.table.expected',
+  'dashboard.recovery.table.actual',
+  'dashboard.recovery.table.delta',
+  'dashboard.recovery.table.type',
+  'dashboard.recovery.table.status',
+  'dashboard.recovery.table.actions',
+  'dashboard.recovery.emptyState',
+  'dashboard.recovery.pagination.showing',
+]
+
+const REQUIRED_DASHBOARD_PAYOUTS_PATHS = [
+  'dashboard.payouts.title',
+  'dashboard.payouts.subtitle',
+  'dashboard.payouts.actions.export',
+  'dashboard.payouts.actions.runCycle',
+  'dashboard.payouts.metrics.totalProcessed',
+  'dashboard.payouts.metrics.pending',
+  'dashboard.payouts.metrics.pendingSub',
+  'dashboard.payouts.metrics.failed',
+  'dashboard.payouts.metrics.failedSub',
+  'dashboard.payouts.tabs.all',
+  'dashboard.payouts.tabs.processing',
+  'dashboard.payouts.tabs.scheduled',
+  'dashboard.payouts.tabs.completed',
+  'dashboard.payouts.tabs.failed',
+  'dashboard.payouts.searchLabel',
+  'dashboard.payouts.searchPlaceholder',
+  'dashboard.payouts.filterLabel',
+  'dashboard.payouts.table.agent',
+  'dashboard.payouts.table.payoutDate',
+  'dashboard.payouts.table.amount',
+  'dashboard.payouts.table.method',
+  'dashboard.payouts.table.status',
+  'dashboard.payouts.table.actions',
+  'dashboard.payouts.emptyState',
+  'dashboard.payouts.pagination.showing',
+]
+
+const REQUIRED_DASHBOARD_INSIGHTS_PATHS = [
+  'dashboard.insights.title',
+  'dashboard.insights.subtitle',
+  'dashboard.insights.calendarLabel',
+  'dashboard.insights.actions.exportData',
+  'dashboard.insights.metrics.globalRevenue',
+  'dashboard.insights.metrics.forecastedEoy',
+  'dashboard.insights.metrics.averageMargin',
+  'dashboard.insights.metrics.activeTerritories',
+  'dashboard.insights.metrics.yoySuffix',
+  'dashboard.insights.forecast.title',
+  'dashboard.insights.forecast.subtitle',
+  'dashboard.insights.forecast.legendActual',
+  'dashboard.insights.forecast.legendForecast',
+  'dashboard.insights.regional.title',
+  'dashboard.insights.regional.subtitle',
+  'dashboard.insights.regional.centerLabel',
+  'dashboard.insights.product.title',
+  'dashboard.insights.product.subtitle',
+  'dashboard.insights.topAgencies.title',
+  'dashboard.insights.topAgencies.subtitle',
+]
+
+const REQUIRED_DASHBOARD_SETTINGS_PATHS = [
+  'dashboard.settings.title',
+  'dashboard.settings.subtitle',
+  'dashboard.settings.save',
+  'dashboard.settings.saved',
+  'dashboard.settings.tabs.general',
+  'dashboard.settings.tabs.team',
+  'dashboard.settings.tabs.security',
+  'dashboard.settings.tabs.billing',
+  'dashboard.settings.tabs.integrations',
+  'dashboard.settings.tabs.notifications',
+  'dashboard.settings.general.heading',
+  'dashboard.settings.general.companyName',
+  'dashboard.settings.general.supportEmail',
+  'dashboard.settings.general.baseCurrency',
+  'dashboard.settings.general.currencyOptions.usd',
+  'dashboard.settings.general.currencyOptions.eur',
+  'dashboard.settings.general.currencyOptions.gbp',
+  'dashboard.settings.general.timezone',
+  'dashboard.settings.general.timezoneOptions.est',
+  'dashboard.settings.general.timezoneOptions.pst',
+  'dashboard.settings.general.timezoneOptions.gmt',
+  'dashboard.settings.general.dangerZone',
+  'dashboard.settings.general.dangerZoneBody',
+  'dashboard.settings.general.deleteOrg',
+  'dashboard.settings.team.heading',
+  'dashboard.settings.team.subheading',
+  'dashboard.settings.team.invite',
+  'dashboard.settings.team.table.user',
+  'dashboard.settings.team.table.role',
+  'dashboard.settings.team.table.status',
+  'dashboard.settings.team.table.actions',
+  'dashboard.settings.team.edit',
+  'dashboard.settings.security.heading',
+  'dashboard.settings.security.twoFactor',
+  'dashboard.settings.security.twoFactorBody',
+  'dashboard.settings.security.enable',
+  'dashboard.settings.security.password',
+  'dashboard.settings.security.passwordBody',
+  'dashboard.settings.security.update',
+  'dashboard.settings.security.apiKeys',
+  'dashboard.settings.security.apiKeysNotice',
+  'dashboard.settings.security.productionKey',
+  'dashboard.settings.security.live',
+  'dashboard.settings.security.createdLabel',
+  'dashboard.settings.security.hide',
+  'dashboard.settings.security.reveal',
+  'dashboard.settings.security.hideAriaLabel',
+  'dashboard.settings.security.revealAriaLabel',
+  'dashboard.settings.billing.currentPlan',
+  'dashboard.settings.billing.subheading',
+  'dashboard.settings.billing.tier',
+  'dashboard.settings.billing.monthlyCost',
+  'dashboard.settings.billing.nextBilling',
+  'dashboard.settings.billing.apiRequests',
+  'dashboard.settings.billing.paymentMethod',
+  'dashboard.settings.billing.cardLabel',
+  'dashboard.settings.billing.cardExpires',
+  'dashboard.settings.billing.update',
+  'dashboard.settings.integrations.heading',
+  'dashboard.settings.integrations.items.stripe',
+  'dashboard.settings.integrations.items.salesforce',
+  'dashboard.settings.integrations.items.hubspot',
+  'dashboard.settings.integrations.items.netsuite',
+  'dashboard.settings.integrations.connect',
+  'dashboard.settings.integrations.disconnect',
+  'dashboard.settings.notifications.heading',
+  'dashboard.settings.notifications.items.payoutApprovals.title',
+  'dashboard.settings.notifications.items.payoutApprovals.desc',
+  'dashboard.settings.notifications.items.commissionAnomalies.title',
+  'dashboard.settings.notifications.items.commissionAnomalies.desc',
+  'dashboard.settings.notifications.items.dailyDigest.title',
+  'dashboard.settings.notifications.items.dailyDigest.desc',
+  'dashboard.settings.notifications.items.newIntegrations.title',
+  'dashboard.settings.notifications.items.newIntegrations.desc',
+  'dashboard.settings.notifications.toggleLabel',
+]
+
+const REQUIRED_EPIC_7_PATHS = [
+  ...REQUIRED_LANDING_PATHS,
+  ...REQUIRED_FIGMA_DEMO_PATHS,
+  ...REQUIRED_DASHBOARD_LAYOUT_PATHS,
+  ...REQUIRED_DASHBOARD_STATUS_PATHS,
+  ...REQUIRED_DASHBOARD_OVERVIEW_PATHS,
+  ...REQUIRED_DASHBOARD_RECOVERY_PATHS,
+  ...REQUIRED_DASHBOARD_PAYOUTS_PATHS,
+  ...REQUIRED_DASHBOARD_INSIGHTS_PATHS,
+  ...REQUIRED_DASHBOARD_SETTINGS_PATHS,
+]
+
+describe('Story 7.5 — namespace parity for landing.*, figmaDemo.*, dashboard.*', () => {
+  it.each(LOCALES)(
+    'locale %s carries every required Epic 7 i18n key as a non-empty string',
+    (_locale, bundle) => {
+      const missing: string[] = []
+      const empty: string[] = []
+      for (const path of REQUIRED_EPIC_7_PATHS) {
+        const value = getByPath(bundle, path)
+        if (value === undefined) {
+          missing.push(path)
+        } else if (typeof value !== 'string' || value.trim() === '') {
+          empty.push(path)
+        }
+      }
+      expect(missing).toEqual([])
+      expect(empty).toEqual([])
+    },
+  )
+
+  it('landing.* tree shape is identical across en/pt-BR/es', () => {
+    const enPaths = collectLeafPaths((enResources as Json).landing, 'landing').sort()
+    const ptPaths = collectLeafPaths((ptResources as Json).landing, 'landing').sort()
+    const esPaths = collectLeafPaths((esResources as Json).landing, 'landing').sort()
+    expect(ptPaths).toEqual(enPaths)
+    expect(esPaths).toEqual(enPaths)
+  })
+
+  it('figmaDemo.* tree shape is identical across en/pt-BR/es', () => {
+    const enPaths = collectLeafPaths((enResources as Json).figmaDemo, 'figmaDemo').sort()
+    const ptPaths = collectLeafPaths((ptResources as Json).figmaDemo, 'figmaDemo').sort()
+    const esPaths = collectLeafPaths((esResources as Json).figmaDemo, 'figmaDemo').sort()
+    expect(ptPaths).toEqual(enPaths)
+    expect(esPaths).toEqual(enPaths)
+  })
+
+  it('dashboard.* tree shape is identical across en/pt-BR/es', () => {
+    const enPaths = collectLeafPaths((enResources as Json).dashboard, 'dashboard').sort()
+    const ptPaths = collectLeafPaths((ptResources as Json).dashboard, 'dashboard').sort()
+    const esPaths = collectLeafPaths((esResources as Json).dashboard, 'dashboard').sort()
+    expect(ptPaths).toEqual(enPaths)
+    expect(esPaths).toEqual(enPaths)
+  })
+})

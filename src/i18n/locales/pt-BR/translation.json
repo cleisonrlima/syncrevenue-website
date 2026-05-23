@@ -543,6 +543,431 @@
     "sectionLoad": "Falha ao carregar a seção.",
     "retry": "Tentar novamente"
   },
+  "landing": {
+    "nav": {
+      "logoAlt": "Logo SyncSyrius",
+      "brand": "SyncSyrius",
+      "products": "Produtos",
+      "benefits": "Benefícios",
+      "security": "Segurança",
+      "customers": "Clientes",
+      "login": "Entrar",
+      "bookDemo": "Agendar Demo",
+      "openMenu": "Abrir menu",
+      "closeMenu": "Fechar menu"
+    },
+    "mobileMenu": {
+      "ariaLabel": "Navegação da landing"
+    },
+    "heroSlides": {
+      "revenue": {
+        "badge": "SyncRevenue 2.0 já está no ar",
+        "title": "Recupere receita perdida.",
+        "titleHighlight": "Instantaneamente.",
+        "description": "A plataforma automatizada de auditoria de comissões que encontra a receita perdida da agência antes que ela impacte o resultado. Pare de deixar dinheiro na mesa.",
+        "floatingTitle": "Recuperado neste mês",
+        "floatingValue": "+US$ 24.500,00"
+      },
+      "pay": {
+        "badge": "Conheça o SyncPay",
+        "title": "Automatize pagamentos.",
+        "titleHighlight": "Sem falhas.",
+        "description": "Direcione comissões para seus agentes instantaneamente e com precisão. Simplifique fluxos de pagamento e elimine erros de transação manual.",
+        "floatingTitle": "Pagamento processado",
+        "floatingValue": "US$ 12.450 para 8 agentes"
+      },
+      "insights": {
+        "badge": "SyncInsights Enterprise",
+        "title": "Análises preditivas.",
+        "titleHighlight": "Visualizadas.",
+        "description": "Preveja o fluxo de caixa e visualize o desempenho da agência em territórios globais. Transforme dados brutos de comissões em inteligência estratégica de negócios.",
+        "floatingTitle": "Previsão global",
+        "floatingValue": "+18% de crescimento YoY"
+      }
+    },
+    "hero": {
+      "bgImageAlt": "Negócios abstratos",
+      "explorePlatform": "Explorar plataforma",
+      "exploreProduct": "Explorar produto",
+      "requestDemo": "Solicitar Demo",
+      "trustBadge1": "Integração sem fricção",
+      "trustBadge2": "Cancele quando quiser",
+      "systemStatus": "Status do sistema",
+      "liveSyncActive": "Sync ao vivo ativo"
+    },
+    "trust": {
+      "heading": "CONFIANÇA DE AGÊNCIAS INOVADORAS"
+    },
+    "benefits": {
+      "heading": "Automatize o invisível.",
+      "subheading": "O rastreamento manual de comissões é propenso a erro humano. Nossa plataforma inteligente cruza extratos de transportadoras com seus dados internos em segundos.",
+      "card1": {
+        "title": "Reconciliação em tempo real",
+        "description": "Combine automaticamente comissões esperadas com pagamentos reais das transportadoras assim que os extratos chegarem."
+      },
+      "card2": {
+        "title": "Detecção de divergências",
+        "description": "Sinalize instantaneamente pagamentos ausentes, taxas incorretas e erros de clawback antes do fechamento do livro."
+      },
+      "card3": {
+        "title": "Resolução automatizada",
+        "description": "Gere relatórios de disputa em um clique, formatados exatamente como as transportadoras precisam para resolver casos rapidamente."
+      }
+    },
+    "security": {
+      "heading": "Segurança nível bancário.",
+      "subheading": "Seus dados financeiros são protegidos por criptografia AES-256, auditorias regulares de terceiros e controles de acesso rigorosos por função. Tratamos seus dados de receita com o mais alto nível de segurança.",
+      "soc2": {
+        "title": "SOC 2 Type II",
+        "sub": "Certificado"
+      },
+      "e2e": {
+        "title": "Criptografia ponta a ponta",
+        "sub": "AES-256 & TLS 1.3"
+      },
+      "rbac": {
+        "title": "Acesso por função",
+        "sub": "Permissões granulares"
+      },
+      "uptime": {
+        "title": "99,99% de uptime",
+        "sub": "Confiabilidade enterprise"
+      }
+    },
+    "cta": {
+      "heading": "Pronto para transformar sua receita?",
+      "subheading": "Junte-se às agências que estão otimizando suas finanças com a suíte SyncSyrius.",
+      "button": "Agendar Demo Hoje"
+    },
+    "footer": {
+      "logoAlt": "Logo SyncSyrius alternativo",
+      "brand": "SyncSyrius",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço",
+      "contact": "Contato de Suporte",
+      "copyright": "© {{year}} SyncSyrius. Todos os direitos reservados."
+    }
+  },
+  "figmaDemo": {
+    "nav": {
+      "logoAlt": "Logo SyncSyrius",
+      "brand": "SyncSyrius",
+      "backToHome": "Voltar ao início"
+    },
+    "hero": {
+      "badge": "Demo ao vivo",
+      "heading": "Veja o SyncSyrius em ação.",
+      "description": "Descubra como nossa plataforma automatizada de auditoria de comissões pode recuperar receita perdida e simplificar seus pagamentos. Preencha o formulário e nossa equipe entrará em contato para agendar uma demonstração personalizada.",
+      "bullet1": "Identifique pagamentos de comissão ausentes instantaneamente",
+      "bullet2": "Automatize pagamentos de agentes com 100% de precisão",
+      "bullet3": "Visualize o desempenho da agência e previsões globais"
+    },
+    "form": {
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "workEmail": "E-mail corporativo",
+      "companyName": "Nome da empresa",
+      "phoneNumber": "Telefone (opcional)",
+      "placeholders": {
+        "firstName": "João",
+        "lastName": "Silva",
+        "email": "joao@agencia.com",
+        "company": "Agência Acme",
+        "phone": "+55 (11) 90000-0000"
+      },
+      "submit": "Solicitar Demo",
+      "disclaimer": "Ao enviar este formulário, você concorda com nossos Termos de Serviço e Política de Privacidade."
+    },
+    "success": {
+      "heading": "Solicitação recebida",
+      "body": "Obrigado pelo seu interesse! Um de nossos especialistas em produto entrará em contato em breve para agendar sua demo.",
+      "reset": "Enviar outra solicitação"
+    }
+  },
+  "dashboard": {
+    "layout": {
+      "brand": "SyncSirius",
+      "logoAlt": "SyncSirius",
+      "searchLabel": "Pesquisar no dashboard",
+      "searchPlaceholder": "Pesquisar...",
+      "notificationsLabel": "Ver notificações",
+      "importCta": "Importar extrato",
+      "sidebarAriaLabel": "Navegação do dashboard",
+      "primaryNavAriaLabel": "Navegação primária do dashboard",
+      "mobileNavAriaLabel": "Navegação móvel do dashboard",
+      "contentAriaLabel": "Conteúdo do dashboard"
+    },
+    "nav": {
+      "overview": "Visão geral",
+      "recovery": "Recuperação de receita",
+      "payouts": "Pagamentos",
+      "insights": "Insights",
+      "settings": "Configurações"
+    },
+    "status": {
+      "pending": "Pendente",
+      "resolved": "Resolvido",
+      "disputed": "Em disputa",
+      "actionRequired": "Ação necessária",
+      "completed": "Concluído",
+      "processing": "Processando",
+      "scheduled": "Agendado",
+      "failed": "Falhou",
+      "active": "Ativo",
+      "invited": "Convidado",
+      "connected": "Conectado"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próximo"
+    },
+    "rowActions": {
+      "open": "Abrir ações da linha"
+    },
+    "overview": {
+      "title": "Visão geral",
+      "subtitle": "Veja o que está acontecendo com sua receita hoje.",
+      "metrics": {
+        "totalRecovered": "Total recuperado",
+        "activeDiscrepancies": "Divergências ativas",
+        "payoutsProcessed": "Pagamentos processados"
+      },
+      "chart": {
+        "title": "Tendência de recuperação de receita",
+        "subtitle": "Comparando comissões recuperadas vs. linha de base",
+        "timeRangeLabel": "Intervalo de tempo"
+      },
+      "timeRanges": {
+        "last7Months": "Últimos 7 meses",
+        "thisYear": "Este ano",
+        "allTime": "Todo o período"
+      },
+      "recentDiscrepancies": {
+        "title": "Divergências recentes",
+        "deltaLabel": "Delta {{amount}}",
+        "viewAll": "Ver todas as divergências"
+      }
+    },
+    "recovery": {
+      "title": "Recuperação de receita",
+      "subtitle": "Audite extratos das transportadoras e gerencie disputas de comissão.",
+      "actions": {
+        "exportReport": "Exportar relatório",
+        "newDispute": "Nova disputa"
+      },
+      "metrics": {
+        "unrecovered": "Receita não recuperada",
+        "unrecoveredSub": "24 divergências pendentes",
+        "inDispute": "Em disputa",
+        "inDisputeSub": "12 disputas ativas",
+        "recoveredYtd": "Recuperado (YTD)",
+        "recoveredYtdSub": "De 85 apólices"
+      },
+      "tabs": {
+        "all": "Todas as divergências",
+        "actionRequired": "Ação necessária",
+        "disputed": "Em disputa",
+        "resolved": "Resolvido"
+      },
+      "searchLabel": "Pesquisar apólices",
+      "searchPlaceholder": "Pesquisar apólices...",
+      "filterLabel": "Filtrar resultados",
+      "table": {
+        "carrier": "Transportadora & Apólice",
+        "client": "Cliente",
+        "expected": "Esperado",
+        "actual": "Real",
+        "delta": "Delta",
+        "type": "Tipo",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "emptyState": "Nenhuma divergência encontrada para esta visualização.",
+      "pagination": {
+        "showing": "Exibindo {{count}} de {{total}} resultados"
+      }
+    },
+    "payouts": {
+      "title": "Pagamentos de agentes",
+      "subtitle": "Gerencie e automatize a distribuição de comissões via SyncPay.",
+      "actions": {
+        "export": "Exportar",
+        "runCycle": "Executar ciclo de pagamento"
+      },
+      "metrics": {
+        "totalProcessed": "Total processado (MTD)",
+        "pending": "Pagamentos pendentes",
+        "pendingSub": "12 agentes na fila",
+        "failed": "Transações falhadas",
+        "failedSub": "0 problemas detectados"
+      },
+      "tabs": {
+        "all": "Todos os pagamentos",
+        "processing": "Processando",
+        "scheduled": "Agendado",
+        "completed": "Concluído",
+        "failed": "Falhou"
+      },
+      "searchLabel": "Pesquisar agentes",
+      "searchPlaceholder": "Pesquisar agentes...",
+      "filterLabel": "Filtrar resultados",
+      "table": {
+        "agent": "Agente",
+        "payoutDate": "Data do pagamento",
+        "amount": "Valor",
+        "method": "Método",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "emptyState": "Nenhum pagamento encontrado para seus critérios.",
+      "pagination": {
+        "showing": "Exibindo {{count}} de {{total}} resultados"
+      }
+    },
+    "insights": {
+      "title": "Insights preditivos",
+      "subtitle": "Preveja o fluxo de caixa e visualize o desempenho global da agência.",
+      "calendarLabel": "Ano fiscal 2026",
+      "actions": {
+        "exportData": "Exportar dados"
+      },
+      "metrics": {
+        "globalRevenue": "Receita global YTD",
+        "forecastedEoy": "Previsão de EOY",
+        "averageMargin": "Margem média",
+        "activeTerritories": "Territórios ativos",
+        "yoySuffix": "YoY"
+      },
+      "forecast": {
+        "title": "Previsão anual de receita",
+        "subtitle": "Desempenho histórico vs. resultados previstos por IA (em milhares)",
+        "legendActual": "Real",
+        "legendForecast": "Previsão"
+      },
+      "regional": {
+        "title": "Distribuição regional",
+        "subtitle": "Detalhamento de receita por mercado global",
+        "centerLabel": "Regiões"
+      },
+      "product": {
+        "title": "Linhas de produto",
+        "subtitle": "Volume de comissão por tipo de seguro"
+      },
+      "topAgencies": {
+        "title": "Principais agências",
+        "subtitle": "Parceiros de maior volume"
+      }
+    },
+    "settings": {
+      "title": "Configurações da plataforma",
+      "subtitle": "Gerencie as preferências, faturamento e acessos da sua organização.",
+      "save": "Salvar alterações",
+      "saved": "Salvo com sucesso",
+      "tabs": {
+        "general": "Perfil geral",
+        "team": "Membros da equipe",
+        "security": "Segurança & API",
+        "billing": "Faturamento & Planos",
+        "integrations": "Integrações",
+        "notifications": "Notificações"
+      },
+      "general": {
+        "heading": "Perfil da organização",
+        "companyName": "Nome da empresa",
+        "supportEmail": "E-mail de suporte",
+        "baseCurrency": "Moeda base",
+        "currencyOptions": {
+          "usd": "USD - Dólar americano",
+          "eur": "EUR - Euro",
+          "gbp": "GBP - Libra esterlina"
+        },
+        "timezone": "Fuso horário",
+        "timezoneOptions": {
+          "est": "Eastern Time (ET)",
+          "pst": "Pacific Time (PT)",
+          "gmt": "Greenwich Mean Time (GMT)"
+        },
+        "dangerZone": "Zona de perigo",
+        "dangerZoneBody": "Remova permanentemente sua organização e todos os dados associados.",
+        "deleteOrg": "Excluir organização"
+      },
+      "team": {
+        "heading": "Membros da equipe",
+        "subheading": "Gerencie quem tem acesso ao seu workspace.",
+        "invite": "Convidar membro",
+        "table": {
+          "user": "Usuário",
+          "role": "Função",
+          "status": "Status",
+          "actions": "Ações"
+        },
+        "edit": "Editar"
+      },
+      "security": {
+        "heading": "Autenticação",
+        "twoFactor": "Autenticação em duas etapas (2FA)",
+        "twoFactorBody": "Adicione uma camada extra de segurança à sua conta.",
+        "enable": "Ativar",
+        "password": "Senha",
+        "passwordBody": "Alterada há 3 meses.",
+        "update": "Atualizar",
+        "apiKeys": "Chaves API",
+        "apiKeysNotice": "Suas chaves API têm acesso completo aos dados da sua organização. Mantenha-as seguras e nunca as compartilhe publicamente.",
+        "productionKey": "Chave de produção",
+        "live": "Live",
+        "createdLabel": "Criada em 12 de maio de 2026",
+        "hide": "Ocultar",
+        "reveal": "Revelar",
+        "hideAriaLabel": "Ocultar placeholder da chave API",
+        "revealAriaLabel": "Revelar placeholder da chave API"
+      },
+      "billing": {
+        "currentPlan": "Plano atual",
+        "subheading": "Você está atualmente no tier Enterprise.",
+        "tier": "ENTERPRISE",
+        "monthlyCost": "Custo mensal",
+        "nextBilling": "Próxima cobrança",
+        "apiRequests": "Requisições à API",
+        "paymentMethod": "Método de pagamento",
+        "cardLabel": "Visa com final 4242",
+        "cardExpires": "Expira em 12/28",
+        "update": "Atualizar"
+      },
+      "integrations": {
+        "heading": "Apps conectados",
+        "items": {
+          "stripe": "Sincronize pagamentos e faturas automaticamente.",
+          "salesforce": "Importe negócios do CRM e estruturas de comissão.",
+          "hubspot": "Sincronize contatos e dados de agência.",
+          "netsuite": "Sincronização ERP enterprise para lançamentos contábeis."
+        },
+        "connect": "Conectar",
+        "disconnect": "Desconectar"
+      },
+      "notifications": {
+        "heading": "Preferências de notificação",
+        "items": {
+          "payoutApprovals": {
+            "title": "Aprovações de pagamento",
+            "desc": "Seja notificado quando um ciclo de pagamento exigir aprovação manual."
+          },
+          "commissionAnomalies": {
+            "title": "Anomalias de comissão",
+            "desc": "Alertas para picos ou quedas inesperadas no cálculo de comissões."
+          },
+          "dailyDigest": {
+            "title": "Resumo diário",
+            "desc": "Um resumo das transações processadas e erros do dia."
+          },
+          "newIntegrations": {
+            "title": "Novas integrações",
+            "desc": "Novidades quando novos apps parceiros forem disponibilizados."
+          }
+        },
+        "toggleLabel": "Alternar {{title}}"
+      }
+    }
+  },
   "admin": {
     "login": {
       "title": "Acesso Administrativo",

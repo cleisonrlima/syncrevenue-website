@@ -73,11 +73,14 @@ describe('DashboardHome (Overview)', () => {
     expect(screen.getByRole('heading', { level: 2, name: /Revenue Recovery Trend/ })).toBeInTheDocument()
     const select = screen.getByTestId('dashboard-home-time-range') as HTMLSelectElement
     expect(select).toBeInTheDocument()
+    // Story 7.5 — time-range option `value` is now a stable ID
+    // (`last7Months` / `thisYear` / `allTime`); the displayed text is the
+    // translated label. The assertions follow that split.
     expect(within(select).getByText('Last 7 Months')).toBeInTheDocument()
     expect(within(select).getByText('This Year')).toBeInTheDocument()
     expect(within(select).getByText('All Time')).toBeInTheDocument()
-    await user.selectOptions(select, 'All Time')
-    expect(select.value).toBe('All Time')
+    await user.selectOptions(select, 'allTime')
+    expect(select.value).toBe('allTime')
   })
 
   it('renders the area chart container target (recharts internals not asserted)', () => {

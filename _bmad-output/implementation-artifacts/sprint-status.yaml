@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-22  # Stories 7.3 + 7.4 review findings fixed and closed -> done. Applied 19 patches; targeted Epic 7 suite 8 files/55 tests green; npm run typecheck green; npm run build green with existing Hero.tsx fetchPriority warning outside 7.3/7.4 scope.
+last_updated: 2026-05-22  # Story 7.5 i18n extraction complete -> review. Added 3 new namespaces (landing.*, figmaDemo.*, dashboard.*) to en/pt-BR/es; wired useTranslation across 8 Epic 7 surfaces; extended Sections.i18n.test.tsx parity guard with REQUIRED_EPIC_7_PATHS. typecheck/test:run (101 files / 854 tests)/build all green.
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -168,7 +168,7 @@ development_status:
   7-2-routes-layout-scaffold: done
   7-3-dashboard-pages: done
   7-4-landing-demo-pages: done
-  7-5-i18n-extraction: backlog
+  7-5-i18n-extraction: review
   7-6-brand-copy-rewrite: backlog
   7-7-prerender-exclusions-dark-mode-regression: backlog
   7-8-new-route-smoke-tests-coverage: backlog

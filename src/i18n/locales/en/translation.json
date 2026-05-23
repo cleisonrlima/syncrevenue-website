@@ -543,6 +543,431 @@
     "sectionLoad": "Failed to load section.",
     "retry": "Retry"
   },
+  "landing": {
+    "nav": {
+      "logoAlt": "SyncSyrius Logo",
+      "brand": "SyncSyrius",
+      "products": "Products",
+      "benefits": "Benefits",
+      "security": "Security",
+      "customers": "Customers",
+      "login": "Log in",
+      "bookDemo": "Book a Demo",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "mobileMenu": {
+      "ariaLabel": "Landing navigation"
+    },
+    "heroSlides": {
+      "revenue": {
+        "badge": "SyncRevenue 2.0 is now live",
+        "title": "Recover lost revenue.",
+        "titleHighlight": "Instantly.",
+        "description": "The automated commission auditing platform that finds missing agency revenue before it hits your bottom line. Stop leaving money on the table.",
+        "floatingTitle": "Recovered this month",
+        "floatingValue": "+$24,500.00"
+      },
+      "pay": {
+        "badge": "Introducing SyncPay",
+        "title": "Automate payouts.",
+        "titleHighlight": "Flawlessly.",
+        "description": "Route commissions to your agents instantly and accurately. Simplify your payout workflows and eliminate manual transaction errors.",
+        "floatingTitle": "Payout Processed",
+        "floatingValue": "$12,450 to 8 Agents"
+      },
+      "insights": {
+        "badge": "SyncInsights Enterprise",
+        "title": "Predictive analytics.",
+        "titleHighlight": "Visualized.",
+        "description": "Forecast cash flow and visualize agency performance across global territories. Turn raw commission data into strategic business intelligence.",
+        "floatingTitle": "Global Forecast",
+        "floatingValue": "+18% YoY Growth"
+      }
+    },
+    "hero": {
+      "bgImageAlt": "Abstract Business",
+      "explorePlatform": "Explore Platform",
+      "exploreProduct": "Explore Product",
+      "requestDemo": "Request Demo",
+      "trustBadge1": "Seamless integration",
+      "trustBadge2": "Cancel anytime",
+      "systemStatus": "System Status",
+      "liveSyncActive": "Live Sync Active"
+    },
+    "trust": {
+      "heading": "TRUSTED BY FORWARD-THINKING AGENCIES"
+    },
+    "benefits": {
+      "heading": "Automate the invisible.",
+      "subheading": "Manual commission tracking is prone to human error. Our intelligent platform cross-references your carrier statements with your internal data in seconds.",
+      "card1": {
+        "title": "Real-time Reconciliation",
+        "description": "Automatically match expected commissions against actual carrier payouts as soon as statements arrive."
+      },
+      "card2": {
+        "title": "Discrepancy Detection",
+        "description": "Instantly flag missing payments, incorrect rates, and clawback errors before the books close."
+      },
+      "card3": {
+        "title": "Automated Resolution",
+        "description": "Generate one-click dispute reports formatted exactly how carriers need them to resolve issues fast."
+      }
+    },
+    "security": {
+      "heading": "Bank-grade security.",
+      "subheading": "Your financial data is protected by AES-256 encryption, regular third-party audits, and strict role-based access controls. We treat your revenue data with the highest level of security.",
+      "soc2": {
+        "title": "SOC 2 Type II",
+        "sub": "Certified Compliant"
+      },
+      "e2e": {
+        "title": "End-to-End Encryption",
+        "sub": "AES-256 & TLS 1.3"
+      },
+      "rbac": {
+        "title": "Role-Based Access",
+        "sub": "Granular permissions"
+      },
+      "uptime": {
+        "title": "99.99% Uptime",
+        "sub": "Enterprise reliability"
+      }
+    },
+    "cta": {
+      "heading": "Ready to transform your revenue?",
+      "subheading": "Join the agencies optimizing their finances with the SyncSyrius product suite.",
+      "button": "Schedule a Demo Today"
+    },
+    "footer": {
+      "logoAlt": "SyncSyrius Logo Alt",
+      "brand": "SyncSyrius",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "contact": "Contact Support",
+      "copyright": "© {{year}} SyncSyrius. All rights reserved."
+    }
+  },
+  "figmaDemo": {
+    "nav": {
+      "logoAlt": "SyncSyrius Logo",
+      "brand": "SyncSyrius",
+      "backToHome": "Back to Home"
+    },
+    "hero": {
+      "badge": "Live Demo",
+      "heading": "See SyncSyrius in action.",
+      "description": "Discover how our automated commission auditing platform can recover lost revenue and streamline your payouts. Fill out the form, and our team will get in touch to schedule a personalized walkthrough.",
+      "bullet1": "Identify missing commission payments instantly",
+      "bullet2": "Automate agent payouts with 100% accuracy",
+      "bullet3": "Visualize agency performance and global forecasting"
+    },
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "workEmail": "Work Email",
+      "companyName": "Company Name",
+      "phoneNumber": "Phone Number (Optional)",
+      "placeholders": {
+        "firstName": "John",
+        "lastName": "Smith",
+        "email": "john@agency.com",
+        "company": "Acme Agency",
+        "phone": "+1 (555) 000-0000"
+      },
+      "submit": "Request Demo",
+      "disclaimer": "By submitting this form, you agree to our Terms of Service and Privacy Policy."
+    },
+    "success": {
+      "heading": "Request Received",
+      "body": "Thanks for your interest! One of our product specialists will be in touch shortly to schedule your demo.",
+      "reset": "Submit another request"
+    }
+  },
+  "dashboard": {
+    "layout": {
+      "brand": "SyncSirius",
+      "logoAlt": "SyncSirius",
+      "searchLabel": "Search dashboard",
+      "searchPlaceholder": "Search...",
+      "notificationsLabel": "View notifications",
+      "importCta": "Import Statement",
+      "sidebarAriaLabel": "Dashboard navigation",
+      "primaryNavAriaLabel": "Dashboard primary navigation",
+      "mobileNavAriaLabel": "Dashboard mobile navigation",
+      "contentAriaLabel": "Dashboard content"
+    },
+    "nav": {
+      "overview": "Overview",
+      "recovery": "Revenue Recovery",
+      "payouts": "Payouts",
+      "insights": "Insights",
+      "settings": "Settings"
+    },
+    "status": {
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "disputed": "Disputed",
+      "actionRequired": "Action Required",
+      "completed": "Completed",
+      "processing": "Processing",
+      "scheduled": "Scheduled",
+      "failed": "Failed",
+      "active": "Active",
+      "invited": "Invited",
+      "connected": "Connected"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "rowActions": {
+      "open": "Open row actions"
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "Here's what's happening with your revenue today.",
+      "metrics": {
+        "totalRecovered": "Total Recovered",
+        "activeDiscrepancies": "Active Discrepancies",
+        "payoutsProcessed": "Payouts Processed"
+      },
+      "chart": {
+        "title": "Revenue Recovery Trend",
+        "subtitle": "Comparing recovered vs baseline commissions",
+        "timeRangeLabel": "Time range"
+      },
+      "timeRanges": {
+        "last7Months": "Last 7 Months",
+        "thisYear": "This Year",
+        "allTime": "All Time"
+      },
+      "recentDiscrepancies": {
+        "title": "Recent Discrepancies",
+        "deltaLabel": "Delta {{amount}}",
+        "viewAll": "View All Discrepancies"
+      }
+    },
+    "recovery": {
+      "title": "Revenue Recovery",
+      "subtitle": "Audit carrier statements and manage commission disputes.",
+      "actions": {
+        "exportReport": "Export Report",
+        "newDispute": "New Dispute"
+      },
+      "metrics": {
+        "unrecovered": "Unrecovered Revenue",
+        "unrecoveredSub": "24 pending discrepancies",
+        "inDispute": "In Dispute",
+        "inDisputeSub": "12 active disputes",
+        "recoveredYtd": "Recovered (YTD)",
+        "recoveredYtdSub": "From 85 policies"
+      },
+      "tabs": {
+        "all": "All Discrepancies",
+        "actionRequired": "Action Required",
+        "disputed": "Disputed",
+        "resolved": "Resolved"
+      },
+      "searchLabel": "Search policies",
+      "searchPlaceholder": "Search policies...",
+      "filterLabel": "Filter results",
+      "table": {
+        "carrier": "Carrier & Policy",
+        "client": "Client",
+        "expected": "Expected",
+        "actual": "Actual",
+        "delta": "Delta",
+        "type": "Type",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "emptyState": "No discrepancies found for this view.",
+      "pagination": {
+        "showing": "Showing {{count}} of {{total}} results"
+      }
+    },
+    "payouts": {
+      "title": "Agent Payouts",
+      "subtitle": "Manage and automate commission distributions via SyncPay.",
+      "actions": {
+        "export": "Export",
+        "runCycle": "Run Payout Cycle"
+      },
+      "metrics": {
+        "totalProcessed": "Total Processed (MTD)",
+        "pending": "Pending Payouts",
+        "pendingSub": "12 agents queued",
+        "failed": "Failed Transactions",
+        "failedSub": "0 issues detected"
+      },
+      "tabs": {
+        "all": "All Payouts",
+        "processing": "Processing",
+        "scheduled": "Scheduled",
+        "completed": "Completed",
+        "failed": "Failed"
+      },
+      "searchLabel": "Search agents",
+      "searchPlaceholder": "Search agents...",
+      "filterLabel": "Filter results",
+      "table": {
+        "agent": "Agent",
+        "payoutDate": "Payout Date",
+        "amount": "Amount",
+        "method": "Method",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "emptyState": "No payouts found matching your criteria.",
+      "pagination": {
+        "showing": "Showing {{count}} of {{total}} results"
+      }
+    },
+    "insights": {
+      "title": "Predictive Insights",
+      "subtitle": "Forecast cash flow and visualize global agency performance.",
+      "calendarLabel": "2026 Financial Year",
+      "actions": {
+        "exportData": "Export Data"
+      },
+      "metrics": {
+        "globalRevenue": "Global Revenue YTD",
+        "forecastedEoy": "Forecasted EOY",
+        "averageMargin": "Average Margin",
+        "activeTerritories": "Active Territories",
+        "yoySuffix": "YoY"
+      },
+      "forecast": {
+        "title": "Annual Revenue Forecast",
+        "subtitle": "Historical performance vs. AI-predicted outcomes (in thousands)",
+        "legendActual": "Actual",
+        "legendForecast": "Forecast"
+      },
+      "regional": {
+        "title": "Regional Distribution",
+        "subtitle": "Revenue breakdown by global market",
+        "centerLabel": "Regions"
+      },
+      "product": {
+        "title": "Product Lines",
+        "subtitle": "Commission volume by insurance type"
+      },
+      "topAgencies": {
+        "title": "Top Agencies",
+        "subtitle": "Highest volume partners"
+      }
+    },
+    "settings": {
+      "title": "Platform Settings",
+      "subtitle": "Manage your organization's preferences, billing, and team access.",
+      "save": "Save Changes",
+      "saved": "Saved Successfully",
+      "tabs": {
+        "general": "General Profile",
+        "team": "Team Members",
+        "security": "Security & API",
+        "billing": "Billing & Plans",
+        "integrations": "Integrations",
+        "notifications": "Notifications"
+      },
+      "general": {
+        "heading": "Organization Profile",
+        "companyName": "Company Name",
+        "supportEmail": "Support Email",
+        "baseCurrency": "Base Currency",
+        "currencyOptions": {
+          "usd": "USD - US Dollar",
+          "eur": "EUR - Euro",
+          "gbp": "GBP - British Pound"
+        },
+        "timezone": "Timezone",
+        "timezoneOptions": {
+          "est": "Eastern Time (ET)",
+          "pst": "Pacific Time (PT)",
+          "gmt": "Greenwich Mean Time (GMT)"
+        },
+        "dangerZone": "Danger Zone",
+        "dangerZoneBody": "Permanently remove your organization and all associated data.",
+        "deleteOrg": "Delete Organization"
+      },
+      "team": {
+        "heading": "Team Members",
+        "subheading": "Manage who has access to your workspace.",
+        "invite": "Invite Member",
+        "table": {
+          "user": "User",
+          "role": "Role",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "edit": "Edit"
+      },
+      "security": {
+        "heading": "Authentication",
+        "twoFactor": "Two-Factor Authentication (2FA)",
+        "twoFactorBody": "Add an extra layer of security to your account.",
+        "enable": "Enable",
+        "password": "Password",
+        "passwordBody": "Last changed 3 months ago.",
+        "update": "Update",
+        "apiKeys": "API Keys",
+        "apiKeysNotice": "Your API keys carry full access to your organization's data. Keep them secure and never share them publicly.",
+        "productionKey": "Production Key",
+        "live": "Live",
+        "createdLabel": "Created May 12, 2026",
+        "hide": "Hide",
+        "reveal": "Reveal",
+        "hideAriaLabel": "Hide API key placeholder",
+        "revealAriaLabel": "Reveal API key placeholder"
+      },
+      "billing": {
+        "currentPlan": "Current Plan",
+        "subheading": "You are currently on the Enterprise tier.",
+        "tier": "ENTERPRISE",
+        "monthlyCost": "Monthly Cost",
+        "nextBilling": "Next Billing Date",
+        "apiRequests": "API Requests",
+        "paymentMethod": "Payment Method",
+        "cardLabel": "Visa ending in 4242",
+        "cardExpires": "Expires 12/28",
+        "update": "Update"
+      },
+      "integrations": {
+        "heading": "Connected Apps",
+        "items": {
+          "stripe": "Sync payments and invoices automatically.",
+          "salesforce": "Import CRM deals and commission structures.",
+          "hubspot": "Sync contacts and agency data.",
+          "netsuite": "Enterprise ERP syncing for ledger entries."
+        },
+        "connect": "Connect",
+        "disconnect": "Disconnect"
+      },
+      "notifications": {
+        "heading": "Notification Preferences",
+        "items": {
+          "payoutApprovals": {
+            "title": "Payout Approvals",
+            "desc": "Get notified when a payout cycle requires manual approval."
+          },
+          "commissionAnomalies": {
+            "title": "Commission Anomalies",
+            "desc": "Alerts for unexpected spikes or drops in commission calculations."
+          },
+          "dailyDigest": {
+            "title": "Daily Digest",
+            "desc": "A summary of the day's processed transactions and errors."
+          },
+          "newIntegrations": {
+            "title": "New Integrations",
+            "desc": "Updates when new partner apps are available."
+          }
+        },
+        "toggleLabel": "Toggle {{title}}"
+      }
+    }
+  },
   "admin": {
     "login": {
       "title": "Admin Sign In",

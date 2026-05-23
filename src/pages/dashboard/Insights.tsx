@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import {
   LineChart,
   Line,
@@ -93,6 +94,8 @@ const TOP_AGENTS = [
 ]
 
 export default function Insights() {
+  const { t } = useTranslation()
+
   useDocumentMeta({
     titleKey: 'seo.dashboard.insights.title',
     descriptionKey: 'seo.dashboard.insights.description',
@@ -109,32 +112,62 @@ export default function Insights() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Predictive Insights</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            {t('dashboard.insights.title', 'Predictive Insights')}
+          </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Forecast cash flow and visualize global agency performance.
+            {t('dashboard.insights.subtitle', 'Forecast cash flow and visualize global agency performance.')}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center bg-white/[0.03] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-300">
             <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-            2026 Financial Year
+            {t('dashboard.insights.calendarLabel', '2026 Financial Year')}
           </div>
           <button
             type="button"
             className="px-4 py-2 bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            Export Data
+            {t('dashboard.insights.actions.exportData', 'Export Data')}
           </button>
         </div>
       </div>
 
       {/* Top Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <MetricCard title="Global Revenue YTD" value="$4.2M" trend="+18.4%" icon={Globe2} color="text-amber-400" bg="bg-amber-400/10" />
-        <MetricCard title="Forecasted EOY" value="$8.5M" trend="+22.1%" icon={Target} color="text-purple-400" bg="bg-purple-400/10" />
-        <MetricCard title="Average Margin" value="24.8%" trend="+2.4%" icon={TrendingUp} color="text-pink-400" bg="bg-pink-400/10" />
-        <MetricCard title="Active Territories" value="14" trend="+2 new" icon={Globe2} color="text-indigo-400" bg="bg-indigo-400/10" />
+        <MetricCard
+          title={t('dashboard.insights.metrics.globalRevenue', 'Global Revenue YTD')}
+          value="$4.2M"
+          trend="+18.4%"
+          icon={Globe2}
+          color="text-amber-400"
+          bg="bg-amber-400/10"
+        />
+        <MetricCard
+          title={t('dashboard.insights.metrics.forecastedEoy', 'Forecasted EOY')}
+          value="$8.5M"
+          trend="+22.1%"
+          icon={Target}
+          color="text-purple-400"
+          bg="bg-purple-400/10"
+        />
+        <MetricCard
+          title={t('dashboard.insights.metrics.averageMargin', 'Average Margin')}
+          value="24.8%"
+          trend="+2.4%"
+          icon={TrendingUp}
+          color="text-pink-400"
+          bg="bg-pink-400/10"
+        />
+        <MetricCard
+          title={t('dashboard.insights.metrics.activeTerritories', 'Active Territories')}
+          value="14"
+          trend="+2 new"
+          icon={Globe2}
+          color="text-indigo-400"
+          bg="bg-indigo-400/10"
+        />
       </div>
 
       {/* Main Forecast Chart */}
@@ -144,19 +177,24 @@ export default function Insights() {
       >
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-lg font-bold text-white">Annual Revenue Forecast</h2>
+            <h2 className="text-lg font-bold text-white">
+              {t('dashboard.insights.forecast.title', 'Annual Revenue Forecast')}
+            </h2>
             <p className="text-sm text-slate-400">
-              Historical performance vs. AI-predicted outcomes (in thousands)
+              {t(
+                'dashboard.insights.forecast.subtitle',
+                'Historical performance vs. AI-predicted outcomes (in thousands)',
+              )}
             </p>
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-amber-500" />
-              <span className="text-slate-300">Actual</span>
+              <span className="text-slate-300">{t('dashboard.insights.forecast.legendActual', 'Actual')}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full border-2 border-amber-500 border-dashed" />
-              <span className="text-slate-300">Forecast</span>
+              <span className="text-slate-300">{t('dashboard.insights.forecast.legendForecast', 'Forecast')}</span>
             </div>
           </div>
         </div>
@@ -204,8 +242,12 @@ export default function Insights() {
           className="bg-[#12121A] border border-white/5 rounded-2xl p-6"
           data-testid="dashboard-insights-regional"
         >
-          <h2 className="text-lg font-bold text-white mb-2">Regional Distribution</h2>
-          <p className="text-sm text-slate-400 mb-6">Revenue breakdown by global market</p>
+          <h2 className="text-lg font-bold text-white mb-2">
+            {t('dashboard.insights.regional.title', 'Regional Distribution')}
+          </h2>
+          <p className="text-sm text-slate-400 mb-6">
+            {t('dashboard.insights.regional.subtitle', 'Revenue breakdown by global market')}
+          </p>
           <div className="h-[250px] w-full flex items-center justify-center relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -233,7 +275,9 @@ export default function Insights() {
             {/* Center Label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-2xl font-bold text-white">3</span>
-              <span className="text-xs text-slate-500">Regions</span>
+              <span className="text-xs text-slate-500">
+                {t('dashboard.insights.regional.centerLabel', 'Regions')}
+              </span>
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-4 mt-2">
@@ -251,8 +295,12 @@ export default function Insights() {
           className="bg-[#12121A] border border-white/5 rounded-2xl p-6"
           data-testid="dashboard-insights-product"
         >
-          <h2 className="text-lg font-bold text-white mb-2">Product Lines</h2>
-          <p className="text-sm text-slate-400 mb-6">Commission volume by insurance type</p>
+          <h2 className="text-lg font-bold text-white mb-2">
+            {t('dashboard.insights.product.title', 'Product Lines')}
+          </h2>
+          <p className="text-sm text-slate-400 mb-6">
+            {t('dashboard.insights.product.subtitle', 'Commission volume by insurance type')}
+          </p>
           <div className="h-[250px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={PRODUCT_PERFORMANCE} layout="vertical" margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
@@ -289,8 +337,12 @@ export default function Insights() {
         >
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-lg font-bold text-white">Top Agencies</h2>
-              <p className="text-sm text-slate-400">Highest volume partners</p>
+              <h2 className="text-lg font-bold text-white">
+                {t('dashboard.insights.topAgencies.title', 'Top Agencies')}
+              </h2>
+              <p className="text-sm text-slate-400">
+                {t('dashboard.insights.topAgencies.subtitle', 'Highest volume partners')}
+              </p>
             </div>
           </div>
           <div className="flex-1 space-y-4">
@@ -334,6 +386,7 @@ type MetricCardProps = {
 }
 
 function MetricCard({ title, value, trend, icon: Icon, color, bg }: MetricCardProps) {
+  const { t } = useTranslation()
   return (
     <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 flex flex-col relative overflow-hidden">
       <div className="flex items-center justify-between mb-4 relative z-10">
@@ -346,7 +399,7 @@ function MetricCard({ title, value, trend, icon: Icon, color, bg }: MetricCardPr
         <h2 className="text-3xl font-bold text-white mb-2">{value}</h2>
         <div className="flex items-center text-sm font-medium text-green-400">
           <ArrowUpRight className="w-4 h-4 mr-0.5" />
-          {trend} YoY
+          {trend} {t('dashboard.insights.metrics.yoySuffix', 'YoY')}
         </div>
       </div>
       <div className={`absolute -right-4 -bottom-4 w-24 h-24 blur-[40px] opacity-20 ${bg.replace('/10', '')}`} />

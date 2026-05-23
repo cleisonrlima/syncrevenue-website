@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -43,10 +44,42 @@ import { useDocumentMeta } from '@/components/SEO'
 
 // TODO(epic-7-story-6): rewrite copy + sample data to the travel-commission
 // domain; wire to real data in a later epic.
-const METRICS = [
-  { label: 'Total Processed (MTD)', value: '$142,300.00', trend: '+8.4%', isPositive: true as boolean | null },
-  { label: 'Pending Payouts', value: '$24,500.00', trend: '12 agents queued', isPositive: null as boolean | null },
-  { label: 'Failed Transactions', value: '$0.00', trend: '0 issues detected', isPositive: true as boolean | null },
+// Story 7.5: `labelKey`/`trendKey` resolve via `t()`; English fallbacks
+// remain inline so dev-mode missing-key renders are still legible.
+type PayoutMetric = {
+  labelKey: string
+  labelFallback: string
+  value: string
+  trendKey: string
+  trendFallback: string
+  isPositive: boolean | null
+}
+
+const METRICS: ReadonlyArray<PayoutMetric> = [
+  {
+    labelKey: 'dashboard.payouts.metrics.totalProcessed',
+    labelFallback: 'Total Processed (MTD)',
+    value: '$142,300.00',
+    trendKey: '__inline__',
+    trendFallback: '+8.4%',
+    isPositive: true,
+  },
+  {
+    labelKey: 'dashboard.payouts.metrics.pending',
+    labelFallback: 'Pending Payouts',
+    value: '$24,500.00',
+    trendKey: 'dashboard.payouts.metrics.pendingSub',
+    trendFallback: '12 agents queued',
+    isPositive: null,
+  },
+  {
+    labelKey: 'dashboard.payouts.metrics.failed',
+    labelFallback: 'Failed Transactions',
+    value: '$0.00',
+    trendKey: 'dashboard.payouts.metrics.failedSub',
+    trendFallback: '0 issues detected',
+    isPositive: true,
+  },
 ]
 
 const PAYOUTS = [
@@ -59,9 +92,26 @@ const PAYOUTS = [
   { id: '7', agent: 'Amanda Martinez', role: 'Partner', amount: 3600, date: 'May 15, 2026', method: 'ACH Transfer', status: 'Completed' },
 ]
 
-const TABS = ['All Payouts', 'Processing', 'Scheduled', 'Completed', 'Failed']
+const TABS = [
+  { id: 'all', testIdSlug: 'all-payouts', i18nKey: 'dashboard.payouts.tabs.all', fallback: 'All Payouts', englishMatch: 'All Payouts' },
+  { id: 'processing', testIdSlug: 'processing', i18nKey: 'dashboard.payouts.tabs.processing', fallback: 'Processing', englishMatch: 'Processing' },
+  { id: 'scheduled', testIdSlug: 'scheduled', i18nKey: 'dashboard.payouts.tabs.scheduled', fallback: 'Scheduled', englishMatch: 'Scheduled' },
+  { id: 'completed', testIdSlug: 'completed', i18nKey: 'dashboard.payouts.tabs.completed', fallback: 'Completed', englishMatch: 'Completed' },
+  { id: 'failed', testIdSlug: 'failed', i18nKey: 'dashboard.payouts.tabs.failed', fallback: 'Failed', englishMatch: 'Failed' },
+] as const
+
+type PayoutsTabId = (typeof TABS)[number]['id']
+
+const STATUS_KEY_MAP: Record<string, string> = {
+  Completed: 'completed',
+  Processing: 'processing',
+  Scheduled: 'scheduled',
+  Failed: 'failed',
+}
 
 export default function Payouts() {
+  const { t } = useTranslation()
+
   useDocumentMeta({
     titleKey: 'seo.dashboard.payouts.title',
     descriptionKey: 'seo.dashboard.payouts.description',
@@ -70,12 +120,13 @@ export default function Payouts() {
     path: '/dashboard/payouts',
   })
 
-  const [activeTab, setActiveTab] = useState<string>('All Payouts')
+  const [activeTab, setActiveTab] = useState<PayoutsTabId>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [appliedQuery, setAppliedQuery] = useState('')
 
   const filteredData = PAYOUTS.filter((item) => {
-    const matchesTab = activeTab === 'All Payouts' || item.status === activeTab
+    const tab = TABS.find((entry) => entry.id === activeTab)
+    const matchesTab = activeTab === 'all' || (tab && item.status === tab.englishMatch)
     const normalizedQuery = appliedQuery.trim().toLowerCase()
     const matchesQuery =
       normalizedQuery.length === 0 ||
@@ -94,9 +145,11 @@ export default function Payouts() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Agent Payouts</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            {t('dashboard.payouts.title', 'Agent Payouts')}
+          </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Manage and automate commission distributions via SyncPay.
+            {t('dashboard.payouts.subtitle', 'Manage and automate commission distributions via SyncPay.')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -105,58 +158,65 @@ export default function Payouts() {
             className="px-4 py-2 bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            Export
+            {t('dashboard.payouts.actions.export', 'Export')}
           </button>
           <button
             type="button"
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
           >
             <Play className="w-4 h-4 fill-current" />
-            Run Payout Cycle
+            {t('dashboard.payouts.actions.runCycle', 'Run Payout Cycle')}
           </button>
         </div>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {METRICS.map((metric, idx) => (
-          <div
-            key={metric.label}
-            className="bg-[#12121A] border border-white/5 rounded-2xl p-6 relative overflow-hidden group"
-          >
+        {METRICS.map((metric, idx) => {
+          // The first metric ships an inline raw trend percentage (`+8.4%`),
+          // not a translation key — preserve it verbatim. The other two use
+          // dedicated i18n keys for the trailing helper line.
+          const trendText =
+            metric.trendKey === '__inline__' ? metric.trendFallback : t(metric.trendKey, metric.trendFallback)
+          return (
             <div
-              className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-transparent ${
-                idx === 0 ? 'to-blue-500/10' : idx === 1 ? 'to-amber-500/10' : 'to-green-500/10'
-              } rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110`}
-            />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-medium text-slate-400">{metric.label}</p>
-                <Wallet
-                  className={`w-5 h-5 ${
-                    idx === 0 ? 'text-blue-400' : idx === 1 ? 'text-amber-400' : 'text-green-400'
-                  }`}
-                />
-              </div>
-              <h2 className="text-3xl font-bold text-white mb-2">{metric.value}</h2>
-              <div className="flex items-center text-sm font-medium">
-                {metric.isPositive === true && <ArrowUpRight className="w-4 h-4 text-green-400 mr-1" />}
-                {metric.isPositive === false && <ArrowDownRight className="w-4 h-4 text-rose-400 mr-1" />}
-                <span
-                  className={
-                    metric.isPositive === true
-                      ? 'text-green-400'
-                      : metric.isPositive === false
-                      ? 'text-rose-400'
-                      : 'text-slate-500'
-                  }
-                >
-                  {metric.trend}
-                </span>
+              key={metric.labelKey}
+              className="bg-[#12121A] border border-white/5 rounded-2xl p-6 relative overflow-hidden group"
+            >
+              <div
+                className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-transparent ${
+                  idx === 0 ? 'to-blue-500/10' : idx === 1 ? 'to-amber-500/10' : 'to-green-500/10'
+                } rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110`}
+              />
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm font-medium text-slate-400">{t(metric.labelKey, metric.labelFallback)}</p>
+                  <Wallet
+                    className={`w-5 h-5 ${
+                      idx === 0 ? 'text-blue-400' : idx === 1 ? 'text-amber-400' : 'text-green-400'
+                    }`}
+                  />
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-2">{metric.value}</h2>
+                <div className="flex items-center text-sm font-medium">
+                  {metric.isPositive === true && <ArrowUpRight className="w-4 h-4 text-green-400 mr-1" />}
+                  {metric.isPositive === false && <ArrowDownRight className="w-4 h-4 text-rose-400 mr-1" />}
+                  <span
+                    className={
+                      metric.isPositive === true
+                        ? 'text-green-400'
+                        : metric.isPositive === false
+                        ? 'text-rose-400'
+                        : 'text-slate-500'
+                    }
+                  >
+                    {trendText}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Main Content Area */}
@@ -169,19 +229,19 @@ export default function Payouts() {
           >
             {TABS.map((tab) => (
               <button
-                key={tab}
+                key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab)}
-                data-testid={`dashboard-payouts-tab-${tab.replace(/\s+/g, '-').toLowerCase()}`}
-                aria-pressed={activeTab === tab}
+                onClick={() => setActiveTab(tab.id)}
+                data-testid={`dashboard-payouts-tab-${tab.testIdSlug}`}
+                aria-pressed={activeTab === tab.id}
                 className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === tab
+                  activeTab === tab.id
                     ? 'bg-white/10 text-white'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                {tab}
-                {tab === 'Processing' && (
+                {t(tab.i18nKey, tab.fallback)}
+                {tab.id === 'processing' && (
                   <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-[10px]">
                     2
                   </span>
@@ -194,7 +254,7 @@ export default function Payouts() {
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <label htmlFor="dashboard-payouts-search" className="sr-only">
-                Search agents
+                {t('dashboard.payouts.searchLabel', 'Search agents')}
               </label>
               <input
                 id="dashboard-payouts-search"
@@ -206,13 +266,13 @@ export default function Payouts() {
                     setAppliedQuery(searchQuery)
                   }
                 }}
-                placeholder="Search agents..."
+                placeholder={t('dashboard.payouts.searchPlaceholder', 'Search agents...')}
                 className="pl-9 pr-4 py-2 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50 w-full sm:w-64 transition-colors"
               />
             </div>
             <button
               type="button"
-              aria-label="Filter results"
+              aria-label={t('dashboard.payouts.filterLabel', 'Filter results')}
               onClick={() => setAppliedQuery(searchQuery)}
               className="p-2 bg-white/[0.02] border border-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
             >
@@ -226,12 +286,12 @@ export default function Payouts() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-white/5 text-sm text-slate-400 bg-white/[0.01]">
-                <th className="px-6 py-4 font-medium">Agent</th>
-                <th className="px-6 py-4 font-medium">Payout Date</th>
-                <th className="px-6 py-4 font-medium">Amount</th>
-                <th className="px-6 py-4 font-medium">Method</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-6 py-4 font-medium">{t('dashboard.payouts.table.agent', 'Agent')}</th>
+                <th className="px-6 py-4 font-medium">{t('dashboard.payouts.table.payoutDate', 'Payout Date')}</th>
+                <th className="px-6 py-4 font-medium">{t('dashboard.payouts.table.amount', 'Amount')}</th>
+                <th className="px-6 py-4 font-medium">{t('dashboard.payouts.table.method', 'Method')}</th>
+                <th className="px-6 py-4 font-medium">{t('dashboard.payouts.table.status', 'Status')}</th>
+                <th className="px-6 py-4 font-medium text-right">{t('dashboard.payouts.table.actions', 'Actions')}</th>
               </tr>
             </thead>
             <tbody className="text-sm" data-testid="dashboard-payouts-tbody">
@@ -282,13 +342,13 @@ export default function Payouts() {
                       {row.status === 'Processing' && <Clock className="w-3 h-3 animate-pulse" />}
                       {row.status === 'Scheduled' && <Clock className="w-3 h-3" />}
                       {row.status === 'Failed' && <XCircle className="w-3 h-3" />}
-                      {row.status}
+                      {t(`dashboard.status.${STATUS_KEY_MAP[row.status] ?? 'completed'}`, row.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button
                       type="button"
-                      aria-label="Open row actions"
+                      aria-label={t('dashboard.rowActions.open', 'Open row actions')}
                       className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                     >
                       <MoreHorizontal className="w-5 h-5" />
@@ -300,7 +360,7 @@ export default function Payouts() {
               {filteredData.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                    No payouts found matching your criteria.
+                    {t('dashboard.payouts.emptyState', 'No payouts found matching your criteria.')}
                   </td>
                 </tr>
               )}
@@ -311,7 +371,10 @@ export default function Payouts() {
         {/* Pagination / Footer */}
         <div className="p-4 border-t border-white/5 flex items-center justify-between text-sm text-slate-400">
           <p>
-            Showing {filteredData.length} of {PAYOUTS.length} results
+            {t('dashboard.payouts.pagination.showing', 'Showing {{count}} of {{total}} results', {
+              count: filteredData.length,
+              total: PAYOUTS.length,
+            })}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -319,14 +382,14 @@ export default function Payouts() {
               className="px-3 py-1.5 hover:bg-white/5 rounded-md transition-colors disabled:opacity-50"
               disabled
             >
-              Previous
+              {t('dashboard.pagination.previous', 'Previous')}
             </button>
             <button
               type="button"
               className="px-3 py-1.5 hover:bg-white/5 rounded-md transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
               disabled
             >
-              Next
+              {t('dashboard.pagination.next', 'Next')}
             </button>
           </div>
         </div>

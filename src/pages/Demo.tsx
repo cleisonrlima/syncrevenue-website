@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, CheckCircle2, Building2, Mail, User, Phone } from 'lucide-react'
 import { motion } from 'motion/react'
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback'
@@ -51,6 +52,8 @@ import { useDocumentMeta } from '@/components/SEO'
 const LOGO_SRC = '/logos/syncsirius-logo.png'
 
 export default function Demo() {
+  const { t } = useTranslation()
+
   useDocumentMeta({
     titleKey: 'seo.demo.title',
     descriptionKey: 'seo.demo.description',
@@ -73,17 +76,19 @@ export default function Demo() {
           <Link to="/" className="flex items-center gap-2">
             <ImageWithFallback
               src={LOGO_SRC}
-              alt="SyncSyrius Logo"
+              alt={t('figmaDemo.nav.logoAlt', 'SyncSyrius Logo')}
               className="h-8 w-auto rounded object-contain"
             />
-            <span className="text-xl font-bold tracking-tight text-white">SyncSyrius</span>
+            <span className="text-xl font-bold tracking-tight text-white">
+              {t('figmaDemo.nav.brand', 'SyncSyrius')}
+            </span>
           </Link>
           <Link
             to="/"
             className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            {t('figmaDemo.nav.backToHome', 'Back to Home')}
           </Link>
         </div>
       </nav>
@@ -96,22 +101,23 @@ export default function Demo() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm mb-6">
               <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
-              Live Demo
+              {t('figmaDemo.hero.badge', 'Live Demo')}
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
-              See SyncSyrius in action.
+              {t('figmaDemo.hero.heading', 'See SyncSyrius in action.')}
             </h1>
             <p className="text-lg text-slate-400 mb-8 leading-relaxed">
-              Discover how our automated commission auditing platform can recover lost revenue and
-              streamline your payouts. Fill out the form, and our team will get in touch to schedule
-              a personalized walkthrough.
+              {t(
+                'figmaDemo.hero.description',
+                'Discover how our automated commission auditing platform can recover lost revenue and streamline your payouts. Fill out the form, and our team will get in touch to schedule a personalized walkthrough.',
+              )}
             </p>
 
             <div className="space-y-6">
               {[
-                'Identify missing commission payments instantly',
-                'Automate agent payouts with 100% accuracy',
-                'Visualize agency performance and global forecasting',
+                t('figmaDemo.hero.bullet1', 'Identify missing commission payments instantly'),
+                t('figmaDemo.hero.bullet2', 'Automate agent payouts with 100% accuracy'),
+                t('figmaDemo.hero.bullet3', 'Visualize agency performance and global forecasting'),
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <CheckCircle2 className="w-6 h-6 text-indigo-400 shrink-0" />
@@ -131,17 +137,21 @@ export default function Demo() {
                 <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <CheckCircle2 className="w-8 h-8 text-green-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">Request Received</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  {t('figmaDemo.success.heading', 'Request Received')}
+                </h3>
                 <p className="text-slate-400 mb-8">
-                  Thanks for your interest! One of our product specialists will be in touch shortly
-                  to schedule your demo.
+                  {t(
+                    'figmaDemo.success.body',
+                    'Thanks for your interest! One of our product specialists will be in touch shortly to schedule your demo.',
+                  )}
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
                   className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
                 >
-                  Submit another request
+                  {t('figmaDemo.success.reset', 'Submit another request')}
                 </button>
               </motion.div>
             ) : (
@@ -152,7 +162,7 @@ export default function Demo() {
                       htmlFor="demo-first-name"
                       className="text-sm font-medium text-slate-300 block"
                     >
-                      First Name
+                      {t('figmaDemo.form.firstName', 'First Name')}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -164,7 +174,7 @@ export default function Demo() {
                         required
                         type="text"
                         className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
-                        placeholder="John"
+                        placeholder={t('figmaDemo.form.placeholders.firstName', 'John')}
                       />
                     </div>
                   </div>
@@ -173,7 +183,7 @@ export default function Demo() {
                       htmlFor="demo-last-name"
                       className="text-sm font-medium text-slate-300 block"
                     >
-                      Last Name
+                      {t('figmaDemo.form.lastName', 'Last Name')}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -185,7 +195,7 @@ export default function Demo() {
                         required
                         type="text"
                         className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
-                        placeholder="Smith"
+                        placeholder={t('figmaDemo.form.placeholders.lastName', 'Smith')}
                       />
                     </div>
                   </div>
@@ -193,7 +203,7 @@ export default function Demo() {
 
                 <div className="space-y-2">
                   <label htmlFor="demo-email" className="text-sm font-medium text-slate-300 block">
-                    Work Email
+                    {t('figmaDemo.form.workEmail', 'Work Email')}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -205,7 +215,7 @@ export default function Demo() {
                       required
                       type="email"
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
-                      placeholder="john@agency.com"
+                      placeholder={t('figmaDemo.form.placeholders.email', 'john@agency.com')}
                     />
                   </div>
                 </div>
@@ -215,7 +225,7 @@ export default function Demo() {
                     htmlFor="demo-company"
                     className="text-sm font-medium text-slate-300 block"
                   >
-                    Company Name
+                    {t('figmaDemo.form.companyName', 'Company Name')}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -227,14 +237,14 @@ export default function Demo() {
                       required
                       type="text"
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
-                      placeholder="Acme Agency"
+                      placeholder={t('figmaDemo.form.placeholders.company', 'Acme Agency')}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="demo-phone" className="text-sm font-medium text-slate-300 block">
-                    Phone Number (Optional)
+                    {t('figmaDemo.form.phoneNumber', 'Phone Number (Optional)')}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -245,7 +255,7 @@ export default function Demo() {
                       name="phone"
                       type="tel"
                       className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder={t('figmaDemo.form.placeholders.phone', '+1 (555) 000-0000')}
                     />
                   </div>
                 </div>
@@ -254,11 +264,14 @@ export default function Demo() {
                   type="submit"
                   className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold py-3 rounded-lg transition-all mt-6 shadow-lg shadow-indigo-500/25"
                 >
-                  Request Demo
+                  {t('figmaDemo.form.submit', 'Request Demo')}
                 </button>
 
                 <p className="text-xs text-center text-slate-500 mt-4">
-                  By submitting this form, you agree to our Terms of Service and Privacy Policy.
+                  {t(
+                    'figmaDemo.form.disclaimer',
+                    'By submitting this form, you agree to our Terms of Service and Privacy Policy.',
+                  )}
                 </p>
               </form>
             )}

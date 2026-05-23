@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   User,
   Users,
@@ -61,7 +62,8 @@ type TabId = 'general' | 'team' | 'security' | 'billing' | 'integrations' | 'not
 
 type SettingsTab = {
   id: TabId
-  label: string
+  labelKey: string
+  labelFallback: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any
 }
@@ -69,16 +71,20 @@ type SettingsTab = {
 // Typed as `any` for the icon component because lucide-react's typed
 // export shape varies per package version; this avoids dragging the
 // version-specific `LucideIcon` import into this file's call-sites.
+// Story 7.5: `labelKey` + `labelFallback` decouple the tab identity from
+// the rendered i18n string.
 const SETTINGS_TABS: ReadonlyArray<SettingsTab> = [
-  { id: 'general', label: 'General Profile', icon: User },
-  { id: 'team', label: 'Team Members', icon: Users },
-  { id: 'security', label: 'Security & API', icon: Shield },
-  { id: 'billing', label: 'Billing & Plans', icon: CreditCard },
-  { id: 'integrations', label: 'Integrations', icon: Blocks },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
+  { id: 'general', labelKey: 'dashboard.settings.tabs.general', labelFallback: 'General Profile', icon: User },
+  { id: 'team', labelKey: 'dashboard.settings.tabs.team', labelFallback: 'Team Members', icon: Users },
+  { id: 'security', labelKey: 'dashboard.settings.tabs.security', labelFallback: 'Security & API', icon: Shield },
+  { id: 'billing', labelKey: 'dashboard.settings.tabs.billing', labelFallback: 'Billing & Plans', icon: CreditCard },
+  { id: 'integrations', labelKey: 'dashboard.settings.tabs.integrations', labelFallback: 'Integrations', icon: Blocks },
+  { id: 'notifications', labelKey: 'dashboard.settings.tabs.notifications', labelFallback: 'Notifications', icon: Bell },
 ]
 
 export default function Settings() {
+  const { t } = useTranslation()
+
   useDocumentMeta({
     titleKey: 'seo.dashboard.settings.title',
     descriptionKey: 'seo.dashboard.settings.description',
@@ -103,9 +109,14 @@ export default function Settings() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Platform Settings</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            {t('dashboard.settings.title', 'Platform Settings')}
+          </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Manage your organization's preferences, billing, and team access.
+            {t(
+              'dashboard.settings.subtitle',
+              "Manage your organization's preferences, billing, and team access.",
+            )}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -122,12 +133,12 @@ export default function Settings() {
             {isSaved ? (
               <>
                 <Check className="w-4 h-4" />
-                Saved Successfully
+                {t('dashboard.settings.saved', 'Saved Successfully')}
               </>
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Save Changes
+                {t('dashboard.settings.save', 'Save Changes')}
               </>
             )}
           </button>
@@ -157,7 +168,7 @@ export default function Settings() {
                 }`}
               >
                 <Icon className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-slate-500'}`} />
-                {tab.label}
+                {t(tab.labelKey, tab.labelFallback)}
               </button>
             )
           })}
@@ -182,16 +193,19 @@ export default function Settings() {
 // ---------------------------------------------------------------------------
 
 function GeneralSettings() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-6">
       <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 md:p-8">
-        <h2 className="text-lg font-bold text-white mb-6">Organization Profile</h2>
+        <h2 className="text-lg font-bold text-white mb-6">
+          {t('dashboard.settings.general.heading', 'Organization Profile')}
+        </h2>
 
         <div className="space-y-6 max-w-2xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label htmlFor="settings-company-name" className="text-sm font-medium text-slate-300 block">
-                Company Name
+                {t('dashboard.settings.general.companyName', 'Company Name')}
               </label>
               <div className="relative">
                 <Building className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -206,7 +220,7 @@ function GeneralSettings() {
 
             <div className="space-y-2">
               <label htmlFor="settings-support-email" className="text-sm font-medium text-slate-300 block">
-                Support Email
+                {t('dashboard.settings.general.supportEmail', 'Support Email')}
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -223,7 +237,7 @@ function GeneralSettings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label htmlFor="settings-currency" className="text-sm font-medium text-slate-300 block">
-                Base Currency
+                {t('dashboard.settings.general.baseCurrency', 'Base Currency')}
               </label>
               <div className="relative">
                 <Globe className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -232,25 +246,25 @@ function GeneralSettings() {
                   defaultValue="usd"
                   className="w-full pl-9 pr-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white appearance-none focus:outline-none focus:border-blue-500/50 transition-colors"
                 >
-                  <option value="usd">USD - US Dollar</option>
-                  <option value="eur">EUR - Euro</option>
-                  <option value="gbp">GBP - British Pound</option>
+                  <option value="usd">{t('dashboard.settings.general.currencyOptions.usd', 'USD - US Dollar')}</option>
+                  <option value="eur">{t('dashboard.settings.general.currencyOptions.eur', 'EUR - Euro')}</option>
+                  <option value="gbp">{t('dashboard.settings.general.currencyOptions.gbp', 'GBP - British Pound')}</option>
                 </select>
               </div>
             </div>
 
             <div className="space-y-2">
               <label htmlFor="settings-timezone" className="text-sm font-medium text-slate-300 block">
-                Timezone
+                {t('dashboard.settings.general.timezone', 'Timezone')}
               </label>
               <select
                 id="settings-timezone"
                 defaultValue="est"
                 className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/10 rounded-lg text-sm text-white appearance-none focus:outline-none focus:border-blue-500/50 transition-colors"
               >
-                <option value="est">Eastern Time (ET)</option>
-                <option value="pst">Pacific Time (PT)</option>
-                <option value="gmt">Greenwich Mean Time (GMT)</option>
+                <option value="est">{t('dashboard.settings.general.timezoneOptions.est', 'Eastern Time (ET)')}</option>
+                <option value="pst">{t('dashboard.settings.general.timezoneOptions.pst', 'Pacific Time (PT)')}</option>
+                <option value="gmt">{t('dashboard.settings.general.timezoneOptions.gmt', 'Greenwich Mean Time (GMT)')}</option>
               </select>
             </div>
           </div>
@@ -258,15 +272,20 @@ function GeneralSettings() {
       </div>
 
       <div className="bg-[#12121A] border border-rose-500/20 rounded-2xl p-6 md:p-8">
-        <h2 className="text-lg font-bold text-rose-400 mb-2">Danger Zone</h2>
+        <h2 className="text-lg font-bold text-rose-400 mb-2">
+          {t('dashboard.settings.general.dangerZone', 'Danger Zone')}
+        </h2>
         <p className="text-sm text-slate-400 mb-6">
-          Permanently remove your organization and all associated data.
+          {t(
+            'dashboard.settings.general.dangerZoneBody',
+            'Permanently remove your organization and all associated data.',
+          )}
         </p>
         <button
           type="button"
           className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-lg text-sm font-medium transition-colors"
         >
-          Delete Organization
+          {t('dashboard.settings.general.deleteOrg', 'Delete Organization')}
         </button>
       </div>
     </div>
@@ -274,6 +293,9 @@ function GeneralSettings() {
 }
 
 function TeamSettings() {
+  const { t } = useTranslation()
+  // Status key stays English-keyed for conditional pill styling (Story 7.6
+  // owns the redesign). Pill label is resolved via `dashboard.status.*`.
   const team = [
     { name: 'Alex Rivera', role: 'Owner', email: 'alex@acme.com', status: 'Active' },
     { name: 'Morgan Smith', role: 'Admin', email: 'morgan@acme.com', status: 'Active' },
@@ -284,25 +306,29 @@ function TeamSettings() {
     <div className="bg-[#12121A] border border-white/5 rounded-2xl flex flex-col">
       <div className="p-6 md:p-8 border-b border-white/5 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-white">Team Members</h2>
-          <p className="text-sm text-slate-400">Manage who has access to your workspace.</p>
+          <h2 className="text-lg font-bold text-white">
+            {t('dashboard.settings.team.heading', 'Team Members')}
+          </h2>
+          <p className="text-sm text-slate-400">
+            {t('dashboard.settings.team.subheading', 'Manage who has access to your workspace.')}
+          </p>
         </div>
         <button
           type="button"
           className="px-4 py-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          Invite Member
+          {t('dashboard.settings.team.invite', 'Invite Member')}
         </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-white/5 text-sm text-slate-400 bg-white/[0.01]">
-              <th className="px-6 py-4 font-medium">User</th>
-              <th className="px-6 py-4 font-medium">Role</th>
-              <th className="px-6 py-4 font-medium">Status</th>
-              <th className="px-6 py-4 font-medium text-right">Actions</th>
+              <th className="px-6 py-4 font-medium">{t('dashboard.settings.team.table.user', 'User')}</th>
+              <th className="px-6 py-4 font-medium">{t('dashboard.settings.team.table.role', 'Role')}</th>
+              <th className="px-6 py-4 font-medium">{t('dashboard.settings.team.table.status', 'Status')}</th>
+              <th className="px-6 py-4 font-medium text-right">{t('dashboard.settings.team.table.actions', 'Actions')}</th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -321,7 +347,7 @@ function TeamSettings() {
                         : 'bg-amber-400/10 text-amber-400'
                     }`}
                   >
-                    {member.status}
+                    {t(`dashboard.status.${member.status === 'Active' ? 'active' : 'invited'}`, member.status)}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
@@ -329,7 +355,7 @@ function TeamSettings() {
                     type="button"
                     className="text-slate-400 hover:text-white text-sm transition-colors"
                   >
-                    Edit
+                    {t('dashboard.settings.team.edit', 'Edit')}
                   </button>
                 </td>
               </tr>
@@ -342,48 +368,63 @@ function TeamSettings() {
 }
 
 function SecuritySettings() {
+  const { t } = useTranslation()
   const [apiKeyVisible, setApiKeyVisible] = useState(false)
   const maskedApiKey = 'sk_live_[demo-key-hidden]'
 
   return (
     <div className="space-y-6">
       <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 md:p-8">
-        <h2 className="text-lg font-bold text-white mb-6">Authentication</h2>
+        <h2 className="text-lg font-bold text-white mb-6">
+          {t('dashboard.settings.security.heading', 'Authentication')}
+        </h2>
 
         <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02] mb-4">
           <div>
-            <div className="font-medium text-white mb-1">Two-Factor Authentication (2FA)</div>
-            <div className="text-sm text-slate-400">Add an extra layer of security to your account.</div>
+            <div className="font-medium text-white mb-1">
+              {t('dashboard.settings.security.twoFactor', 'Two-Factor Authentication (2FA)')}
+            </div>
+            <div className="text-sm text-slate-400">
+              {t('dashboard.settings.security.twoFactorBody', 'Add an extra layer of security to your account.')}
+            </div>
           </div>
           <button
             type="button"
             className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors shadow-[0_0_15px_rgba(59,130,246,0.3)]"
           >
-            Enable
+            {t('dashboard.settings.security.enable', 'Enable')}
           </button>
         </div>
 
         <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02]">
           <div>
-            <div className="font-medium text-white mb-1">Password</div>
-            <div className="text-sm text-slate-400">Last changed 3 months ago.</div>
+            <div className="font-medium text-white mb-1">
+              {t('dashboard.settings.security.password', 'Password')}
+            </div>
+            <div className="text-sm text-slate-400">
+              {t('dashboard.settings.security.passwordBody', 'Last changed 3 months ago.')}
+            </div>
           </div>
           <button
             type="button"
             className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm font-medium rounded-lg transition-colors border border-white/10"
           >
-            Update
+            {t('dashboard.settings.security.update', 'Update')}
           </button>
         </div>
       </div>
 
       <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 md:p-8">
-        <h2 className="text-lg font-bold text-white mb-6">API Keys</h2>
+        <h2 className="text-lg font-bold text-white mb-6">
+          {t('dashboard.settings.security.apiKeys', 'API Keys')}
+        </h2>
         <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm mb-6">
           <AlertCircle className="w-5 h-5 shrink-0" />
           <p>
-            Your API keys carry full access to your organization's data. Keep them secure and never share them
-            publicly.
+            {t(
+              'dashboard.settings.security.apiKeysNotice',
+              "Your API keys carry full access to your organization's data. Keep them secure and never share them publicly.",
+            )}
           </p>
         </div>
 
@@ -391,12 +432,14 @@ function SecuritySettings() {
           <div className="flex items-center justify-between border-b border-white/5 pb-4">
             <div>
               <div className="font-medium text-white flex items-center gap-2">
-                Production Key{' '}
+                {t('dashboard.settings.security.productionKey', 'Production Key')}{' '}
                 <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/10 text-slate-300 uppercase tracking-wider">
-                  Live
+                  {t('dashboard.settings.security.live', 'Live')}
                 </span>
               </div>
-              <div className="text-xs text-slate-500 mt-1">Created May 12, 2026</div>
+              <div className="text-xs text-slate-500 mt-1">
+                {t('dashboard.settings.security.createdLabel', 'Created May 12, 2026')}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="px-3 py-1.5 bg-black/50 border border-white/10 rounded font-mono text-sm text-slate-400">
@@ -404,13 +447,17 @@ function SecuritySettings() {
               </div>
               <button
                 type="button"
-                aria-label={apiKeyVisible ? 'Hide API key placeholder' : 'Reveal API key placeholder'}
+                aria-label={apiKeyVisible
+                  ? t('dashboard.settings.security.hideAriaLabel', 'Hide API key placeholder')
+                  : t('dashboard.settings.security.revealAriaLabel', 'Reveal API key placeholder')}
                 aria-pressed={apiKeyVisible}
                 onClick={() => setApiKeyVisible((visible) => !visible)}
                 className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded transition-colors inline-flex items-center gap-2"
               >
                 <Key className="w-4 h-4" />
-                {apiKeyVisible ? 'Hide' : 'Reveal'}
+                {apiKeyVisible
+                  ? t('dashboard.settings.security.hide', 'Hide')
+                  : t('dashboard.settings.security.reveal', 'Reveal')}
               </button>
             </div>
           </div>
@@ -421,29 +468,40 @@ function SecuritySettings() {
 }
 
 function BillingSettings() {
+  const { t } = useTranslation()
   return (
     <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 md:p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-lg font-bold text-white">Current Plan</h2>
-          <p className="text-sm text-slate-400">You are currently on the Enterprise tier.</p>
+          <h2 className="text-lg font-bold text-white">
+            {t('dashboard.settings.billing.currentPlan', 'Current Plan')}
+          </h2>
+          <p className="text-sm text-slate-400">
+            {t('dashboard.settings.billing.subheading', 'You are currently on the Enterprise tier.')}
+          </p>
         </div>
         <span className="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-400 border border-blue-500/20 rounded-full text-sm font-bold tracking-wide">
-          ENTERPRISE
+          {t('dashboard.settings.billing.tier', 'ENTERPRISE')}
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-          <div className="text-sm text-slate-400 mb-1">Monthly Cost</div>
+          <div className="text-sm text-slate-400 mb-1">
+            {t('dashboard.settings.billing.monthlyCost', 'Monthly Cost')}
+          </div>
           <div className="text-2xl font-bold text-white">$1,499</div>
         </div>
         <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-          <div className="text-sm text-slate-400 mb-1">Next Billing Date</div>
+          <div className="text-sm text-slate-400 mb-1">
+            {t('dashboard.settings.billing.nextBilling', 'Next Billing Date')}
+          </div>
           <div className="text-2xl font-bold text-white">Jun 1, 2026</div>
         </div>
         <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-          <div className="text-sm text-slate-400 mb-1">API Requests</div>
+          <div className="text-sm text-slate-400 mb-1">
+            {t('dashboard.settings.billing.apiRequests', 'API Requests')}
+          </div>
           <div className="text-2xl font-bold text-white">
             1.2M <span className="text-sm font-normal text-slate-500">/ 5M</span>
           </div>
@@ -451,22 +509,28 @@ function BillingSettings() {
       </div>
 
       <div className="border-t border-white/5 pt-8">
-        <h3 className="font-bold text-white mb-4">Payment Method</h3>
+        <h3 className="font-bold text-white mb-4">
+          {t('dashboard.settings.billing.paymentMethod', 'Payment Method')}
+        </h3>
         <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02]">
           <div className="flex items-center gap-4">
             <div className="w-12 h-8 bg-slate-800 rounded border border-white/10 flex items-center justify-center">
               <CreditCard className="w-5 h-5 text-slate-400" />
             </div>
             <div>
-              <div className="font-medium text-white">Visa ending in 4242</div>
-              <div className="text-sm text-slate-400">Expires 12/28</div>
+              <div className="font-medium text-white">
+                {t('dashboard.settings.billing.cardLabel', 'Visa ending in 4242')}
+              </div>
+              <div className="text-sm text-slate-400">
+                {t('dashboard.settings.billing.cardExpires', 'Expires 12/28')}
+              </div>
             </div>
           </div>
           <button
             type="button"
             className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
           >
-            Update
+            {t('dashboard.settings.billing.update', 'Update')}
           </button>
         </div>
       </div>
@@ -475,11 +539,16 @@ function BillingSettings() {
 }
 
 function IntegrationsSettings() {
+  const { t } = useTranslation()
+  // `descKey` resolves the integration's translated description; the brand
+  // `name` field is left inline (brand names don't get translated until
+  // Story 7.6 / Story 7.7 rewrite the source vocabulary). `descFallback`
+  // is the dev-mode safety net for missing keys.
   const [integrations, setIntegrations] = useState([
-    { name: 'Stripe', desc: 'Sync payments and invoices automatically.', connected: true },
-    { name: 'Salesforce', desc: 'Import CRM deals and commission structures.', connected: true },
-    { name: 'HubSpot', desc: 'Sync contacts and agency data.', connected: false },
-    { name: 'NetSuite', desc: 'Enterprise ERP syncing for ledger entries.', connected: false },
+    { name: 'Stripe', descKey: 'dashboard.settings.integrations.items.stripe', descFallback: 'Sync payments and invoices automatically.', connected: true },
+    { name: 'Salesforce', descKey: 'dashboard.settings.integrations.items.salesforce', descFallback: 'Import CRM deals and commission structures.', connected: true },
+    { name: 'HubSpot', descKey: 'dashboard.settings.integrations.items.hubspot', descFallback: 'Sync contacts and agency data.', connected: false },
+    { name: 'NetSuite', descKey: 'dashboard.settings.integrations.items.netsuite', descFallback: 'Enterprise ERP syncing for ledger entries.', connected: false },
   ])
 
   const toggleIntegration = (name: string) => {
@@ -490,7 +559,9 @@ function IntegrationsSettings() {
 
   return (
     <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 md:p-8">
-      <h2 className="text-lg font-bold text-white mb-6">Connected Apps</h2>
+      <h2 className="text-lg font-bold text-white mb-6">
+        {t('dashboard.settings.integrations.heading', 'Connected Apps')}
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {integrations.map((app) => (
           <div
@@ -503,11 +574,11 @@ function IntegrationsSettings() {
                 <div className="font-bold text-white">{app.name}</div>
                 {app.connected && (
                   <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">
-                    <Check className="w-3 h-3" /> Connected
+                    <Check className="w-3 h-3" /> {t('dashboard.status.connected', 'Connected')}
                   </span>
                 )}
               </div>
-              <p className="text-sm text-slate-400">{app.desc}</p>
+              <p className="text-sm text-slate-400">{t(app.descKey, app.descFallback)}</p>
             </div>
             <button
               type="button"
@@ -519,7 +590,9 @@ function IntegrationsSettings() {
                   : 'bg-blue-500 text-white border-transparent hover:bg-blue-600 shadow-[0_0_15px_rgba(59,130,246,0.2)]'
               }`}
             >
-              {app.connected ? 'Disconnect' : 'Connect'}
+              {app.connected
+                ? t('dashboard.settings.integrations.disconnect', 'Disconnect')
+                : t('dashboard.settings.integrations.connect', 'Connect')}
             </button>
           </div>
         ))}
@@ -529,35 +602,67 @@ function IntegrationsSettings() {
 }
 
 function NotificationSettings() {
+  const { t } = useTranslation()
   const items = [
-    { title: 'Payout Approvals', desc: 'Get notified when a payout cycle requires manual approval.' },
-    { title: 'Commission Anomalies', desc: 'Alerts for unexpected spikes or drops in commission calculations.' },
-    { title: 'Daily Digest', desc: "A summary of the day's processed transactions and errors." },
-    { title: 'New Integrations', desc: 'Updates when new partner apps are available.' },
+    {
+      id: 'payoutApprovals',
+      titleKey: 'dashboard.settings.notifications.items.payoutApprovals.title',
+      titleFallback: 'Payout Approvals',
+      descKey: 'dashboard.settings.notifications.items.payoutApprovals.desc',
+      descFallback: 'Get notified when a payout cycle requires manual approval.',
+    },
+    {
+      id: 'commissionAnomalies',
+      titleKey: 'dashboard.settings.notifications.items.commissionAnomalies.title',
+      titleFallback: 'Commission Anomalies',
+      descKey: 'dashboard.settings.notifications.items.commissionAnomalies.desc',
+      descFallback: 'Alerts for unexpected spikes or drops in commission calculations.',
+    },
+    {
+      id: 'dailyDigest',
+      titleKey: 'dashboard.settings.notifications.items.dailyDigest.title',
+      titleFallback: 'Daily Digest',
+      descKey: 'dashboard.settings.notifications.items.dailyDigest.desc',
+      descFallback: "A summary of the day's processed transactions and errors.",
+    },
+    {
+      id: 'newIntegrations',
+      titleKey: 'dashboard.settings.notifications.items.newIntegrations.title',
+      titleFallback: 'New Integrations',
+      descKey: 'dashboard.settings.notifications.items.newIntegrations.desc',
+      descFallback: 'Updates when new partner apps are available.',
+    },
   ]
 
   return (
     <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 md:p-8">
-      <h2 className="text-lg font-bold text-white mb-6">Notification Preferences</h2>
+      <h2 className="text-lg font-bold text-white mb-6">
+        {t('dashboard.settings.notifications.heading', 'Notification Preferences')}
+      </h2>
 
       <div className="space-y-6">
-        {items.map((item, idx) => (
-          <div key={item.title} className="flex items-start justify-between">
-            <div className="pr-8">
-              <div className="font-medium text-white mb-1">{item.title}</div>
-              <div className="text-sm text-slate-400">{item.desc}</div>
+        {items.map((item, idx) => {
+          const title = t(item.titleKey, item.titleFallback)
+          return (
+            <div key={item.id} className="flex items-start justify-between">
+              <div className="pr-8">
+                <div className="font-medium text-white mb-1">{title}</div>
+                <div className="text-sm text-slate-400">{t(item.descKey, item.descFallback)}</div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+                <span className="sr-only">
+                  {t('dashboard.settings.notifications.toggleLabel', 'Toggle {{title}}', { title })}
+                </span>
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  defaultChecked={idx < 2}
+                />
+                <span className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0)_inset] peer-checked:shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+              </label>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
-              <span className="sr-only">Toggle {item.title}</span>
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                defaultChecked={idx < 2}
-              />
-              <span className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0)_inset] peer-checked:shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-            </label>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

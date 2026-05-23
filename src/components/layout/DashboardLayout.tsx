@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard,
   Target,
@@ -68,6 +69,7 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
 
 function DashboardNavLink({ item, testIdPrefix, compact = false }: DashboardNavLinkProps) {
   const { to, labelKey, defaultLabel, Icon } = item
+  const { t } = useTranslation()
   const exact = to === '/dashboard'
   const testIdSuffix = to.split('/').pop() || 'overview'
 
@@ -87,7 +89,7 @@ function DashboardNavLink({ item, testIdPrefix, compact = false }: DashboardNavL
       }
     >
       <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-      <span data-i18n-key={labelKey}>{defaultLabel}</span>
+      <span data-i18n-key={labelKey}>{t(labelKey, defaultLabel)}</span>
     </NavLink>
   )
 }
@@ -103,6 +105,7 @@ const USER_PLACEHOLDER = {
 
 export default function DashboardLayout() {
   const location = useLocation()
+  const { t } = useTranslation()
 
   const isOverviewActive = location.pathname === '/dashboard'
 
@@ -111,24 +114,26 @@ export default function DashboardLayout() {
       {/* ---------- Sidebar ---------- */}
       <aside
         className="hidden lg:flex w-64 shrink-0 flex-col border-r border-white/10 bg-[rgba(8,8,32,0.85)]"
-        aria-label="Dashboard navigation"
+        aria-label={t('dashboard.layout.sidebarAriaLabel', 'Dashboard navigation')}
         data-testid="dashboard-sidebar"
       >
         <div className="flex items-center gap-3 px-6 h-16 border-b border-white/10">
           <ImageWithFallback
             src="/logos/syncsirius-logo.png"
-            alt="SyncSirius"
+            alt={t('dashboard.layout.logoAlt', 'SyncSirius')}
             width={32}
             height={32}
             className="h-8 w-auto block"
           />
-          <span className="text-sm font-semibold text-white tracking-wide">SyncSirius</span>
+          <span className="text-sm font-semibold text-white tracking-wide">
+            {t('dashboard.layout.brand', 'SyncSirius')}
+          </span>
         </div>
 
         <nav
           className="flex-1 px-3 py-4 flex flex-col gap-1"
           role="navigation"
-          aria-label="Dashboard primary navigation"
+          aria-label={t('dashboard.layout.primaryNavAriaLabel', 'Dashboard primary navigation')}
           data-testid="dashboard-sidebar-nav"
         >
           {NAV_ITEMS.map((item) => (
@@ -161,14 +166,14 @@ export default function DashboardLayout() {
         >
           <div className="flex-1 max-w-md">
             <label htmlFor="dashboard-search" className="sr-only">
-              Search dashboard
+              {t('dashboard.layout.searchLabel', 'Search dashboard')}
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" aria-hidden="true" />
               <input
                 id="dashboard-search"
                 type="search"
-                placeholder="Search..."
+                placeholder={t('dashboard.layout.searchPlaceholder', 'Search...')}
                 data-testid="dashboard-search-input"
                 className="w-full h-9 rounded-md bg-white/5 border border-white/10 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
@@ -178,7 +183,7 @@ export default function DashboardLayout() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              aria-label="View notifications"
+              aria-label={t('dashboard.layout.notificationsLabel', 'View notifications')}
               data-testid="dashboard-bell-button"
               className="h-9 w-9 rounded-md flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 motion-safe:transition-colors motion-safe:duration-150"
             >
@@ -189,14 +194,14 @@ export default function DashboardLayout() {
               data-testid="dashboard-import-cta"
               className="h-9 rounded-md bg-[var(--accent)] text-[var(--accent-foreground)] px-4 text-sm font-medium motion-safe:transition-opacity motion-safe:duration-150 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
             >
-              Import Statement
+              {t('dashboard.layout.importCta', 'Import Statement')}
             </button>
           </div>
         </header>
 
         <nav
           className="lg:hidden border-b border-white/10 bg-[rgba(8,8,32,0.78)] overflow-x-auto px-3 py-2"
-          aria-label="Dashboard mobile navigation"
+          aria-label={t('dashboard.layout.mobileNavAriaLabel', 'Dashboard mobile navigation')}
           data-testid="dashboard-mobile-nav"
         >
           <div className="flex min-w-max gap-1">
@@ -208,7 +213,7 @@ export default function DashboardLayout() {
 
         <section
           id="dashboard-main"
-          aria-label="Dashboard content"
+          aria-label={t('dashboard.layout.contentAriaLabel', 'Dashboard content')}
           className={cn(
             'flex-1 p-4 sm:p-6 lg:p-8',
             // Story 7.2: scroll-mt-16 mirrors the sibling main wrapper in

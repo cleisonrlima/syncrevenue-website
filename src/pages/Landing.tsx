@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react'
 import Slider from 'react-slick'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import {
@@ -72,57 +73,92 @@ import { useDocumentMeta } from '@/components/SEO'
  * therefore only renders client-side and the slider initialises safely.
  */
 
-const CAROUSEL_SLIDES = [
+// Story 7.5: text content (badge / title / titleHighlight / description /
+// floatingTitle / floatingValue) lives under `landing.heroSlides.{id}.*` in
+// the i18n bundle. The visual/static config (image URL, primary color,
+// floating icon + bg, slide id) stays inline — it's not user-facing copy.
+type SlideId = 'revenue' | 'pay' | 'insights'
+
+type SlideConfig = {
+  id: SlideId
+  image: string
+  primaryColor: string
+  floatingIcon: React.ReactNode
+  floatingBg: string
+}
+
+const CAROUSEL_SLIDES: ReadonlyArray<SlideConfig> = [
   {
     id: 'revenue',
+    image:
+      'https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwYW5hbHl0aWNzJTIwZGFzaGJvYXJkJTIwZGFzaGJvYXJkfGVufDF8fHx8MTc3OTQ3OTI1N3ww&ixlib=rb-4.1.0&q=80&w=1080',
+    primaryColor: 'from-indigo-400 via-purple-400 to-pink-400',
+    floatingIcon: <TrendingUp className="w-5 h-5 text-green-400" />,
+    floatingBg: 'bg-green-500/20',
+  },
+  {
+    id: 'pay',
+    image:
+      'https://images.unsplash.com/photo-1509017174183-0b7e0278f1ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkaWdpdGFsJTIwcGF5bWVudCUyMHRyYW5zYWN0aW9ufGVufDF8fHx8MTc3OTQ3OTgxN3ww&ixlib=rb-4.1.0&q=80&w=1080',
+    primaryColor: 'from-blue-400 via-cyan-400 to-teal-400',
+    floatingIcon: <Wallet className="w-5 h-5 text-blue-400" />,
+    floatingBg: 'bg-blue-500/20',
+  },
+  {
+    id: 'insights',
+    image:
+      'https://images.unsplash.com/photo-1576185850227-1f72b7f8d483?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbG9iYWwlMjBmaW5hbmNlJTIwYnVzaW5lc3MlMjBtYXAlMjBhYnN0cmFjdHxlbnwxfHx8fDE3Nzk0Nzk4MzB8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    primaryColor: 'from-amber-400 via-orange-400 to-rose-400',
+    floatingIcon: <Globe2 className="w-5 h-5 text-amber-400" />,
+    floatingBg: 'bg-amber-500/20',
+  },
+]
+
+// Per-slide English fallback strings used as `defaultValue` for `t()` calls.
+// Keeping them co-located with the slide config means a single source of
+// truth even when the i18n bundle is missing a key (dev safety net).
+const SLIDE_FALLBACKS: Record<SlideId, {
+  badge: string
+  title: string
+  titleHighlight: string
+  description: string
+  floatingTitle: string
+  floatingValue: string
+}> = {
+  revenue: {
     badge: 'SyncRevenue 2.0 is now live',
     title: 'Recover lost revenue.',
     titleHighlight: 'Instantly.',
     description:
       'The automated commission auditing platform that finds missing agency revenue before it hits your bottom line. Stop leaving money on the table.',
-    image:
-      'https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwYW5hbHl0aWNzJTIwZGFzaGJvYXJkJTIwZGFzaGJvYXJkfGVufDF8fHx8MTc3OTQ3OTI1N3ww&ixlib=rb-4.1.0&q=80&w=1080',
-    primaryColor: 'from-indigo-400 via-purple-400 to-pink-400',
-    floatingIcon: <TrendingUp className="w-5 h-5 text-green-400" />,
     floatingTitle: 'Recovered this month',
     floatingValue: '+$24,500.00',
-    floatingBg: 'bg-green-500/20',
   },
-  {
-    id: 'pay',
+  pay: {
     badge: 'Introducing SyncPay',
     title: 'Automate payouts.',
     titleHighlight: 'Flawlessly.',
     description:
       'Route commissions to your agents instantly and accurately. Simplify your payout workflows and eliminate manual transaction errors.',
-    image:
-      'https://images.unsplash.com/photo-1509017174183-0b7e0278f1ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkaWdpdGFsJTIwcGF5bWVudCUyMHRyYW5zYWN0aW9ufGVufDF8fHx8MTc3OTQ3OTgxN3ww&ixlib=rb-4.1.0&q=80&w=1080',
-    primaryColor: 'from-blue-400 via-cyan-400 to-teal-400',
-    floatingIcon: <Wallet className="w-5 h-5 text-blue-400" />,
     floatingTitle: 'Payout Processed',
     floatingValue: '$12,450 to 8 Agents',
-    floatingBg: 'bg-blue-500/20',
   },
-  {
-    id: 'insights',
+  insights: {
     badge: 'SyncInsights Enterprise',
     title: 'Predictive analytics.',
     titleHighlight: 'Visualized.',
     description:
       'Forecast cash flow and visualize agency performance across global territories. Turn raw commission data into strategic business intelligence.',
-    image:
-      'https://images.unsplash.com/photo-1576185850227-1f72b7f8d483?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbG9iYWwlMjBmaW5hbmNlJTIwYnVzaW5lc3MlMjBtYXAlMjBhYnN0cmFjdHxlbnwxfHx8fDE3Nzk0Nzk4MzB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    primaryColor: 'from-amber-400 via-orange-400 to-rose-400',
-    floatingIcon: <Globe2 className="w-5 h-5 text-amber-400" />,
     floatingTitle: 'Global Forecast',
     floatingValue: '+18% YoY Growth',
-    floatingBg: 'bg-amber-500/20',
   },
-]
+}
 
 const LOGO_SRC = '/logos/syncsirius-logo.png'
 
 export default function Landing() {
+  const { t } = useTranslation()
+
   useDocumentMeta({
     titleKey: 'seo.landing.title',
     descriptionKey: 'seo.landing.description',
@@ -217,24 +253,26 @@ export default function Landing() {
           <div className="flex items-center gap-2">
             <ImageWithFallback
               src={LOGO_SRC}
-              alt="SyncSyrius Logo"
+              alt={t('landing.nav.logoAlt', 'SyncSyrius Logo')}
               className="h-8 w-auto rounded object-contain"
             />
-            <span className="text-xl font-bold tracking-tight text-white">SyncSyrius</span>
+            <span className="text-xl font-bold tracking-tight text-white">
+              {t('landing.nav.brand', 'SyncSyrius')}
+            </span>
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="#platform" className="text-slate-300 hover:text-white transition-colors">
-              Products
+              {t('landing.nav.products', 'Products')}
             </a>
             <a href="#benefits" className="text-slate-300 hover:text-white transition-colors">
-              Benefits
+              {t('landing.nav.benefits', 'Benefits')}
             </a>
             <a href="#security" className="text-slate-300 hover:text-white transition-colors">
-              Security
+              {t('landing.nav.security', 'Security')}
             </a>
             <a href="#customers" className="text-slate-300 hover:text-white transition-colors">
-              Customers
+              {t('landing.nav.customers', 'Customers')}
             </a>
           </div>
 
@@ -243,20 +281,22 @@ export default function Landing() {
               to="/dashboard"
               className="text-sm font-medium text-slate-300 hover:text-white transition-colors px-4 py-2"
             >
-              Log in
+              {t('landing.nav.login', 'Log in')}
             </Link>
             <Link
               to="/demo"
               className="text-sm font-medium bg-white text-black hover:bg-slate-200 transition-colors px-5 py-2.5 rounded-full inline-flex items-center gap-2"
             >
-              Book a Demo
+              {t('landing.nav.bookDemo', 'Book a Demo')}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           <button
             type="button"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileMenuOpen
+              ? t('landing.nav.closeMenu', 'Close menu')
+              : t('landing.nav.openMenu', 'Open menu')}
             aria-expanded={mobileMenuOpen}
             aria-controls="landing-mobile-menu"
             className="md:hidden text-slate-300"
@@ -277,7 +317,7 @@ export default function Landing() {
             ref={mobileMenuRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Landing navigation"
+            aria-label={t('landing.mobileMenu.ariaLabel', 'Landing navigation')}
             className="fixed inset-0 z-40 bg-[#0A0A0A] pt-24 px-6 md:hidden"
           >
             <div className="flex flex-col gap-6 text-lg">
@@ -286,34 +326,34 @@ export default function Landing() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="border-b border-white/10 pb-4"
               >
-                Products
+                {t('landing.nav.products', 'Products')}
               </a>
               <a
                 href="#benefits"
                 onClick={() => setMobileMenuOpen(false)}
                 className="border-b border-white/10 pb-4"
               >
-                Benefits
+                {t('landing.nav.benefits', 'Benefits')}
               </a>
               <a
                 href="#security"
                 onClick={() => setMobileMenuOpen(false)}
                 className="border-b border-white/10 pb-4"
               >
-                Security
+                {t('landing.nav.security', 'Security')}
               </a>
               <a
                 href="#customers"
                 onClick={() => setMobileMenuOpen(false)}
                 className="border-b border-white/10 pb-4"
               >
-                Customers
+                {t('landing.nav.customers', 'Customers')}
               </a>
               <Link
                 to="/demo"
                 className="bg-white text-black py-4 rounded-xl mt-4 font-medium flex items-center justify-center gap-2"
               >
-                Book a Demo <ArrowRight className="w-5 h-5" />
+                {t('landing.nav.bookDemo', 'Book a Demo')} <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </motion.div>
@@ -328,7 +368,7 @@ export default function Landing() {
           <motion.img
             style={{ y }}
             src="https://images.unsplash.com/photo-1462556791646-c201b8241a94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhYnN0cmFjdCUyMGJ1c2luZXNzfGVufDF8fHx8MTc3OTQ3OTI1M3ww&ixlib=rb-4.1.0&q=80&w=1920"
-            alt="Abstract Business"
+            alt={t('landing.hero.bgImageAlt', 'Abstract Business')}
             className="w-full h-[150%] object-cover opacity-10 object-top"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#0A0A0A]/80 to-[#0A0A0A]" />
@@ -343,104 +383,116 @@ export default function Landing() {
           `}</style>
 
           <Slider {...sliderSettings} className="hero-slider">
-            {CAROUSEL_SLIDES.map((slide) => (
-              <div key={slide.id} className="outline-none focus:outline-none py-12">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-                  <div className="pr-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm mb-8 text-slate-300">
-                      <span className="flex h-2 w-2 rounded-full bg-white animate-pulse" />
-                      {slide.badge}
-                    </div>
-
-                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-                      {slide.title} <br />
-                      <span
-                        className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.primaryColor}`}
-                      >
-                        {slide.titleHighlight}
-                      </span>
-                    </h1>
-
-                    <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-xl leading-relaxed min-h-[84px]">
-                      {slide.description}
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <Link
-                        to="/dashboard"
-                        className="w-full sm:w-auto px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors flex items-center justify-center gap-2 text-lg"
-                      >
-                        Explore {slide.id === 'revenue' ? 'Platform' : 'Product'}
-                        <ArrowRight className="w-5 h-5" />
-                      </Link>
-                      <Link
-                        to="/demo"
-                        className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-full border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-lg"
-                      >
-                        <PlayCircle className="w-5 h-5" />
-                        Request Demo
-                      </Link>
-                    </div>
-
-                    <div className="mt-12 flex items-center gap-8 text-sm text-slate-500">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-slate-400" />
-                        <span>Seamless integration</span>
+            {CAROUSEL_SLIDES.map((slide) => {
+              const slideCopy = SLIDE_FALLBACKS[slide.id]
+              const slideTitle = t(`landing.heroSlides.${slide.id}.title`, slideCopy.title)
+              return (
+                <div key={slide.id} className="outline-none focus:outline-none py-12">
+                  <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="pr-4">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm mb-8 text-slate-300">
+                        <span className="flex h-2 w-2 rounded-full bg-white animate-pulse" />
+                        {t(`landing.heroSlides.${slide.id}.badge`, slideCopy.badge)}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-slate-400" />
-                        <span>Cancel anytime</span>
+
+                      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+                        {slideTitle} <br />
+                        <span
+                          className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.primaryColor}`}
+                        >
+                          {t(`landing.heroSlides.${slide.id}.titleHighlight`, slideCopy.titleHighlight)}
+                        </span>
+                      </h1>
+
+                      <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-xl leading-relaxed min-h-[84px]">
+                        {t(`landing.heroSlides.${slide.id}.description`, slideCopy.description)}
+                      </p>
+
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <Link
+                          to="/dashboard"
+                          className="w-full sm:w-auto px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-slate-200 transition-colors flex items-center justify-center gap-2 text-lg"
+                        >
+                          {slide.id === 'revenue'
+                            ? t('landing.hero.explorePlatform', 'Explore Platform')
+                            : t('landing.hero.exploreProduct', 'Explore Product')}
+                          <ArrowRight className="w-5 h-5" />
+                        </Link>
+                        <Link
+                          to="/demo"
+                          className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-full border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-lg"
+                        >
+                          <PlayCircle className="w-5 h-5" />
+                          {t('landing.hero.requestDemo', 'Request Demo')}
+                        </Link>
+                      </div>
+
+                      <div className="mt-12 flex items-center gap-8 text-sm text-slate-500">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-slate-400" />
+                          <span>{t('landing.hero.trustBadge1', 'Seamless integration')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-slate-400" />
+                          <span>{t('landing.hero.trustBadge2', 'Cancel anytime')}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="relative hidden lg:block">
-                    <div
-                      className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] mix-blend-screen opacity-20 bg-gradient-to-r ${slide.primaryColor}`}
-                    />
-
-                    <div className="relative rounded-2xl border border-white/10 bg-[#12121A]/80 backdrop-blur-xl p-2 shadow-2xl z-10">
-                      <img
-                        src={slide.image}
-                        alt={slide.title}
-                        className="rounded-xl border border-white/5 opacity-80 h-[450px] w-full object-cover grayscale-[0.2]"
+                    <div className="relative hidden lg:block">
+                      <div
+                        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] mix-blend-screen opacity-20 bg-gradient-to-r ${slide.primaryColor}`}
                       />
 
-                      <motion.div
-                        animate={{ y: [0, -10, 0] }}
-                        transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-                        className="absolute -left-12 top-24 bg-[#1A1A24] border border-white/10 rounded-xl p-4 shadow-xl flex items-center gap-4"
-                      >
-                        <div
-                          className={`w-10 h-10 rounded-full ${slide.floatingBg} flex items-center justify-center`}
-                        >
-                          {slide.floatingIcon}
-                        </div>
-                        <div>
-                          <p className="text-xs text-slate-400">{slide.floatingTitle}</p>
-                          <p className="text-lg font-bold text-white">{slide.floatingValue}</p>
-                        </div>
-                      </motion.div>
+                      <div className="relative rounded-2xl border border-white/10 bg-[#12121A]/80 backdrop-blur-xl p-2 shadow-2xl z-10">
+                        <img
+                          src={slide.image}
+                          alt={slideTitle}
+                          className="rounded-xl border border-white/5 opacity-80 h-[450px] w-full object-cover grayscale-[0.2]"
+                        />
 
-                      <motion.div
-                        animate={{ y: [0, 10, 0] }}
-                        transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }}
-                        className="absolute -right-8 bottom-12 bg-[#1A1A24] border border-white/10 rounded-xl p-4 shadow-xl"
-                      >
-                        <div className="flex items-center justify-between mb-2 gap-4">
-                          <p className="text-xs text-slate-400">System Status</p>
-                          <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-                        </div>
-                        <p className="text-sm font-medium text-white flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-indigo-400" />
-                          Live Sync Active
-                        </p>
-                      </motion.div>
+                        <motion.div
+                          animate={{ y: [0, -10, 0] }}
+                          transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+                          className="absolute -left-12 top-24 bg-[#1A1A24] border border-white/10 rounded-xl p-4 shadow-xl flex items-center gap-4"
+                        >
+                          <div
+                            className={`w-10 h-10 rounded-full ${slide.floatingBg} flex items-center justify-center`}
+                          >
+                            {slide.floatingIcon}
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-400">
+                              {t(`landing.heroSlides.${slide.id}.floatingTitle`, slideCopy.floatingTitle)}
+                            </p>
+                            <p className="text-lg font-bold text-white">
+                              {t(`landing.heroSlides.${slide.id}.floatingValue`, slideCopy.floatingValue)}
+                            </p>
+                          </div>
+                        </motion.div>
+
+                        <motion.div
+                          animate={{ y: [0, 10, 0] }}
+                          transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }}
+                          className="absolute -right-8 bottom-12 bg-[#1A1A24] border border-white/10 rounded-xl p-4 shadow-xl"
+                        >
+                          <div className="flex items-center justify-between mb-2 gap-4">
+                            <p className="text-xs text-slate-400">
+                              {t('landing.hero.systemStatus', 'System Status')}
+                            </p>
+                            <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                          </div>
+                          <p className="text-sm font-medium text-white flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4 text-indigo-400" />
+                            {t('landing.hero.liveSyncActive', 'Live Sync Active')}
+                          </p>
+                        </motion.div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </Slider>
         </div>
       </section>
@@ -448,7 +500,7 @@ export default function Landing() {
       <section id="customers" className="py-12 border-y border-white/5 bg-white/[0.02]">
         <div className="max-w-7xl mx-auto px-6">
           <p className="text-center text-sm font-medium text-slate-500 tracking-widest uppercase mb-8">
-            TRUSTED BY FORWARD-THINKING AGENCIES
+            {t('landing.trust.heading', 'TRUSTED BY FORWARD-THINKING AGENCIES')}
           </p>
           <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
             <div className="text-xl font-black tracking-tighter">OAK &amp; STONE</div>
@@ -467,28 +519,41 @@ export default function Landing() {
       <section id="benefits" className="py-32 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">Automate the invisible.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              {t('landing.benefits.heading', 'Automate the invisible.')}
+            </h2>
             <p className="text-lg text-slate-400">
-              Manual commission tracking is prone to human error. Our intelligent platform
-              cross-references your carrier statements with your internal data in seconds.
+              {t(
+                'landing.benefits.subheading',
+                'Manual commission tracking is prone to human error. Our intelligent platform cross-references your carrier statements with your internal data in seconds.',
+              )}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard
               icon={<BarChart3 />}
-              title="Real-time Reconciliation"
-              description="Automatically match expected commissions against actual carrier payouts as soon as statements arrive."
+              title={t('landing.benefits.card1.title', 'Real-time Reconciliation')}
+              description={t(
+                'landing.benefits.card1.description',
+                'Automatically match expected commissions against actual carrier payouts as soon as statements arrive.',
+              )}
             />
             <FeatureCard
               icon={<ShieldCheck />}
-              title="Discrepancy Detection"
-              description="Instantly flag missing payments, incorrect rates, and clawback errors before the books close."
+              title={t('landing.benefits.card2.title', 'Discrepancy Detection')}
+              description={t(
+                'landing.benefits.card2.description',
+                'Instantly flag missing payments, incorrect rates, and clawback errors before the books close.',
+              )}
             />
             <FeatureCard
               icon={<Zap />}
-              title="Automated Resolution"
-              description="Generate one-click dispute reports formatted exactly how carriers need them to resolve issues fast."
+              title={t('landing.benefits.card3.title', 'Automated Resolution')}
+              description={t(
+                'landing.benefits.card3.description',
+                'Generate one-click dispute reports formatted exactly how carriers need them to resolve issues fast.',
+              )}
             />
           </div>
         </div>
@@ -497,33 +562,52 @@ export default function Landing() {
       <section id="security" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">Bank-grade security.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              {t('landing.security.heading', 'Bank-grade security.')}
+            </h2>
             <p className="text-lg text-slate-400">
-              Your financial data is protected by AES-256 encryption, regular third-party audits,
-              and strict role-based access controls. We treat your revenue data with the highest
-              level of security.
+              {t(
+                'landing.security.subheading',
+                'Your financial data is protected by AES-256 encryption, regular third-party audits, and strict role-based access controls. We treat your revenue data with the highest level of security.',
+              )}
             </p>
           </div>
           <div className="grid md:grid-cols-4 gap-6 text-center opacity-70">
             <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
               <ShieldCheck className="w-8 h-8 mx-auto text-indigo-400 mb-4" />
-              <div className="font-bold text-white mb-1">SOC 2 Type II</div>
-              <div className="text-sm text-slate-500">Certified Compliant</div>
+              <div className="font-bold text-white mb-1">
+                {t('landing.security.soc2.title', 'SOC 2 Type II')}
+              </div>
+              <div className="text-sm text-slate-500">
+                {t('landing.security.soc2.sub', 'Certified Compliant')}
+              </div>
             </div>
             <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
               <ShieldCheck className="w-8 h-8 mx-auto text-indigo-400 mb-4" />
-              <div className="font-bold text-white mb-1">End-to-End Encryption</div>
-              <div className="text-sm text-slate-500">AES-256 &amp; TLS 1.3</div>
+              <div className="font-bold text-white mb-1">
+                {t('landing.security.e2e.title', 'End-to-End Encryption')}
+              </div>
+              <div className="text-sm text-slate-500">
+                {t('landing.security.e2e.sub', 'AES-256 & TLS 1.3')}
+              </div>
             </div>
             <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
               <ShieldCheck className="w-8 h-8 mx-auto text-indigo-400 mb-4" />
-              <div className="font-bold text-white mb-1">Role-Based Access</div>
-              <div className="text-sm text-slate-500">Granular permissions</div>
+              <div className="font-bold text-white mb-1">
+                {t('landing.security.rbac.title', 'Role-Based Access')}
+              </div>
+              <div className="text-sm text-slate-500">
+                {t('landing.security.rbac.sub', 'Granular permissions')}
+              </div>
             </div>
             <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
               <ShieldCheck className="w-8 h-8 mx-auto text-indigo-400 mb-4" />
-              <div className="font-bold text-white mb-1">99.99% Uptime</div>
-              <div className="text-sm text-slate-500">Enterprise reliability</div>
+              <div className="font-bold text-white mb-1">
+                {t('landing.security.uptime.title', '99.99% Uptime')}
+              </div>
+              <div className="text-sm text-slate-500">
+                {t('landing.security.uptime.sub', 'Enterprise reliability')}
+              </div>
             </div>
           </div>
         </div>
@@ -532,15 +616,20 @@ export default function Landing() {
       <section className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/20 to-purple-900/20" />
         <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to transform your revenue?</h2>
+          <h2 className="text-4xl md:text-6xl font-bold mb-8">
+            {t('landing.cta.heading', 'Ready to transform your revenue?')}
+          </h2>
           <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-            Join the agencies optimizing their finances with the SyncSyrius product suite.
+            {t(
+              'landing.cta.subheading',
+              'Join the agencies optimizing their finances with the SyncSyrius product suite.',
+            )}
           </p>
           <Link
             to="/demo"
             className="px-10 py-5 bg-white text-black text-xl font-bold rounded-full hover:bg-slate-200 transition-colors shadow-[0_0_40px_rgba(255,255,255,0.3)] inline-block"
           >
-            Schedule a Demo Today
+            {t('landing.cta.button', 'Schedule a Demo Today')}
           </Link>
         </div>
       </section>
@@ -550,25 +639,31 @@ export default function Landing() {
           <div className="flex items-center gap-2 text-white">
             <ImageWithFallback
               src={LOGO_SRC}
-              alt="SyncSyrius Logo Alt"
+              alt={t('landing.footer.logoAlt', 'SyncSyrius Logo Alt')}
               className="h-6 w-auto rounded object-contain grayscale opacity-80"
             />
-            <span className="font-bold text-lg tracking-tight">SyncSyrius</span>
+            <span className="font-bold text-lg tracking-tight">
+              {t('landing.footer.brand', 'SyncSyrius')}
+            </span>
           </div>
 
           <div className="flex items-center gap-8">
             <a href="/privacy" className="hover:text-white transition-colors">
-              Privacy Policy
+              {t('landing.footer.privacy', 'Privacy Policy')}
             </a>
             <a href="/privacy#terms" className="hover:text-white transition-colors">
-              Terms of Service
+              {t('landing.footer.terms', 'Terms of Service')}
             </a>
             <a href="/#contato" className="hover:text-white transition-colors">
-              Contact Support
+              {t('landing.footer.contact', 'Contact Support')}
             </a>
           </div>
 
-          <p>© {new Date().getFullYear()} SyncSyrius. All rights reserved.</p>
+          <p>
+            {t('landing.footer.copyright', '© {{year}} SyncSyrius. All rights reserved.', {
+              year: new Date().getFullYear(),
+            })}
+          </p>
         </div>
       </footer>
     </div>

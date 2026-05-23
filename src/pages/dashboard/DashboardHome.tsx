@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   AreaChart,
   Area,
@@ -59,27 +60,42 @@ const REVENUE_DATA = [
   { name: 'Jul', recovered: 12500, baseline: 4600 },
 ]
 
+// Status pill data: `statusKey` drives the translated label via
+// `t('dashboard.status.<statusKey>')`; `statusColor` styling stays inline
+// (kept English-keyed pre-Story-7.5; Story 7.6 owns the redesign).
 const DISCREPANCIES = [
-  { id: '1', carrier: 'Global Life', policy: 'POL-8823', expected: 1200, actual: 800, status: 'Pending', statusColor: 'text-amber-400 bg-amber-400/10' },
-  { id: '2', carrier: 'Apex Health', policy: 'POL-9011', expected: 450, actual: 0, status: 'Resolved', statusColor: 'text-green-400 bg-green-400/10' },
-  { id: '3', carrier: 'Prime Auto', policy: 'POL-7734', expected: 890, actual: 800, status: 'Disputed', statusColor: 'text-indigo-400 bg-indigo-400/10' },
-  { id: '4', carrier: 'Global Life', policy: 'POL-8824', expected: 2100, actual: 1500, status: 'Pending', statusColor: 'text-amber-400 bg-amber-400/10' },
-]
+  { id: '1', carrier: 'Global Life', policy: 'POL-8823', expected: 1200, actual: 800, statusKey: 'pending', statusColor: 'text-amber-400 bg-amber-400/10' },
+  { id: '2', carrier: 'Apex Health', policy: 'POL-9011', expected: 450, actual: 0, statusKey: 'resolved', statusColor: 'text-green-400 bg-green-400/10' },
+  { id: '3', carrier: 'Prime Auto', policy: 'POL-7734', expected: 890, actual: 800, statusKey: 'disputed', statusColor: 'text-indigo-400 bg-indigo-400/10' },
+  { id: '4', carrier: 'Global Life', policy: 'POL-8824', expected: 2100, actual: 1500, statusKey: 'pending', statusColor: 'text-amber-400 bg-amber-400/10' },
+] as const
 
-const TIME_RANGES = ['Last 7 Months', 'This Year', 'All Time'] as const
+// Time range state uses stable ID-style keys; the `t()` lookup resolves the
+// translated label at render time. The data lookup is a no-op for all three
+// IDs (the Figma source ships a single dataset across ranges), so the
+// function is preserved for future expansion.
+const TIME_RANGES = ['last7Months', 'thisYear', 'allTime'] as const
 type TimeRange = (typeof TIME_RANGES)[number]
+
+const TIME_RANGE_FALLBACK_LABEL: Record<TimeRange, string> = {
+  last7Months: 'Last 7 Months',
+  thisYear: 'This Year',
+  allTime: 'All Time',
+}
 
 function formatCurrency(value: number) {
   return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 function chartDataForRange(range: TimeRange) {
-  if (range === 'Last 7 Months') return REVENUE_DATA
-  if (range === 'This Year') return REVENUE_DATA
+  if (range === 'last7Months') return REVENUE_DATA
+  if (range === 'thisYear') return REVENUE_DATA
   return REVENUE_DATA
 }
 
 export default function DashboardHome() {
+  const { t } = useTranslation()
+
   useDocumentMeta({
     titleKey: 'seo.dashboard.home.title',
     descriptionKey: 'seo.dashboard.home.description',
@@ -88,34 +104,38 @@ export default function DashboardHome() {
     path: '/dashboard',
   })
 
-  const [timeRange, setTimeRange] = useState<TimeRange>('Last 7 Months')
+  const [timeRange, setTimeRange] = useState<TimeRange>('last7Months')
   const chartData = chartDataForRange(timeRange)
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500" data-testid="dashboard-home">
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Overview</h1>
-        <p className="text-sm text-slate-400 mt-1">Here's what's happening with your revenue today.</p>
+        <h1 className="text-2xl font-bold text-white tracking-tight">
+          {t('dashboard.overview.title', 'Overview')}
+        </h1>
+        <p className="text-sm text-slate-400 mt-1">
+          {t('dashboard.overview.subtitle', "Here's what's happening with your revenue today.")}
+        </p>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <MetricCard
-          title="Total Recovered"
+          title={t('dashboard.overview.metrics.totalRecovered', 'Total Recovered')}
           value="$51,900.00"
           trend="+14.2%"
           isPositive={true}
           icon={<DollarSign className="w-5 h-5 text-green-400" />}
         />
         <MetricCard
-          title="Active Discrepancies"
+          title={t('dashboard.overview.metrics.activeDiscrepancies', 'Active Discrepancies')}
           value="24"
           trend="-5.1%"
           isPositive={true}
           icon={<AlertCircle className="w-5 h-5 text-amber-400" />}
         />
         <MetricCard
-          title="Payouts Processed"
+          title={t('dashboard.overview.metrics.payoutsProcessed', 'Payouts Processed')}
           value="$142,300.00"
           trend="+8.4%"
           isPositive={true}
@@ -128,18 +148,24 @@ export default function DashboardHome() {
         <div className="lg:col-span-2 bg-[#12121A] border border-white/5 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-lg font-bold text-white">Revenue Recovery Trend</h2>
-              <p className="text-sm text-slate-400">Comparing recovered vs baseline commissions</p>
+              <h2 className="text-lg font-bold text-white">
+                {t('dashboard.overview.chart.title', 'Revenue Recovery Trend')}
+              </h2>
+              <p className="text-sm text-slate-400">
+                {t('dashboard.overview.chart.subtitle', 'Comparing recovered vs baseline commissions')}
+              </p>
             </div>
             <select
-              aria-label="Time range"
+              aria-label={t('dashboard.overview.chart.timeRangeLabel', 'Time range')}
               data-testid="dashboard-home-time-range"
               value={timeRange}
               onChange={(event) => setTimeRange(event.target.value as TimeRange)}
               className="bg-[#1A1A24] border border-white/10 text-white text-sm rounded-lg px-3 py-2 outline-none hover:border-white/20 transition-colors"
             >
               {TIME_RANGES.map((range) => (
-                <option key={range}>{range}</option>
+                <option key={range} value={range}>
+                  {t(`dashboard.overview.timeRanges.${range}`, TIME_RANGE_FALLBACK_LABEL[range])}
+                </option>
               ))}
             </select>
           </div>
@@ -178,7 +204,9 @@ export default function DashboardHome() {
 
         {/* Quick Actions / Discrepancies Summary */}
         <div className="bg-[#12121A] border border-white/5 rounded-2xl p-6 flex flex-col">
-          <h2 className="text-lg font-bold text-white mb-6">Recent Discrepancies</h2>
+          <h2 className="text-lg font-bold text-white mb-6">
+            {t('dashboard.overview.recentDiscrepancies.title', 'Recent Discrepancies')}
+          </h2>
           <div className="flex-1 space-y-4" data-testid="dashboard-home-recent-list">
             {DISCREPANCIES.map((item) => (
               <div
@@ -197,10 +225,12 @@ export default function DashboardHome() {
                     </span>
                   </p>
                   <p className="text-xs font-medium text-amber-400">
-                    Delta {formatCurrency(item.expected - item.actual)}
+                    {t('dashboard.overview.recentDiscrepancies.deltaLabel', 'Delta {{amount}}', {
+                      amount: formatCurrency(item.expected - item.actual),
+                    })}
                   </p>
                   <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium mt-1 ${item.statusColor}`}>
-                    {item.status}
+                    {t(`dashboard.status.${item.statusKey}`, item.statusKey.charAt(0).toUpperCase() + item.statusKey.slice(1))}
                   </span>
                 </div>
               </div>
@@ -210,7 +240,7 @@ export default function DashboardHome() {
             type="button"
             className="w-full mt-6 py-2.5 text-sm font-medium text-white hover:text-black transition-colors border border-white/20 rounded-xl hover:bg-white"
           >
-            View All Discrepancies
+            {t('dashboard.overview.recentDiscrepancies.viewAll', 'View All Discrepancies')}
           </button>
         </div>
       </div>
