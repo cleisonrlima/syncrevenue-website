@@ -11,6 +11,13 @@
 |---|---|---|
 | `src/pages/Home.tsx` | `/` | Public landing page — Hero eager for LCP; below-fold sections lazy-loaded with null Suspense fallback (Story 6.13) |
 | `src/pages/Privacy.tsx` | `/privacy` | Privacy policy — all content from `privacy.*` i18n keys |
+| `src/pages/Landing.tsx` | `/v2` | Epic 7 Figma Landing placeholder — full page lands in Story 7.4; SEO via `useDocumentMeta` |
+| `src/pages/Demo.tsx` | `/demo` | Epic 7 Figma DemoForm placeholder — full page lands in Story 7.4; SEO via `useDocumentMeta` |
+| `src/pages/dashboard/DashboardHome.tsx` | `/dashboard` | Epic 7 dashboard Overview placeholder — full page lands in Story 7.3 |
+| `src/pages/dashboard/RevenueRecovery.tsx` | `/dashboard/recovery` | Epic 7 dashboard Revenue Recovery placeholder — full page lands in Story 7.3 |
+| `src/pages/dashboard/Payouts.tsx` | `/dashboard/payouts` | Epic 7 dashboard Payouts placeholder — full page lands in Story 7.3 |
+| `src/pages/dashboard/Insights.tsx` | `/dashboard/insights` | Epic 7 dashboard Insights placeholder — full page lands in Story 7.3 |
+| `src/pages/dashboard/Settings.tsx` | `/dashboard/settings` | Epic 7 dashboard Settings placeholder — full page lands in Story 7.3 |
 | `src/pages/admin/Login.tsx` | `/admin/login` | Admin login (stub) |
 | `src/pages/admin/Dashboard.tsx` | `/admin/dashboard` | Admin dashboard (stub) |
 | `src/pages/admin/Leads.tsx` | `/admin/leads` | Admin leads (stub) |
@@ -44,6 +51,7 @@
 | `src/components/layout/Navbar.tsx` | Epic 6 overlay/fill fixed nav; desktop ≥900px: logo + six route-safe anchor links + dropdown LanguageSwitcher + solid-accent Demo CTA; sub-routes link back to `/#section`; mobile: hamburger overlay + Escape/click-to-close + body scroll lock; `aria-expanded` on toggle; `Navbar.test.tsx` co-located + `tests/e2e/navbar.spec.ts` |
 | `src/components/layout/Footer.tsx` | Block-flow footer; company address, copyright, anchor nav links, Privacy `<Link>`, `<LanguageSwitcher />` |
 | `src/components/layout/AdminLayout.tsx` | Shell with `<Outlet />` — no auth guard (deferred to future epic) |
+| `src/components/layout/DashboardLayout.tsx` | Epic 7 dashboard shell for `/dashboard/*`: desktop sidebar, mobile horizontal nav fallback, header search/bell/import CTA, footer user card, and outlet. Uses `NavLink` from `react-router-dom` and `ImageWithFallback` for logo. |
 
 ## Shared Components
 
@@ -75,6 +83,7 @@
 - Nav links to routes: `<Link to="/route">` (React Router)
 - Skip link: first DOM element in App.tsx; `sr-only focus:not-sr-only`; targets `<main id="main-content">`
 - `<main id="main-content" className="pt-16">` — `pt-16` offsets 64px fixed Navbar
+- Epic 7 route chrome gating: public Navbar/Footer render only on `/`, `/privacy`, and `/admin/*`; `/v2`, `/demo`, `/dashboard/*`, and catch-all routes suppress public chrome. Dashboard unknown child routes render inside `DashboardLayout` via nested wildcard.
 - Locale sourced from `useLocaleStore` — never directly from i18next
 - Form state: `'idle' | 'submitting' | 'success' | 'error'` — see [[Architecture-Key]]
 - **API envelope strictness** — `src/lib/api.ts` rejects 2xx responses missing `success: true` (Story 2.2)
@@ -101,6 +110,7 @@
 | 2.4 | src/components/sections/DemoForm.tsx (`forwardRef` + `useImperativeHandle` exposing `DemoFormHandle.focusFirstField()`), src/components/sections/DemoScheduler.tsx (dark-gradient bookend, inline CTA, scrolls + focuses sole `DemoForm` instance) |
 | 2.6 | `createDemoSchema(t)` / `createContactSchema(t)` factories in `src/hooks/useDemo.ts` + `src/hooks/useContact.ts`; consumer components `useMemo` over `[t]`; touched-field revalidation on locale change |
 | 2.7 | Build-output secret scan via `scripts/check-client-bundle-secrets.mjs` (post-`npm run build`); no client code changes — secrets pipeline is build-time |
+| 7.2 | `src/App.tsx`, `src/components/layout/DashboardLayout.tsx`, `src/pages/Landing.tsx`, `src/pages/Demo.tsx`, `src/pages/dashboard/*.tsx`, `src/App.routes.test.tsx`, `src/components/layout/DashboardLayout.test.tsx` |
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Updated after every commit. Reflects actual file tree.
 
-**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 in-progress with Story 6.13 done after review closure. **Story 5.4 (SQLite Backup Automation) done 2026-05-20** — `scripts/backup.sh`, `scripts/backup.test.mjs`, `docs/backup-cron-setup.md` added; `db:backup` + `test:backup` npm scripts added; `backups/` added to `.gitignore`.
+**Status:** Epic 1 complete (10/10 stories done + retrospective). Epic 2 complete. Epic 3 complete. Epic 6 done. Epic 7 in-progress with Stories 7.1 and 7.2 done. **Story 7.2 (Routes / Layout Scaffold) done 2026-05-22** — `/v2`, `/demo`, and `/dashboard/*` scaffolded; `DashboardLayout` shell added with desktop + mobile dashboard navigation; route chrome gating tightened; placeholder SEO locale keys added; route/layout tests cover 805-test green suite.
 
 **New since Story 1.4:**
 - Section components implemented (no longer placeholders): `Hero.tsx`, `SyncRevenue.tsx`, `Services.tsx`, `Comparison.tsx`, `Team.tsx`, `Security.tsx`, `ClientReferences.tsx` + `StatRow.tsx`, `TrustBar.tsx`
@@ -18,6 +18,12 @@
 - Lighthouse CI configs: `lighthouserc.json` (desktop), `lighthouserc.mobile.json`. Run `npm run lhci` or `npm run lhci:mobile`.
 - GitHub Actions: `.github/workflows/quality.yml` — unit + Playwright + Lighthouse CI on PR/push to master.
 - Vault: `vault/Planning/client-references-allowlist.md` (R-B1 single source of truth).
+
+**New since Story 7.2 (Routes / Layout Scaffold, 2026-05-22):**
+- Routes: `src/App.tsx` now registers `/v2`, `/demo`, and nested `/dashboard` routes for Overview, Revenue Recovery, Payouts, Insights, Settings, plus dashboard-scoped wildcard handling.
+- Layout: `src/components/layout/DashboardLayout.tsx` adds Epic 7 dashboard shell with desktop sidebar, mobile horizontal nav fallback, header search/bell/import CTA, user card, and `<Outlet />`.
+- Placeholders: `src/pages/Landing.tsx`, `src/pages/Demo.tsx`, `src/pages/dashboard/{DashboardHome,RevenueRecovery,Payouts,Insights,Settings}.tsx`.
+- Tests: `src/App.routes.test.tsx` + `src/components/layout/DashboardLayout.test.tsx`; full suite now **94 files / 805 tests pass**.
 
 ---
 
@@ -71,7 +77,7 @@ syncrevenue-website/
 │   └── lib/mailer.ts               — placeholder (Story 2.5)
 └── src/
     ├── main.tsx                    — React 18 createRoot + BrowserRouter + i18n import + Zustand locale sync
-    ├── App.tsx                     — full route tree: /, /privacy, /admin/*; skip link + <main id="main-content"> (Story 1.4 ✓)
+    ├── App.tsx                     — full route tree: /, /privacy, /admin/*, /v2, /demo, /dashboard/*; route-scoped public chrome gating; skip link + <main id="main-content"> (Story 7.2 ✓)
     ├── index.css                   — Tailwind directives + shadcn CSS vars (slate) + scroll-behavior: smooth (Story 1.4 ✓)
     ├── vite-env.d.ts               — Vite client type reference
     ├── lib/utils.ts                — cn() utility (clsx + tailwind-merge)
@@ -99,6 +105,7 @@ syncrevenue-website/
     ├── components/layout/Navbar.test.tsx — 4 tests: toggle, Escape close, aria-expanded, overlay link click (Story 1.4 ✓)
     ├── components/layout/Footer.tsx    — footer: address, dynamic copyright, nav links, Privacy link, LanguageSwitcher (Story 1.4 ✓)
     ├── components/layout/AdminLayout.tsx — shell with <Outlet />, no auth guard (Story 1.4 ✓)
+    ├── components/layout/DashboardLayout.tsx — Epic 7 dashboard shell with desktop sidebar, mobile nav fallback, header chrome, user card, and outlet (Story 7.2 ✓)
     ├── components/sections/Hero.tsx    — placeholder (Story 1.5)
     ├── components/sections/SyncRevenue.tsx — placeholder (Story 1.6)
     ├── components/sections/Services.tsx   — placeholder (Story 1.6)
@@ -112,6 +119,9 @@ syncrevenue-website/
     ├── components/sections/SectionSkeleton.tsx — Suspense fallback (Story 1.2 ✓)
     ├── pages/Home.tsx              — Hero eager; below-fold sections lazy via React.lazy + Suspense fallback null + ErrorBoundary (Story 6.13 ✓)
     ├── pages/Privacy.tsx           — i18n-driven privacy page, all privacy.* keys (Story 1.4 ✓)
+    ├── pages/Landing.tsx           — /v2 placeholder using useDocumentMeta (Story 7.2 ✓)
+    ├── pages/Demo.tsx              — /demo placeholder using useDocumentMeta (Story 7.2 ✓)
+    ├── pages/dashboard/            — Epic 7 dashboard placeholders: DashboardHome, RevenueRecovery, Payouts, Insights, Settings (Story 7.2 ✓)
     ├── pages/admin/Login.tsx       — placeholder (Story 4.1)
     ├── pages/admin/Dashboard.tsx   — placeholder (Story 4.6)
     ├── pages/admin/Leads.tsx       — placeholder (Story 4.2)
