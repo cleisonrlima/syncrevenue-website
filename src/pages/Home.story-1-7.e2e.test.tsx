@@ -10,6 +10,8 @@ import App from '@/App'
 import i18next from '@/i18n'
 import { useLocaleStore } from '@/store/useLocaleStore'
 
+const lazySectionWait = { timeout: 5000 }
+
 describe('Story 1.7 comparison visitor flow', () => {
   beforeEach(async () => {
     window.history.pushState({}, '', '/')
@@ -86,7 +88,7 @@ describe('Story 1.7 comparison visitor flow', () => {
     renderHome()
 
     expect(
-      await screen.findByRole('heading', { name: 'Stop Losing Revenue to Manual Processes' }),
+      await screen.findByRole('heading', { name: 'Stop Losing Revenue to Manual Processes' }, lazySectionWait),
     ).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Generic Tools' })).toBeInTheDocument()
     expect(screen.getByRole('rowheader', { name: 'BSP/ARC Reconciliation' })).toBeInTheDocument()
@@ -99,7 +101,7 @@ describe('Story 1.7 comparison visitor flow', () => {
     expect(window.location.pathname).toBe(pathBeforeLocaleChange)
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')
     expect(
-      await screen.findByRole('heading', { name: 'Pare de Perder Receita com Processos Manuais' }),
+      await screen.findByRole('heading', { name: 'Pare de Perder Receita com Processos Manuais' }, lazySectionWait),
     ).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Ferramentas Genéricas' })).toBeInTheDocument()
     expect(screen.getByRole('rowheader', { name: 'Reconciliação BSP/ARC' })).toBeInTheDocument()

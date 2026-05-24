@@ -121,8 +121,12 @@ describe('Story 1.8 team visitor flow', () => {
     const team = await screen.findByRole('region', {
       name: 'Sync Sirius team specialists',
     }, lazySectionWait)
-    expect(within(team).getByText('Airline Distribution & Commission Strategy Lead')).toBeInTheDocument()
-    expect(within(team).getByText(/commission recovery strategy across the Americas/)).toBeInTheDocument()
+    expect(
+      await within(team).findByText('Airline Distribution & Commission Strategy Lead', {}, lazySectionWait),
+    ).toBeInTheDocument()
+    expect(
+      await within(team).findByText(/commission recovery strategy across the Americas/, {}, lazySectionWait),
+    ).toBeInTheDocument()
 
     const pathBeforeLocaleChange = window.location.pathname
     await user.click(screen.getAllByRole('button', { name: 'EN' })[0])
@@ -137,12 +141,24 @@ describe('Story 1.8 team visitor flow', () => {
       within(translatedTeam).getByRole('heading', { name: /Especialistas em\s+distribuição aérea/i }),
     ).toBeInTheDocument()
     expect(
-      within(translatedTeam).getByText('Liderança em Distribuição Aérea e Estratégia de Comissões'),
+      await within(translatedTeam).findByText(
+        'Liderança em Distribuição Aérea e Estratégia de Comissões',
+        {},
+        lazySectionWait,
+      ),
     ).toBeInTheDocument()
-    expect(within(translatedTeam).getByText(/operações GDS, reconciliação BSP\/ARC/)).toBeInTheDocument()
     expect(
-      within(translatedTeam).getByText('Liderança em Integração de Dados de Viagem e Automação'),
+      await within(translatedTeam).findByText(/operações GDS, reconciliação BSP\/ARC/, {}, lazySectionWait),
     ).toBeInTheDocument()
-    expect(within(translatedTeam).getByText(/rotinas operacionais confiáveis/)).toBeInTheDocument()
+    expect(
+      await within(translatedTeam).findByText(
+        'Liderança em Integração de Dados de Viagem e Automação',
+        {},
+        lazySectionWait,
+      ),
+    ).toBeInTheDocument()
+    expect(
+      await within(translatedTeam).findByText(/rotinas operacionais confiáveis/, {}, lazySectionWait),
+    ).toBeInTheDocument()
   })
 })

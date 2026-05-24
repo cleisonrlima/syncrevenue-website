@@ -6,6 +6,8 @@ import App from '@/App'
 import i18next from '@/i18n'
 import { useLocaleStore } from '@/store/useLocaleStore'
 
+const lazySectionWait = { timeout: 5000 }
+
 describe('Story 1.6 visitor flow', () => {
   beforeEach(async () => {
     window.history.pushState({}, '', '/')
@@ -62,7 +64,7 @@ describe('Story 1.6 visitor flow', () => {
     renderHome()
 
     expect(
-      await screen.findByRole('heading', { name: 'Automated Commission Reconciliation' }),
+      await screen.findByRole('heading', { name: 'Automated Commission Reconciliation' }, lazySectionWait),
     ).toBeInTheDocument()
 
     const pathBeforeLocaleChange = window.location.pathname
@@ -72,7 +74,7 @@ describe('Story 1.6 visitor flow', () => {
     expect(window.location.pathname).toBe(pathBeforeLocaleChange)
     expect(localStorage.getItem('i18nextLng')).toBe('pt-BR')
     expect(
-      await screen.findByRole('heading', { name: 'Reconciliação Automatizada de Comissões' }),
+      await screen.findByRole('heading', { name: 'Reconciliação Automatizada de Comissões' }, lazySectionWait),
     ).toBeInTheDocument()
     expect(screen.getByText(/99,99% de assertividade de comissões/)).toBeInTheDocument()
     expect(

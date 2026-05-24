@@ -6,6 +6,8 @@ import App from './App'
 import i18next from '@/i18n'
 import { useLocaleStore } from '@/store/useLocaleStore'
 
+const lazyRouteWait = { timeout: 5000 }
+
 // Story 7.3 (AC 6) update: the dashboard child routes now mount the full
 // Figma ports which use recharts `ResponsiveContainer`. recharts depends on
 // `ResizeObserver`, which is not provided by jsdom. The per-page Vitest
@@ -78,14 +80,14 @@ describe('App route chrome gating', () => {
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     // DashboardLayout chrome should be present instead
-    expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-sidebar', {}, lazyRouteWait)).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on a nested dashboard route', async () => {
     renderAt('/dashboard/recovery')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-    expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-sidebar', {}, lazyRouteWait)).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /v2 (Landing has its own nav)', () => {
@@ -98,13 +100,13 @@ describe('App route chrome gating', () => {
     renderAt('/demo')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-    expect(await screen.findByLabelText(/Work Email/i)).toBeInTheDocument()
+    expect(await screen.findByLabelText(/Work Email/i, {}, lazyRouteWait)).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
   it('resolves the lazy Landing body on /v2', async () => {
     renderAt('/v2')
-    expect(await screen.findByText(/TRUSTED BY FORWARD-THINKING AGENCIES/)).toBeInTheDocument()
+    expect(await screen.findByText(/TRUSTED BY FORWARD-THINKING AGENCIES/, {}, lazyRouteWait)).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
@@ -130,8 +132,8 @@ describe('App route chrome gating', () => {
     renderAt('/dashboard/missing-route')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-    expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
-    expect(await screen.findByRole('heading', { name: /page not found/i })).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-sidebar', {}, lazyRouteWait)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /page not found/i }, lazyRouteWait)).toBeInTheDocument()
   })
 
   it('renders the dashboard index page (DashboardHome) at /dashboard', async () => {
@@ -142,7 +144,7 @@ describe('App route chrome gating', () => {
     // React.lazy split-points to unblock the SSG prerender pipeline — so
     // the child route commits asynchronously and we need `findBy*` to wait
     // on the Suspense boundary to resolve.
-    expect(await screen.findByTestId('dashboard-home')).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-home', {}, lazyRouteWait)).toBeInTheDocument()
   })
 
   it('renders each dashboard child route under DashboardLayout', async () => {
@@ -157,9 +159,9 @@ describe('App route chrome gating', () => {
 
     for (const { path, testid } of cases) {
       const { unmount } = renderAt(path)
-      expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
+      expect(await screen.findByTestId('dashboard-sidebar', {}, lazyRouteWait)).toBeInTheDocument()
       expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-      expect(await screen.findByTestId(testid)).toBeInTheDocument()
+      expect(await screen.findByTestId(testid, {}, lazyRouteWait)).toBeInTheDocument()
       unmount()
     }
   })
@@ -168,25 +170,31 @@ describe('App route chrome gating', () => {
     const user = userEvent.setup()
     renderAt('/demo')
 
-    expect(await screen.findByRole('heading', { name: 'See SyncRevenue in action.' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'See SyncRevenue in action.' }, lazyRouteWait),
+    ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /EN/i }))
     await user.click(screen.getByRole('menuitemradio', { name: /PT-BR/i }))
 
-    expect(await screen.findByRole('heading', { name: 'Veja o SyncRevenue em ação.' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Veja o SyncRevenue em ação.' }, lazyRouteWait),
+    ).toBeInTheDocument()
   })
 
   it('updates dashboard route copy after locale changes', async () => {
     renderAt('/dashboard/recovery')
 
     expect(screen.getByRole('group', { name: 'Select language' })).toBeInTheDocument()
-    expect(await screen.findByRole('heading', { name: 'Revenue Recovery' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Revenue Recovery' }, lazyRouteWait)).toBeInTheDocument()
 
     await act(async () => {
       await i18next.changeLanguage('es')
       useLocaleStore.setState({ locale: 'es' })
     })
 
-    expect(await screen.findByRole('heading', { name: 'Recuperación de ingresos' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Recuperación de ingresos' }, lazyRouteWait),
+    ).toBeInTheDocument()
   })
 })
