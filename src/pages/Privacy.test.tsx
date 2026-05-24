@@ -18,8 +18,8 @@ function renderAppAt(path: string) {
 }
 
 function findHomeHeroHeading() {
-  // Hero H1 was reshaped in Story 6.3 to a two-line sober-palette headline.
-  return screen.findByRole('heading', { name: /More commission per ticket/i }, { timeout: 5000 })
+  // The app-level home route renders Landing.tsx, whose carousel headings are all mounted in tests.
+  return screen.findByRole('heading', { name: /Recover lost revenue/i }, { timeout: 5000 })
 }
 
 describe('Privacy page', () => {

@@ -49,7 +49,7 @@ describe('Landing (main page — /)', () => {
 
   it('renders the hero h1', () => {
     renderLanding()
-    const heading = screen.getByRole('heading', { level: 1, name: /Recover the commissions/i })
+    const heading = screen.getByRole('heading', { level: 1, name: /Recover lost revenue/i })
     expect(heading).toBeInTheDocument()
   })
 

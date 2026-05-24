@@ -1248,8 +1248,8 @@ export default function Landing() {
             className="h-6 w-auto object-contain opacity-60 grayscale"
           />
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-600">
-            <a href="/privacy" className="hover:text-white transition-colors">{t('landing.footer.privacy', 'Privacy Policy')}</a>
-            <a href="/privacy#terms" className="hover:text-white transition-colors">{t('landing.footer.terms', 'Terms of Service')}</a>
+            <Link to="/privacy" className="hover:text-white transition-colors">{t('landing.footer.privacy', 'Privacy Policy')}</Link>
+            <Link to="/privacy#terms" className="hover:text-white transition-colors">{t('landing.footer.terms', 'Terms of Service')}</Link>
             <a href="#contato" className="hover:text-white transition-colors">{t('landing.footer.contact', 'Contact Support')}</a>
           </div>
           <p className="text-sm text-slate-600">
