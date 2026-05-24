@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import Home from '@/pages/Home'
 import Privacy from '@/pages/Privacy'
 import NotFound from '@/pages/NotFound'
 import AdminLayout from '@/components/layout/AdminLayout'
@@ -64,33 +63,23 @@ export default function App() {
   const location = useLocation()
   const normalizedPathname =
     location.pathname.length > 1 ? location.pathname.replace(/\/+$/, '') : location.pathname
-  const isHomeRoute = normalizedPathname === '/'
-
-  // Story 7.2 (AC 3, 4): Suppress the public Navbar + Footer on Epic 7
-  // surfaces that own their own chrome:
+  // Story 7.2 (AC 3, 4): Suppress the public Navbar + Footer on surfaces
+  // that own their own chrome:
+  //   - `/` (Landing) ships its own dark <nav> and footer
   //   - `/dashboard/*` is wrapped by DashboardLayout (sidebar + header)
-  //   - `/v2` (Landing) ships its own dark <nav> in the Figma source
   //   - `/demo` (DemoForm) ships its own minimal nav in the Figma source
   // ScrollRestoration + skip-to-content link + the <main> wrapper stay
   // global — they continue to work on every route, public chrome or not.
   const isDashboardRoute = normalizedPathname === '/dashboard' || normalizedPathname.startsWith('/dashboard/')
-  const isFigmaPublicRoute = normalizedPathname === '/v2' || normalizedPathname === '/demo'
+  const isFigmaPublicRoute = normalizedPathname === '/' || normalizedPathname === '/demo'
   const showPublicChrome =
-    normalizedPathname === '/' ||
     normalizedPathname === '/privacy' ||
     normalizedPathname === '/admin' ||
     normalizedPathname.startsWith('/admin/')
 
-  // Top padding rules:
-  //   - Home (`/`) sits flush under the transparent overlay navbar
-  //   - Other public-chrome routes get `pt-16` to clear the filled sticky navbar
-  //   - Dashboard and Figma-public routes own their own headers / nav, so the
-  //     wrapper does not add padding
-  const mainClassName = showPublicChrome
-    ? isHomeRoute
-      ? 'scroll-mt-16'
-      : 'pt-16 scroll-mt-16'
-    : 'scroll-mt-16'
+  // Public-chrome routes get `pt-16` to clear the filled sticky navbar.
+  // Landing and dashboard surfaces own their own headers so no top padding.
+  const mainClassName = showPublicChrome ? 'pt-16 scroll-mt-16' : 'scroll-mt-16'
 
   return (
     <>
@@ -105,18 +94,15 @@ export default function App() {
       <main id="main-content" tabIndex={-1} className={mainClassName}>
         <ErrorBoundary key={normalizedPathname}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/privacy" element={<Privacy />} />
-            {/* Story 7.2 (AC 1) / Story 7.4: Epic 7 public surfaces.
-                Lazy-loaded — see top-of-file rationale. */}
             <Route
-              path="/v2"
+              path="/"
               element={
                 <Suspense fallback={<RouteLoading />}>
                   <Landing />
                 </Suspense>
               }
             />
+            <Route path="/privacy" element={<Privacy />} />
             <Route
               path="/demo"
               element={

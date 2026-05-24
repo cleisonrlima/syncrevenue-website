@@ -21,7 +21,7 @@ describe('route registry', () => {
   it('keeps top-level App route declarations covered by prerender decisions', () => {
     const appRoutes = extractRoutePathsFromApp()
 
-    expect(appRoutes).toEqual(expect.arrayContaining(['/admin', '/dashboard', '/demo', '/privacy', '/v2']))
+    expect(appRoutes).toEqual(expect.arrayContaining(['/admin', '/dashboard', '/demo', '/privacy']))
 
     for (const route of appRoutes) {
       expect(

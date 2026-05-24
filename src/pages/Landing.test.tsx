@@ -37,28 +37,25 @@ import Landing from './Landing'
 
 const renderLanding = () =>
   render(
-    <MemoryRouter initialEntries={['/v2']}>
+    <MemoryRouter initialEntries={['/']}>
       <Landing />
     </MemoryRouter>,
   )
 
-describe('Landing (Story 7.4 — /v2)', () => {
+describe('Landing (main page — /)', () => {
   it('renders without crashing under MemoryRouter', () => {
     expect(() => renderLanding()).not.toThrow()
   })
 
-  it('renders the first-slide hero h1 verbatim from the Figma source', () => {
+  it('renders the hero h1', () => {
     renderLanding()
-    // The first slide's h1 starts with "Recover lost revenue." followed by a
-    // <br/> + the gradient highlight. The text query matches the
-    // accessible name (which collapses the <br/> and concatenates the runs).
-    const heading = screen.getByRole('heading', { level: 1, name: /Recover lost revenue\./i })
+    const heading = screen.getByRole('heading', { level: 1, name: /Recover the commissions/i })
     expect(heading).toBeInTheDocument()
   })
 
-  it('renders the trust strip with the verbatim Figma marketing copy', () => {
+  it('renders the trust strip', () => {
     renderLanding()
-    expect(screen.getByText(/TRUSTED BY FORWARD-THINKING AGENCIES/)).toBeInTheDocument()
+    expect(screen.getByText(/trusted by forward-thinking/i)).toBeInTheDocument()
   })
 
   it('routes the primary nav "Schedule a Demo" CTA to /demo', () => {
@@ -95,6 +92,6 @@ describe('Landing (Story 7.4 — /v2)', () => {
       'href',
       '/privacy#terms',
     )
-    expect(screen.getByRole('link', { name: /Contact Support/i })).toHaveAttribute('href', '/#contato')
+    expect(screen.getByRole('link', { name: /Contact Support/i })).toHaveAttribute('href', '#contato')
   })
 })

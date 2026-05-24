@@ -57,10 +57,10 @@ function renderAt(path: string) {
 }
 
 describe('App route chrome gating', () => {
-  it('renders the public Navbar on /', () => {
+  it('does NOT render the public Navbar on / (Landing owns its nav)', () => {
     renderAt('/')
-    expect(screen.getByTestId('navbar-root')).toBeInTheDocument()
-    expect(screen.getByTestId('public-footer')).toBeInTheDocument()
+    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
   })
 
   it('renders the public Navbar on /privacy', () => {
@@ -90,12 +90,6 @@ describe('App route chrome gating', () => {
     expect(await screen.findByTestId('dashboard-sidebar', {}, lazyRouteWait)).toBeInTheDocument()
   })
 
-  it('does NOT render the public Navbar on /v2 (Landing has its own nav)', () => {
-    renderAt('/v2')
-    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-  })
-
   it('does NOT render the public Navbar on /demo (DemoForm has its own nav)', async () => {
     renderAt('/demo')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
@@ -104,18 +98,7 @@ describe('App route chrome gating', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
-  it('resolves the lazy Landing body on /v2', async () => {
-    renderAt('/v2')
-    expect(await screen.findByText(/TRUSTED BY FORWARD-THINKING AGENCIES/, {}, lazyRouteWait)).toBeInTheDocument()
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-  })
-
-  it('keeps Epic 7 chrome suppression with trailing slashes', () => {
-    const landing = renderAt('/v2/')
-    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-    landing.unmount()
-
+  it('keeps chrome suppression with trailing slashes on /demo/', () => {
     renderAt('/demo/')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()

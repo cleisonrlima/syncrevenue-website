@@ -1,7 +1,7 @@
-export const PRERENDER_INCLUDED_ROUTES = ['/', '/privacy'] as const
+export const PRERENDER_INCLUDED_ROUTES = ['/privacy'] as const
 
 export const PRERENDER_EXCLUDED_ROUTES = [
-  '/v2',
+  '/',
   '/demo',
   '/dashboard',
   '/dashboard/*',
@@ -13,7 +13,6 @@ export const PRERENDER_EXCLUDED_ROUTES = [
 export const APP_REGISTERED_ROUTES = [
   '/',
   '/privacy',
-  '/v2',
   '/demo',
   '/dashboard',
   '/dashboard/recovery',

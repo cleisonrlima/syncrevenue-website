@@ -126,9 +126,6 @@ export default function DashboardLayout() {
             height={32}
             className="h-8 w-auto block"
           />
-          <span className="text-sm font-semibold text-white tracking-wide">
-            {t('dashboard.layout.brand', 'SyncRevenue')}
-          </span>
         </div>
 
         <nav
