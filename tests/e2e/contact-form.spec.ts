@@ -1,4 +1,5 @@
-import { expect, test, type Page, type Route } from '@playwright/test'
+import { test, expect } from './fixtures'
+import type { Page, Route } from '@playwright/test'
 
 type ContactPayload = {
   name: string
@@ -184,10 +185,9 @@ test.describe('@P1 Contact form', () => {
     await contactRequest.install()
 
     await page.goto('/', { waitUntil: 'networkidle' })
-    await page
-      .getByRole('group', { name: /select language/i })
-      .getByRole('button', { name: /pt-br/i })
-      .click()
+    const switcher = page.getByRole('group', { name: /select language/i }).first()
+    await switcher.getByRole('button').click()
+    await switcher.getByRole('menuitemradio', { name: 'PT-BR' }).click()
 
     const contactForm = page.getByRole('form', { name: /Envie uma mensagem/i })
     await contactForm.getByLabel(/^Nome completo/i).fill('Ana Silva')

@@ -1,7 +1,5 @@
-import { test, expect } from '@playwright/test'
-import db from '../../server/db'
-import { seedAdminUser } from '../../server/db.seed'
-import { leadsDao, type LeadStatus, type Locale } from '../../server/dao/leads.dao'
+import { test, expect } from './fixtures'
+import type { E2eDb, LeadStatus, Locale } from './fixtures'
 
 const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-leads-e2e@example.com'
 const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-leads-e2e-password'
@@ -26,16 +24,13 @@ const SEED_LEADS: SeedLead[] = [
 
 const SEED_EMAILS = SEED_LEADS.map(s => s.email)
 
-function purgeSeedLeads() {
-  const stmt = db.prepare('DELETE FROM demo_requests WHERE email = ?')
-  for (const email of SEED_EMAILS) {
-    stmt.run(email)
-  }
+function purgeSeedLeads(e2eDb: E2eDb) {
+  e2eDb.deleteLeadsByEmails(SEED_EMAILS)
 }
 
-function insertSeedLeads() {
+function insertSeedLeads(e2eDb: E2eDb) {
   for (const seed of SEED_LEADS) {
-    const inserted = leadsDao.insert({
+    e2eDb.seedLead({
       name: seed.name,
       email: seed.email,
       company: seed.company,
@@ -43,28 +38,25 @@ function insertSeedLeads() {
       gds: seed.gds,
       message: seed.message,
       locale: seed.locale,
+      status: seed.status,
     })
-    if (seed.status !== 'pending') {
-      leadsDao.updateStatus(inserted.id, seed.status)
-    }
   }
 }
 
 test.describe('Admin Leads @P1', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeAll(() => {
-    seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
+  test.beforeAll(({ e2eDb }) => {
+    e2eDb.seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })
 
-  test.beforeEach(() => {
-    purgeSeedLeads()
-    insertSeedLeads()
+  test.beforeEach(({ e2eDb }) => {
+    purgeSeedLeads(e2eDb)
+    insertSeedLeads(e2eDb)
   })
 
-  test.afterAll(() => {
-    purgeSeedLeads()
-    db.close()
+  test.afterAll(({ e2eDb }) => {
+    purgeSeedLeads(e2eDb)
   })
 
   async function login(page: import('@playwright/test').Page) {
@@ -134,8 +126,8 @@ test.describe('Admin Leads @P1', () => {
     }
   })
 
-  test('empty DB shows the no-leads-yet text', async ({ page }) => {
-    purgeSeedLeads()
+  test('empty DB shows the no-leads-yet text', async ({ page, e2eDb }) => {
+    purgeSeedLeads(e2eDb)
     await login(page)
     await page.goto('/admin/leads')
 
@@ -144,15 +136,13 @@ test.describe('Admin Leads @P1', () => {
     await expect(empty).toContainText(/no leads yet|nenhum lead ainda|aún no hay leads/i)
   })
 
-  test('inline status mutation updates badge without navigation and persists across reload', async ({ page }) => {
+  test('inline status mutation updates badge without navigation and persists across reload', async ({ page, e2eDb }) => {
     await login(page)
     await page.goto('/admin/leads')
     await page.getByTestId('admin-leads-table').waitFor()
 
     const pendingSeed = SEED_LEADS.find(s => s.status === 'pending' && s.name === 'Alice EN E2E')!
-    const dbRow = db
-      .prepare('SELECT id FROM demo_requests WHERE email = ?')
-      .get(pendingSeed.email) as { id: number } | undefined
+    const dbRow = e2eDb.findLeadByEmail(pendingSeed.email)
     expect(dbRow?.id).toBeGreaterThan(0)
     const rowId = dbRow!.id
 

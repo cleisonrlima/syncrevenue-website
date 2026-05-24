@@ -1,8 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 import type { Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
-import { seedAdminUser } from '../../server/db.seed'
-import { adminLoginAttemptsDao } from '../../server/dao/admin-login-attempts.dao'
 
 /**
  * P0-6 + P1-8 + P1-9 — axe-core WCAG 2.1 AA scan on `/` and `/privacy` × locales.
@@ -97,9 +95,9 @@ async function mockAdminApis(page: Page) {
   )
 }
 
-test.beforeAll(() => {
-  adminLoginAttemptsDao.reset(TEST_EMAIL)
-  seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
+test.beforeAll(({ e2eDb }) => {
+  e2eDb.resetAdminLoginAttempts(TEST_EMAIL)
+  e2eDb.seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
 })
 
 for (const route of PUBLIC_ROUTES) {

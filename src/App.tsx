@@ -102,7 +102,7 @@ export default function App() {
         Skip to main content
       </a>
       {showPublicChrome ? <Navbar /> : null}
-      <main id="main-content" className={mainClassName}>
+      <main id="main-content" tabIndex={-1} className={mainClassName}>
         <ErrorBoundary key={normalizedPathname}>
           <Routes>
             <Route path="/" element={<Home />} />

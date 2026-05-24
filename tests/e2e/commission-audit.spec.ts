@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * Story 3.5 — Commission Audit Lead Magnet.
@@ -38,11 +38,13 @@ test.describe('@P0 Commission audit section', () => {
     if (isMobile) {
       await page.getByRole('button', { name: /open menu/i }).click()
       const switcher = page.getByTestId('mobile-overlay-content').getByRole('group', { name: /select language/i })
-      await switcher.getByRole('button', { name: /pt-br/i }).click()
+      await switcher.getByRole('button').click()
+      await switcher.getByRole('menuitemradio', { name: 'PT-BR' }).click()
       await page.keyboard.press('Escape')
     } else {
       const switcher = page.locator('nav').getByRole('group', { name: /select language/i }).first()
-      await switcher.getByRole('button', { name: /pt-br/i }).click()
+      await switcher.getByRole('button').click()
+      await switcher.getByRole('menuitemradio', { name: 'PT-BR' }).click()
     }
 
     await page.locator('#commission-audit').scrollIntoViewIfNeeded()
@@ -74,11 +76,13 @@ test.describe('@P0 Commission audit section', () => {
     if (isMobile) {
       await page.getByRole('button', { name: /open menu/i }).click()
       const switcher = page.getByTestId('mobile-overlay-content').getByRole('group', { name: /select language/i })
-      await switcher.getByRole('button', { name: /^es$/i }).click()
+      await switcher.getByRole('button').click()
+      await switcher.getByRole('menuitemradio', { name: 'ES' }).click()
       await page.keyboard.press('Escape')
     } else {
       const switcher = page.locator('nav').getByRole('group', { name: /select language/i }).first()
-      await switcher.getByRole('button', { name: /^es$/i }).click()
+      await switcher.getByRole('button').click()
+      await switcher.getByRole('menuitemradio', { name: 'ES' }).click()
     }
 
     const audit = page.locator('#commission-audit')
@@ -88,7 +92,8 @@ test.describe('@P0 Commission audit section', () => {
     const headingText = await audit.locator('h2, h3').first().innerText()
     expect(headingText.length).toBeGreaterThan(0)
     expect(headingText.toLowerCase()).not.toContain('commission')
-    expect(headingText.toLowerCase()).not.toContain('auditoria')
+    expect(headingText.toLowerCase()).toContain('comisiones')
+    expect(headingText.toLowerCase()).not.toContain('comissões')
 
     // Form name label rendered in ES — should not equal the EN label "Name".
     const nameLabel = await page.locator('label[for="audit-name"]').innerText()

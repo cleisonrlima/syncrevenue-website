@@ -1,4 +1,5 @@
-import { expect, request, test, type APIRequestContext } from '@playwright/test'
+import { expect, request, test } from './fixtures'
+import type { APIRequestContext } from '@playwright/test'
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
 import fs from 'fs'
 import os from 'os'
@@ -92,7 +93,7 @@ test.describe('Story 2.5 SMTP notification resilience @P1', () => {
     const contactPayload = {
       name: 'Jane Smith',
       email: `jane.contact.${unique}@example.com`,
-      subject: 'BI/Data Analytics',
+      subject: 'support',
       message: 'We need analytics help for agency revenue reporting.',
       locale: 'pt-BR',
     }

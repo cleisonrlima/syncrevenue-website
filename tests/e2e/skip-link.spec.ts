@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * P1-5 — Skip-to-main link is first tab stop, focuses <main> on activation.

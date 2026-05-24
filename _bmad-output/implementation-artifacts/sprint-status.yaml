@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-14
-last_updated: 2026-05-23  # Story 7.8 review patches complete -> done. Fixed mobile Playwright route journey, wired runnable coverage floor + CI, removed build chunk warning, recorded Lighthouse/axe TEA baseline, and patched dashboard insights chart a11y.
+last_updated: 2026-05-23  # Epic 4 retrospective completed and saved to _bmad-output/implementation-artifacts/epic-4-retro-2026-05-23.md. Prior update: Story 7.8 review patches complete -> done. Fixed mobile Playwright route journey, wired runnable coverage floor + CI, removed build chunk warning, recorded Lighthouse/axe TEA baseline, and patched dashboard insights chart a11y.
 project: syncrevenue-website
 project_key: NOKEY
 tracking_system: file-system
@@ -109,7 +109,7 @@ development_status:
   # 4.7 + 4.8 added 2026-05-16 from Story 4.1 cross-model review deferred findings
   4-7-admin-login-throttling-lockout: done
   4-8-jwt-revocation-after-password-reseed: done
-  epic-4-retrospective: optional
+  epic-4-retrospective: done
 
   # Epic 5: Production Deployment (Phase 4)
   epic-5: done

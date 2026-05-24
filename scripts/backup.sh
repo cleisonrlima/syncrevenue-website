@@ -48,10 +48,10 @@ if ! mkdir -p "$BACKUP_DIR" 2>/dev/null; then
   exit 1
 fi
 
-# ── Copy the database file ──────────────────────────────────────────────────
+# ── Create SQLite-consistent backup ─────────────────────────────────────────
 
-if ! cp "$DB_PATH" "$BACKUP_FILE"; then
-  echo "[backup] ERROR: cp failed — could not write $BACKUP_FILE" >&2
+if ! node "${SCRIPT_DIR}/sqlite-backup.mjs" "$DB_PATH" "$BACKUP_FILE"; then
+  echo "[backup] ERROR: could not write $BACKUP_FILE" >&2
   exit 1
 fi
 

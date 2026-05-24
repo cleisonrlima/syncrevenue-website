@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * Story 7.8 (AC 3) — User-journey traversal: Dashboard sidebar navigation.

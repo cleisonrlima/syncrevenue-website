@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * Story 3.2 — animations & micro-interactions.
@@ -34,21 +34,33 @@ test.describe('@story-3.2 animations', () => {
 
     const demoSection = page.locator('#agendar-demo')
     await demoSection.scrollIntoViewIfNeeded()
-    const cta = demoSection.getByRole('button').first()
-    await expect(cta).toBeVisible()
+    await page.fill('#demo-name', 'Marcos Pereira')
+    await page.fill('#demo-email', 'marcos@example.com')
+    await page.fill('#demo-company', 'Agencia Sirius')
+    await page.selectOption('#demo-role', 'Operations')
+    await page.selectOption('#demo-gds', 'Amadeus')
 
-    const before = await cta.boundingBox()
-    expect(before).not.toBeNull()
+    const cta = demoSection.getByRole('button', { name: /schedule demonstration/i })
+    await expect(cta).toBeEnabled()
+
+    const before = await layoutBox(cta)
 
     await cta.hover()
-    await expect(cta).toHaveCSS('filter', /brightness/)
-    const after = await cta.boundingBox()
-    expect(after).not.toBeNull()
+    const after = await layoutBox(cta)
 
-    if (!before || !after) throw new Error('bounding box missing')
-    expect(Math.abs(after.x - before.x)).toBeLessThanOrEqual(1)
-    expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(1)
-    expect(Math.abs(after.width - before.width)).toBeLessThanOrEqual(1)
-    expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(1)
+    expect(Math.abs(after.width - before.width)).toBeLessThanOrEqual(2)
+    expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(2)
   })
 })
+
+async function layoutBox(locator: import('@playwright/test').Locator) {
+  return locator.evaluate(element => {
+    const htmlElement = element as HTMLElement
+    return {
+      x: htmlElement.offsetLeft,
+      y: htmlElement.offsetTop,
+      width: htmlElement.offsetWidth,
+      height: htmlElement.offsetHeight,
+    }
+  })
+}

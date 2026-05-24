@@ -1,10 +1,11 @@
 /**
  * t-requires-default-value
  *
- * Flags any `t('key')` callsite that lacks `{ defaultValue: '...' }` in the
+ * Flags any `t('key')` callsite that lacks either the i18next string fallback
+ * overload (`t('key', 'Fallback')`) or `{ defaultValue: '...' }` in the
  * options-object argument. i18next returns the key string itself on a miss,
- * which produces silently broken UI. Forcing `defaultValue` makes the fallback
- * explicit.
+ * which produces silently broken UI. Forcing an explicit fallback makes the
+ * missing-key behavior intentional.
  *
  * Detection:
  *   - callee is the bare identifier `t` (not `i18n.t` / `someObj.t` — those
@@ -12,9 +13,11 @@
  *   - first argument is a string literal OR a template literal with no
  *     interpolation expressions. Dynamic keys (`t(getKey())`, `t(\`pre.${x}\`)`)
  *     are accepted out-of-scope.
- *   - second argument must be an ObjectExpression containing a `defaultValue`
- *     property whose value is NOT `undefined` and NOT `null`. Empty string
- *     `defaultValue: ''` is valid (legitimate "render nothing on miss").
+ *   - second argument must be either:
+ *     - a string literal/template fallback (`t('key', 'Fallback')`), or
+ *     - an ObjectExpression containing a `defaultValue` property whose value is
+ *       NOT `undefined` and NOT `null`.
+ *     Empty string fallbacks are valid (legitimate "render nothing on miss").
  *
  * Out-of-scope skips:
  *   - `i18n.t(...)`, `someObj.t(...)` — member expressions
@@ -75,7 +78,21 @@ const rule = {
             data: { key: keyText },
           })
 
-        if (!optsArg || optsArg.type !== 'ObjectExpression') {
+        if (!optsArg) {
+          report()
+          return
+        }
+
+        if (
+          (optsArg.type === 'Literal' && typeof optsArg.value === 'string') ||
+          (optsArg.type === 'TemplateLiteral' &&
+            optsArg.expressions.length === 0 &&
+            optsArg.quasis.length === 1)
+        ) {
+          return
+        }
+
+        if (optsArg.type !== 'ObjectExpression') {
           report()
           return
         }

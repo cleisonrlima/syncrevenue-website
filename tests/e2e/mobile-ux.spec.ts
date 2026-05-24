@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * Story 3.4 — Mobile UX polish pass.
@@ -161,8 +161,8 @@ test.describe('@P0 Mobile UX 375px', () => {
 
 test.describe('@P1 Mobile UX cross-locale heading fit', () => {
   for (const localeCase of [
-    { label: 'PT-BR', buttonRegex: /pt-br/i },
-    { label: 'ES', buttonRegex: /^es$/i },
+    { label: 'PT-BR' },
+    { label: 'ES' },
   ]) {
     test(`${localeCase.label} Hero H1 stays within viewport without horizontal overflow`, async ({ page }) => {
       await page.goto('/', { waitUntil: 'networkidle' })
@@ -172,8 +172,9 @@ test.describe('@P1 Mobile UX cross-locale heading fit', () => {
 
       await page.getByRole('button', { name: /open menu/i }).click()
       const switcher = page.getByTestId('mobile-overlay-content').getByRole('group', { name: /select language/i })
-      await switcher.getByRole('button', { name: localeCase.buttonRegex }).click()
-      await expect(switcher.getByRole('button', { name: localeCase.buttonRegex })).toHaveAttribute('aria-current', 'true')
+      await switcher.getByRole('button', { name: /^en$/i }).click()
+      await switcher.getByRole('menuitemradio', { name: localeCase.label }).click()
+      await expect(switcher.getByRole('button', { name: localeCase.label })).toHaveAttribute('aria-expanded', 'false')
 
       await page.keyboard.press('Escape')
 
@@ -198,11 +199,11 @@ test.describe('@P1 Mobile UX cross-locale heading fit', () => {
   }
 })
 
-test.describe('@P1 Mobile UX form layout below 640px', () => {
-  // AC4: no fields sit side-by-side below 640px. We verify by reading the bounding
+test.describe('@P1 Mobile UX form layout below 600px', () => {
+  // AC4: no fields sit side-by-side below 600px. We verify by reading the bounding
   // box of every visible form field inside each form and asserting no two share
   // a horizontal row.
-  for (const viewportWidth of [375, 480, 639]) {
+  for (const viewportWidth of [375, 480, 599]) {
     test(`demo + contact form fields do not sit side-by-side at ${viewportWidth}px`, async ({ page }) => {
       await page.setViewportSize({ width: viewportWidth, height: 800 })
       await page.goto('/', { waitUntil: 'networkidle' })
@@ -240,38 +241,42 @@ test.describe('@P1 Mobile UX form layout below 640px', () => {
 })
 
 test.describe('@P1 Mobile UX TrustBar grid', () => {
-  // AC2: TrustBar must render as a 2x2 grid in the 480-767px range. The current
-  // implementation uses Tailwind's default sm: breakpoint (640px), so the 2x2
-  // grid is active between 640-767px (a known deviation from the 480px target —
-  // tracked separately). Below 640px the scroll variant renders; >=768px the
-  // single-row layout takes over.
+  // Story 6.5 refactored TrustBar to a single wrap-allowed flex strip with
+  // separators, not separate scroll/grid/row render variants.
   for (const viewportWidth of [640, 700, 767]) {
-    test(`TrustBar renders 2x2 grid at ${viewportWidth}px`, async ({ page }) => {
+    test(`TrustBar renders all items without horizontal overflow at ${viewportWidth}px`, async ({ page }) => {
       await page.setViewportSize({ width: viewportWidth, height: 800 })
       await page.goto('/', { waitUntil: 'networkidle' })
 
-      const grid = page.getByTestId('trust-bar-grid')
-      await expect(grid).toBeVisible()
-      await expect(page.getByTestId('trust-bar-scroll')).toBeHidden()
-      await expect(page.getByTestId('trust-bar-row')).toBeHidden()
+      const trustBar = page.getByTestId('trust-bar')
+      await expect(trustBar).toBeVisible()
 
-      const rows = await grid.evaluate((root) => {
-        const children = Array.from((root as HTMLElement).querySelectorAll<HTMLElement>(':scope > *'))
-          .filter((el) => {
-            const r = el.getBoundingClientRect()
-            return r.width > 0 && r.height > 0
-          })
-        const grouped = new Map<number, number>()
-        for (const el of children) {
-          const top = Math.round(el.getBoundingClientRect().top / 4) * 4
-          grouped.set(top, (grouped.get(top) ?? 0) + 1)
+      for (let i = 0; i < 4; i++) {
+        await expect(page.getByTestId(`trust-item-${i}`)).toBeVisible()
+      }
+      for (let i = 0; i < 3; i++) {
+        await expect(page.getByTestId(`trust-sep-${i}`)).toBeVisible()
+      }
+
+      const measurement = await trustBar.evaluate((root) => {
+        const rect = root.getBoundingClientRect()
+        const itemCount = root.querySelectorAll('[data-testid^="trust-item-"]').length
+        const separatorCount = root.querySelectorAll('[data-testid^="trust-sep-"]').length
+        return {
+          itemCount,
+          separatorCount,
+          left: rect.left,
+          right: rect.right,
+          vw: window.innerWidth,
+          doc: document.documentElement.scrollWidth,
         }
-        return { totalChildren: children.length, rowCounts: Array.from(grouped.values()) }
       })
 
-      expect(rows.totalChildren, 'TrustBar should render 4 trust items for a 2x2 grid').toBe(4)
-      const fullRows = rows.rowCounts.filter((n) => n >= 2)
-      expect(fullRows.length, `Expected 2 rows of >=2 items each; saw row sizes ${JSON.stringify(rows.rowCounts)}`).toBeGreaterThanOrEqual(2)
+      expect(measurement.itemCount, 'TrustBar should render 4 trust items').toBe(4)
+      expect(measurement.separatorCount, 'TrustBar should render 3 separators').toBe(3)
+      expect(measurement.left).toBeGreaterThanOrEqual(0)
+      expect(measurement.right).toBeLessThanOrEqual(measurement.vw + 2)
+      expect(measurement.doc).toBeLessThanOrEqual(measurement.vw)
     })
   }
 })

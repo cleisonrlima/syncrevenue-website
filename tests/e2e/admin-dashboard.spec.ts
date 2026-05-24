@@ -1,8 +1,5 @@
-import { test, expect } from '@playwright/test'
-import db from '../../server/db'
-import { seedAdminUser } from '../../server/db.seed'
-import { adminLoginAttemptsDao } from '../../server/dao/admin-login-attempts.dao'
-import { leadsDao } from '../../server/dao/leads.dao'
+import { test, expect } from './fixtures'
+import type { E2eDb } from './fixtures'
 
 const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-dashboard-e2e@example.com'
 const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-dashboard-e2e-password'
@@ -13,15 +10,12 @@ const SEED_EMAILS = [
   'dash-e2e-es@example.com',
 ]
 
-function purgeSeedLeads() {
-  const stmt = db.prepare('DELETE FROM demo_requests WHERE email = ?')
-  for (const email of SEED_EMAILS) {
-    stmt.run(email)
-  }
+function purgeSeedLeads(e2eDb: E2eDb) {
+  e2eDb.deleteLeadsByEmails(SEED_EMAILS)
 }
 
-function insertSeedLeads() {
-  leadsDao.insert({
+function insertSeedLeads(e2eDb: E2eDb) {
+  e2eDb.seedLead({
     name: 'Dashboard EN Lead',
     email: SEED_EMAILS[0],
     company: 'AcmeCo',
@@ -31,7 +25,7 @@ function insertSeedLeads() {
     message: null,
     locale: 'en',
   })
-  leadsDao.insert({
+  e2eDb.seedLead({
     name: 'Dashboard PT Lead',
     email: SEED_EMAILS[1],
     company: 'BetaCo',
@@ -41,7 +35,7 @@ function insertSeedLeads() {
     message: null,
     locale: 'pt-BR',
   })
-  leadsDao.insert({
+  e2eDb.seedLead({
     name: 'Dashboard ES Lead',
     email: SEED_EMAILS[2],
     company: 'GammaCo',
@@ -56,18 +50,18 @@ function insertSeedLeads() {
 test.describe('Admin Dashboard @P1', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeAll(() => {
-    adminLoginAttemptsDao.reset(TEST_EMAIL)
-    seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
+  test.beforeAll(({ e2eDb }) => {
+    e2eDb.resetAdminLoginAttempts(TEST_EMAIL)
+    e2eDb.seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })
 
-  test.beforeEach(() => {
-    purgeSeedLeads()
-    insertSeedLeads()
+  test.beforeEach(({ e2eDb }) => {
+    purgeSeedLeads(e2eDb)
+    insertSeedLeads(e2eDb)
   })
 
-  test.afterAll(() => {
-    purgeSeedLeads()
+  test.afterAll(({ e2eDb }) => {
+    purgeSeedLeads(e2eDb)
   })
 
   async function login(page: import('@playwright/test').Page) {
@@ -120,8 +114,8 @@ test.describe('Admin Dashboard @P1', () => {
     expect(cookies.find((c) => c.name === 'admin_token')).toBeUndefined()
   })
 
-  test('Dashboard displays stat cards with numbers reflecting seeded demo_requests', async ({ page }) => {
-    const expected = leadsDao.countStats()
+  test('Dashboard displays stat cards with numbers reflecting seeded demo_requests', async ({ page, e2eDb }) => {
+    const expected = e2eDb.countLeadStats()
     await login(page)
     await expect(page.getByTestId('admin-dashboard-stats')).toBeVisible()
     await expect(page.getByTestId('admin-dashboard-card-total')).toContainText(

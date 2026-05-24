@@ -15,6 +15,10 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('t-requires-default-value', rule, {
   valid: [
+    { code: "t('nav.home', 'Home')" },
+    { code: "t('nav.home', '')" },
+    { code: "t('nav.home', `Home`)" },
+    { code: "t('nav.home', 'Home', { ns: 'common' })" },
     { code: "t('nav.home', { defaultValue: 'Home' })" },
     { code: "t('nav.home', { defaultValue: 'Home', ns: 'common' })" },
     { code: "t('nav.home', { ns: 'common', defaultValue: 'Home' })" },
@@ -43,7 +47,15 @@ ruleTester.run('t-requires-default-value', rule, {
       errors: [{ messageId: 'missingDefaultValue' }],
     },
     {
-      code: "t('nav.home', 'not-an-object')",
+      code: "t('nav.home', undefined)",
+      errors: [{ messageId: 'missingDefaultValue' }],
+    },
+    {
+      code: "t('nav.home', null)",
+      errors: [{ messageId: 'missingDefaultValue' }],
+    },
+    {
+      code: "t('nav.home', 42)",
       errors: [{ messageId: 'missingDefaultValue' }],
     },
   ],

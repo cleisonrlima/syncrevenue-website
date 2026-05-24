@@ -1,25 +1,19 @@
-import { test, expect } from '@playwright/test'
-import db from '../../server/db'
-import { seedAdminUser } from '../../server/db.seed'
-import { adminLoginAttemptsDao } from '../../server/dao/admin-login-attempts.dao'
-import { teamDao } from '../../server/dao/team.dao'
+import { test, expect } from './fixtures'
+import type { E2eDb } from './fixtures'
 
 const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-team-e2e@example.com'
 const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-team-e2e-password'
 
 const SEED_NAMES = ['Team E2E Alpha', 'Team E2E Beta']
 
-function purgeSeedTeam() {
-  const stmt = db.prepare('DELETE FROM team_members WHERE name = ?')
-  for (const name of SEED_NAMES) {
-    stmt.run(name)
-  }
+function purgeSeedTeam(e2eDb: E2eDb) {
+  e2eDb.deleteTeamByNames(SEED_NAMES)
   // also wipe any rows the admin CRUD test creates so reruns stay clean
-  db.prepare("DELETE FROM team_members WHERE name LIKE 'E2E Created %'").run()
+  e2eDb.deleteCreatedTeamMembers()
 }
 
-function insertSeedTeam() {
-  teamDao.create({
+function insertSeedTeam(e2eDb: E2eDb) {
+  e2eDb.seedTeamMember({
     name: SEED_NAMES[0],
     role_en: 'Lead EN',
     role_pt: 'Líder PT',
@@ -35,7 +29,7 @@ function insertSeedTeam() {
     order_index: 0,
     active: 1,
   })
-  teamDao.create({
+  e2eDb.seedTeamMember({
     name: SEED_NAMES[1],
     role_en: 'Automation EN',
     role_pt: 'Automação PT',
@@ -56,18 +50,18 @@ function insertSeedTeam() {
 test.describe('Admin Team @P1', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeAll(() => {
-    adminLoginAttemptsDao.reset(TEST_EMAIL)
-    seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
+  test.beforeAll(({ e2eDb }) => {
+    e2eDb.resetAdminLoginAttempts(TEST_EMAIL)
+    e2eDb.seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })
 
-  test.beforeEach(() => {
-    purgeSeedTeam()
-    insertSeedTeam()
+  test.beforeEach(({ e2eDb }) => {
+    purgeSeedTeam(e2eDb)
+    insertSeedTeam(e2eDb)
   })
 
-  test.afterAll(() => {
-    purgeSeedTeam()
+  test.afterAll(({ e2eDb }) => {
+    purgeSeedTeam(e2eDb)
   })
 
   async function login(page: import('@playwright/test').Page) {
@@ -76,6 +70,26 @@ test.describe('Admin Team @P1', () => {
     await page.getByLabel(/password|senha|contraseña/i).fill(TEST_PASSWORD)
     await page.getByRole('button', { name: /sign in|entrar|iniciar sesión/i }).click()
     await page.waitForURL(/\/admin\/dashboard$/)
+  }
+
+  async function getLanguageSwitcher(page: import('@playwright/test').Page, isMobile: boolean) {
+    if (isMobile) {
+      await page.getByRole('button', { name: /open menu/i }).click()
+      return page
+        .getByRole('dialog', { name: /mobile navigation menu/i })
+        .getByRole('group', { name: /select language/i })
+    }
+
+    return page.getByLabel(/main navigation/i).getByRole('group', { name: /select language/i })
+  }
+
+  async function selectLocale(
+    switcher: import('@playwright/test').Locator,
+    label: 'EN' | 'PT-BR' | 'ES'
+  ) {
+    await switcher.getByRole('button').click()
+    await switcher.getByRole('menuitemradio', { name: label }).click()
+    await expect(switcher.getByRole('button', { name: label })).toBeVisible()
   }
 
   test('admin can create, edit, and persist a team member', async ({ page }) => {
@@ -119,16 +133,15 @@ test.describe('Admin Team @P1', () => {
     await expect(page.getByTestId('admin-team-table')).toContainText(updated)
   })
 
-  test('public Team section renders seeded members and locale switch updates bio', async ({ page }) => {
+  test('public Team section renders seeded members and locale switch updates bio', async ({ page, isMobile }) => {
     await page.goto('/')
     const team = page.getByRole('region', { name: /sync sirius team specialists|especialistas/i })
     await expect(team).toBeVisible()
     await expect(team).toContainText(SEED_NAMES[0])
     await expect(team).toContainText('Lead EN')
 
-    // switch locale to pt-BR via the existing language switcher menu
-    await page.getByRole('button', { name: 'EN' }).first().click()
-    await page.getByRole('menuitemradio', { name: 'PT-BR' }).click()
+    const switcher = await getLanguageSwitcher(page, isMobile)
+    await selectLocale(switcher, 'PT-BR')
     await expect(team).toContainText('PT bio: orienta operações')
   })
 

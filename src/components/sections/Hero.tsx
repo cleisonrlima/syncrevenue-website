@@ -89,7 +89,7 @@ export default function Hero() {
           <div>
             <h1
               id="hero-heading"
-              className="font-extrabold tracking-[-0.025em] text-white max-w-[16ch] mb-6 text-[clamp(2.4rem,4.8vw,4.2rem)] leading-[1.02]"
+              className="font-extrabold tracking-[-0.025em] text-white max-w-[16ch] mb-6 text-[2.15rem] leading-[1.02] md:text-[3.25rem] lg:text-[4.2rem]"
             >
               {t('hero.headline.line1', { defaultValue: '' })}
               <br />
@@ -108,7 +108,7 @@ export default function Hero() {
                 variant="solid-accent"
                 size="lg"
                 onClick={handleDemoCta}
-                className="min-h-[44px] inline-flex items-center gap-2"
+                className="min-h-[44px] w-full justify-center inline-flex items-center gap-2 sm:w-auto"
                 data-testid="hero-primary-cta"
               >
                 {t('hero.cta.primary', { defaultValue: '' })}

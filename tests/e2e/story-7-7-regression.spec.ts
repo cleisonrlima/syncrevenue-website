@@ -1,9 +1,7 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 import type { Page } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
-import { seedAdminUser } from '../../server/db.seed'
-import { adminLoginAttemptsDao } from '../../server/dao/admin-login-attempts.dao'
 
 const ARTIFACT_DIR = path.resolve(
   process.cwd(),
@@ -11,14 +9,37 @@ const ARTIFACT_DIR = path.resolve(
 )
 const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-story-7-7-e2e@example.com'
 const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-story-7-7-e2e-password'
+const MAX_SCREENSHOT_DIMENSION = 32_767
+
+async function canCaptureFullPage(page: Page) {
+  const dimensions = await page.evaluate(() => {
+    const doc = document.documentElement
+    const body = document.body
+
+    return {
+      width: Math.max(doc.scrollWidth, body.scrollWidth, doc.clientWidth),
+      height: Math.max(doc.scrollHeight, body.scrollHeight, doc.clientHeight),
+      deviceScaleFactor: window.devicePixelRatio || 1,
+    }
+  })
+
+  return (
+    dimensions.width * dimensions.deviceScaleFactor <= MAX_SCREENSHOT_DIMENSION &&
+    dimensions.height * dimensions.deviceScaleFactor <= MAX_SCREENSHOT_DIMENSION
+  )
+}
+
+async function saveScreenshot(page: Page, fileName: string) {
+  await page.screenshot({
+    path: path.join(ARTIFACT_DIR, fileName),
+    fullPage: await canCaptureFullPage(page),
+  })
+}
 
 async function capture(page: Page, route: string, fileName: string) {
   await page.goto(route, { waitUntil: 'networkidle' })
   await expect(page.locator('body')).toBeVisible()
-  await page.screenshot({
-    path: path.join(ARTIFACT_DIR, fileName),
-    fullPage: true,
-  })
+  await saveScreenshot(page, fileName)
 }
 
 async function mockAdminApis(page: Page) {
@@ -61,10 +82,10 @@ async function mockAdminApis(page: Page) {
 test.describe('Story 7.7 dark-mode screenshot evidence', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeAll(() => {
+  test.beforeAll(({ e2eDb }) => {
     fs.mkdirSync(ARTIFACT_DIR, { recursive: true })
-    adminLoginAttemptsDao.reset(TEST_EMAIL)
-    seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
+    e2eDb.resetAdminLoginAttempts(TEST_EMAIL)
+    e2eDb.seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })
 
   test('captures public and admin route screenshots', async ({ page }) => {
@@ -72,26 +93,17 @@ test.describe('Story 7.7 dark-mode screenshot evidence', () => {
     await capture(page, '/privacy', 'privacy.png')
 
     await page.goto('/admin/login', { waitUntil: 'networkidle' })
-    await page.screenshot({
-      path: path.join(ARTIFACT_DIR, 'admin-login.png'),
-      fullPage: true,
-    })
+    await saveScreenshot(page, 'admin-login.png')
 
     await page.getByLabel(/email/i).fill('admin-story-7-7-invalid@example.com')
     await page.getByLabel(/password|senha|contraseña/i).fill('wrong-password')
     await page.getByRole('button', { name: /sign in|entrar|iniciar sesión/i }).click()
     await expect(page.getByTestId('admin-login-error')).toBeVisible()
-    await page.screenshot({
-      path: path.join(ARTIFACT_DIR, 'admin-login-error.png'),
-      fullPage: true,
-    })
+    await saveScreenshot(page, 'admin-login-error.png')
 
     await mockAdminApis(page)
     await page.goto('/admin/dashboard', { waitUntil: 'networkidle' })
-    await page.screenshot({
-      path: path.join(ARTIFACT_DIR, 'admin-dashboard.png'),
-      fullPage: true,
-    })
+    await saveScreenshot(page, 'admin-dashboard.png')
 
     await capture(page, '/admin/leads', 'admin-leads.png')
     await capture(page, '/admin/team', 'admin-team.png')

@@ -44,7 +44,11 @@ function ComparisonTable({ ariaLabel }: { ariaLabel: string }) {
   const { t } = useTranslation()
 
   return (
-    <div className="overflow-x-auto rounded-[14px] border border-[var(--line-strong)] bg-white/[0.03]">
+    <div
+      className="overflow-x-auto rounded-[14px] border border-[var(--line-strong)] bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-brand-soft)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ink)]"
+      tabIndex={0}
+      aria-label={ariaLabel}
+    >
       <table aria-label={ariaLabel} className="min-w-[720px] w-full border-collapse text-left">
         <thead className="bg-white/[0.04]">
           <tr>

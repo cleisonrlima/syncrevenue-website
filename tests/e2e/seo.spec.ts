@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test'
+import { test, expect } from './fixtures'
+import type { Page } from '@playwright/test'
 
 const seo = {
   en: {
@@ -87,13 +88,18 @@ async function openNavLanguageSwitcher(page: Page, isMobile: boolean) {
   return page.getByLabel(/main navigation/i).getByRole('group', { name: /select language/i })
 }
 
+async function selectLocale(switcher: import('@playwright/test').Locator, label: 'PT-BR' | 'ES') {
+  await switcher.getByRole('button').click()
+  await switcher.getByRole('menuitemradio', { name: label }).click()
+}
+
 test.describe('@P1 SEO metadata', () => {
   test('home emits locale-aware head tags in EN and PT-BR', async ({ page, isMobile }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
     await expectHomeSeo(page, 'en')
 
     const switcher = await openNavLanguageSwitcher(page, isMobile)
-    await switcher.getByRole('button', { name: /pt-br/i }).click()
+    await selectLocale(switcher, 'PT-BR')
     await expectHomeSeo(page, 'pt-BR')
   })
 
@@ -102,10 +108,10 @@ test.describe('@P1 SEO metadata', () => {
     await expectHomeSeo(page, 'en')
 
     const switcher = await openNavLanguageSwitcher(page, isMobile)
-    await switcher.getByRole('button', { name: /pt-br/i }).click()
+    await selectLocale(switcher, 'PT-BR')
     await expectHomeSeo(page, 'pt-BR')
 
-    await switcher.getByRole('button', { name: /^es$/i }).click()
+    await selectLocale(switcher, 'ES')
     await expectHomeSeo(page, 'es')
   })
 

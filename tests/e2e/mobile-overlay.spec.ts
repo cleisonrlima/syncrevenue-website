@@ -1,4 +1,4 @@
-import { test, expect, devices } from '@playwright/test'
+import { devices, test, expect } from './fixtures'
 
 /**
  * P0-5 + P1-4 — Mobile hamburger overlay: open, focus trap, Esc close.

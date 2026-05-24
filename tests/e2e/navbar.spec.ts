@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 test.describe('@story-6.2 navbar', () => {
   test('desktop navbar starts transparent and fills after scrolling', async ({ page }, testInfo) => {
@@ -18,7 +18,7 @@ test.describe('@story-6.2 navbar', () => {
   test('logo exposes fixed dimensions and top-anchor href', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
 
-    const logo = page.getByAltText('SyncSirius')
+    const logo = page.getByAltText('Sync Sirius')
     await expect(logo).toHaveAttribute('width', '32')
     await expect(logo).toHaveAttribute('height', '32')
     await expect(logo).toHaveAttribute('loading', 'eager')

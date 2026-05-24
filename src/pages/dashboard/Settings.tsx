@@ -16,6 +16,7 @@ import {
   Check,
   AlertCircle,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useDocumentMeta } from '@/components/SEO'
 
 /**
@@ -64,13 +65,9 @@ type SettingsTab = {
   id: TabId
   labelKey: string
   labelFallback: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: any
+  icon: LucideIcon
 }
 
-// Typed as `any` for the icon component because lucide-react's typed
-// export shape varies per package version; this avoids dragging the
-// version-specific `LucideIcon` import into this file's call-sites.
 // Story 7.5: `labelKey` + `labelFallback` decouple the tab identity from
 // the rendered i18n string.
 const SETTINGS_TABS: ReadonlyArray<SettingsTab> = [

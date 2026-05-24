@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * P0-1 — Smoke: `/` and `/privacy` mount without console errors.

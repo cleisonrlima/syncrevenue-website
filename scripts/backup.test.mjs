@@ -2,20 +2,22 @@
  * backup.test.mjs
  *
  * Node.js native test for scripts/backup.sh.
- * Uses only built-in modules: assert, fs, path, os, child_process.
+ * Uses Node built-ins plus better-sqlite3 for WAL integrity verification.
  * NOT part of the Vitest suite — run with: node scripts/backup.test.mjs
  *
  * Test cases:
  *   1. Happy path — creates a timestamped backup file.
  *   2. Retention — backup files older than 30 days are deleted.
  *   3. Missing DB_PATH — exits with code 1 and writes ERROR to stderr.
+ *   4. WAL-mode integrity — committed WAL rows are present in the backup.
  */
 
 import assert from 'assert/strict';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { execSync, spawnSync } from 'child_process';
+import { spawnSync } from 'child_process';
+import Database from 'better-sqlite3';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -41,6 +43,16 @@ function runBackup(env) {
   });
 }
 
+function createSqliteDb(dbPath) {
+  const database = new Database(dbPath);
+  try {
+    database.exec('CREATE TABLE smoke (id INTEGER PRIMARY KEY, value TEXT NOT NULL)');
+    database.prepare('INSERT INTO smoke (value) VALUES (?)').run('ok');
+  } finally {
+    database.close();
+  }
+}
+
 // ── Test 1: Happy path ────────────────────────────────────────────────────────
 
 console.log('Test 1: happy path — creates timestamped backup');
@@ -49,9 +61,8 @@ console.log('Test 1: happy path — creates timestamped backup');
   const tmpBackup = makeTempDir('syncrv-test-backup-');
 
   try {
-    // Create a fake SQLite-ish database file
     const dbPath = path.join(tmpData, 'sync_sirius.db');
-    fs.writeFileSync(dbPath, 'SQLite format 3\x00fake-data');
+    createSqliteDb(dbPath);
 
     const result = runBackup({
       DB_PATH: dbPath,
@@ -84,7 +95,7 @@ console.log('Test 2: retention — deletes backups older than 30 days');
 
   try {
     const dbPath = path.join(tmpData, 'sync_sirius.db');
-    fs.writeFileSync(dbPath, 'SQLite format 3\x00fake-data');
+    createSqliteDb(dbPath);
 
     // Create two "old" backup files with mtime set to 31 days ago
     const oldFile1 = path.join(tmpBackup, 'sync_sirius_2026-04-01_02-00-00.db');
@@ -92,8 +103,11 @@ console.log('Test 2: retention — deletes backups older than 30 days');
     fs.writeFileSync(oldFile1, 'old backup 1');
     fs.writeFileSync(oldFile2, 'old backup 2');
 
-    // Set mtime to 31 days ago using touch
-    execSync(`touch -d "31 days ago" "${oldFile1}" "${oldFile2}"`);
+    // Set mtime to 31 days ago without shelling out so the test works in
+    // restricted sandboxes and CI containers.
+    const oldTime = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000);
+    fs.utimesSync(oldFile1, oldTime, oldTime);
+    fs.utimesSync(oldFile2, oldTime, oldTime);
 
     // Verify old files exist before the run
     assert.ok(fs.existsSync(oldFile1), 'Old file 1 should exist before run');
@@ -141,6 +155,48 @@ console.log('Test 3: nonexistent DB_PATH → exit code 1 and ERROR on stderr');
     console.log('  PASS — exit 1 and ERROR logged to stderr');
   } finally {
     cleanup(tmpBackup);
+  }
+}
+
+// ── Test 4: WAL-mode SQLite backup integrity ────────────────────────────────
+
+console.log('Test 4: WAL-mode integrity — backs up committed rows from WAL');
+{
+  const tmpData = makeTempDir('syncrv-test-data-');
+  const tmpBackup = makeTempDir('syncrv-test-backup-');
+
+  try {
+    const dbPath = path.join(tmpData, 'sync_sirius.db');
+    const sourceDb = new Database(dbPath);
+    sourceDb.pragma('journal_mode = WAL');
+    sourceDb.exec('CREATE TABLE records (id INTEGER PRIMARY KEY, name TEXT NOT NULL)');
+    sourceDb.prepare('INSERT INTO records (name) VALUES (?)').run('wal-backed row');
+
+    const walPath = `${dbPath}-wal`;
+    assert.ok(fs.existsSync(walPath), 'WAL file should exist before backup');
+
+    const result = runBackup({
+      DB_PATH: dbPath,
+      BACKUP_DIR: tmpBackup,
+    });
+
+    assert.equal(result.status, 0, `Expected exit 0, got ${result.status}. stderr: ${result.stderr}`);
+
+    const files = fs.readdirSync(tmpBackup).filter(f => f.startsWith('sync_sirius_') && f.endsWith('.db'));
+    assert.equal(files.length, 1, `Expected 1 backup file, found ${files.length}: ${JSON.stringify(files)}`);
+
+    const backupDb = new Database(path.join(tmpBackup, files[0]), { readonly: true, fileMustExist: true });
+    try {
+      const row = backupDb.prepare('SELECT name FROM records WHERE id = 1').get();
+      assert.deepEqual(row, { name: 'wal-backed row' });
+    } finally {
+      backupDb.close();
+      sourceDb.close();
+    }
+
+    console.log('  PASS — committed WAL row present in backup:', files[0]);
+  } finally {
+    cleanup(tmpData, tmpBackup);
   }
 }
 

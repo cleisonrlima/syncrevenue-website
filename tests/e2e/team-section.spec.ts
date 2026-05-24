@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 /**
  * Story 3.1 — Team Photos & Bio Content.
@@ -13,8 +13,54 @@ const TEAM_GRID = '[data-team-grid="true"]'
 const TEAM_ARTICLE = `${TEAM_GRID} > article`
 const TEAM_IMG = `${TEAM_GRID} img`
 const TEAM_PLACEHOLDER = '[data-team-photo-placeholder="true"]'
+const TEAM_NAMES = ['Maria Silva', 'Lucas Oliveira']
 
-async function gotoHomeWithLocale(page: import('@playwright/test').Page, locale: string) {
+async function seedDefaultTeam(e2eDb: import('./fixtures').E2eDb) {
+  e2eDb.deleteTeamByNames(TEAM_NAMES)
+  e2eDb.seedTeamMember({
+    name: 'Maria Silva',
+    role_en: 'Airline Distribution & Commission Strategy Lead',
+    role_pt: 'Líder de Distribuição Aérea e Estratégia de Comissões',
+    role_es: 'Líder de Distribución Aérea y Estrategia de Comisiones',
+    bio_en:
+      'Guides travel agencies through GDS operations, BSP/ARC reconciliation, debit memo workflows, and commission recovery strategy across the Americas.',
+    bio_pt:
+      'Orienta agências de viagens em operações de GDS, conciliação BSP/ARC, fluxos de débito e estratégia de recuperação de comissões nas Américas.',
+    bio_es:
+      'Guía a agencias de viajes en operaciones GDS, conciliación BSP/ARC, flujos de débitos y estrategia de recuperación de comisiones en las Américas.',
+    experience_en: '20+ years in airline distribution',
+    experience_pt: '20+ anos em distribuição aérea',
+    experience_es: '20+ años en distribución aérea',
+    linkedin: 'https://www.linkedin.com/in/maria-silva-syncsirius/',
+    photo_url: '/team/maria-silva.webp',
+    order_index: 0,
+  })
+  e2eDb.seedTeamMember({
+    name: 'Lucas Oliveira',
+    role_en: 'Travel Data Integration & Automation Lead',
+    role_pt: 'Líder de Integração de Dados e Automação de Viagens',
+    role_es: 'Líder de Integración de Datos y Automatización de Viajes',
+    bio_en:
+      'Designs the automation layer behind SyncRevenue, connecting booking data, commission rules, and revenue optimization systems.',
+    bio_pt:
+      'Projeta a camada de automação por trás do SyncRevenue, conectando dados de reservas, regras de comissão e sistemas de receita.',
+    bio_es:
+      'Diseña la capa de automatización detrás de SyncRevenue, conectando datos de reservas, reglas de comisión y sistemas de ingresos.',
+    experience_en: '15+ years in travel data automation',
+    experience_pt: '15+ anos em automação de dados de viagens',
+    experience_es: '15+ años en automatización de datos de viajes',
+    linkedin: 'https://www.linkedin.com/in/lucas-oliveira-syncsirius/',
+    photo_url: '/team/lucas-oliveira.webp',
+    order_index: 1,
+  })
+}
+
+async function gotoHomeWithLocale(
+  page: import('@playwright/test').Page,
+  e2eDb: import('./fixtures').E2eDb,
+  locale: string,
+) {
+  await seedDefaultTeam(e2eDb)
   await page.addInitScript(loc => {
     try {
       window.localStorage.setItem('i18nextLng', loc)
@@ -27,8 +73,8 @@ async function gotoHomeWithLocale(page: import('@playwright/test').Page, locale:
 }
 
 test.describe('@P0 Team section — member media', () => {
-  test('renders the Team region with 2 article cards', async ({ page }) => {
-    await gotoHomeWithLocale(page, 'en')
+  test('renders the Team region with 2 article cards', async ({ page, e2eDb }) => {
+    await gotoHomeWithLocale(page, e2eDb, 'en')
 
     const region = page.locator('#equipe')
     await expect(region).toBeVisible()
@@ -37,8 +83,8 @@ test.describe('@P0 Team section — member media', () => {
     await expect(articles).toHaveCount(2)
   })
 
-  test('configured member photos use composed "{name}, {role}" alt text', async ({ page }) => {
-    await gotoHomeWithLocale(page, 'en')
+  test('configured member photos use composed "{name}, {role}" alt text', async ({ page, e2eDb }) => {
+    await gotoHomeWithLocale(page, e2eDb, 'en')
 
     const imgs = page.locator(TEAM_IMG)
     const count = await imgs.count()
@@ -53,16 +99,16 @@ test.describe('@P0 Team section — member media', () => {
     }
   })
 
-  test('configured member photos declare width=320, height=320, loading=lazy (CLS)', async ({ page }) => {
-    await gotoHomeWithLocale(page, 'en')
+  test('configured member photos declare width=200, height=200, loading=lazy (CLS)', async ({ page, e2eDb }) => {
+    await gotoHomeWithLocale(page, e2eDb, 'en')
 
     const imgs = page.locator(TEAM_IMG)
     const count = await imgs.count()
 
     for (let i = 0; i < count; i++) {
       const img = imgs.nth(i)
-      await expect(img).toHaveAttribute('width', '320')
-      await expect(img).toHaveAttribute('height', '320')
+      await expect(img).toHaveAttribute('width', '200')
+      await expect(img).toHaveAttribute('height', '200')
       await expect(img).toHaveAttribute('loading', 'lazy')
       const src = await img.getAttribute('src')
       expect(src, `img[${i}] src`).toMatch(/^\/team\/.+\.webp$/)
@@ -71,16 +117,16 @@ test.describe('@P0 Team section — member media', () => {
 })
 
 test.describe('@P1 Team section — content & layout', () => {
-  test('all members render real photos — initials placeholder block is absent', async ({ page }) => {
-    await gotoHomeWithLocale(page, 'en')
+  test('all members render real photos — initials placeholder block is absent', async ({ page, e2eDb }) => {
+    await gotoHomeWithLocale(page, e2eDb, 'en')
 
     await expect(page.locator(TEAM_PLACEHOLDER)).toHaveCount(0)
     const photos = page.locator(`${TEAM_IMG}[src^="/team/"]`)
     await expect(photos).toHaveCount(2)
   })
 
-  test('LinkedIn anchor renders for every member with linkedinUrl set', async ({ page }) => {
-    await gotoHomeWithLocale(page, 'en')
+  test('LinkedIn anchor renders for every member with linkedinUrl set', async ({ page, e2eDb }) => {
+    await gotoHomeWithLocale(page, e2eDb, 'en')
 
     const anchors = page.locator(`${TEAM_ARTICLE} a[target="_blank"]`)
     await expect(anchors).toHaveCount(2)
@@ -93,9 +139,9 @@ test.describe('@P1 Team section — content & layout', () => {
     }
   })
 
-  test('mobile viewport renders a single column grid', async ({ page }) => {
+  test('mobile viewport renders a single column grid', async ({ page, e2eDb }) => {
     await page.setViewportSize({ width: 375, height: 800 })
-    await gotoHomeWithLocale(page, 'en')
+    await gotoHomeWithLocale(page, e2eDb, 'en')
 
     const grid = page.locator(TEAM_GRID)
     await expect(grid).toBeVisible()
@@ -112,11 +158,11 @@ test.describe('@P1 Team section — content & layout', () => {
     expect(second!.y).toBeGreaterThanOrEqual(first!.y + first!.height - 1)
   })
 
-  test('role text differs across en, pt-BR, and es locales (locale-distinct bios contract)', async ({ page }) => {
+  test('role text differs across en, pt-BR, and es locales (locale-distinct bios contract)', async ({ page, e2eDb }) => {
     const rolesByLocale: Record<string, string[]> = {}
 
     for (const locale of ['en', 'pt-BR', 'es']) {
-      await gotoHomeWithLocale(page, locale)
+      await gotoHomeWithLocale(page, e2eDb, locale)
       const roles = await page.locator(`${TEAM_ARTICLE} p.uppercase`).allInnerTexts()
       expect(roles.length, `${locale} role count`).toBeGreaterThan(0)
       rolesByLocale[locale] = roles.map(r => r.trim())

@@ -155,6 +155,7 @@ export default function Navbar() {
     <nav
       className={cn(
         'fixed top-0 inset-x-0 z-50',
+        isOpen ? 'bottom-0' : '',
         // motion-safe gating so reduced-motion users don't see the fade
         'motion-safe:transition-colors motion-safe:duration-200',
         showOverlay
@@ -253,7 +254,7 @@ export default function Navbar() {
             >
               {t('nav.cta', { defaultValue: 'Schedule a Demo' })}
             </a>
-            <div className="mt-4"><LanguageSwitcher /></div>
+            <div className="mt-4"><LanguageSwitcher menuPlacement="top" /></div>
           </nav>
         </div>
       )}

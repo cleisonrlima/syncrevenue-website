@@ -2,6 +2,9 @@
   "name": "syncrevenue-website",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22 <25"
+  },
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "dev": "concurrently --kill-others-on-fail \"vite\" \"tsx watch server/index.ts\"",

@@ -9,7 +9,12 @@ const LOCALES: { code: Locale; label: string }[] = [
   { code: 'es', label: 'ES' },
 ]
 
-export default function LanguageSwitcher({ className }: { className?: string }) {
+type LanguageSwitcherProps = {
+  className?: string
+  menuPlacement?: 'bottom' | 'top'
+}
+
+export default function LanguageSwitcher({ className, menuPlacement = 'bottom' }: LanguageSwitcherProps) {
   const { locale } = useLocaleStore()
   const [isOpen, setIsOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -66,7 +71,10 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
         <div
           role="menu"
           aria-label="Available languages"
-          className="absolute right-0 top-[calc(100%+8px)] z-[60] min-w-[96px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,8,32,0.98)] p-1 shadow-lg backdrop-blur-md"
+          className={cn(
+            'absolute right-0 z-[60] min-w-[96px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,8,32,0.98)] p-1 shadow-lg backdrop-blur-md',
+            menuPlacement === 'top' ? 'bottom-[calc(100%+8px)]' : 'top-[calc(100%+8px)]'
+          )}
         >
           {LOCALES.map(({ code, label }) => (
             <button

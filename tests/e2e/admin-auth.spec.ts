@@ -1,17 +1,11 @@
-import { test, expect } from '@playwright/test'
-import db from '../../server/db'
-import { seedAdminUser } from '../../server/db.seed'
+import { test, expect } from './fixtures'
 
 const TEST_EMAIL = process.env.ADMIN_TEST_EMAIL ?? 'admin-e2e@example.com'
 const TEST_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? 'admin-e2e-password'
 
 test.describe('Admin Auth @P1', () => {
-  test.beforeAll(() => {
-    seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
-  })
-
-  test.afterAll(() => {
-    db.close()
+  test.beforeAll(({ e2eDb }) => {
+    e2eDb.seedAdminUser({ email: TEST_EMAIL, password: TEST_PASSWORD })
   })
 
   test('GET /admin redirects unauthenticated visitor to /admin/login', async ({ page }) => {
