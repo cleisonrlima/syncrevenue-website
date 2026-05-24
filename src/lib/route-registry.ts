@@ -1,4 +1,4 @@
-export const PRERENDER_INCLUDED_ROUTES = ['/'] as const
+export const PRERENDER_INCLUDED_ROUTES = ['/', '/privacy'] as const
 
 export const PRERENDER_EXCLUDED_ROUTES = [
   '/v2',
@@ -7,7 +7,6 @@ export const PRERENDER_EXCLUDED_ROUTES = [
   '/dashboard/*',
   '/admin',
   '/admin/*',
-  '/privacy',
   '/404',
 ] as const
 

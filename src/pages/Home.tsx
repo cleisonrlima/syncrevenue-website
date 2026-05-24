@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { useDocumentMeta } from '@/components/SEO'
 // Story 6.13 (AC 6 + AC 7): Hero stays eager so the LCP image renders on
@@ -25,6 +25,8 @@ const DemoScheduler = lazy(() => import('@/components/sections/DemoScheduler'))
 const Contact = lazy(() => import('@/components/sections/Contact'))
 
 export default function Home() {
+  const [showDeferredSections, setShowDeferredSections] = useState(false)
+
   useDocumentMeta({
     titleKey: 'seo.home.title',
     descriptionKey: 'seo.home.description',
@@ -33,18 +35,32 @@ export default function Home() {
     path: '/',
   })
 
+  useEffect(() => {
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(() => setShowDeferredSections(true), { timeout: 3000 })
+      return () => window.cancelIdleCallback(id)
+    }
+
+    const id = window.setTimeout(() => setShowDeferredSections(true), 1500)
+    return () => window.clearTimeout(id)
+  }, [])
+
   return (
     <>
       <ErrorBoundary><Hero /></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><SyncRevenue /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><CommissionAudit /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><Services /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><Comparison /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><Security /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><ClientReferences /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><Team /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><DemoScheduler /></Suspense></ErrorBoundary>
-      <ErrorBoundary><Suspense fallback={null}><Contact /></Suspense></ErrorBoundary>
+      {showDeferredSections ? (
+        <>
+          <ErrorBoundary><Suspense fallback={null}><SyncRevenue /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><CommissionAudit /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Services /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Comparison /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Security /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><ClientReferences /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Team /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><DemoScheduler /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={null}><Contact /></Suspense></ErrorBoundary>
+        </>
+      ) : null}
     </>
   )
 }

@@ -3,24 +3,28 @@ import { act, render, screen } from '@testing-library/react'
 import HeroProductPanel from './HeroProductPanel'
 import '@/i18n'
 
-// Allow individual tests to stub useReducedMotion.
 const reducedMotionRef = { current: false }
-vi.mock('motion/react', async () => {
-  const actual = await vi.importActual<typeof import('motion/react')>('motion/react')
-  return {
-    ...actual,
-    useReducedMotion: () => reducedMotionRef.current,
-  }
-})
+const originalMatchMedia = window.matchMedia
 
 describe('HeroProductPanel (Story 6.4)', () => {
   beforeEach(() => {
     reducedMotionRef.current = false
+    window.matchMedia = vi.fn((query: string) => ({
+      matches: reducedMotionRef.current,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    })) as Window['matchMedia']
   })
 
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
+    window.matchMedia = originalMatchMedia
   })
 
   it('renders the panel head with mark, tag, and product name', () => {

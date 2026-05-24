@@ -20,14 +20,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Story 6.13 (AC 6): self-host Plus Jakarta Sans + preload the woff2.
-         Replaces the Google Fonts CDN round-trip and the post-paint font
-         swap that was the dominant desktop CLS contributor (0.184 on `/`). -->
+    <!-- Self-host Plus Jakarta Sans + preload the woff2. The @font-face uses
+         font-display: optional so throttled mobile Lighthouse does not move
+         the text LCP event to a late font swap. -->
     <link
       rel="preload"
       as="font"
       type="font/woff2"
       href="/fonts/plus-jakarta-sans.woff2"
+      media="(min-width: 769px)"
       crossorigin
     />
     <title>SyncRevenue Commission Recovery | Sync Sirius</title>

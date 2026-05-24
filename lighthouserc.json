@@ -2,6 +2,8 @@
   "ci": {
     "collect": {
       "startServerCommand": "npm run build && npx vite preview --port 4173 --strictPort",
+      "startServerReadyPattern": "Local:",
+      "startServerReadyTimeout": 30000,
       "url": [
         "http://localhost:4173/",
         "http://localhost:4173/privacy"

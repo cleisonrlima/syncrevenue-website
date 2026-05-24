@@ -73,19 +73,19 @@ describe('App route chrome gating', () => {
     expect(screen.getByTestId('public-footer')).toBeInTheDocument()
   })
 
-  it('does NOT render the public Navbar on /dashboard', () => {
+  it('does NOT render the public Navbar on /dashboard', async () => {
     renderAt('/dashboard')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
     // DashboardLayout chrome should be present instead
-    expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
   })
 
-  it('does NOT render the public Navbar on a nested dashboard route', () => {
+  it('does NOT render the public Navbar on a nested dashboard route', async () => {
     renderAt('/dashboard/recovery')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-    expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
   })
 
   it('does NOT render the public Navbar on /v2 (Landing has its own nav)', () => {
@@ -126,12 +126,12 @@ describe('App route chrome gating', () => {
     expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
   })
 
-  it('renders unknown dashboard child routes inside DashboardLayout', () => {
+  it('renders unknown dashboard child routes inside DashboardLayout', async () => {
     renderAt('/dashboard/missing-route')
     expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
     expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
-    expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
+    expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /page not found/i })).toBeInTheDocument()
   })
 
   it('renders the dashboard index page (DashboardHome) at /dashboard', async () => {
@@ -157,7 +157,7 @@ describe('App route chrome gating', () => {
 
     for (const { path, testid } of cases) {
       const { unmount } = renderAt(path)
-      expect(screen.getByTestId('dashboard-sidebar')).toBeInTheDocument()
+      expect(await screen.findByTestId('dashboard-sidebar')).toBeInTheDocument()
       expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
       expect(await screen.findByTestId(testid)).toBeInTheDocument()
       unmount()

@@ -12,7 +12,6 @@ import Leads from '@/pages/admin/Leads'
 import Team from '@/pages/admin/Team'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ScrollRestoration from '@/components/ScrollRestoration'
-import DashboardLayout from '@/components/layout/DashboardLayout'
 
 // Story 7.4 architectural follow-up (Story 7.7 owned originally — pulled
 // forward to unblock `npm run build`): the Epic 7 Wave 3 pages each pull in
@@ -42,6 +41,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 //     authenticated routes don't have the same first-paint pressure.
 const Landing = lazy(() => import('@/pages/Landing'))
 const Demo = lazy(() => import('@/pages/Demo'))
+const DashboardLayout = lazy(() => import('@/components/layout/DashboardLayout'))
 const DashboardHome = lazy(() => import('@/pages/dashboard/DashboardHome'))
 const RevenueRecovery = lazy(() => import('@/pages/dashboard/RevenueRecovery'))
 const Payouts = lazy(() => import('@/pages/dashboard/Payouts'))
@@ -130,7 +130,14 @@ export default function App() {
                 child route chunk loads on demand. The Suspense boundary is
                 scoped to the Outlet body so the layout chrome stays
                 interactive during chunk fetch. */}
-            <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <Suspense fallback={<RouteLoading />}>
+                  <DashboardLayout />
+                </Suspense>
+              }
+            >
               <Route
                 index
                 element={

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
-import { useReducedMotion } from 'motion/react'
 
 /**
  * Hero right column — Story 6.4 product panel.
@@ -55,9 +54,24 @@ const DEFAULT_TICKER_ENTRIES = [
   { pnr: 'PNR-71452', value: '+ $9,870' },
 ] as const
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches)
+
+    handleChange()
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  return prefersReducedMotion
+}
+
 export default function HeroProductPanel() {
   const { t } = useTranslation()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   const entries = (t('hero.panel.ticker.entries', {
     returnObjects: true,

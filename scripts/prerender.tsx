@@ -19,7 +19,7 @@
  *
  * The site now has two classes of routes:
  *   1. Public marketing surfaces that benefit from SSG prerender (LCP/FCP gains):
- *        INCLUDED_ROUTES = ['/']
+ *        INCLUDED_ROUTES = ['/', '/privacy']
  *   2. SaaS surfaces + dynamic/auth routes that MUST NOT be prerendered:
  *        EXCLUDED_ROUTES — see constant below.
  *
@@ -31,7 +31,7 @@
  *     they are lazy-loaded precisely to keep them out of the SSG pipeline.
  *   - /admin/* pages are authenticated; prerendering would expose layout skeleton
  *     HTML that reveals admin structure to public crawlers.
- *   - /privacy and /404 have no LCP-critical above-the-fold content worth optimising.
+ *   - /404 has no LCP-critical above-the-fold content worth optimising.
  *
  * Defensive check (Story 7.7 AC 1 — console.warn, not fail for Sprint 1):
  *   If a route registered in APP_REGISTERED_ROUTES is absent from both
@@ -48,7 +48,7 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { readFileSync, writeFileSync } from 'fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 import en from '@/i18n/locales/en/translation.json'
 import App from '@/App'
@@ -64,14 +64,14 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 // ---------------------------------------------------------------------------
 // Story 7.7 AC 1: Route allowlist / exclusion constants.
 //
-// INCLUDED_ROUTES — routes that are actively prerendered (currently only '/').
+// INCLUDED_ROUTES — routes that are actively prerendered.
 // EXCLUDED_ROUTES — routes known to the build that MUST NOT be prerendered:
 //   - /v2, /demo: Figma public surfaces with their own dark nav + heavy CSS;
 //     lazy-loaded precisely to stay out of the SSG pipeline.
 //   - /dashboard, /dashboard/*: client-side state, lazy data, recharts tree.
 //   - /admin, /admin/*: authenticated surfaces; prerender would expose layout
 //     skeleton to public crawlers.
-//   - /privacy, /404: no LCP-critical above-the-fold content.
+//   - /404: no LCP-critical above-the-fold content.
 //
 // APP_REGISTERED_ROUTES must stay in sync with Route declarations in src/App.tsx.
 // Defensive check (console.warn only for Sprint 1 — promoted to non-zero exit
@@ -131,22 +131,24 @@ i18next
   })
 
 // ---------------------------------------------------------------------------
-// 2. Render the home-page route to an HTML string.
+// 2. Render each included route to an HTML string.
 //    renderToString emits React hydration markers (data-reactroot etc.) so
 //    the client-side hydrateRoot call can adopt the pre-rendered DOM without
 //    recreating it from scratch.
 //    suppressHydrationWarning is already set on the Hero <section> element
 //    to absorb any minor client/server attribute mismatches.
 //    StaticRouter provides routing context without needing a real browser
-//    history API. Location is set to '/' so the Home route renders.
+//    history API.
 // ---------------------------------------------------------------------------
-const appHtml = renderToString(
-  React.createElement(
-    StaticRouter,
-    { location: '/' },
-    React.createElement(App)
+function renderRoute(route: string) {
+  return renderToString(
+    React.createElement(
+      StaticRouter,
+      { location: route },
+      React.createElement(App)
+    )
   )
-)
+}
 
 // ---------------------------------------------------------------------------
 // 3. Read the Vite-produced dist/client/index.html and inject the rendered
@@ -163,41 +165,54 @@ try {
   process.exit(1)
 }
 
-// Inject the pre-rendered HTML inside the #root div.
-// The placeholder matches the empty <div id="root"></div> that Vite emits.
-const injected = indexHtml.replace(
-  /<div id="root"><\/div>/,
-  `<div id="root">${appHtml}</div>`
-)
-
-if (injected === indexHtml) {
-  // No replacement happened — the pattern didn't match. Could be already
-  // prerendered or the template changed. Warn but don't fail the build.
-  console.warn('[prerender] Warning: could not find <div id="root"></div> in dist/client/index.html.')
-  console.warn('[prerender] The file may already be prerendered, or the root element pattern has changed.')
-  process.exit(0)
+function outputPathForRoute(route: string) {
+  if (route === '/') return distIndexPath
+  return path.join(PROJECT_ROOT, 'dist', 'client', route.replace(/^\/+/, ''), 'index.html')
 }
 
-// ---------------------------------------------------------------------------
-// 4. Write the patched HTML back.
-// ---------------------------------------------------------------------------
-writeFileSync(distIndexPath, injected, 'utf8')
+function removeHeroPreloads(html: string) {
+  return html
+    .replace(/\s*<link\s+rel="preload"\s+as="image"\s+href="\/hero\/airplane-mobile\.webp"[\s\S]*?\/>/, '')
+    .replace(/\s*<link\s+rel="preload"\s+as="image"\s+href="\/hero\/airplane\.webp"[\s\S]*?\/>/, '')
+}
 
-const heroPresent = injected.includes('<h1')
-const picturePresent = injected.includes('<picture')
-const ctaPresent = injected.includes('Schedule a Demo')
-const kpiPresent = injected.includes('+15')
+for (const route of INCLUDED_ROUTES) {
+  const appHtml = renderRoute(route)
+  const routeIndexHtml = route === '/' ? indexHtml : removeHeroPreloads(indexHtml)
+  const injected = routeIndexHtml.replace(
+    /<div id="root"><\/div>/,
+    `<div id="root">${appHtml}</div>`
+  )
 
-console.log('[prerender] dist/client/index.html patched successfully.')
-console.log(`[prerender]   Prerendered HTML size: ${appHtml.length.toLocaleString()} bytes`)
-console.log(`[prerender]   <h1> present: ${heroPresent}`)
-console.log(`[prerender]   <picture> present: ${picturePresent}`)
-console.log(`[prerender]   CTA text present: ${ctaPresent}`)
-console.log(`[prerender]   KPI +15 present: ${kpiPresent}`)
+  if (injected === routeIndexHtml) {
+    console.warn(`[prerender] Warning: could not find <div id="root"></div> for ${route}.`)
+    console.warn('[prerender] The file may already be prerendered, or the root element pattern has changed.')
+    process.exit(0)
+  }
 
-if (!heroPresent || !picturePresent) {
-  console.error('[prerender] ERROR: Hero content missing from prerendered output. Check Hero.tsx rendering.')
-  process.exit(1)
+  const outputPath = outputPathForRoute(route)
+  mkdirSync(path.dirname(outputPath), { recursive: true })
+  writeFileSync(outputPath, injected, 'utf8')
+
+  const h1Present = injected.includes('<h1')
+  const picturePresent = injected.includes('<picture')
+
+  console.log(`[prerender] ${route} patched successfully at ${path.relative(PROJECT_ROOT, outputPath)}.`)
+  console.log(`[prerender]   Prerendered HTML size: ${appHtml.length.toLocaleString()} bytes`)
+  console.log(`[prerender]   <h1> present: ${h1Present}`)
+
+  if (route === '/') {
+    const ctaPresent = injected.includes('Schedule a Demo')
+    const kpiPresent = injected.includes('+15')
+    console.log(`[prerender]   <picture> present: ${picturePresent}`)
+    console.log(`[prerender]   CTA text present: ${ctaPresent}`)
+    console.log(`[prerender]   KPI +15 present: ${kpiPresent}`)
+  }
+
+  if (!h1Present || (route === '/' && !picturePresent)) {
+    console.error(`[prerender] ERROR: critical content missing from prerendered output for ${route}.`)
+    process.exit(1)
+  }
 }
 
 console.log('[prerender] Done.')
