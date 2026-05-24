@@ -7,6 +7,7 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import {
   ArrowRight,
+  Award,
   BarChart3,
   ShieldCheck,
   Zap,
@@ -18,11 +19,13 @@ import {
   LineChart,
   Wallet,
   Globe2,
+  Mail,
 } from 'lucide-react'
 
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback'
 import { useDocumentMeta } from '@/components/SEO'
 import LanguageSwitcher from '@/i18n/LanguageSwitcher'
+import { useLocaleStore } from '@/store/useLocaleStore'
 
 /**
  * Story 7.4 (AC 1, 2, 3, 6): Verbatim port of the Figma 'teste' Landing page
@@ -266,6 +269,9 @@ export default function Landing() {
             <a href="#platform" className="text-slate-300 hover:text-white transition-colors">
               {t('landing.nav.products', 'Products')}
             </a>
+            <a href="#syncrevenue" className="text-slate-300 hover:text-white transition-colors">
+              {t('landing.nav.integrations', 'Integrations')}
+            </a>
             <a href="#benefits" className="text-slate-300 hover:text-white transition-colors">
               {t('landing.nav.benefits', 'Benefits')}
             </a>
@@ -274,6 +280,9 @@ export default function Landing() {
             </a>
             <a href="#customers" className="text-slate-300 hover:text-white transition-colors">
               {t('landing.nav.customers', 'Customers')}
+            </a>
+            <a href="#contato" className="text-slate-300 hover:text-white transition-colors">
+              {t('landing.nav.contact', 'Contact')}
             </a>
           </div>
 
@@ -331,6 +340,13 @@ export default function Landing() {
                 {t('landing.nav.products', 'Products')}
               </a>
               <a
+                href="#syncrevenue"
+                onClick={() => setMobileMenuOpen(false)}
+                className="border-b border-white/10 pb-4"
+              >
+                {t('landing.nav.integrations', 'Integrations')}
+              </a>
+              <a
                 href="#benefits"
                 onClick={() => setMobileMenuOpen(false)}
                 className="border-b border-white/10 pb-4"
@@ -350,6 +366,13 @@ export default function Landing() {
                 className="border-b border-white/10 pb-4"
               >
                 {t('landing.nav.customers', 'Customers')}
+              </a>
+              <a
+                href="#contato"
+                onClick={() => setMobileMenuOpen(false)}
+                className="border-b border-white/10 pb-4"
+              >
+                {t('landing.nav.contact', 'Contact')}
               </a>
               <Link
                 to="/demo"
@@ -432,14 +455,35 @@ export default function Landing() {
                         </Link>
                       </div>
 
-                      <div className="mt-12 flex items-center gap-8 text-sm text-slate-500">
+                      <div className="mt-8 pt-6 border-t border-white/10 grid grid-cols-3 gap-6" data-testid="landing-kpi-row">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div key={i}>
+                            <div className="text-2xl md:text-3xl font-extrabold text-white tabular-nums tracking-tight">
+                              {t(`hero.kpis.${i}.value`, '')}
+                            </div>
+                            <div className="mt-1 text-xs text-slate-500 font-medium leading-snug whitespace-pre-line">
+                              {t(`hero.kpis.${i}.label`, '')}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
                         <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-slate-400" />
-                          <span>{t('landing.hero.trustBadge1', 'Seamless integration')}</span>
+                          <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{t('hero.trustBar.items.0', 'Encrypted Transmission')}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-slate-400" />
-                          <span>{t('landing.hero.trustBadge2', 'Cancel anytime')}</span>
+                          <Award className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{t('hero.trustBar.items.1', 'Certification Roadmap')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{t('hero.trustBar.items.2', 'Contract Insurance')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Globe2 className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{t('hero.trustBar.items.3', 'Referenced US Agencies')}</span>
                         </div>
                       </div>
                     </div>
@@ -521,6 +565,69 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── SyncRevenue / Integrations ── */}
+      <section id="syncrevenue" className="py-24 border-t border-white/5 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+            {t('syncrevenue.eyebrow', 'Our Flagship Product')}
+          </p>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+            {t('syncrevenue.headline', 'Automated Commission Reconciliation')}
+          </h2>
+          <p className="text-lg text-slate-400 max-w-3xl mx-auto mb-12">
+            {t('syncrevenue.subtext', 'SyncRevenue connects to your GDS feeds and automatically identifies commission discrepancies, disputed debit memos, and BSP/ARC reconciliation failures — recovering revenue your team would otherwise miss.')}
+          </p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-5">
+            {t('syncrevenue.gds.title', 'GDS Integrations')}
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8">
+            {(['amadeus', 'sabre', 'galileo', 'worldspan'] as const).map((gds) => (
+              <div
+                key={gds}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-center hover:border-white/20 hover:bg-white/[0.05] transition-colors"
+              >
+                <span className="text-sm font-semibold text-white capitalize">
+                  {t(`syncrevenue.gds.${gds}`, gds.charAt(0).toUpperCase() + gds.slice(1))}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-slate-500">
+            {t('syncrevenue.accuracy', '99.99% commission assertivity across all integrated GDS platforms.')}
+          </p>
+        </div>
+
+        {/* 6-card feature grid */}
+        <div className="max-w-7xl mx-auto px-6 mt-20">
+          <div className="grid md:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, i) => {
+              const metricVariant = t(`hero.benefits.${i}.metricVariant`, 'neutral')
+              return (
+                <div
+                  key={i}
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-white/20 hover:bg-white/[0.05] transition-colors"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                      {[<CheckCircle2 key="0" className="w-5 h-5" />, <Globe2 key="1" className="w-5 h-5" />, <Award key="2" className="w-5 h-5" />, <TrendingUp key="3" className="w-5 h-5" />, <ShieldCheck key="4" className="w-5 h-5" />, <BarChart3 key="5" className="w-5 h-5" />][i]}
+                    </div>
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${metricVariant === 'blue' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-white/10 text-slate-300 border border-white/10'}`}>
+                      {t(`hero.benefits.${i}.metric`, '')}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-bold text-white mb-2">
+                    {t(`hero.benefits.${i}.title`, '')}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    {t(`hero.benefits.${i}.body`, '')}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
       <section id="benefits" className="py-32 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
@@ -564,7 +671,147 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="security" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
+      {/* ── Complete Revenue Intelligence Suite ── */}
+      <section id="services" className="py-24 border-t border-white/5 bg-white/[0.02] scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+              {t('services.eyebrow', 'Our Services')}
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              {t('services.headline', 'Complete Revenue Intelligence Suite')}
+            </h2>
+            <p className="text-lg text-slate-400">
+              {t('services.subtext', 'Whether you need automated reconciliation, data analytics, or custom development, we have the expertise to solve your specific challenge.')}
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {([
+              { key: 'syncrevenue', icon: <BarChart3 className="w-5 h-5" />, titleDef: 'SyncRevenue', descDef: 'Automated GDS commission reconciliation and recovery for travel agencies.' },
+              { key: 'analytics', icon: <LineChart className="w-5 h-5" />, titleDef: 'BI & Data Analytics', descDef: 'Turn your booking and commission data into actionable intelligence.' },
+              { key: 'obts', icon: <PlayCircle className="w-5 h-5" />, titleDef: 'Online Booking Tools', descDef: 'Implementation, optimization, and support for OBT platforms.' },
+              { key: 'custom', icon: <Zap className="w-5 h-5" />, titleDef: 'Custom Development', descDef: 'Bespoke solutions for complex airline distribution and revenue challenges.' },
+            ] as const).map((svc) => (
+              <div
+                key={svc.key}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 pt-6 pb-5 hover:border-white/20 hover:bg-white/[0.05] transition-colors"
+              >
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4">
+                  {svc.icon}
+                </div>
+                <h3 className="text-sm font-bold text-white mb-2">
+                  {t(`services.${svc.key}.title`, svc.titleDef)}
+                </h3>
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  {t(`services.${svc.key}.description`, svc.descDef)}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-10 text-center text-sm text-slate-500">
+            {t('services.contact', 'Not sure which service fits? Contact us.')}
+          </p>
+        </div>
+      </section>
+
+      {/* ── Free Commission Leakage Audit ── */}
+      <section id="commission-audit" className="py-24 border-t border-white/5 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+              {t('sections.commissionAudit.eyebrow', 'Free Commission Leakage Audit')}
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              {t('sections.commissionAudit.heading', 'Free Commission Leakage Audit')}
+            </h2>
+            <p className="text-lg text-slate-400">
+              {t('sections.commissionAudit.subheading', 'Send us 30 days of BSP data and we will return a written report on how much commission your agency is leaving on the table.')}
+            </p>
+          </div>
+          <ul className="grid md:grid-cols-3 gap-4 mb-10">
+            {(['bullet1', 'bullet2', 'bullet3'] as const).map((key) => (
+              <li
+                key={key}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-5 text-sm leading-relaxed text-slate-400 hover:border-white/20 hover:bg-white/[0.05] transition-colors"
+              >
+                {t(`sections.commissionAudit.${key}`, '')}
+              </li>
+            ))}
+          </ul>
+          <div className="flex justify-center">
+            <Link
+              to="/demo"
+              className="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-500 transition-colors inline-flex items-center gap-2 text-base"
+            >
+              {t('sections.commissionAudit.ctaLabel', 'Request my free audit')}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Comparison Table ── */}
+      <section id="comparison" className="py-24 border-t border-white/5 bg-white/[0.02] scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+              {t('comparison.eyebrow', 'Why SyncRevenue')}
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              {t('comparison.headline', 'Stop Losing Revenue to Manual Processes')}
+            </h2>
+            <p className="text-lg text-slate-400">
+              {t('comparison.subtext', 'See how automated commission management compares to the status quo.')}
+            </p>
+          </div>
+          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.03]">
+            <table className="min-w-[720px] w-full border-collapse text-left">
+              <thead className="bg-white/[0.04]">
+                <tr>
+                  <th className="w-[22%] px-5 py-4 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                    {t('comparison.featureHeader', 'Feature')}
+                  </th>
+                  <th className="w-[26%] px-5 py-4 text-xs font-semibold uppercase tracking-widest text-indigo-400">
+                    {t('comparison.syncrevenueHeader', 'SyncRevenue')}
+                  </th>
+                  <th className="w-[26%] px-5 py-4 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                    {t('comparison.legacyHeader', 'Manual / Legacy Tools')}
+                  </th>
+                  <th className="w-[26%] px-5 py-4 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                    {t('comparison.genericHeader', 'Generic Tools')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.06]">
+                {([
+                  { key: 'reconciliation', labelDef: 'BSP/ARC Reconciliation', srDef: 'Automatically detects settlement discrepancies before revenue leaks continue.', legDef: 'Spreadsheet matching after closing leaves issues for monthly cleanup.', genDef: 'Does not model airline settlement workflows without heavy configuration.' },
+                  { key: 'debitMemo', labelDef: 'Debit Memo Dispute Management', srDef: 'Links each dispute to commission context, booking history, and recovery status.', legDef: 'Teams track reason codes and supporting notes manually.', genDef: 'Requires custom task processes to keep disputes and commissions connected.' },
+                  { key: 'gdsIntegration', labelDef: 'Multi-GDS Integration', srDef: 'Covers Amadeus, Sabre, Galileo, and Worldspan commission workflows.', legDef: 'Depends on copied exports or isolated single-GDS views.', genDef: 'Requires CSV imports and manual mapping before analysis can start.' },
+                  { key: 'reporting', labelDef: 'Real-Time Commission Reporting', srDef: 'Shows recovery status and commission exceptions as work progresses.', legDef: 'Monthly reporting delays visibility into missed or disputed revenue.', genDef: 'Dashboards depend on manual refreshes and spreadsheet upkeep.' },
+                  { key: 'audit', labelDef: 'Automated Audit Trail', srDef: 'Creates system records for reconciliation actions, disputes, and outcomes.', legDef: 'Evidence is scattered across emails, files, and individual spreadsheets.', genDef: 'Stores attachments or notes without travel-specific traceability.' },
+                ] as const).map((row) => (
+                  <tr key={row.key} className="align-top">
+                    <th scope="row" className="px-5 py-5 text-sm font-semibold text-white leading-snug">
+                      {t(`comparison.features.${row.key}.label`, row.labelDef)}
+                    </th>
+                    <td className="px-5 py-5 text-sm text-slate-300 leading-relaxed">
+                      {t(`comparison.features.${row.key}.syncrevenue`, row.srDef)}
+                    </td>
+                    <td className="px-5 py-5 text-sm text-slate-500 leading-relaxed">
+                      {t(`comparison.features.${row.key}.legacy`, row.legDef)}
+                    </td>
+                    <td className="px-5 py-5 text-sm text-slate-500 leading-relaxed">
+                      {t(`comparison.features.${row.key}.generic`, row.genDef)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="security" className="py-24 border-t border-white/5 bg-[#0A0A0A] scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
@@ -615,6 +862,61 @@ export default function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Team ── */}
+      <section id="equipe" className="py-24 border-t border-white/5 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+              <span aria-hidden="true" className="inline-block h-px w-6 bg-white/30" />
+              {t('team.eyebrow', 'Our Team')}
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              {t('team.headline', 'Specialists in')}{' '}
+              <span className="text-indigo-400">{t('team.headlineAccent', 'airline distribution')}</span>
+            </h2>
+            <p className="text-lg text-slate-400">
+              {t('team.subtext', 'Our team brings decades of GDS, BSP, and travel agency operations experience.')}
+            </p>
+          </div>
+          <LandingTeamGrid />
+        </div>
+      </section>
+
+      {/* ── Contact ── */}
+      <section id="contato" className="py-24 border-t border-white/5 bg-white/[0.02] scroll-mt-24">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+            {t('contact.eyebrow', 'Contact')}
+          </p>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+            {t('contact.heading.text', 'Talk to')}{' '}
+            <span className="text-indigo-400">{t('contact.heading.accent', 'Sync Sirius')}</span>
+          </h2>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
+            {t('contact.subhead', 'For commercial questions, support, partnerships, or press — your message reaches the right team.')}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <a
+              href={`mailto:${t('contact.channels.0.value', 'contact@syncsirius.com')}`}
+              className="flex items-center gap-2.5 px-6 py-3 rounded-full border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 transition-colors text-slate-300 text-sm"
+            >
+              <Mail className="w-4 h-4 shrink-0" />
+              {t('contact.channels.0.value', 'contact@syncsirius.com')}
+            </a>
+            <Link
+              to="/demo"
+              className="px-6 py-3 bg-white text-black rounded-full font-medium hover:bg-slate-200 transition-colors text-sm inline-flex items-center gap-2"
+            >
+              {t('landing.nav.bookDemo', 'Schedule a Demo')}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <p className="text-sm text-slate-500">
+            {t('contact.infoCard.subtitle', 'Under 4 hours on business days.')}
+          </p>
         </div>
       </section>
 
@@ -671,6 +973,99 @@ export default function Landing() {
           </p>
         </div>
       </footer>
+    </div>
+  )
+}
+
+function LandingTeamGrid() {
+  const { t } = useTranslation()
+  const locale = useLocaleStore((state) => state.locale)
+  const [members, setMembers] = React.useState<Array<{
+    id: number
+    name: string
+    role: string
+    bio: string
+    experience: string
+    photo: string
+    linkedinUrl: string
+  }>>([])
+
+  React.useEffect(() => {
+    import('@/lib/api').then(({ getPublicTeam }) => {
+      void getPublicTeam()
+        .then((rows) => {
+          setMembers(
+            rows
+              .map((row) => {
+                let role = row.role_en
+                let bio = row.bio_en
+                let experience = row.experience_en
+                if (locale === 'pt-BR') { role = row.role_pt; bio = row.bio_pt; experience = row.experience_pt }
+                else if (locale === 'es') { role = row.role_es; bio = row.bio_es; experience = row.experience_es }
+                return { id: row.id, name: row.name, role, bio, experience, photo: row.photo_url ?? '', linkedinUrl: row.linkedin ?? '' }
+              })
+              .filter((m) => m.name.length > 0 && m.role.length > 0 && m.bio.length > 0),
+          )
+        })
+        .catch(() => {})
+    })
+  }, [locale])
+
+  if (members.length === 0) return null
+
+  return (
+    <div className="grid grid-cols-1 min-[760px]:grid-cols-2 gap-6 max-w-[1080px] mx-auto">
+      {members.map((member) => (
+        <article
+          key={member.id}
+          data-testid={`landing-team-card-${member.id}`}
+          className="grid grid-cols-1 min-[560px]:grid-cols-[200px_1fr] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05] transition-colors"
+        >
+          <div className="relative aspect-square min-h-[200px] overflow-hidden bg-[#0A0B2E]">
+            {member.photo.trim().length > 0 ? (
+              <img
+                src={member.photo}
+                alt={`${member.name}, ${member.role}`}
+                width="200"
+                height="200"
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div
+                aria-hidden="true"
+                className="flex h-full w-full items-center justify-center bg-indigo-600 text-5xl font-bold text-white"
+              >
+                {member.name.split(/\s+/).slice(0, 2).map((p) => p.charAt(0)).join('')}
+              </div>
+            )}
+            <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-[rgba(8,8,28,0.75)] px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-white before:inline-block before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#5BC98C] before:content-['']">
+              {t('team.statusLabel', 'available')}
+            </span>
+          </div>
+          <div className="flex flex-col px-6 pt-6 pb-5">
+            <h3 className="mb-2 text-xl font-bold tracking-tight text-white">{member.name}</h3>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-500">{member.role}</p>
+            <p className="mb-4 flex-1 text-sm leading-relaxed text-slate-400">{member.bio}</p>
+            <div className="mt-auto flex items-center gap-2.5 border-t border-white/10 pt-3.5">
+              {member.linkedinUrl.trim().length > 0 && (
+                <a
+                  href={member.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t('team.linkedinAriaLabel', { name: member.name, defaultValue: 'View {{name}} on LinkedIn' })}
+                  className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-white/10 text-slate-400 hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 11.01-4.13 2.07 2.07 0 010 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.21 24 24 23.23 24 22.28V1.72C24 .77 23.21 0 22.22 0z" />
+                  </svg>
+                </a>
+              )}
+              <span className="ml-auto text-xs text-slate-500">{member.experience}</span>
+            </div>
+          </div>
+        </article>
+      ))}
     </div>
   )
 }
