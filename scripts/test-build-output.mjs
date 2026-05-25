@@ -1,28 +1,18 @@
 /**
  * test-build-output.mjs
  *
- * Post-build smoke test for dist/client/index.html.
+ * Post-build smoke test for Vite/prerender output.
  *
  * Runs after `npm run build` (which executes `scripts/prerender.tsx` as the final
- * build step). Validates that the prerender step actually injected the hero
- * markup into the production HTML artifact, so a broken prerender pipeline
- * cannot ship to production undetected.
+ * build step). Validates that the prerender step injected markup for the route
+ * allowlist while the lazy Landing home route remains a plain client-rendered
+ * shell.
  *
  * Assertions:
- *   1. dist/client/index.html exists.
- *   2. The file contains an <h1 ...> tag with the prerendered hero heading text.
- *   3. The file contains a <picture> element (hero background image).
- *   4. The <h1> tag appears INSIDE the <div id="root"> element — this is the
- *      load-bearing invariant. The prerender step (Story 5.6) injects markup
- *      INTO the root div; without that injection the root would be empty and
- *      the hero would not paint until React hydration finished, regressing
- *      mobile LCP from ~2.3s to ~3.0s+.
- *
- *      Note: Vite places the entry <script type="module"> in <head>, which is
- *      implicitly deferred — it does not block paint. The position of the
- *      script relative to <h1> is therefore not a useful invariant; the real
- *      invariant is "is the <h1> already in the prerendered DOM before
- *      hydration runs", which is equivalent to "is <h1> inside #root".
+ *   1. dist/client/index.html exists and has an empty hydration root.
+ *   2. dist/client/privacy/index.html exists.
+ *   3. The privacy file contains a prerendered <h1> with "Privacy Policy".
+ *   4. The <h1> appears INSIDE the <div id="root"> element.
  *
  * Uses only Node.js built-ins (fs, path, assert). No new dependencies.
  *
@@ -44,12 +34,16 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '..');
-const DIST_INDEX = path.join(PROJECT_ROOT, 'dist', 'client', 'index.html');
+const DIST_CLIENT = path.join(PROJECT_ROOT, 'dist', 'client');
+const DIST_INDEX = path.join(DIST_CLIENT, 'index.html');
+const DIST_PRIVACY_INDEX = path.join(DIST_CLIENT, 'privacy', 'index.html');
 
-// Expected prerendered hero heading text (English default locale).
-// Source: scripts/prerender.tsx renders the EN translation of Hero.tsx, which
-// produces an <h1> beginning with "More commission per ticket".
-const EXPECTED_HEADING_TEXT = 'More commission per ticket';
+// Expected prerendered privacy heading text (English default locale).
+// Source: src/lib/route-registry.ts includes `/privacy` in
+// PRERENDER_INCLUDED_ROUTES, so scripts/prerender.tsx writes this route to
+// dist/client/privacy/index.html.
+const EXPECTED_PRIVACY_HEADING_TEXT = 'Privacy Policy';
+const LEGACY_HOME_HEADING_TEXT = 'More commission per ticket';
 
 // ── Assertion 1: dist/client/index.html exists ─────────────────────────────
 
@@ -63,39 +57,62 @@ if (!existsSync(DIST_INDEX)) {
 const html = readFileSync(DIST_INDEX, 'utf8');
 console.log(`[test:build]   File size: ${html.length.toLocaleString()} bytes`);
 
-// ── Assertion 2: <h1> with prerendered heading text ────────────────────────
-
-console.log('[test:build] Asserting prerendered heading text is present...');
+console.log('[test:build] Asserting home shell is not stale prerender output...');
 try {
   assert.ok(
-    html.includes(EXPECTED_HEADING_TEXT),
-    `dist/client/index.html does not contain expected hero heading text "${EXPECTED_HEADING_TEXT}". ` +
-      `The prerender step did not run, ran against a stale build, or Hero.tsx copy changed without updating this test.`
+    /<div id="root"><\/div>/.test(html),
+    'dist/client/index.html should contain an empty <div id="root"></div> because `/` is excluded from prerender.'
   );
-  console.log(`[test:build]   PASS — "${EXPECTED_HEADING_TEXT}" found`);
+  assert.ok(
+    !html.includes(LEGACY_HOME_HEADING_TEXT),
+    `dist/client/index.html still contains legacy prerendered home heading "${LEGACY_HOME_HEADING_TEXT}". ` +
+      'Run a fresh `npm run build` and verify the `/` route remains excluded from the prerender allowlist.'
+  );
+  console.log('[test:build]   PASS — home shell has an empty #root');
 } catch (err) {
   console.error('[test:build] ERROR:', err.message);
   process.exit(1);
 }
 
-// ── Assertions 3-4: hero markup appears INSIDE <div id="root"> ─────────────
+// ── Assertion 2: dist/client/privacy/index.html exists ─────────────────────
+
+console.log('[test:build] Checking dist/client/privacy/index.html exists...');
+if (!existsSync(DIST_PRIVACY_INDEX)) {
+  console.error(`[test:build] ERROR: ${DIST_PRIVACY_INDEX} does not exist.`);
+  console.error('[test:build] Hint: run `npm run build` before `npm run test:build`.');
+  process.exit(1);
+}
+
+const privacyHtml = readFileSync(DIST_PRIVACY_INDEX, 'utf8');
+console.log(`[test:build]   File size: ${privacyHtml.length.toLocaleString()} bytes`);
+
+// ── Assertion 3: <h1> with prerendered heading text ────────────────────────
+
+console.log('[test:build] Asserting prerendered heading text is present...');
+try {
+  assert.ok(
+    privacyHtml.includes(EXPECTED_PRIVACY_HEADING_TEXT),
+    `dist/client/privacy/index.html does not contain expected heading text "${EXPECTED_PRIVACY_HEADING_TEXT}". ` +
+      `The prerender step did not run, ran against a stale build, or Privacy.tsx copy changed without updating this test.`
+  );
+  console.log(`[test:build]   PASS — "${EXPECTED_PRIVACY_HEADING_TEXT}" found`);
+} catch (err) {
+  console.error('[test:build] ERROR:', err.message);
+  process.exit(1);
+}
+
+// ── Assertion 4: prerendered markup appears INSIDE <div id="root"> ─────────
 //
-// This is the LCP-critical invariant. The prerender step injects the hero markup
-// inside the root div. If <h1> sits outside #root (or #root is empty), the page
-// has not been prerendered and the hero will only paint after React hydration —
-// which on slow networks regresses mobile LCP from ~2.3s to ~3.0s+.
-//
-// Vite places the entry <script type="module"> in <head>; module scripts are
-// implicitly deferred and do not block paint, so script vs <h1> ordering is not
-// a meaningful invariant. What matters is: is the heading present in the
-// pre-hydration DOM, AND is it inside the hydration root container.
+// The prerender step injects included-route markup inside the root div. If <h1>
+// sits outside #root (or #root is empty), the page has not been prerendered and
+// the content will only paint after React hydration.
 
 console.log('[test:build] Asserting <h1> appears inside <div id="root">...');
 try {
-  const rootOpenMatch = html.match(/<div\s+id=["']root["'][^>]*>/);
+  const rootOpenMatch = privacyHtml.match(/<div\s+id=["']root["'][^>]*>/);
   assert.ok(
     rootOpenMatch && typeof rootOpenMatch.index === 'number',
-    'No <div id="root"> opening tag found in dist/client/index.html — Vite template changed unexpectedly.'
+    'No <div id="root"> opening tag found in dist/client/privacy/index.html — Vite template changed unexpectedly.'
   );
 
   const rootOpenStart = rootOpenMatch.index;
@@ -109,7 +126,7 @@ try {
   tagRe.lastIndex = rootOpenEnd;
   let rootCloseIndex = -1;
   let tagMatch;
-  while ((tagMatch = tagRe.exec(html)) !== null) {
+  while ((tagMatch = tagRe.exec(privacyHtml)) !== null) {
     if (tagMatch[0].startsWith('</')) {
       depth -= 1;
       if (depth === 0) {
@@ -125,29 +142,25 @@ try {
     'Could not find matching </div> for <div id="root"> — HTML is malformed or the root was left unclosed.'
   );
 
-  const rootHtml = html.slice(rootOpenEnd, rootCloseIndex);
+  const rootHtml = privacyHtml.slice(rootOpenEnd, rootCloseIndex);
   const rootedH1 = rootHtml.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/);
   assert.ok(rootedH1, 'No <h1> tag found inside <div id="root">.');
   assert.ok(
-    /<picture[\s>]/.test(rootHtml),
-    'No <picture> tag found inside <div id="root"> — hero background image markup is missing from prerendered output.'
-  );
-  assert.ok(
-    rootedH1[0].includes(EXPECTED_HEADING_TEXT),
-    `The <h1> inside <div id="root"> does not contain expected text "${EXPECTED_HEADING_TEXT}". ` +
-      `This means the expected copy may only appear elsewhere in the document, not in the prerendered LCP heading.`
+    rootedH1[0].includes(EXPECTED_PRIVACY_HEADING_TEXT),
+    `The <h1> inside <div id="root"> does not contain expected text "${EXPECTED_PRIVACY_HEADING_TEXT}". ` +
+      `This means the expected copy may only appear elsewhere in the document, not in the prerendered heading.`
   );
 
   const rootedH1Index = rootOpenEnd + (rootedH1.index ?? rootHtml.indexOf(rootedH1[0]));
   assert.ok(
     rootedH1Index > rootOpenEnd && rootedH1Index < rootCloseIndex,
     `<h1> at byte offset ${rootedH1Index} is NOT inside <div id="root"> (root span: ${rootOpenStart}..${rootCloseIndex}). ` +
-      `This breaks the LCP-critical prerender invariant: hero content must be inside the hydration root BEFORE hydration runs. ` +
+      `This breaks the prerender invariant: included-route content must be inside the hydration root BEFORE hydration runs. ` +
       `Verify scripts/prerender.tsx ran and successfully injected markup into <div id="root"></div> (it bails out with a warning if the placeholder pattern does not match).`
   );
 
   console.log(
-    `[test:build]   PASS — <h1> at offset ${rootedH1Index} and <picture> are inside #root (${rootOpenStart}..${rootCloseIndex})`
+    `[test:build]   PASS — <h1> at offset ${rootedH1Index} is inside #root (${rootOpenStart}..${rootCloseIndex})`
   );
 } catch (err) {
   console.error('[test:build] ERROR:', err.message);

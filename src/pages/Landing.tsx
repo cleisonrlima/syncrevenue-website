@@ -222,6 +222,7 @@ export default function Landing() {
   const [auditForm, setAuditForm] = useState({ name: '', email: '', company: '', role: '', gds: '', notes: '' })
   const [auditErrors, setAuditErrors] = useState<Partial<typeof auditForm>>({})
   const [auditStatus, setAuditStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [activeSlide, setActiveSlide] = useState(0)
 
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [contactStatus, setContactStatus] = useState<'idle' | 'submitting' | 'success'>('idle')
@@ -404,13 +405,16 @@ export default function Landing() {
             autoplaySpeed={6000}
             arrows={false}
             fade
+            afterChange={setActiveSlide}
             customPaging={() => (
               <div className="w-12 h-1.5 mt-8 rounded-full bg-white/20 transition-all duration-300 hover:bg-white/40" />
             )}
           >
-            {CAROUSEL_SLIDES.map(slide => (
-              <div key={slide.id} className="outline-none focus:outline-none py-12">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {CAROUSEL_SLIDES.map((slide, index) => {
+              const isActiveSlide = index === activeSlide
+              return (
+                <div key={slide.id} className="outline-none focus:outline-none py-12">
+                  <div className="grid lg:grid-cols-2 gap-16 items-center">
 
                   {/* Left — copy */}
                   <div className="pr-4">
@@ -431,17 +435,25 @@ export default function Landing() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <Link to="/dashboard" className={`${ctaPrimary} text-lg px-8 py-4 w-full sm:w-auto`}>
+                      <Link
+                        to="/dashboard"
+                        tabIndex={isActiveSlide ? undefined : -1}
+                        className={`${ctaPrimary} text-lg px-8 py-4 w-full sm:w-auto`}
+                      >
                         {slide.id === 'revenue' ? t('landing.hero.explorePlatform', 'Explore Platform') : 'Explore Product'}
                         <ArrowRight className="w-5 h-5" />
                       </Link>
-                      <Link to="/demo" className={`${ctaSecondary} text-lg px-8 py-4 w-full sm:w-auto`}>
+                      <Link
+                        to="/demo"
+                        tabIndex={isActiveSlide ? undefined : -1}
+                        className={`${ctaSecondary} text-lg px-8 py-4 w-full sm:w-auto`}
+                      >
                         <PlayCircle className="w-5 h-5" />
                         {t('landing.hero.requestDemo', 'Request Demo')}
                       </Link>
                     </div>
 
-                    <div className="mt-12 flex items-center gap-8 text-sm text-slate-500">
+                    <div className="mt-12 flex items-center gap-8 text-sm text-slate-400">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-indigo-400" />
                         <span>Seamless integration</span>
@@ -495,9 +507,10 @@ export default function Landing() {
                     </div>
                   </div>
 
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </Slider>
         </div>
       </section>
@@ -528,12 +541,12 @@ export default function Landing() {
       {/* ── Trust bar ────────────────────────────────────────────── */}
       <section id="customers" className="py-14 border-b border-white/5 bg-[#020204]">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-xs font-medium text-slate-600 tracking-widest uppercase mb-10">
+          <p className="text-center text-xs font-medium text-slate-400 tracking-widest uppercase mb-10">
             {t('landing.trust.heading', 'Trusted by forward-thinking travel agencies')}
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {TRUST_LOGOS.map(logo => (
-              <div key={logo.name} className="flex items-center gap-2.5 opacity-40 hover:opacity-70 transition-opacity duration-200 grayscale hover:grayscale-0">
+              <div key={logo.name} className="flex items-center gap-2.5 opacity-90 hover:opacity-100 transition-opacity duration-200 grayscale hover:grayscale-0">
                 <div className={`w-8 h-8 rounded-lg border border-white/10 bg-white/[0.03] flex items-center justify-center text-[11px] font-bold ${logo.color}`}>
                   {logo.abbr}
                 </div>
@@ -597,7 +610,7 @@ export default function Landing() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <p className="text-center text-xs font-semibold uppercase tracking-widest text-slate-500 mb-6">
+            <p className="text-center text-xs font-semibold uppercase tracking-widest text-slate-400 mb-6">
               {t('syncrevenue.gds.title', 'GDS Integrations')}
             </p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
@@ -611,7 +624,7 @@ export default function Landing() {
                   className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-5 text-center hover:border-indigo-500/40 hover:bg-white/[0.05] transition-all duration-200"
                 >
                   <span className="text-base font-bold tracking-tight text-white">{gds.name}</span>
-                  <p className="mt-1 text-xs text-slate-500 leading-snug">{gds.description}</p>
+                  <p className="mt-1 text-xs text-slate-400 leading-snug">{gds.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -663,7 +676,7 @@ export default function Landing() {
             ))}
           </div>
 
-          <p className="mt-12 text-center text-sm text-slate-500">
+          <p className="mt-12 text-center text-sm text-slate-400">
             {t('services.contact', 'Not sure which service fits?')}{' '}
             <a href="#contato" className="text-indigo-400 hover:text-indigo-300 transition-colors underline underline-offset-2">
               {t('services.contactLink', 'Contact us.')}
@@ -831,8 +844,9 @@ export default function Landing() {
                     {auditErrors.company && <p className="mt-1 text-xs text-red-400">{auditErrors.company}</p>}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400">Your Role <span className="text-indigo-400">*</span></label>
+                    <label htmlFor="audit-role" className="text-xs font-semibold text-slate-400">Your Role <span className="text-indigo-400">*</span></label>
                     <select
+                      id="audit-role"
                       value={auditForm.role}
                       onChange={e => setAuditForm(f => ({ ...f, role: e.target.value }))}
                       className={auditInputClass('role')}
@@ -843,8 +857,9 @@ export default function Landing() {
                     {auditErrors.role && <p className="mt-1 text-xs text-red-400">{auditErrors.role}</p>}
                   </div>
                   <div className="md:col-span-2">
-                    <label className="text-xs font-semibold text-slate-400">Primary GDS <span className="text-indigo-400">*</span></label>
+                    <label htmlFor="audit-gds" className="text-xs font-semibold text-slate-400">Primary GDS <span className="text-indigo-400">*</span></label>
                     <select
+                      id="audit-gds"
                       value={auditForm.gds}
                       onChange={e => setAuditForm(f => ({ ...f, gds: e.target.value }))}
                       className={auditInputClass('gds')}
@@ -1054,7 +1069,7 @@ export default function Landing() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">{t('demo.replyTime', 'Reply within 1 business day')}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{t('demo.replyDetail', 'Maria or Lucas reaches out personally.')}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{t('demo.replyDetail', 'Maria or Lucas reaches out personally.')}</p>
                 </div>
               </div>
             </div>
@@ -1110,7 +1125,7 @@ export default function Landing() {
                         <ch.Icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500">{ch.label}</p>
+                        <p className="text-xs text-slate-400">{ch.label}</p>
                         <p className="text-sm font-semibold text-white mt-0.5">{ch.value}</p>
                       </div>
                     </div>
@@ -1129,7 +1144,7 @@ export default function Landing() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">{t('contact.infoCard.title', 'Average response time')}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{t('contact.infoCard.subtitle', 'Under 4 hours on business days.')}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{t('contact.infoCard.subtitle', 'Under 4 hours on business days.')}</p>
                 </div>
               </div>
             </div>
@@ -1247,12 +1262,12 @@ export default function Landing() {
             alt={t('landing.footer.logoAlt', 'Sync Sirius logo')}
             className="h-6 w-auto object-contain opacity-60 grayscale"
           />
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-600">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
             <Link to="/privacy" className="hover:text-white transition-colors">{t('landing.footer.privacy', 'Privacy Policy')}</Link>
             <Link to="/privacy#terms" className="hover:text-white transition-colors">{t('landing.footer.terms', 'Terms of Service')}</Link>
             <a href="#contato" className="hover:text-white transition-colors">{t('landing.footer.contact', 'Contact Support')}</a>
           </div>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-400">
             {t('landing.footer.copyright', '© {{year}} Sync Sirius. All rights reserved.', { year: new Date().getFullYear() })}
           </p>
         </div>

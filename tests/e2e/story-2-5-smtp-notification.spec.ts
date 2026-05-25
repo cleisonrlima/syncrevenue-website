@@ -16,7 +16,9 @@ test.describe('Story 2.5 SMTP notification resilience @P1', () => {
     const port = 3100 + workerInfo.workerIndex
 
     const startServerScript = [
-      "import('./server/index.ts').then(({ createApp }) => {",
+      "import('./server/index.ts').then(appModule => {",
+      "const createApp = appModule.createApp ?? appModule.default?.createApp ?? appModule['module.exports']?.createApp;",
+      "if (typeof createApp !== 'function') throw new TypeError(`createApp export not found. Module keys: ${Object.keys(appModule).join(', ')}`);",
       "const server = createApp().listen(Number(process.env.PORT), '127.0.0.1', () => console.log('E2E backend ready'));",
       "const shutdown = () => server.close(() => process.exit(0));",
       "process.on('SIGTERM', shutdown);",
