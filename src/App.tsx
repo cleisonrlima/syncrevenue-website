@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import Landing from '@/pages/Landing'
 import Privacy from '@/pages/Privacy'
 import NotFound from '@/pages/NotFound'
 import AdminLayout from '@/components/layout/AdminLayout'
@@ -12,33 +13,12 @@ import Team from '@/pages/admin/Team'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ScrollRestoration from '@/components/ScrollRestoration'
 
-// Story 7.4 architectural follow-up (Story 7.7 owned originally — pulled
-// forward to unblock `npm run build`): the Epic 7 Wave 3 pages each pull in
-// a heavyweight side-effect at module-load time that broke the SSG prerender
-// pipeline (`scripts/prerender.tsx` imports App which transitively imported
-// `slick-carousel/slick/slick.css` — tsx cannot parse CSS in Node) AND
-// inflated the public `/` initial bundle for visitors who never visit them.
-//
-// Switching all Wave 3 routes to `React.lazy()` defers their module
-// evaluation (and side-effectful CSS / heavy graphing libs) to the moment a
-// user actually navigates to the route. Side benefits:
-//   - `npm run build` succeeds because Landing.tsx is no longer eagerly
-//     imported by the prerender step (it just sees the import expression as
-//     a static analysis hint).
-//   - Initial `/` bundle drops dramatically — recharts (~150 KB), react-slick
-//     (~50 KB), and the dashboard sub-component tree (~50 KB) all move into
-//     their own chunks.
-//   - The dashboard sidebar (rendered by `DashboardLayout`) stays interactive
-//     while a child route chunk loads (Suspense fallback only swaps the
-//     Outlet body, not the layout chrome).
-//
-// Lazy split-points NOT touched:
-//   - `Home`, `Privacy`, `NotFound` — these are the prerender path and the
-//     public chrome routes; keeping them eager preserves the Story 5.6 LCP
-//     work (SSG HTML must reference these synchronously).
-//   - `AdminLayout` + the admin tree — admin chunks are already small and
-//     authenticated routes don't have the same first-paint pressure.
-const Landing = lazy(() => import('@/pages/Landing'))
+// LandingV2, Demo, Dashboard, and Settings are lazy-loaded to keep the
+// initial bundle lean — these pull in slick-carousel CSS, recharts, and
+// other heavy side-effect deps that would break the SSG prerender step
+// (`scripts/prerender.tsx` runs in Node and cannot parse CSS imports).
+// Landing (the `/` public page) is eager so `renderToString` in the
+// prerender script can render it synchronously for LCP prerendering.
 const LandingV2 = lazy(() => import('@/pages/LandingV2'))
 const Demo = lazy(() => import('@/pages/Demo'))
 const DashboardLayout = lazy(() => import('@/components/layout/DashboardLayout'))

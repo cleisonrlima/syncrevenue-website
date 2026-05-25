@@ -59,8 +59,10 @@ function renderAt(path: string) {
 describe('App route chrome gating', () => {
   it('does NOT render the public Navbar on / (Landing owns its nav)', () => {
     renderAt('/')
-    expect(screen.queryByTestId('navbar-root')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('public-footer')).not.toBeInTheDocument()
+    // Landing renders its own Navbar + Footer — App must not add duplicates.
+    // Exactly one of each should exist (Landing's own), not two.
+    expect(screen.getAllByTestId('navbar-root')).toHaveLength(1)
+    expect(screen.getAllByTestId('public-footer')).toHaveLength(1)
   })
 
   it('renders the public Navbar on /privacy', () => {
