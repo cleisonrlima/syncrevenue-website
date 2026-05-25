@@ -18,8 +18,8 @@ function renderAppAt(path: string) {
 }
 
 function findHomeHeroHeading() {
-  // The app-level home route renders Landing.tsx, whose carousel headings are all mounted in tests.
-  return screen.findByRole('heading', { name: /Recover lost revenue/i }, { timeout: 5000 })
+  // The app-level home route renders the section-based Landing.tsx.
+  return screen.findByRole('heading', { name: /More commission per ticket/i }, { timeout: 5000 })
 }
 
 describe('Privacy page', () => {

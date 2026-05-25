@@ -223,7 +223,7 @@ export default function Navbar() {
           className="min-[900px]:hidden fixed inset-0 z-40 bg-[rgba(8,8,32,0.96)] motion-safe:animate-fade-in motion-reduce:animate-none"
           role="dialog"
           aria-modal="true"
-          aria-label="Mobile navigation menu"
+          aria-label="Landing navigation"
           data-testid="mobile-overlay-backdrop"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsOpen(false)

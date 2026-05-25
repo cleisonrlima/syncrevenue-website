@@ -49,30 +49,27 @@ describe('Landing (main page — /)', () => {
 
   it('renders the hero h1', () => {
     renderLanding()
-    const heading = screen.getByRole('heading', { level: 1, name: /Recover lost revenue/i })
+    const heading = screen.getByRole('heading', { level: 1, name: /More commission per ticket/i })
     expect(heading).toBeInTheDocument()
   })
 
   it('renders the trust strip', () => {
     renderLanding()
-    expect(screen.getByText(/trusted by forward-thinking/i)).toBeInTheDocument()
+    expect(screen.getByTestId('trust-bar')).toBeInTheDocument()
   })
 
-  it('routes the primary nav "Schedule a Demo" CTA to /demo', () => {
+  it('surfaces a "Schedule a Demo" CTA in the navigation', () => {
     renderLanding()
-    // The nav has a desktop "Schedule a Demo" link AND the mobile menu has one.
-    // Both should point to /demo. We assert at least one such anchor exists
-    // with the right href (avoids brittle "desktop vs mobile" forking).
-    const bookDemoLinks = screen
-      .getAllByRole('link', { name: /Schedule a Demo/i })
-      .filter((el) => el.getAttribute('href') === '/demo')
-    expect(bookDemoLinks.length).toBeGreaterThanOrEqual(1)
+    // The section-based landing uses Navbar with a button CTA that scrolls to the
+    // embedded demo section. At least one "Schedule a Demo" button must be present.
+    const ctaButtons = screen.getAllByRole('button', { name: /Schedule a Demo/i })
+    expect(ctaButtons.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('renders the benefits grid section heading from the Figma port', () => {
+  it('renders the benefits grid section heading', () => {
     renderLanding()
     expect(
-      screen.getByRole('heading', { level: 2, name: /Automate the invisible\./i }),
+      screen.getByRole('heading', { level: 2, name: /Why agencies pick SyncRevenue/i }),
     ).toBeInTheDocument()
   })
 
