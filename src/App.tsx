@@ -39,6 +39,7 @@ import ScrollRestoration from '@/components/ScrollRestoration'
 //   - `AdminLayout` + the admin tree — admin chunks are already small and
 //     authenticated routes don't have the same first-paint pressure.
 const Landing = lazy(() => import('@/pages/Landing'))
+const LandingV2 = lazy(() => import('@/pages/LandingV2'))
 const Demo = lazy(() => import('@/pages/Demo'))
 const DashboardLayout = lazy(() => import('@/components/layout/DashboardLayout'))
 const DashboardHome = lazy(() => import('@/pages/dashboard/DashboardHome'))
@@ -99,6 +100,14 @@ export default function App() {
               element={
                 <Suspense fallback={<RouteLoading />}>
                   <Landing />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/v2"
+              element={
+                <Suspense fallback={<RouteLoading />}>
+                  <LandingV2 />
                 </Suspense>
               }
             />
