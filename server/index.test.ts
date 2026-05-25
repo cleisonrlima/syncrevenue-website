@@ -6,8 +6,11 @@ import fs from 'fs'
 import type { Express } from 'express'
 import jwt from 'jsonwebtoken'
 import { request } from './test-utils/request'
-import { AUTH_COOKIE_NAME } from './middleware/auth'
 import { FORM_RATE_LIMIT_MAX } from './middleware/rateLimit'
+
+// Mirror of middleware/auth.ts AUTH_COOKIE_NAME — inlined to avoid pulling
+// auth → admin.dao → db.ts into the static import graph before DB_PATH is set.
+const AUTH_COOKIE_NAME = 'admin_token'
 
 const tempDbDir = fs.mkdtempSync(path.join(os.tmpdir(), 'syncrev-db-'))
 const tempDbPath = path.join(tempDbDir, 'test.db')

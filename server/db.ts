@@ -17,7 +17,7 @@ try {
   }
 } catch (err) {
   console.error('Failed to open database:', err)
-  process.exit(1)
+  throw err
 }
 
 export function initSchema(database: Database.Database = db): void {
