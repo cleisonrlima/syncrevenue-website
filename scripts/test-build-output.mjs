@@ -38,12 +38,12 @@ const DIST_CLIENT = path.join(PROJECT_ROOT, 'dist', 'client');
 const DIST_INDEX = path.join(DIST_CLIENT, 'index.html');
 const DIST_PRIVACY_INDEX = path.join(DIST_CLIENT, 'privacy', 'index.html');
 
-// Expected prerendered privacy heading text (English default locale).
-// Source: src/lib/route-registry.ts includes `/privacy` in
-// PRERENDER_INCLUDED_ROUTES, so scripts/prerender.tsx writes this route to
-// dist/client/privacy/index.html.
+// Expected prerendered heading text (English default locale).
+// Source: src/lib/route-registry.ts includes both `/` and `/privacy` in
+// PRERENDER_INCLUDED_ROUTES, so scripts/prerender.tsx writes prerendered HTML
+// for both routes.
+const EXPECTED_HOME_HEADING_TEXT = 'More commission per ticket';
 const EXPECTED_PRIVACY_HEADING_TEXT = 'Privacy Policy';
-const LEGACY_HOME_HEADING_TEXT = 'More commission per ticket';
 
 // ── Assertion 1: dist/client/index.html exists ─────────────────────────────
 
@@ -57,18 +57,18 @@ if (!existsSync(DIST_INDEX)) {
 const html = readFileSync(DIST_INDEX, 'utf8');
 console.log(`[test:build]   File size: ${html.length.toLocaleString()} bytes`);
 
-console.log('[test:build] Asserting home shell is not stale prerender output...');
+console.log('[test:build] Asserting home shell is prerendered with expected content...');
 try {
   assert.ok(
-    /<div id="root"><\/div>/.test(html),
-    'dist/client/index.html should contain an empty <div id="root"></div> because `/` is excluded from prerender.'
+    !/<div id="root"><\/div>/.test(html),
+    'dist/client/index.html has an empty <div id="root"></div> — `/` is included in PRERENDER_INCLUDED_ROUTES and should be prerendered. Run `npm run build` to regenerate.'
   );
   assert.ok(
-    !html.includes(LEGACY_HOME_HEADING_TEXT),
-    `dist/client/index.html still contains legacy prerendered home heading "${LEGACY_HOME_HEADING_TEXT}". ` +
-      'Run a fresh `npm run build` and verify the `/` route remains excluded from the prerender allowlist.'
+    html.includes(EXPECTED_HOME_HEADING_TEXT),
+    `dist/client/index.html does not contain expected home heading "${EXPECTED_HOME_HEADING_TEXT}". ` +
+      'The prerender step may not have run, or the hero copy changed without updating this test.'
   );
-  console.log('[test:build]   PASS — home shell has an empty #root');
+  console.log('[test:build]   PASS — home shell has prerendered content');
 } catch (err) {
   console.error('[test:build] ERROR:', err.message);
   process.exit(1);
