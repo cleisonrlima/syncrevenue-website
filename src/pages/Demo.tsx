@@ -80,9 +80,6 @@ export default function Demo() {
               alt={t('figmaDemo.nav.logoAlt', 'Sync Sirius logo')}
               className="h-8 w-auto rounded object-contain"
             />
-            <span className="text-xl font-bold tracking-tight text-white">
-              {t('figmaDemo.nav.brand', 'SyncRevenue')}
-            </span>
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
