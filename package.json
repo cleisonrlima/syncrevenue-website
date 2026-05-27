@@ -9,6 +9,8 @@
     "setup": "bash scripts/setup.sh",
     "dev": "concurrently --kill-others-on-fail \"vite\" \"tsx watch server/index.ts\"",
     "build": "tsc -p tsconfig.server.json && VITE_CJS_IGNORE_WARNING=true vite build && node scripts/generate-seo-assets.mjs && node_modules/.bin/tsx --tsconfig tsconfig.json scripts/prerender.tsx",
+    "build:prod": "VITE_SITE_URL=https://white-octopus-759195.hostingersite.com npm run build",
+    "deploy": "npm run build:prod && python3 scripts/deploy.py --verify",
     "start:prod": "node dist/server/index.js",
     "typecheck": "tsc --noEmit && tsc --noEmit --project tsconfig.scripts.json",
     "preview": "vite preview",
