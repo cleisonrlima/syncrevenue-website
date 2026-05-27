@@ -114,7 +114,8 @@ export function createApp(): Express {
   })
 
   if (process.env.NODE_ENV === 'production') {
-    const clientDir = path.resolve(__dirname, '../dist/client')
+    // In compiled runtime __dirname is dist/server, so static bundle lives at ../client.
+    const clientDir = path.resolve(__dirname, '../client')
     if (fs.existsSync(clientDir)) {
       app.use(
         express.static(clientDir, {

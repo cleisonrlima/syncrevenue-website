@@ -191,6 +191,8 @@ curl https://white-octopus-759195.hostingersite.com/api/health
 
 **"Cannot GET /"** — the `dist/client/` folder was not uploaded or the server restart is pending. Re-run `npm run deploy`.
 
+**Landing page 404 but `/api/health` is 200** — Express is running but not serving the client bundle. In production, the compiled server runs from `dist/server/` and must serve static files from `dist/client/`. Re-run deploy, and confirm the production static path points at `../client` relative to `dist/server`.
+
 **Passenger error page** — check the server log:
 ```bash
 ssh -p 65002 u718339656@185.28.21.212
